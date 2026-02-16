@@ -1,0 +1,56 @@
+{% extends "superadmin/_layout.html" %}
+
+{% block page_title %}Parametres SaaS{% endblock %}
+{% block page_subtitle %}Configuration globale de la plateforme{% endblock %}
+
+{% block content %}
+<div class="max-w-2xl">
+  <form method="post" class="space-y-6">
+    {% csrf_token %}
+
+    <!-- Subscription settings -->
+    <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden">
+      <div class="px-5 py-3 border-b border-slate-100"><h3 class="text-sm font-bold text-slate-700">Abonnement</h3></div>
+      <div class="p-5 space-y-4">
+        <div>
+          <label class="block text-[11px] font-semibold text-slate-400 uppercase tracking-wider mb-1">Duree essai gratuit (jours)</label>
+          <input type="number" name="trial_days" value="{{ trial_days }}" min="1" max="30" class="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm focus:border-sa-400 outline-none" />
+        </div>
+        <div>
+          <label class="block text-[11px] font-semibold text-slate-400 uppercase tracking-wider mb-1">Duree renouvellement (jours)</label>
+          <input type="number" name="renew_days" value="{{ renew_days }}" min="1" max="365" class="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm focus:border-sa-400 outline-none" />
+        </div>
+        <div>
+          <label class="block text-[11px] font-semibold text-slate-400 uppercase tracking-wider mb-1">Bonus par defaut (jours)</label>
+          <input type="number" name="bonus_days" value="{{ bonus_days }}" min="1" max="90" class="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm focus:border-sa-400 outline-none" />
+        </div>
+      </div>
+    </div>
+
+    <!-- Payment instructions -->
+    <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden">
+      <div class="px-5 py-3 border-b border-slate-100"><h3 class="text-sm font-bold text-slate-700">Instructions de paiement</h3></div>
+      <div class="p-5 space-y-4">
+        <div>
+          <label class="block text-[11px] font-semibold text-slate-400 uppercase tracking-wider mb-1">Francais</label>
+          <textarea name="instructions_fr" rows="3" class="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm focus:border-sa-400 outline-none resize-none" placeholder="Instructions de paiement en francais..."></textarea>
+        </div>
+        <div>
+          <label class="block text-[11px] font-semibold text-slate-400 uppercase tracking-wider mb-1">English</label>
+          <textarea name="instructions_en" rows="3" class="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm focus:border-sa-400 outline-none resize-none" placeholder="Payment instructions in English..."></textarea>
+        </div>
+        <div>
+          <label class="block text-[11px] font-semibold text-slate-400 uppercase tracking-wider mb-1">Espanol</label>
+          <textarea name="instructions_es" rows="3" class="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm focus:border-sa-400 outline-none resize-none" placeholder="Instrucciones de pago en espanol..."></textarea>
+        </div>
+        <div>
+          <label class="block text-[11px] font-semibold text-slate-400 uppercase tracking-wider mb-1">Kreyol</label>
+          <textarea name="instructions_ht" rows="3" class="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm focus:border-sa-400 outline-none resize-none" placeholder="Enstriksyon peman an kreyol..."></textarea>
+        </div>
+      </div>
+    </div>
+
+    <button type="submit" class="px-6 py-2.5 rounded-xl bg-sa-500 text-white text-sm font-semibold hover:bg-sa-600 transition">Enregistrer</button>
+  </form>
+</div>
+{% endblock %}

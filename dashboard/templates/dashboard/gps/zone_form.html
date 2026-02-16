@@ -1,0 +1,166 @@
+{% extends "dashboard/_layout.html" %}
+{% load static i18n %}
+
+{% block extra_head %}
+{{ block.super }}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css" />
+<style>
+  #pick-map { height: 40vh; min-height: 300px; border-radius: var(--g-radius); overflow: hidden; cursor: crosshair; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="space-y-6 max-w-3xl">
+
+  <!-- Header -->
+  <div class="flex items-center gap-3">
+    <a href="{% url 'dashboard:gps_zone_list' %}" class="rounded-xl p-2" style="background:var(--g-surface);border:1px solid var(--g-surface-border);color:var(--g-text-muted)">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5"/></svg>
+    </a>
+    <h1 class="text-2xl font-bold" style="color:var(--g-text)">
+      {% if zone %}
+        {% blocktrans with name=zone.name %}Modifier la zone — {{ name }}{% endblocktrans %}
+      {% else %}
+        {% trans "Nouvelle zone" %}
+      {% endif %}
+    </h1>
+  </div>
+
+  <form method="post" action="{% if zone %}{% url 'dashboard:gps_zone_edit' pk=zone.pk %}{% else %}{% url 'dashboard:gps_zone_create' %}{% endif %}" class="rounded-2xl p-6 space-y-5" style="background:var(--g-surface);border:1px solid var(--g-surface-border)">
+    {% csrf_token %}
+
+    <!-- Name -->
+    <div>
+      <label class="block text-sm font-medium mb-1.5" style="color:var(--g-text)">{% trans "Nom de la zone" %}</label>
+      <input type="text" name="name" value="{{ zone.name|default:'' }}" placeholder="{% trans "Ex: Centre-ville interdit" %}" required
+             class="w-full rounded-xl border px-4 py-2.5 text-sm outline-none" style="background:var(--g-bg);border-color:var(--g-surface-border);color:var(--g-text)">
+    </div>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+      <!-- Zone type -->
+      <div>
+        <label class="block text-sm font-medium mb-1.5" style="color:var(--g-text)">{% trans "Type de zone" %}</label>
+        <select name="zone_type" class="w-full rounded-xl border px-4 py-2.5 text-sm outline-none" style="background:var(--g-bg);border-color:var(--g-surface-border);color:var(--g-text)">
+          <option value="restricted" {% if zone.zone_type == "restricted" or not zone %}selected{% endif %}>{% trans "Zone interdite (alerte si le véhicule y entre)" %}</option>
+          <option value="allowed" {% if zone.zone_type == "allowed" %}selected{% endif %}>{% trans "Zone autorisée (alerte si le véhicule en sort)" %}</option>
+        </select>
+      </div>
+
+      <!-- Color -->
+      <div>
+        <label class="block text-sm font-medium mb-1.5" style="color:var(--g-text)">{% trans "Couleur" %}</label>
+        <div class="flex items-center gap-3">
+          <input type="color" name="color" value="{{ zone.color|default:'#ef4444' }}" id="zone-color"
+                 class="w-12 h-10 rounded-lg border-0 cursor-pointer" style="background:var(--g-bg)">
+          <span class="text-sm" style="color:var(--g-text-muted)" id="color-label">{{ zone.color|default:'#ef4444' }}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Map picker -->
+    <div>
+      <label class="block text-sm font-medium mb-1.5" style="color:var(--g-text)">{% trans "Centre de la zone (cliquez sur la carte)" %}</label>
+      <div id="pick-map"></div>
+    </div>
+
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-5">
+      <!-- Lat -->
+      <div>
+        <label class="block text-sm font-medium mb-1.5" style="color:var(--g-text)">{% trans "Latitude" %}</label>
+        <input type="text" name="center_lat" id="inp-lat" value="{{ zone.center_lat|default:'33.5731' }}" required
+               class="w-full rounded-xl border px-4 py-2.5 text-sm outline-none font-mono" style="background:var(--g-bg);border-color:var(--g-surface-border);color:var(--g-text)">
+      </div>
+      <!-- Lng -->
+      <div>
+        <label class="block text-sm font-medium mb-1.5" style="color:var(--g-text)">{% trans "Longitude" %}</label>
+        <input type="text" name="center_lng" id="inp-lng" value="{{ zone.center_lng|default:'-7.5898' }}" required
+               class="w-full rounded-xl border px-4 py-2.5 text-sm outline-none font-mono" style="background:var(--g-bg);border-color:var(--g-surface-border);color:var(--g-text)">
+      </div>
+      <!-- Radius -->
+      <div>
+        <label class="block text-sm font-medium mb-1.5" style="color:var(--g-text)">{% trans "Rayon (km)" %}</label>
+        <input type="number" step="0.1" min="0.1" name="radius_km" id="inp-radius" value="{{ zone.radius_km|default:'5' }}" required
+               class="w-full rounded-xl border px-4 py-2.5 text-sm outline-none" style="background:var(--g-bg);border-color:var(--g-surface-border);color:var(--g-text)">
+      </div>
+    </div>
+
+    <div class="flex items-center gap-6 flex-wrap">
+      <div class="flex items-center gap-3">
+        <input type="checkbox" name="is_active" value="1" {% if zone.is_active or not zone %}checked{% endif %}
+               class="rounded border-slate-300 text-violet-600 focus:ring-violet-400">
+        <span class="text-sm font-medium" style="color:var(--g-text)">{% trans "Zone active" %}</span>
+      </div>
+      <div class="flex items-center gap-3">
+        <input type="checkbox" name="alert_enabled" value="1" {% if zone.alert_enabled or not zone %}checked{% endif %}
+               class="rounded border-slate-300 text-violet-600 focus:ring-violet-400">
+        <span class="text-sm font-medium" style="color:var(--g-text)">{% trans "Alertes activées pour cette zone" %}</span>
+      </div>
+    </div>
+
+    <div class="pt-3 flex items-center gap-3">
+      <button type="submit" class="rounded-xl px-6 py-2.5 text-sm font-semibold" style="background:var(--g-accent);color:#fff">
+        {% if zone %}{% trans "Enregistrer" %}{% else %}{% trans "Créer la zone" %}{% endif %}
+      </button>
+      <a href="{% url 'dashboard:gps_zone_list' %}" class="rounded-xl px-6 py-2.5 text-sm font-medium" style="background:var(--g-surface-hover);color:var(--g-text-muted)">
+        {% trans "Annuler" %}
+      </a>
+    </div>
+  </form>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+(function(){
+  const initLat = parseFloat(document.getElementById('inp-lat').value) || 33.5731;
+  const initLng = parseFloat(document.getElementById('inp-lng').value) || -7.5898;
+  const initRadius = (parseFloat(document.getElementById('inp-radius').value) || 5) * 1000;
+
+  const map = L.map('pick-map').setView([initLat, initLng], 11);
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '&copy; OpenStreetMap', maxZoom: 19,
+  }).addTo(map);
+
+  let marker = L.marker([initLat, initLng], { draggable: true }).addTo(map);
+  let circle = L.circle([initLat, initLng], {
+    radius: initRadius,
+    color: document.getElementById('zone-color').value,
+    fillOpacity: 0.15,
+    weight: 2,
+  }).addTo(map);
+
+  function updateCircle(lat, lng) {
+    const r = (parseFloat(document.getElementById('inp-radius').value) || 5) * 1000;
+    circle.setLatLng([lat, lng]);
+    circle.setRadius(r);
+    circle.setStyle({ color: document.getElementById('zone-color').value });
+  }
+
+  map.on('click', function(e) {
+    marker.setLatLng(e.latlng);
+    document.getElementById('inp-lat').value = e.latlng.lat.toFixed(7);
+    document.getElementById('inp-lng').value = e.latlng.lng.toFixed(7);
+    updateCircle(e.latlng.lat, e.latlng.lng);
+  });
+
+  marker.on('dragend', function() {
+    const ll = marker.getLatLng();
+    document.getElementById('inp-lat').value = ll.lat.toFixed(7);
+    document.getElementById('inp-lng').value = ll.lng.toFixed(7);
+    updateCircle(ll.lat, ll.lng);
+  });
+
+  document.getElementById('inp-radius').addEventListener('input', function() {
+    const ll = marker.getLatLng();
+    updateCircle(ll.lat, ll.lng);
+  });
+
+  document.getElementById('zone-color').addEventListener('input', function(e) {
+    document.getElementById('color-label').textContent = e.target.value;
+    const ll = marker.getLatLng();
+    updateCircle(ll.lat, ll.lng);
+  });
+})();
+</script>
+{% endblock %}

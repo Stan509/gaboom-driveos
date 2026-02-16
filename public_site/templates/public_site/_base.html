@@ -1,0 +1,134 @@
+{% extends "base.html" %}
+{% load static i18n %}
+
+{% block extra_head %}
+<style>
+  :root {
+    --primary: {{ primary }};
+    --secondary: {{ secondary }};
+    --bg: {{ bg }};
+    --card-bg: {{ card_bg }};
+    --text: {{ text_color }};
+    --font: '{{ font }}', system-ui, sans-serif;
+  }
+  body.ps-body { font-family: var(--font); }
+  .ps-bg { background: var(--bg); color: var(--text); }
+  .ps-card { background: var(--card-bg); }
+  .ps-primary { color: var(--primary); }
+  .ps-primary-bg { background: var(--primary); }
+  .ps-secondary { color: var(--secondary); }
+  .ps-secondary-bg { background: var(--secondary); }
+  .ps-btn {
+    background: var(--primary);
+    color: #fff;
+    padding: 0.625rem 1.5rem;
+    border-radius: 9999px;
+    font-weight: 600;
+    font-size: 0.875rem;
+    display: inline-block;
+    text-align: center;
+    transition: opacity 0.15s;
+  }
+  .ps-btn:hover { opacity: 0.9; }
+  .ps-btn-outline {
+    border: 2px solid var(--primary);
+    color: var(--primary);
+    padding: 0.625rem 1.5rem;
+    border-radius: 9999px;
+    font-weight: 600;
+    font-size: 0.875rem;
+    display: inline-block;
+    text-align: center;
+    transition: all 0.15s;
+  }
+  .ps-btn-outline:hover { background: var(--primary); color: #fff; }
+</style>
+{% endblock %}
+
+{% block body %}
+<div class="min-h-screen ps-bg ps-body">
+  <!-- Public site header -->
+  <header class="border-b" style="border-color: color-mix(in srgb, var(--text) 10%, transparent);">
+    <div class="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
+      <a href="{% url 'public_site:agency_public_home' slug=agency.slug %}" class="flex items-center gap-3">
+        {% if ss.logo %}
+          <img src="{{ ss.logo.url }}" alt="{{ agency.name }}" class="h-9 w-9 rounded-xl object-cover" />
+        {% elif agency.public_logo_url %}
+          <img src="{{ agency.public_logo_url }}" alt="{{ agency.name }}" class="h-9 w-9 rounded-xl object-cover" />
+        {% else %}
+          <div class="h-9 w-9 rounded-xl ps-primary-bg text-white flex items-center justify-center font-bold text-sm">
+            {{ agency.name|first }}
+          </div>
+        {% endif %}
+        <div>
+          <div class="font-semibold text-sm">{{ agency.name }}</div>
+          {% if ss.city %}
+            <div class="text-[11px] opacity-50">{{ ss.city }}</div>
+          {% elif agency.public_city %}
+            <div class="text-[11px] opacity-50">{{ agency.public_city }}</div>
+          {% endif %}
+        </div>
+      </a>
+      {% get_current_language as LANGUAGE_CODE %}
+      {% get_available_languages as LANGUAGES %}
+      {% get_language_info_list for LANGUAGES as languages %}
+      <nav class="flex items-center gap-3 text-sm">
+        <a href="{% url 'public_site:agency_catalog' slug=agency.slug %}" class="opacity-70 hover:opacity-100 transition font-medium">{% trans "Catalogue" %}</a>
+        {% for pg in nav_pages %}
+          <a href="{% url 'public_site:page_detail' slug=agency.slug page_slug=pg.slug %}" class="opacity-70 hover:opacity-100 transition font-medium hidden sm:inline">{{ pg.title }}</a>
+        {% endfor %}
+        {% if ss.contact_phone %}
+          <a href="tel:{{ ss.contact_phone }}" class="opacity-70 hover:opacity-100 transition font-medium hidden sm:inline">{% trans "Appeler" %}</a>
+        {% elif agency.public_phone %}
+          <a href="tel:{{ agency.public_phone }}" class="opacity-70 hover:opacity-100 transition font-medium hidden sm:inline">{% trans "Appeler" %}</a>
+        {% endif %}
+        <span class="opacity-20 hidden sm:inline">|</span>
+        <form action="{% url 'set_language' %}" method="post" class="flex items-center">
+          {% csrf_token %}
+          <input type="hidden" name="next" value="{{ request.get_full_path }}">
+          <select name="language" onchange="this.form.submit()" class="rounded-lg border border-slate-200 px-2 py-1 text-[11px] bg-white/70">
+            {% for lang in languages %}
+              <option value="{{ lang.code }}" {% if lang.code == LANGUAGE_CODE %}selected{% endif %}>{{ lang.name_local }}</option>
+            {% endfor %}
+          </select>
+        </form>
+        {% if client_account %}
+          <a href="{% url 'public_site:client_dashboard' slug=agency.slug %}" class="ps-btn-outline text-xs !py-1.5 !px-3">{% trans "Mon espace" %}</a>
+          <a href="{% url 'public_site:client_logout' slug=agency.slug %}" class="opacity-60 hover:opacity-100 transition text-xs font-medium">{% trans "Déconnexion" %}</a>
+        {% else %}
+          <a href="{% url 'public_site:client_login' slug=agency.slug %}" class="opacity-70 hover:opacity-100 transition font-medium text-xs">{% trans "Connexion" %}</a>
+          <a href="{% url 'public_site:client_signup' slug=agency.slug %}" class="ps-btn text-xs !py-1.5 !px-3">{% trans "Créer un compte" %}</a>
+        {% endif %}
+      </nav>
+    </div>
+  </header>
+
+  <!-- Page content -->
+  {% block ps_content %}{% endblock %}
+
+  <!-- Public site footer -->
+  <footer class="border-t mt-auto" style="border-color: color-mix(in srgb, var(--text) 10%, transparent);">
+    <div class="max-w-6xl mx-auto px-4 py-8">
+      {% if footer_pages %}
+      <div class="flex flex-wrap items-center justify-center gap-4 mb-4 text-xs">
+        {% for pg in footer_pages %}
+        <a href="{% url 'public_site:page_detail' slug=agency.slug page_slug=pg.slug %}" class="opacity-50 hover:opacity-80 transition font-medium">{{ pg.title }}</a>
+        {% endfor %}
+      </div>
+      {% endif %}
+      {% if legal_pages %}
+      <div class="flex flex-wrap items-center justify-center gap-3 mb-4 text-[11px]">
+        {% for pg in legal_pages %}
+        <a href="{% url 'public_site:page_detail' slug=agency.slug page_slug=pg.slug %}" class="opacity-30 hover:opacity-60 transition">{{ pg.title }}</a>
+        {% if not forloop.last %}<span class="opacity-20">·</span>{% endif %}
+        {% endfor %}
+      </div>
+      {% endif %}
+      <div class="flex flex-col sm:flex-row items-center justify-between gap-4 text-sm opacity-50">
+        <p>&copy; {% now "Y" %} {{ agency.name }}. {% trans "Tous droits réservés." %}</p>
+        <p>{% trans "Propulsé par" %} <a href="/" class="font-semibold hover:opacity-80">Gaboom DriveOS</a></p>
+      </div>
+    </div>
+  </footer>
+</div>
+{% endblock %}

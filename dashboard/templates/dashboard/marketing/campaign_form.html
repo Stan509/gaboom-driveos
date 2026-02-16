@@ -1,0 +1,456 @@
+{% extends "dashboard/_layout.html" %}
+{% load i18n %}
+{% block title %}{% if editing %}{% trans "Modifier" %}{% else %}{% trans "Nouvelle" %}{% endif %} {% trans "campagne" %} — Marketing Engine{% endblock %}
+{% block page_title %}{% if editing %}{% trans "Modifier la campagne" %}{% else %}{% trans "Nouvelle campagne IA" %}{% endif %}{% endblock %}
+{% block page_subtitle %}{% trans "Assistant IA embarqué — génération, scoring et optimisation locale" %}{% endblock %}
+
+{% block page_css %}
+<style>
+@keyframes cardIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
+@keyframes shimmer{0%{background-position:-200% 0}100%{background-position:200% 0}}
+.mkt-card{animation:cardIn .3s ease-out both;border-radius:16px;border:1px solid var(--g-card-border,rgba(255,255,255,.06));background:var(--g-card,rgba(255,255,255,.03));padding:1.25rem 1.5rem;margin-bottom:1rem}
+.mkt-card h3{font-size:.85rem;font-weight:700;margin-bottom:.75rem;display:flex;align-items:center;gap:8px}
+.mkt-card h3 svg{width:18px;height:18px;opacity:.6}
+.form-grid{display:grid;grid-template-columns:1fr 380px;gap:1.25rem;align-items:start}
+@media(max-width:1024px){.form-grid{grid-template-columns:1fr}}
+.f-label{display:block;font-size:.75rem;font-weight:600;margin-bottom:6px;opacity:.7}
+.f-input,.f-select,.f-textarea{width:100%;border-radius:12px;border:1px solid var(--g-card-border,rgba(255,255,255,.08));background:var(--g-card,rgba(255,255,255,.02));padding:10px 14px;font-size:.85rem;color:var(--g-text);transition:border-color .2s,box-shadow .2s;outline:none}
+.f-input:focus,.f-select:focus,.f-textarea:focus{border-color:rgba(109,40,217,.5);box-shadow:0 0 0 3px rgba(109,40,217,.1)}
+.f-textarea{min-height:180px;resize:vertical;font-family:inherit;line-height:1.6}
+.f-row{display:grid;grid-template-columns:1fr 1fr;gap:.75rem}
+@media(max-width:640px){.f-row{grid-template-columns:1fr}}
+/* Toggle */
+.toggle-wrap{display:flex;align-items:center;gap:10px;cursor:pointer}
+.toggle-track{width:40px;height:22px;border-radius:11px;background:rgba(148,163,184,.2);position:relative;transition:background .2s;flex-shrink:0}
+.toggle-track.on{background:rgba(109,40,217,.6)}
+.toggle-dot{width:18px;height:18px;border-radius:50%;background:#fff;position:absolute;top:2px;left:2px;transition:transform .2s;box-shadow:0 1px 3px rgba(0,0,0,.2)}
+.toggle-track.on .toggle-dot{transform:translateX(18px)}
+/* AI buttons */
+.ai-bar{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:.75rem}
+.ai-btn{padding:6px 14px;border-radius:10px;font-size:12px;font-weight:600;cursor:pointer;transition:all .15s;border:1px solid var(--g-card-border,rgba(255,255,255,.08));background:var(--g-card,rgba(255,255,255,.03));color:var(--g-text-muted)}
+.ai-btn:hover{border-color:rgba(109,40,217,.4);color:var(--g-text);transform:scale(1.03)}
+.ai-btn.primary{background:rgba(109,40,217,.15);color:#A78BFA;border-color:rgba(109,40,217,.3)}
+.ai-btn.primary:hover{background:rgba(109,40,217,.25)}
+.ai-btn:disabled{opacity:.4;cursor:not-allowed;transform:none}
+/* Score badge */
+.score-ring{width:56px;height:56px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.1rem;font-weight:800;position:relative}
+.score-ring::before{content:'';position:absolute;inset:-3px;border-radius:50%;border:3px solid transparent;border-top-color:currentColor;animation:none}
+.grade-A{color:#34D399;background:rgba(16,185,129,.1);border:2px solid rgba(16,185,129,.3)}
+.grade-B{color:#60A5FA;background:rgba(59,130,246,.1);border:2px solid rgba(59,130,246,.3)}
+.grade-C{color:#FACC15;background:rgba(250,204,21,.1);border:2px solid rgba(250,204,21,.3)}
+.grade-D{color:#F97316;background:rgba(249,115,22,.1);border:2px solid rgba(249,115,22,.3)}
+.grade-F{color:#F87171;background:rgba(239,68,68,.1);border:2px solid rgba(239,68,68,.3)}
+/* Suggestions */
+.sug-item{display:flex;align-items:flex-start;gap:6px;padding:6px 0;font-size:.78rem;line-height:1.4}
+.sug-icon{width:14px;height:14px;flex-shrink:0;margin-top:1px;color:#FACC15}
+/* Variable chips */
+.var-chip{display:inline-flex;align-items:center;gap:3px;padding:3px 10px;border-radius:8px;font-size:11px;font-weight:600;cursor:pointer;transition:all .15s;background:rgba(109,40,217,.08);color:#A78BFA;border:1px solid rgba(109,40,217,.15)}
+.var-chip:hover{background:rgba(109,40,217,.18);transform:scale(1.05)}
+/* Preview */
+.preview-email{border-radius:12px;border:1px solid var(--g-card-border,rgba(255,255,255,.06));background:var(--g-card,rgba(255,255,255,.02));padding:1.25rem;min-height:200px;font-size:.82rem;line-height:1.6;white-space:pre-wrap;word-break:break-word}
+.preview-wa{background:#0B141A;border-radius:16px;padding:1rem;min-height:160px}
+.wa-bubble{background:#005C4B;color:#fff;border-radius:0 12px 12px 12px;padding:10px 14px;font-size:.82rem;line-height:1.5;max-width:90%;white-space:pre-wrap;word-break:break-word}
+.wa-time{font-size:10px;opacity:.5;text-align:right;margin-top:4px}
+/* AB */
+.ab-tabs{display:flex;gap:0;margin-bottom:.75rem}
+.ab-tab{padding:8px 20px;font-size:.8rem;font-weight:600;cursor:pointer;border:1px solid var(--g-card-border,rgba(255,255,255,.08));transition:all .15s;color:var(--g-text-muted)}
+.ab-tab:first-child{border-radius:10px 0 0 10px}
+.ab-tab:last-child{border-radius:0 10px 10px 0}
+.ab-tab.active{background:rgba(109,40,217,.15);color:#A78BFA;border-color:rgba(109,40,217,.3)}
+.loading-shimmer{background:linear-gradient(90deg,transparent 0%,rgba(109,40,217,.08) 50%,transparent 100%);background-size:200% 100%;animation:shimmer 1.5s infinite}
+</style>
+{% endblock %}
+
+{% block content %}
+<form method="post" id="campaignForm">
+{% csrf_token %}
+
+<div class="form-grid">
+<!-- ═══════════ LEFT COLUMN ═══════════ -->
+<div>
+
+  <!-- Campaign Info -->
+  <div class="mkt-card" style="animation-delay:.05s">
+    <h3 style="color:var(--g-text)">
+      <svg fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z"/></svg>
+      {% trans "Informations" %}
+    </h3>
+    <div class="space-y-3">
+      <div>
+        <label class="f-label" style="color:var(--g-text-muted)">{% trans "Nom de la campagne" %}</label>
+        <input type="text" name="name" class="f-input" required placeholder="{% trans "Ex: Promo été 2026" %}" value="{% if campaign %}{{ campaign.name }}{% endif %}">
+      </div>
+      <div class="f-row">
+        <div>
+          <label class="f-label" style="color:var(--g-text-muted)">{% trans "Objectif" %}</label>
+          <select name="objective" id="selObjective" class="f-select">
+            {% for val, label in ai_objectives %}
+            <option value="{{ val }}" {% if campaign and campaign.objective == val %}selected{% endif %}>{{ label }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div>
+          <label class="f-label" style="color:var(--g-text-muted)">{% trans "Cible" %}</label>
+          <select name="target" class="f-select">
+            <option value="all_clients">{% trans "Tous les clients" %}</option>
+            <option value="active_clients" {% if campaign and campaign.target == 'active_clients' %}selected{% endif %}>{% trans "Clients actifs" %}</option>
+            <option value="inactive_30d" {% if campaign and campaign.target == 'inactive_30d' %}selected{% endif %}>{% trans "Inactifs 30 jours" %}</option>
+            <option value="custom_tag" {% if campaign and campaign.target == 'custom_tag' %}selected{% endif %}>{% trans "Tag personnalisé" %}</option>
+          </select>
+        </div>
+      </div>
+      <div class="f-row">
+        <div>
+          <label class="f-label" style="color:var(--g-text-muted)">{% trans "Planifier l'envoi" %}</label>
+          <input type="datetime-local" name="scheduled_at" class="f-input" value="{% if campaign.scheduled_at %}{{ campaign.scheduled_at|date:'Y-m-d\TH:i' }}{% endif %}">
+        </div>
+        <div>
+          <label class="f-label" style="color:var(--g-text-muted)">{% trans "Lien de réservation" %}</label>
+          <input type="url" id="ctaLink" class="f-input" placeholder="https://..." value="/a/{{ agency_slug }}/">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Channels -->
+  <div class="mkt-card" style="animation-delay:.1s">
+    <h3 style="color:var(--g-text)">
+      <svg fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M7.5 8.25h9m-9 3H12m-9.75 1.51c0 1.6 1.123 2.994 2.707 3.227 1.087.16 2.185.283 3.293.369V21l4.076-4.076a1.526 1.526 0 0 1 1.037-.443 48.282 48.282 0 0 0 5.68-.494c1.584-.233 2.707-1.626 2.707-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0 0 12 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018Z"/></svg>
+      Canaux
+    </h3>
+    <div class="flex items-center gap-6 flex-wrap">
+      <label class="toggle-wrap">
+        <input type="checkbox" name="channel_email" class="hidden" {% if not campaign or campaign.channel_email %}checked{% endif %} onchange="this.nextElementSibling.classList.toggle('on',this.checked)">
+        <div class="toggle-track {% if not campaign or campaign.channel_email %}on{% endif %}"><div class="toggle-dot"></div></div>
+        <span class="text-sm font-medium" style="color:var(--g-text)">Email</span>
+      </label>
+      <label class="toggle-wrap">
+        <input type="checkbox" name="channel_whatsapp" id="chkWA" class="hidden" {% if campaign and campaign.channel_whatsapp %}checked{% endif %} onchange="this.nextElementSibling.classList.toggle('on',this.checked);toggleWAPreview()">
+        <div class="toggle-track {% if campaign and campaign.channel_whatsapp %}on{% endif %}"><div class="toggle-dot"></div></div>
+        <span class="text-sm font-medium" style="color:var(--g-text)">WhatsApp</span>
+        <svg class="w-4 h-4 ml-1" style="color:#25D366" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8.625 9.75a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0H8.25m4.125 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0H12m3.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0h-.375m-13.5 3.01c0 1.6 1.123 2.994 2.707 3.227 1.087.16 2.185.283 3.293.369V21l4.184-4.183a1.14 1.14 0 0 1 .778-.332 48.294 48.294 0 0 0 5.83-.498c1.585-.233 2.708-1.626 2.708-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0 0 12 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018Z"/></svg>
+      </label>
+      <label class="toggle-wrap">
+        <input type="checkbox" name="ab_enabled" id="chkAB" class="hidden" {% if campaign and campaign.ab_enabled %}checked{% endif %} onchange="this.nextElementSibling.classList.toggle('on',this.checked);toggleAB()">
+        <div class="toggle-track {% if campaign and campaign.ab_enabled %}on{% endif %}"><div class="toggle-dot"></div></div>
+        <span class="text-sm font-medium" style="color:var(--g-text)">A/B Test</span>
+        <span class="text-xs px-2 py-0.5 rounded-md ml-1" style="background:rgba(250,204,21,.12);color:#FACC15;font-weight:700">50/50</span>
+      </label>
+    </div>
+  </div>
+
+  <!-- AI Assistant -->
+  <div class="mkt-card" style="animation-delay:.15s">
+    <h3 style="color:var(--g-text)">
+      <svg fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904 9 18.75l-.813-2.846a4.5 4.5 0 0 0-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 0 0 3.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 0 0 3.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 0 0-3.09 3.09Z"/></svg>
+      Assistant IA
+      <span class="text-xs px-2 py-0.5 rounded-md" style="background:rgba(109,40,217,.12);color:#A78BFA;font-weight:600">Offline</span>
+    </h3>
+    <div class="f-row mb-3">
+      <div>
+        <label class="f-label" style="color:var(--g-text-muted)">Style</label>
+        <select id="selStyle" class="f-select">
+          {% for val, label in ai_styles %}
+          <option value="{{ val }}">{{ label }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div>
+        <label class="f-label" style="color:var(--g-text-muted)">Offre / Promotion</label>
+        <input type="text" id="inpOffre" class="f-input" placeholder="Ex: -20% cette semaine">
+      </div>
+    </div>
+    <div class="f-row mb-3">
+      <div>
+        <label class="f-label" style="color:var(--g-text-muted)">Véhicule (optionnel)</label>
+        <select id="selVehicle" class="f-select">
+          <option value="">— Aucun —</option>
+          {% for v in vehicles %}
+          <option value="{{ v.brand }} {{ v.model }}">{{ v.brand }} {{ v.model }} {{ v.year }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div>
+        <label class="f-label" style="color:var(--g-text-muted)">Canal IA</label>
+        <select id="selChannel" class="f-select">
+          {% for val, label in ai_channels %}
+          <option value="{{ val }}">{{ label }}</option>
+          {% endfor %}
+        </select>
+      </div>
+    </div>
+    <div class="ai-bar">
+      <button type="button" class="ai-btn primary" onclick="aiGenerate()">✨ Générer</button>
+      <button type="button" class="ai-btn" onclick="aiRewrite('improve')">🔄 Améliorer</button>
+      <button type="button" class="ai-btn" onclick="aiRewrite('shorter')">✂️ Raccourcir</button>
+      <button type="button" class="ai-btn" onclick="aiRewrite('luxury')">💎 Version Luxe</button>
+      <button type="button" class="ai-btn" onclick="aiRewrite('urgent')">⚡ Urgent</button>
+      <button type="button" class="ai-btn" onclick="aiRewrite('persuasive')">🎯 Persuasif</button>
+      <button type="button" class="ai-btn" onclick="aiScore()">📊 Score</button>
+    </div>
+    <div class="flex flex-wrap gap-1.5 mb-3">
+      <span class="text-xs font-medium" style="color:var(--g-text-dim)">Variables :</span>
+      {% for v in ai_variables %}
+      <span class="var-chip" onclick="insertVar('{{ v }}')">{{ v }}</span>
+      {% endfor %}
+    </div>
+  </div>
+
+  <!-- Content Editor — Variant A -->
+  <div class="mkt-card" style="animation-delay:.2s">
+    <div id="abTabsWrap" style="display:none">
+      <div class="ab-tabs">
+        <div class="ab-tab active" data-tab="A" onclick="switchTab('A')">Variante A</div>
+        <div class="ab-tab" data-tab="B" onclick="switchTab('B')">Variante B</div>
+      </div>
+    </div>
+    <div id="panelA">
+      <div class="mb-3">
+        <label class="f-label" style="color:var(--g-text-muted)">Objet (email)</label>
+        <input type="text" name="subject_a" class="f-input" placeholder="Objet de l'email" value="{% if variant_a %}{{ variant_a.subject }}{% endif %}">
+      </div>
+      <div class="mb-2">
+        <label class="f-label" style="color:var(--g-text-muted)">Style variante A</label>
+        <select name="style_a" class="f-select" style="max-width:200px">
+          {% for val, label in ai_styles %}
+          <option value="{{ val }}" {% if variant_a and variant_a.style == val %}selected{% endif %}>{{ label }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <label class="f-label" style="color:var(--g-text-muted)">Contenu variante A</label>
+      <textarea name="body_a" id="bodyA" class="f-textarea" placeholder="Rédigez ou générez votre message marketing...">{% if variant_a %}{{ variant_a.body_text }}{% endif %}</textarea>
+    </div>
+    <div id="panelB" style="display:none">
+      <div class="mb-3">
+        <label class="f-label" style="color:var(--g-text-muted)">Objet (email) — B</label>
+        <input type="text" name="subject_b" class="f-input" placeholder="Objet variante B" value="{% if variant_b %}{{ variant_b.subject }}{% endif %}">
+      </div>
+      <div class="mb-2">
+        <label class="f-label" style="color:var(--g-text-muted)">Style variante B</label>
+        <select name="style_b" class="f-select" style="max-width:200px">
+          {% for val, label in ai_styles %}
+          <option value="{{ val }}" {% if variant_b and variant_b.style == val %}selected{% endif %}>{{ label }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <label class="f-label" style="color:var(--g-text-muted)">Contenu variante B</label>
+      <textarea name="body_b" id="bodyB" class="f-textarea" placeholder="Variante B — testez un message différent">{% if variant_b %}{{ variant_b.body_text }}{% endif %}</textarea>
+    </div>
+  </div>
+
+  <!-- Submit -->
+  <div class="flex items-center gap-3 mt-2">
+    <button type="submit" class="rounded-xl bg-gaboomViolet text-white px-6 py-2.5 text-sm font-semibold hover:opacity-95 transition">
+      {% if editing %}Enregistrer{% else %}Créer la campagne{% endif %}
+    </button>
+    <a href="{% url 'dashboard:mkt_campaign_list' %}" class="text-sm font-medium hover:underline" style="color:var(--g-text-muted)">Annuler</a>
+  </div>
+</div>
+
+<!-- ═══════════ RIGHT COLUMN (Preview + Score) ═══════════ -->
+<div class="sticky" style="top:1rem">
+  <!-- Score Card -->
+  <div class="mkt-card" id="scoreCard" style="animation-delay:.25s">
+    <h3 style="color:var(--g-text)">
+      <svg fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M11.48 3.499a.562.562 0 0 1 1.04 0l2.125 5.111a.563.563 0 0 0 .475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 0 0-.182.557l1.285 5.385a.562.562 0 0 1-.84.61l-4.725-2.885a.562.562 0 0 0-.586 0L6.982 20.54a.562.562 0 0 1-.84-.61l1.285-5.386a.562.562 0 0 0-.182-.557l-4.204-3.602a.562.562 0 0 1 .321-.988l5.518-.442a.563.563 0 0 0 .475-.345L11.48 3.5Z"/></svg>
+      Score Marketing
+    </h3>
+    <div class="flex items-start gap-4">
+      <div class="score-ring grade-C" id="scoreRing">
+        <span id="scoreVal">—</span>
+      </div>
+      <div class="flex-1">
+        <div class="text-xs font-semibold mb-1" style="color:var(--g-text-muted)">Grade : <span id="scoreGrade" style="color:#FACC15">—</span></div>
+        <div id="scoreBreakdown" class="text-xs space-y-0.5" style="color:var(--g-text-dim)"></div>
+      </div>
+    </div>
+    <div id="suggestionsWrap" class="mt-3 pt-3" style="border-top:1px solid var(--g-card-border,rgba(255,255,255,.06));display:none">
+      <div class="text-xs font-semibold mb-2" style="color:var(--g-text-muted)">💡 Suggestions IA</div>
+      <div id="suggestionsList"></div>
+    </div>
+  </div>
+
+  <!-- Email Preview -->
+  <div class="mkt-card" style="animation-delay:.3s">
+    <h3 style="color:var(--g-text)">
+      <svg fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 0 1-2.25 2.25h-15a2.25 2.25 0 0 1-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25m19.5 0v.243a2.25 2.25 0 0 1-1.07 1.916l-7.5 4.615a2.25 2.25 0 0 1-2.36 0L3.32 8.91a2.25 2.25 0 0 1-1.07-1.916V6.75"/></svg>
+      Aperçu Email
+    </h3>
+    <div class="preview-email" id="previewEmail" style="color:var(--g-text-muted)">
+      <span style="opacity:.4">Le contenu apparaîtra ici...</span>
+    </div>
+  </div>
+
+  <!-- WhatsApp Preview -->
+  <div class="mkt-card" id="waPreviewCard" style="animation-delay:.35s;{% if not campaign or not campaign.channel_whatsapp %}display:none{% endif %}">
+    <h3 style="color:var(--g-text)">
+      <svg fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" style="color:#25D366"><path stroke-linecap="round" stroke-linejoin="round" d="M8.625 9.75a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0H8.25m4.125 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0H12m3.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0h-.375m-13.5 3.01c0 1.6 1.123 2.994 2.707 3.227 1.087.16 2.185.283 3.293.369V21l4.184-4.183a1.14 1.14 0 0 1 .778-.332 48.294 48.294 0 0 0 5.83-.498c1.585-.233 2.708-1.626 2.708-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0 0 12 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018Z"/></svg>
+      Aperçu WhatsApp
+    </h3>
+    <div class="preview-wa">
+      <div class="wa-bubble" id="previewWA">Le contenu apparaîtra ici...</div>
+      <div class="wa-time">12:00</div>
+    </div>
+  </div>
+
+  <!-- Variables Reference -->
+  <div class="mkt-card" style="animation-delay:.4s">
+    <h3 style="color:var(--g-text)">
+      <svg fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17.25 6.75 22.5 12l-5.25 5.25m-10.5 0L1.5 12l5.25-5.25m7.5-3-4.5 16.5"/></svg>
+      Variables disponibles
+    </h3>
+    <div class="space-y-1.5 text-xs" style="color:var(--g-text-muted)">
+      <div><code class="var-chip" onclick="insertVar('{nom}')">{nom}</code> — Prénom du client</div>
+      <div><code class="var-chip" onclick="insertVar('{agence}')">{agence}</code> — Nom de l'agence</div>
+      <div><code class="var-chip" onclick="insertVar('{ville}')">{ville}</code> — Ville de l'agence</div>
+      <div><code class="var-chip" onclick="insertVar('{voiture}')">{voiture}</code> — Véhicule</div>
+      <div><code class="var-chip" onclick="insertVar('{prix}')">{prix}</code> — Prix</div>
+      <div><code class="var-chip" onclick="insertVar('{offre}')">{offre}</code> — Offre / promo</div>
+      <div><code class="var-chip" onclick="insertVar('{lien}')">{lien}</code> — Lien de réservation</div>
+    </div>
+  </div>
+</div>
+</div>
+</form>
+
+<script>
+const CSRF = document.querySelector('[name=csrfmiddlewaretoken]').value;
+const API = '{% url "dashboard:mkt_api_ai" %}';
+let activeTab = 'A';
+
+function getActiveTextarea(){
+  return activeTab === 'B' ? document.getElementById('bodyB') : document.getElementById('bodyA');
+}
+
+function insertVar(v){
+  const ta = getActiveTextarea();
+  const start = ta.selectionStart, end = ta.selectionEnd;
+  ta.value = ta.value.substring(0, start) + v + ta.value.substring(end);
+  ta.focus();
+  ta.selectionStart = ta.selectionEnd = start + v.length;
+  updatePreview();
+}
+
+function updatePreview(){
+  const text = getActiveTextarea().value;
+  const emailPrev = document.getElementById('previewEmail');
+  const waPrev = document.getElementById('previewWA');
+  const sample = text.replace(/\{nom\}/g,'Jean Dupont').replace(/\{agence\}/g,'{{ agency_name|escapejs }}').replace(/\{ville\}/g,'Votre ville').replace(/\{voiture\}/g,'BMW Série 3').replace(/\{prix\}/g,'150€/jour').replace(/\{offre\}/g,'20% de remise').replace(/\{lien\}/g,'https://...');
+  emailPrev.textContent = sample || 'Le contenu apparaîtra ici...';
+  waPrev.textContent = sample || 'Le contenu apparaîtra ici...';
+}
+
+// Live preview on typing
+document.getElementById('bodyA').addEventListener('input', updatePreview);
+document.getElementById('bodyB').addEventListener('input', updatePreview);
+
+function toggleWAPreview(){
+  const show = document.getElementById('chkWA').checked;
+  document.getElementById('waPreviewCard').style.display = show ? '' : 'none';
+}
+
+function toggleAB(){
+  const show = document.getElementById('chkAB').checked;
+  document.getElementById('abTabsWrap').style.display = show ? '' : 'none';
+  if(!show){ switchTab('A'); }
+}
+
+function switchTab(tab){
+  activeTab = tab;
+  document.getElementById('panelA').style.display = tab === 'A' ? '' : 'none';
+  document.getElementById('panelB').style.display = tab === 'B' ? '' : 'none';
+  document.querySelectorAll('.ab-tab').forEach(t => t.classList.toggle('active', t.dataset.tab === tab));
+  updatePreview();
+}
+
+// Init AB state
+if(document.getElementById('chkAB').checked){
+  document.getElementById('abTabsWrap').style.display = '';
+}
+
+async function aiCall(body){
+  const btns = document.querySelectorAll('.ai-btn');
+  btns.forEach(b => b.disabled = true);
+  try{
+    const res = await fetch(API, {
+      method:'POST',
+      headers:{'Content-Type':'application/json','X-CSRFToken':CSRF},
+      body: JSON.stringify(body)
+    });
+    const data = await res.json();
+    if(data.ok){
+      if(data.text !== undefined){
+        getActiveTextarea().value = data.text;
+        updatePreview();
+      }
+      if(data.score) renderScore(data.score);
+    }
+  }catch(e){console.error(e)}
+  btns.forEach(b => b.disabled = false);
+}
+
+function aiGenerate(){
+  aiCall({
+    action:'generate',
+    objective: document.getElementById('selObjective').value,
+    style: document.getElementById('selStyle').value,
+    channel: document.getElementById('selChannel').value,
+    offre: document.getElementById('inpOffre').value,
+    voiture: document.getElementById('selVehicle').value,
+    cta_link: document.getElementById('ctaLink').value,
+  });
+}
+
+function aiRewrite(mode){
+  const text = getActiveTextarea().value;
+  if(!text){alert('Rédigez ou générez d\'abord un message.');return;}
+  aiCall({action:'rewrite', mode:mode, text:text});
+}
+
+function aiScore(){
+  const text = getActiveTextarea().value;
+  if(!text){alert('Rédigez ou générez d\'abord un message.');return;}
+  aiCall({action:'score', text:text});
+}
+
+function renderScore(score){
+  const ring = document.getElementById('scoreRing');
+  const val = document.getElementById('scoreVal');
+  const grade = document.getElementById('scoreGrade');
+  const bd = document.getElementById('scoreBreakdown');
+  const sw = document.getElementById('suggestionsWrap');
+  const sl = document.getElementById('suggestionsList');
+
+  val.textContent = score.total;
+  grade.textContent = score.grade;
+
+  // Update ring class
+  ring.className = 'score-ring grade-' + score.grade;
+
+  // Grade color
+  const colors = {A:'#34D399',B:'#60A5FA',C:'#FACC15',D:'#F97316',F:'#F87171'};
+  grade.style.color = colors[score.grade] || '#FACC15';
+
+  // Breakdown
+  let html = '';
+  for(const [k,v] of Object.entries(score.breakdown||{})){
+    html += '<div class="flex justify-between"><span>'+k+'</span><span style="color:var(--g-text)">'+v+'</span></div>';
+  }
+  bd.innerHTML = html;
+
+  // Suggestions
+  if(score.suggestions && score.suggestions.length){
+    sw.style.display = '';
+    sl.innerHTML = score.suggestions.map(s =>
+      '<div class="sug-item"><svg class="sug-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 18v-5.25m0 0a6.01 6.01 0 0 0 1.5-.189m-1.5.189a6.01 6.01 0 0 1-1.5-.189m3.75 7.478a12.06 12.06 0 0 1-4.5 0m3.75 2.383a14.406 14.406 0 0 1-3 0M14.25 18v-.192c0-.983.658-1.823 1.508-2.316a7.5 7.5 0 1 0-7.517 0c.85.493 1.509 1.333 1.509 2.316V18"/></svg><span style="color:var(--g-text-muted)">'+s+'</span></div>'
+    ).join('');
+  } else {
+    sw.style.display = 'none';
+  }
+}
+
+// Initial preview
+updatePreview();
+</script>
+{% endblock %}

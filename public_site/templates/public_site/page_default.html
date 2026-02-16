@@ -1,0 +1,22 @@
+{% extends "public_site/_base.html" %}
+{% load i18n %}
+
+{% block ps_content %}
+<div class="max-w-4xl mx-auto px-4 py-12" style="animation: fadeIn .4s ease both;">
+  <article>
+    <h1 class="text-3xl font-bold mb-6">{{ page.title }}</h1>
+    <div class="prose max-w-none text-sm leading-relaxed opacity-80 space-y-4">
+      {{ rendered_content|safe }}
+    </div>
+    {% if page.cta_label and page.cta_url %}
+    <div class="mt-8">
+      <a href="{{ page.cta_url }}" class="ps-btn text-sm !py-2.5 !px-6 inline-block">{{ page.cta_label }}</a>
+    </div>
+    {% endif %}
+    <div class="mt-10 text-xs opacity-30">
+      {% trans "Dernière mise à jour :" %} {{ page.updated_at|date:"d/m/Y" }}
+    </div>
+  </article>
+</div>
+<style>@keyframes fadeIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}</style>
+{% endblock %}

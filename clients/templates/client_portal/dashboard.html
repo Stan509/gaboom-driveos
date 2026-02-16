@@ -1,0 +1,76 @@
+{% extends "client_portal/_base.html" %}
+{% load i18n %}
+
+{% block portal_content %}
+<div class="space-y-6">
+  <div>
+    <h1 class="text-xl font-bold">Bonjour, {{ client_account.full_name }} 👋</h1>
+    <p class="text-sm opacity-60 mt-1">Bienvenue dans votre espace client chez {{ agency.name }}</p>
+  </div>
+
+  <!-- Loyalty card -->
+  {% if loyalty %}
+  <div class="ps-card rounded-2xl border p-5 flex items-center gap-4" style="border-color: color-mix(in srgb, var(--text) 10%, transparent);">
+    <div class="w-12 h-12 rounded-xl flex items-center justify-center text-lg font-bold
+      {% if loyalty.rank == 'platinum' %}bg-violet-100 text-violet-700
+      {% elif loyalty.rank == 'gold' %}bg-amber-100 text-amber-700
+      {% elif loyalty.rank == 'silver' %}bg-slate-200 text-slate-700
+      {% else %}bg-orange-100 text-orange-700{% endif %}">
+      {% if loyalty.rank == 'platinum' %}💎{% elif loyalty.rank == 'gold' %}🥇{% elif loyalty.rank == 'silver' %}🥈{% else %}🥉{% endif %}
+    </div>
+    <div class="flex-1 min-w-0">
+      <div class="font-bold text-sm">{{ loyalty.get_rank_display }}</div>
+      <div class="text-xs opacity-50">{{ loyalty.points }} points · {{ loyalty.credit_available }}$ de crédit disponible</div>
+    </div>
+  </div>
+  {% endif %}
+
+  <!-- KPI cards -->
+  <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+    <div class="ps-card rounded-2xl border p-5" style="border-color: color-mix(in srgb, var(--text) 10%, transparent);">
+      <div class="text-2xl font-bold ps-primary">{{ reservations_pending }}</div>
+      <div class="text-xs opacity-50 mt-1 font-medium">En attente</div>
+    </div>
+    <div class="ps-card rounded-2xl border p-5" style="border-color: color-mix(in srgb, var(--text) 10%, transparent);">
+      <div class="text-2xl font-bold" style="color: #10b981;">{{ reservations_confirmed }}</div>
+      <div class="text-xs opacity-50 mt-1 font-medium">Confirmées</div>
+    </div>
+    <div class="ps-card rounded-2xl border p-5" style="border-color: color-mix(in srgb, var(--text) 10%, transparent);">
+      <div class="text-2xl font-bold" style="color: #f59e0b;">{{ unread_notifs }}</div>
+      <div class="text-xs opacity-50 mt-1 font-medium">Notifications non lues</div>
+    </div>
+  </div>
+
+  <!-- Recent reservations -->
+  <div class="ps-card rounded-2xl border overflow-hidden" style="border-color: color-mix(in srgb, var(--text) 10%, transparent);">
+    <div class="px-5 py-3 border-b flex items-center justify-between" style="border-color: color-mix(in srgb, var(--text) 8%, transparent);">
+      <h2 class="text-sm font-bold">Dernières réservations</h2>
+      <a href="{% url 'public_site:client_bookings' slug=agency.slug %}" class="text-xs ps-primary font-semibold hover:underline">Voir tout</a>
+    </div>
+    {% if reservations_recent %}
+    <div class="divide-y" style="--tw-divide-opacity: 0.08;">
+      {% for r in reservations_recent %}
+      <div class="px-5 py-3 flex items-center justify-between text-sm">
+        <div>
+          <div class="font-medium">{{ r.vehicle }}</div>
+          <div class="text-xs opacity-50">{{ r.start_date|date:"d/m/Y" }} → {{ r.end_date|date:"d/m/Y" }}</div>
+        </div>
+        <span class="text-xs font-semibold px-2.5 py-1 rounded-full
+          {% if r.status == 'confirmed' %}bg-emerald-100 text-emerald-700
+          {% elif r.status == 'pending' %}bg-amber-100 text-amber-700
+          {% elif r.status == 'rejected' %}bg-red-100 text-red-700
+          {% else %}bg-slate-100 text-slate-600{% endif %}">
+          {{ r.get_status_display }}
+        </span>
+      </div>
+      {% endfor %}
+    </div>
+    {% else %}
+    <div class="px-5 py-8 text-center text-sm opacity-40">
+      Aucune réservation pour le moment.
+      <a href="{% url 'public_site:agency_catalog' slug=agency.slug %}" class="ps-primary font-semibold hover:underline block mt-1">Parcourir le catalogue</a>
+    </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

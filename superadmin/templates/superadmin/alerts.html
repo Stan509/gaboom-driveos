@@ -1,0 +1,102 @@
+{% extends "superadmin/_layout.html" %}
+
+{% block page_title %}Alertes{% endblock %}
+{% block page_subtitle %}Notifications PayPal et systeme{% endblock %}
+
+{% block content %}
+<!-- Header bar -->
+<div class="flex flex-wrap items-center justify-between gap-3 mb-6">
+  <div class="flex items-center gap-3">
+    {% if unread_count > 0 %}
+    <span class="inline-flex items-center gap-1.5 rounded-full bg-red-100 text-red-700 px-3 py-1 text-sm font-bold">
+      <span class="w-2 h-2 rounded-full bg-red-500 animate-pulse"></span>{{ unread_count }} non lue{{ unread_count|pluralize:"s" }}
+    </span>
+    {% else %}
+    <span class="inline-flex items-center gap-1.5 rounded-full bg-emerald-100 text-emerald-700 px-3 py-1 text-sm font-bold">Aucune alerte non lue</span>
+    {% endif %}
+  </div>
+  <div class="flex items-center gap-2">
+    {% if unread_count > 0 %}
+    <form method="post" action="{% url 'superadmin:alerts_mark_all_read' %}">{% csrf_token %}
+      <button type="submit" class="px-3 py-1.5 rounded-lg bg-slate-100 text-slate-600 text-xs font-semibold hover:bg-slate-200 transition">Tout marquer comme lu</button>
+    </form>
+    {% endif %}
+  </div>
+</div>
+
+<!-- Filters -->
+<div class="flex flex-wrap items-center gap-3 mb-6">
+  <a href="{% url 'superadmin:alerts' %}" class="px-3 py-1.5 rounded-lg text-xs font-semibold transition {% if not filter_type and not filter_read %}bg-sa-500 text-white{% else %}bg-slate-100 text-slate-600 hover:bg-slate-200{% endif %}">Toutes</a>
+  <a href="{% url 'superadmin:alerts' %}?read=0" class="px-3 py-1.5 rounded-lg text-xs font-semibold transition {% if filter_read == '0' %}bg-red-500 text-white{% else %}bg-slate-100 text-slate-600 hover:bg-slate-200{% endif %}">Non lues</a>
+  {% for code, label in type_choices %}
+  <a href="{% url 'superadmin:alerts' %}?type={{ code }}" class="px-3 py-1.5 rounded-lg text-xs font-semibold transition {% if filter_type == code %}bg-sa-500 text-white{% else %}bg-slate-100 text-slate-600 hover:bg-slate-200{% endif %}">{{ label }}</a>
+  {% endfor %}
+</div>
+
+<!-- Alerts list -->
+<div class="bg-white rounded-2xl border border-slate-200 overflow-hidden">
+  {% if alerts %}
+  <div class="divide-y divide-slate-50">
+    {% for alert in alerts %}
+    <div class="px-5 py-4 flex items-start gap-4 {% if not alert.is_read %}bg-red-50/40{% endif %}">
+      <!-- Icon -->
+      {% if 'cancelled' in alert.alert_type or 'expired' in alert.alert_type %}
+      <span class="w-8 h-8 rounded-xl bg-red-100 text-red-600 flex items-center justify-center shrink-0">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12"/></svg>
+      </span>
+      {% elif 'failed' in alert.alert_type or 'suspended' in alert.alert_type %}
+      <span class="w-8 h-8 rounded-xl bg-amber-100 text-amber-600 flex items-center justify-center shrink-0">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z"/></svg>
+      </span>
+      {% elif 'upgrade' in alert.alert_type %}
+      <span class="w-8 h-8 rounded-xl bg-blue-100 text-blue-600 flex items-center justify-center shrink-0">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 10.5 12 3m0 0 7.5 7.5M12 3v18"/></svg>
+      </span>
+      {% else %}
+      <span class="w-8 h-8 rounded-xl bg-slate-100 text-slate-500 flex items-center justify-center shrink-0">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M14.857 17.082a23.848 23.848 0 0 0 5.454-1.31A8.967 8.967 0 0 1 18 9.75V9A6 6 0 0 0 6 9v.75a8.967 8.967 0 0 1-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 0 1-5.714 0m5.714 0a3 3 0 1 1-5.714 0"/></svg>
+      </span>
+      {% endif %}
+
+      <!-- Content -->
+      <div class="flex-1 min-w-0">
+        <div class="flex items-center gap-2 mb-0.5">
+          <span class="rounded-full px-2 py-0.5 text-[10px] font-bold
+            {% if 'cancelled' in alert.alert_type or 'expired' in alert.alert_type %}bg-red-100 text-red-700
+            {% elif 'failed' in alert.alert_type or 'suspended' in alert.alert_type %}bg-amber-100 text-amber-700
+            {% elif 'upgrade' in alert.alert_type %}bg-blue-100 text-blue-700
+            {% elif 'downgrade' in alert.alert_type %}bg-orange-100 text-orange-700
+            {% else %}bg-slate-100 text-slate-600{% endif %}">{{ alert.get_alert_type_display }}</span>
+          {% if not alert.is_read %}
+          <span class="w-2 h-2 rounded-full bg-red-500"></span>
+          {% endif %}
+        </div>
+        <p class="text-sm text-slate-700">{{ alert.message }}</p>
+        <div class="flex items-center gap-3 mt-1 text-xs text-slate-400">
+          <span>{{ alert.created_at|date:"d/m/Y H:i" }}</span>
+          {% if alert.agency %}
+          <a href="{% url 'superadmin:agency_detail' pk=alert.agency.access.pk %}" class="text-sa-500 hover:underline font-medium">{{ alert.agency.name }}</a>
+          {% endif %}
+        </div>
+      </div>
+
+      <!-- Actions -->
+      {% if not alert.is_read %}
+      <form method="post" action="{% url 'superadmin:alert_mark_read' pk=alert.pk %}" class="shrink-0">
+        {% csrf_token %}
+        <input type="hidden" name="next" value="{% url 'superadmin:alerts' %}{% if filter_type %}?type={{ filter_type }}{% endif %}{% if filter_read %}&read={{ filter_read }}{% endif %}" />
+        <button type="submit" class="px-2.5 py-1 rounded-lg bg-slate-100 text-slate-500 text-xs font-semibold hover:bg-slate-200 transition" title="Marquer comme lu">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5"/></svg>
+        </button>
+      </form>
+      {% else %}
+      <span class="text-[10px] text-slate-300 font-semibold shrink-0">Lu</span>
+      {% endif %}
+    </div>
+    {% endfor %}
+  </div>
+  {% else %}
+  <div class="px-5 py-12 text-center text-slate-400 text-sm">Aucune alerte.</div>
+  {% endif %}
+</div>
+{% endblock %}

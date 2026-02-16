@@ -1,0 +1,37 @@
+plan_code,plan_name,price,currency,feature_key,feature_included,feature_description
+starter,Starter,59,USD,public_site,yes,Site public activé
+starter,Starter,59,USD,online_booking,yes,Réservations en ligne activées
+starter,Starter,59,USD,gps_tracking,no,Suivi GPS non disponible
+starter,Starter,59,USD,marketing_tools,no,Outils marketing non disponibles
+starter,Starter,59,USD,loyalty,no,Programme de fidélité non disponible
+starter,Starter,59,USD,client_portal,no,Portail client non disponible
+starter,Starter,59,USD,priority_support,no,Support prioritaire non disponible
+starter,Starter,59,USD,workflows,no,Workflows non disponibles
+starter,Starter,59,USD,integrations,no,Intégrations non disponibles
+starter,Starter,59,USD,capacity_agencies,yes,Capacité agences : 1
+starter,Starter,59,USD,capacity_users,yes,Capacité utilisateurs : 3
+starter,Starter,59,USD,capacity_vehicles,yes,Capacité véhicules : 20
+business,Business,99,USD,public_site,yes,Site public activé
+business,Business,99,USD,online_booking,yes,Réservations en ligne activées
+business,Business,99,USD,gps_tracking,yes,Suivi GPS disponible
+business,Business,99,USD,marketing_tools,yes,Outils marketing disponibles
+business,Business,99,USD,loyalty,yes,Programme de fidélité disponible
+business,Business,99,USD,client_portal,yes,Portail client disponible
+business,Business,99,USD,priority_support,yes,Support prioritaire disponible
+business,Business,99,USD,workflows,no,Workflows non disponibles
+business,Business,99,USD,integrations,no,Intégrations non disponibles
+business,Business,99,USD,capacity_agencies,yes,Capacité agences : 3
+business,Business,99,USD,capacity_users,yes,Capacité utilisateurs : illimité (0)
+business,Business,99,USD,capacity_vehicles,yes,Capacité véhicules : illimité (0)
+enterprise,Enterprise,199,USD,public_site,yes,Site public activé
+enterprise,Enterprise,199,USD,online_booking,yes,Réservations en ligne activées
+enterprise,Enterprise,199,USD,gps_tracking,yes,Suivi GPS disponible
+enterprise,Enterprise,199,USD,marketing_tools,yes,Outils marketing disponibles
+enterprise,Enterprise,199,USD,loyalty,yes,Programme de fidélité disponible
+enterprise,Enterprise,199,USD,client_portal,yes,Portail client disponible
+enterprise,Enterprise,199,USD,priority_support,yes,Support prioritaire disponible
+enterprise,Enterprise,199,USD,workflows,yes,Workflows disponibles
+enterprise,Enterprise,199,USD,integrations,yes,Intégrations disponibles
+enterprise,Enterprise,199,USD,capacity_agencies,yes,Capacité agences : illimité (0)
+enterprise,Enterprise,199,USD,capacity_users,yes,Capacité utilisateurs : illimité (0)
+enterprise,Enterprise,199,USD,capacity_vehicles,yes,Capacité véhicules : illimité (0)

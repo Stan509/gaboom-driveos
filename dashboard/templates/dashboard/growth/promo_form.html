@@ -1,0 +1,60 @@
+{% extends "dashboard/_layout.html" %}
+{% load i18n %}
+
+{% block page_title %}{% if editing %}{% blocktrans with code=promo.code %}Modifier {{ code }}{% endblocktrans %}{% else %}{% trans "Nouveau code promo" %}{% endif %}{% endblock %}
+
+{% block page_actions %}
+<a href="{% url 'dashboard:promo_list' %}" class="inline-flex items-center gap-1.5 text-sm text-slate-500 hover:text-slate-700 transition font-medium">
+  <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5"/></svg>
+  {% trans "Retour" %}
+</a>
+{% endblock %}
+
+{% block content %}
+<div class="max-w-xl">
+  <form method="post" class="d-card p-6 space-y-5">
+    {% csrf_token %}
+    <div>
+      <label class="block text-xs font-medium mb-1.5">{% trans "Code" %} <span class="text-red-500">*</span></label>
+      <input type="text" name="code" value="{{ promo.code|default:'' }}" required maxlength="50" placeholder="SUMMER25"
+        class="w-full rounded-xl border border-slate-200 px-4 py-2.5 text-sm focus:ring-2 focus:ring-violet-300 outline-none font-mono uppercase" />
+    </div>
+    <div class="grid grid-cols-2 gap-4">
+      <div>
+        <label class="block text-xs font-medium mb-1.5">{% trans "Type" %}</label>
+        <select name="type" class="w-full rounded-xl border border-slate-200 px-4 py-2.5 text-sm focus:ring-2 focus:ring-violet-300 outline-none">
+          <option value="percent" {% if promo.type == 'percent' %}selected{% endif %}>{% trans "Pourcentage (%)" %}</option>
+          <option value="fixed" {% if promo.type == 'fixed' %}selected{% endif %}>{% trans "Montant fixe" %}</option>
+        </select>
+      </div>
+      <div>
+        <label class="block text-xs font-medium mb-1.5">{% trans "Valeur" %} <span class="text-red-500">*</span></label>
+        <input type="number" name="value" step="0.01" min="0" value="{{ promo.value|default:'10' }}" required
+          class="w-full rounded-xl border border-slate-200 px-4 py-2.5 text-sm focus:ring-2 focus:ring-violet-300 outline-none" />
+      </div>
+    </div>
+    <div class="grid grid-cols-2 gap-4">
+      <div>
+        <label class="block text-xs font-medium mb-1.5">{% trans "Expire le" %} <span class="text-xs opacity-50">{% trans "(optionnel)" %}</span></label>
+        <input type="date" name="valid_until" value="{{ promo.valid_until|date:'Y-m-d' }}"
+          class="w-full rounded-xl border border-slate-200 px-4 py-2.5 text-sm focus:ring-2 focus:ring-violet-300 outline-none" />
+      </div>
+      <div>
+        <label class="block text-xs font-medium mb-1.5">{% trans "Utilisations max" %} <span class="text-xs opacity-50">{% trans "(0 = illimité)" %}</span></label>
+        <input type="number" name="max_usage" min="0" value="{{ promo.max_usage|default:'0' }}"
+          class="w-full rounded-xl border border-slate-200 px-4 py-2.5 text-sm focus:ring-2 focus:ring-violet-300 outline-none" />
+      </div>
+    </div>
+    {% if editing %}
+    <label class="flex items-center gap-2 cursor-pointer">
+      <input type="checkbox" name="active" value="1" {% if promo.active %}checked{% endif %}
+        class="rounded border-slate-300 text-violet-600 focus:ring-violet-400 w-4 h-4" />
+      <span class="text-sm">{% trans "Actif" %}</span>
+    </label>
+    {% endif %}
+    <button type="submit" class="d-btn w-full py-2.5 text-sm font-semibold">
+      {% if editing %}{% trans "Enregistrer" %}{% else %}{% trans "Créer le code promo" %}{% endif %}
+    </button>
+  </form>
+</div>
+{% endblock %}

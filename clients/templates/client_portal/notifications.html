@@ -1,0 +1,49 @@
+{% extends "client_portal/_base.html" %}
+{% load i18n %}
+
+{% block portal_content %}
+<div class="space-y-6">
+  <h1 class="text-xl font-bold">Notifications</h1>
+
+  {% if notifications %}
+  <div class="space-y-3">
+    {% for n in notifications %}
+    <div class="ps-card rounded-2xl border p-4 flex items-start gap-3 transition
+      {% if not n.is_read %}ring-2{% endif %}"
+      style="border-color: color-mix(in srgb, var(--text) 10%, transparent);
+        {% if not n.is_read %}--tw-ring-color: var(--primary); --tw-ring-opacity: 0.3;{% endif %}
+        animation: fadeIn 0.3s ease {{ forloop.counter0 }}00ms both;">
+      {% if n.notif_type == 'success' %}
+      <div class="w-8 h-8 rounded-full bg-emerald-100 flex items-center justify-center shrink-0">
+        <svg class="w-4 h-4 text-emerald-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5"/></svg>
+      </div>
+      {% elif n.notif_type == 'warn' %}
+      <div class="w-8 h-8 rounded-full bg-amber-100 flex items-center justify-center shrink-0">
+        <svg class="w-4 h-4 text-amber-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m9-.75a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 3.75h.008v.008H12v-.008Z"/></svg>
+      </div>
+      {% else %}
+      <div class="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center shrink-0">
+        <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="m11.25 11.25.041-.02a.75.75 0 0 1 1.063.852l-.708 2.836a.75.75 0 0 0 1.063.853l.041-.021M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9-3.75h.008v.008H12V8.25Z"/></svg>
+      </div>
+      {% endif %}
+      <div class="flex-1 min-w-0">
+        <div class="font-semibold text-sm">{{ n.title }}</div>
+        <div class="text-xs opacity-60 mt-0.5">{{ n.message }}</div>
+        <div class="text-[11px] opacity-30 mt-1">{{ n.created_at|date:"d/m/Y H:i" }}</div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  {% else %}
+  <div class="ps-card rounded-2xl border p-12 text-center" style="border-color: color-mix(in srgb, var(--text) 10%, transparent);">
+    <div class="text-4xl mb-3">🔔</div>
+    <div class="font-semibold">Aucune notification</div>
+    <p class="text-sm opacity-50 mt-1">Vous serez notifié ici des mises à jour de vos réservations.</p>
+  </div>
+  {% endif %}
+</div>
+
+<style>
+@keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+</style>
+{% endblock %}

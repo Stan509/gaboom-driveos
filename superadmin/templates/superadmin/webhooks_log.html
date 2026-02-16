@@ -1,0 +1,148 @@
+{% extends "superadmin/_layout.html" %}
+
+{% block page_title %}Webhooks PayPal{% endblock %}
+{% block page_subtitle %}Journal des evenements recus depuis PayPal{% endblock %}
+
+{% block content %}
+<!-- Filters -->
+<div class="bg-white rounded-2xl border border-slate-200 p-4 mb-6">
+  <form method="get" class="flex flex-wrap items-end gap-3">
+    <div class="flex-1 min-w-[160px]">
+      <label class="block text-[11px] font-semibold text-slate-400 uppercase tracking-wider mb-1">Recherche</label>
+      <input type="text" name="q" value="{{ search }}" placeholder="Subscription ID, agence, event ID..."
+        class="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm focus:border-sa-400 outline-none" />
+    </div>
+    <div class="w-52">
+      <label class="block text-[11px] font-semibold text-slate-400 uppercase tracking-wider mb-1">Type</label>
+      <select name="type" class="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm focus:border-sa-400 outline-none">
+        <option value="">Tous</option>
+        {% for et in event_types %}
+        <option value="{{ et }}" {% if event_filter == et %}selected{% endif %}>{{ et }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="w-36">
+      <label class="block text-[11px] font-semibold text-slate-400 uppercase tracking-wider mb-1">Du</label>
+      <input type="date" name="from" value="{{ date_from }}" class="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm focus:border-sa-400 outline-none" />
+    </div>
+    <div class="w-36">
+      <label class="block text-[11px] font-semibold text-slate-400 uppercase tracking-wider mb-1">Au</label>
+      <input type="date" name="to" value="{{ date_to }}" class="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm focus:border-sa-400 outline-none" />
+    </div>
+    <button type="submit" class="px-5 py-2 rounded-xl bg-sa-500 text-white text-sm font-semibold hover:bg-sa-600 transition">Filtrer</button>
+  </form>
+</div>
+
+<!-- Desktop table -->
+<div class="hidden lg:block bg-white rounded-2xl border border-slate-200 overflow-hidden">
+  <table class="w-full text-sm">
+    <thead>
+      <tr class="border-b border-slate-100 text-left text-[10px] font-bold text-slate-400 uppercase tracking-wider">
+        <th class="px-5 py-3">Date</th>
+        <th class="px-5 py-3">Type</th>
+        <th class="px-5 py-3">Subscription ID</th>
+        <th class="px-5 py-3">Agence</th>
+        <th class="px-5 py-3">Event ID</th>
+        <th class="px-5 py-3 text-right">Payload</th>
+      </tr>
+    </thead>
+    <tbody class="divide-y divide-slate-50">
+      {% for ev in events %}
+      <tr class="hover:bg-slate-50/50 transition">
+        <td class="px-5 py-3 text-xs text-slate-500 whitespace-nowrap">{{ ev.created_at|date:"d/m/Y H:i:s" }}</td>
+        <td class="px-5 py-3">
+          {% if 'COMPLETED' in ev.event_type or 'ACTIVATED' in ev.event_type %}
+            <span class="rounded-full bg-emerald-100 text-emerald-800 px-2 py-0.5 text-[11px] font-bold">{{ ev.event_type }}</span>
+          {% elif 'FAILED' in ev.event_type %}
+            <span class="rounded-full bg-red-100 text-red-800 px-2 py-0.5 text-[11px] font-bold">{{ ev.event_type }}</span>
+          {% elif 'CANCELLED' in ev.event_type or 'EXPIRED' in ev.event_type %}
+            <span class="rounded-full bg-amber-100 text-amber-800 px-2 py-0.5 text-[11px] font-bold">{{ ev.event_type }}</span>
+          {% else %}
+            <span class="rounded-full bg-slate-100 text-slate-600 px-2 py-0.5 text-[11px] font-bold">{{ ev.event_type }}</span>
+          {% endif %}
+        </td>
+        <td class="px-5 py-3 text-xs font-mono text-slate-600">{{ ev.subscription_id|default:"—" }}</td>
+        <td class="px-5 py-3 text-xs text-slate-600">{{ ev.agency_name|default:"—" }}</td>
+        <td class="px-5 py-3 text-[11px] font-mono text-slate-400 truncate max-w-[140px]" title="{{ ev.event_id }}">{{ ev.event_id|default:"—" }}</td>
+        <td class="px-5 py-3 text-right">
+          <button type="button" onclick="showPayload({{ ev.pk }})" class="px-2.5 py-1 rounded-lg bg-slate-100 text-slate-500 text-xs font-semibold hover:bg-slate-200 transition">JSON</button>
+        </td>
+      </tr>
+      {% empty %}
+      <tr><td colspan="6" class="px-5 py-12 text-center text-slate-400">Aucun evenement PayPal enregistre.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+<!-- Mobile cards -->
+<div class="lg:hidden space-y-3">
+  {% for ev in events %}
+  <div class="bg-white rounded-2xl border border-slate-200 p-4">
+    <div class="flex items-start justify-between gap-2 mb-2">
+      <div>
+        {% if 'COMPLETED' in ev.event_type or 'ACTIVATED' in ev.event_type %}
+          <span class="rounded-full bg-emerald-100 text-emerald-800 px-2 py-0.5 text-[11px] font-bold">{{ ev.event_type }}</span>
+        {% elif 'FAILED' in ev.event_type %}
+          <span class="rounded-full bg-red-100 text-red-800 px-2 py-0.5 text-[11px] font-bold">{{ ev.event_type }}</span>
+        {% elif 'CANCELLED' in ev.event_type or 'EXPIRED' in ev.event_type %}
+          <span class="rounded-full bg-amber-100 text-amber-800 px-2 py-0.5 text-[11px] font-bold">{{ ev.event_type }}</span>
+        {% else %}
+          <span class="rounded-full bg-slate-100 text-slate-600 px-2 py-0.5 text-[11px] font-bold">{{ ev.event_type }}</span>
+        {% endif %}
+      </div>
+      <span class="text-[11px] text-slate-400 shrink-0">{{ ev.created_at|date:"d/m H:i" }}</span>
+    </div>
+    <div class="text-xs text-slate-500 space-y-0.5">
+      <div>Sub: <span class="font-mono">{{ ev.subscription_id|default:"—" }}</span></div>
+      <div>Agence: {{ ev.agency_name|default:"—" }}</div>
+    </div>
+    <button type="button" onclick="showPayload({{ ev.pk }})" class="mt-2 px-3 py-1 rounded-lg bg-slate-100 text-slate-500 text-xs font-semibold hover:bg-slate-200 transition">Voir JSON</button>
+  </div>
+  {% empty %}
+  <div class="text-center text-slate-400 py-12">Aucun evenement.</div>
+  {% endfor %}
+</div>
+
+<!-- JSON Modal -->
+<div id="jsonModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/40 backdrop-blur-sm p-4" onclick="closeModal(event)">
+  <div class="bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[80vh] flex flex-col" onclick="event.stopPropagation()">
+    <div class="px-5 py-3 border-b border-slate-100 flex items-center justify-between">
+      <h3 class="text-sm font-bold text-slate-700">Payload JSON</h3>
+      <button onclick="document.getElementById('jsonModal').classList.add('hidden');document.getElementById('jsonModal').classList.remove('flex')" class="p-1 rounded-lg hover:bg-slate-100 transition">
+        <svg class="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <div class="p-5 overflow-auto flex-1">
+      <pre id="jsonContent" class="text-xs font-mono text-slate-700 whitespace-pre-wrap break-all"></pre>
+    </div>
+  </div>
+</div>
+
+<!-- Inline payload data -->
+{% for ev in events %}
+<script type="application/json" id="payload-{{ ev.pk }}">{{ ev.payload|safe }}</script>
+{% endfor %}
+
+<script>
+function showPayload(pk){
+  const el = document.getElementById('payload-' + pk);
+  if (!el) return;
+  try {
+    const data = JSON.parse(el.textContent);
+    document.getElementById('jsonContent').textContent = JSON.stringify(data, null, 2);
+  } catch(e) {
+    document.getElementById('jsonContent').textContent = el.textContent;
+  }
+  const modal = document.getElementById('jsonModal');
+  modal.classList.remove('hidden');
+  modal.classList.add('flex');
+}
+function closeModal(e){
+  if (e.target === e.currentTarget) {
+    e.currentTarget.classList.add('hidden');
+    e.currentTarget.classList.remove('flex');
+  }
+}
+</script>
+{% endblock %}

@@ -1,0 +1,130 @@
+{% extends "dashboard/_layout.html" %}
+{% load i18n %}
+
+{% block content %}
+<div class="space-y-6">
+
+  <!-- Header -->
+  <div class="flex flex-wrap items-center justify-between gap-4">
+    <div>
+      <h1 class="text-2xl font-bold" style="color:var(--g-text)">{% trans "Alertes GPS" %}</h1>
+      <p class="text-sm mt-1" style="color:var(--g-text-muted)">
+        {% blocktrans count count=unresolved_count %}
+          {{ count }} alerte non résolue
+        {% pluralize %}
+          {{ count }} alertes non résolues
+        {% endblocktrans %}
+      </p>
+    </div>
+    <div class="flex items-center gap-3">
+      <a href="{% url 'dashboard:gps_tracking' %}" class="inline-flex items-center gap-2 rounded-xl px-4 py-2 text-sm font-medium" style="background:var(--g-surface);border:1px solid var(--g-surface-border);color:var(--g-text)">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5"/></svg>
+        {% trans "Carte" %}
+      </a>
+    </div>
+  </div>
+
+  <!-- Filter tabs -->
+  <div class="flex flex-wrap items-center gap-2">
+    <a href="?status=unresolved" class="rounded-xl px-4 py-2 text-sm font-medium transition"
+       style="{% if filter_status == 'unresolved' %}background:var(--g-accent);color:#fff{% else %}background:var(--g-surface);border:1px solid var(--g-surface-border);color:var(--g-text-muted){% endif %}">
+      {% trans "Non résolues" %}
+    </a>
+    <a href="?status=resolved" class="rounded-xl px-4 py-2 text-sm font-medium transition"
+       style="{% if filter_status == 'resolved' %}background:var(--g-accent);color:#fff{% else %}background:var(--g-surface);border:1px solid var(--g-surface-border);color:var(--g-text-muted){% endif %}">
+      {% trans "Résolues" %}
+    </a>
+    <a href="?status=all" class="rounded-xl px-4 py-2 text-sm font-medium transition"
+       style="{% if filter_status == 'all' %}background:var(--g-accent);color:#fff{% else %}background:var(--g-surface);border:1px solid var(--g-surface-border);color:var(--g-text-muted){% endif %}">
+      {% trans "Toutes" %}
+    </a>
+    <form method="get" class="flex flex-wrap items-center gap-2">
+      <input type="hidden" name="status" value="{{ filter_status }}">
+      <select name="type" class="rounded-xl px-3 py-2 text-sm" style="background:var(--g-surface);border:1px solid var(--g-surface-border);color:var(--g-text)">
+        <option value="">{% trans "Tous les types" %}</option>
+        <option value="zone_enter" {% if filter_type == "zone_enter" %}selected{% endif %}>{% trans "Entrée zone" %}</option>
+        <option value="zone_exit" {% if filter_type == "zone_exit" %}selected{% endif %}>{% trans "Sortie zone" %}</option>
+        <option value="zone_violation" {% if filter_type == "zone_violation" %}selected{% endif %}>{% trans "Violation zone" %}</option>
+        <option value="speed" {% if filter_type == "speed" %}selected{% endif %}>{% trans "Vitesse" %}</option>
+        <option value="offline" {% if filter_type == "offline" %}selected{% endif %}>{% trans "Hors ligne" %}</option>
+      </select>
+      <select name="vehicle" class="rounded-xl px-3 py-2 text-sm" style="background:var(--g-surface);border:1px solid var(--g-surface-border);color:var(--g-text)">
+        <option value="">{% trans "Tous véhicules" %}</option>
+        {% for v in vehicles %}
+        <option value="{{ v.pk }}" {% if vehicle_id == v.pk|stringformat:"s" %}selected{% endif %}>{{ v }}</option>
+        {% endfor %}
+      </select>
+      <button class="rounded-xl px-4 py-2 text-sm font-medium" style="background:var(--g-surface-hover);color:var(--g-text)">{% trans "Filtrer" %}</button>
+    </form>
+  </div>
+
+  <!-- Alert list -->
+  <div class="rounded-2xl p-5" style="background:var(--g-surface);border:1px solid var(--g-surface-border)">
+    {% if alerts %}
+    <div class="space-y-3">
+      {% for a in alerts %}
+      <div class="flex items-start gap-4 rounded-xl p-4 transition" style="background:{% if a.resolved %}var(--g-bg){% else %}rgba(239,68,68,.06){% endif %};border:1px solid {% if a.resolved %}var(--g-surface-border){% else %}rgba(239,68,68,.15){% endif %}">
+        <!-- Icon -->
+        <div class="flex-shrink-0 w-10 h-10 rounded-xl flex items-center justify-center"
+             style="background:{% if a.alert_type == 'zone_enter' %}rgba(239,68,68,.12){% elif a.alert_type == 'zone_exit' %}rgba(245,158,11,.12){% elif a.alert_type == 'zone_violation' %}rgba(239,68,68,.12){% elif a.alert_type == 'speed' %}rgba(239,68,68,.12){% else %}rgba(107,114,128,.12){% endif %}">
+          {% if a.alert_type == "zone_enter" or a.alert_type == "zone_exit" or a.alert_type == "zone_violation" %}
+          <svg class="w-5 h-5" style="color:{% if a.alert_type == 'zone_exit' %}var(--g-amber){% else %}var(--g-red){% endif %}" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"/><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z"/></svg>
+          {% elif a.alert_type == "speed" %}
+          <svg class="w-5 h-5" style="color:var(--g-red)" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/></svg>
+          {% else %}
+          <svg class="w-5 h-5" style="color:var(--g-text-muted)" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z"/></svg>
+          {% endif %}
+        </div>
+
+        <!-- Content -->
+        <div class="flex-1 min-w-0">
+          <div class="flex items-center gap-2 mb-1">
+            <span class="text-sm font-semibold" style="color:var(--g-text)">{{ a.get_alert_type_display }}</span>
+            {% if a.resolved %}
+            <span class="text-[10px] px-2 py-0.5 rounded-full font-medium" style="background:var(--g-emerald);color:#fff">{% trans "Résolue" %}</span>
+            {% else %}
+            <span class="text-[10px] px-2 py-0.5 rounded-full font-medium" style="background:var(--g-red);color:#fff">{% trans "Active" %}</span>
+            {% endif %}
+          </div>
+          <p class="text-sm" style="color:var(--g-text-muted)">{{ a.message }}</p>
+          <div class="flex flex-wrap items-center gap-3 mt-2 text-xs" style="color:var(--g-text-dim)">
+            <span>{{ a.vehicle }}</span>
+            {% if a.zone %}<span>{% trans "Zone" %}: {{ a.zone.name }}</span>{% endif %}
+            {% if a.contract %}<span>{% trans "Contrat" %} #{{ a.contract.pk }}</span>{% endif %}
+            <span>{{ a.created_at|date:"d/m/Y H:i" }}</span>
+            {% if a.lat and a.lng %}<span class="font-mono">{{ a.lat|floatformat:4 }}, {{ a.lng|floatformat:4 }}</span>{% endif %}
+          </div>
+          {% if a.resolved %}
+          <div class="text-xs mt-1" style="color:var(--g-text-dim)">
+            {% blocktrans with resolved_at=a.resolved_at|date:"d/m/Y H:i" %}Résolue le {{ resolved_at }}{% endblocktrans %}{% if a.resolved_by %}{% blocktrans with resolver=a.resolved_by.full_name|default:a.resolved_by.email %} par {{ resolver }}{% endblocktrans %}{% endif %}
+          </div>
+          {% endif %}
+        </div>
+
+        <!-- Actions -->
+        {% if not a.resolved %}
+        <form method="post" action="{% url 'dashboard:gps_alert_resolve' pk=a.pk %}" class="flex-shrink-0">
+          {% csrf_token %}
+          <button class="rounded-xl px-4 py-2 text-xs font-medium" style="background:var(--g-surface-hover);color:var(--g-text)">{% trans "Résoudre" %}</button>
+        </form>
+        {% endif %}
+      </div>
+      {% endfor %}
+    </div>
+    {% else %}
+    <div class="text-center py-12">
+      <svg class="w-12 h-12 mx-auto mb-3" style="color:var(--g-text-dim)" fill="none" stroke="currentColor" stroke-width="1" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75m-3-7.036A11.959 11.959 0 0 1 3.598 6 11.99 11.99 0 0 0 3 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285Z"/></svg>
+      <p class="text-sm font-medium" style="color:var(--g-text-muted)">
+        {% if filter_status == "resolved" %}
+          {% trans "Aucune alerte résolue" %}
+        {% elif filter_status == "all" %}
+          {% trans "Aucune alerte" %}
+        {% else %}
+          {% trans "Aucune alerte non résolue" %}
+        {% endif %}
+      </p>
+    </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

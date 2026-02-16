@@ -1,0 +1,203 @@
+{% extends "dashboard/_layout.html" %}
+{% load static i18n %}
+
+{% block extra_head %}
+{{ block.super }}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css" />
+<style>
+  #gps-map { height: 65vh; min-height: 400px; border-radius: var(--g-radius); overflow: hidden; }
+  .vehicle-popup b { color: var(--g-accent); }
+  .pulse-dot { width:10px; height:10px; border-radius:50%; background:var(--g-emerald); box-shadow:0 0 0 0 rgba(16,185,129,.6); animation:pulse-ring 1.5s infinite; }
+  @keyframes pulse-ring { 0%{box-shadow:0 0 0 0 rgba(16,185,129,.6)} 70%{box-shadow:0 0 0 8px rgba(16,185,129,0)} 100%{box-shadow:0 0 0 0 rgba(16,185,129,0)} }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="space-y-6">
+
+  <!-- Header -->
+  <div class="flex flex-wrap items-center justify-between gap-4">
+    <div>
+      <h1 class="text-2xl font-bold" style="color:var(--g-text)">{% trans "Suivi GPS en temps réel" %}</h1>
+      <p class="text-sm mt-1" style="color:var(--g-text-muted)">{% trans "Suivez vos véhicules sur la carte" %}</p>
+    </div>
+    <div class="flex items-center gap-3">
+      {% if alerts_unresolved > 0 %}
+      <a href="{% url 'dashboard:gps_alert_list' %}" class="inline-flex items-center gap-2 rounded-xl px-4 py-2 text-sm font-medium" style="background:var(--g-red);color:#fff">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z"/></svg>
+        {% blocktrans count count=alerts_unresolved %}
+          {{ count }} alerte
+        {% plural %}
+          {{ count }} alertes
+        {% endblocktrans %}
+      </a>
+      {% endif %}
+      <a href="{% url 'dashboard:gps_zone_list' %}" class="inline-flex items-center gap-2 rounded-xl px-4 py-2 text-sm font-medium" style="background:var(--g-surface);border:1px solid var(--g-surface-border);color:var(--g-text)">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 6.75V15m6-6v8.25m.503 3.498 4.875-2.437c.381-.19.622-.58.622-1.006V4.82c0-.836-.88-1.38-1.628-1.006l-3.869 1.934c-.317.159-.69.159-1.006 0L9.503 3.252a1.125 1.125 0 0 0-1.006 0L3.622 5.689C3.24 5.88 3 6.27 3 6.695V19.18c0 .836.88 1.38 1.628 1.006l3.869-1.934c.317-.159.69-.159 1.006 0l4.994 2.497c.317.158.69.158 1.006 0Z"/></svg>
+        {% trans "Zones" %}
+      </a>
+    </div>
+  </div>
+
+  <!-- KPI row -->
+  <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+    <div class="rounded-2xl p-4" style="background:var(--g-surface);border:1px solid var(--g-surface-border)">
+      <div class="text-xs font-medium mb-1" style="color:var(--g-text-muted)">{% trans "Véhicules suivis" %}</div>
+      <div class="text-2xl font-bold" style="color:var(--g-text)">{{ vehicles|length }}</div>
+    </div>
+    <div class="rounded-2xl p-4" style="background:var(--g-surface);border:1px solid var(--g-surface-border)">
+      <div class="text-xs font-medium mb-1" style="color:var(--g-text-muted)">{% trans "Zones définies" %}</div>
+      <div class="text-2xl font-bold" style="color:var(--g-text)">{{ zones|length }}</div>
+    </div>
+    <div class="rounded-2xl p-4" style="background:var(--g-surface);border:1px solid var(--g-surface-border)">
+      <div class="text-xs font-medium mb-1" style="color:var(--g-text-muted)">{% trans "Alertes actives" %}</div>
+      <div class="text-2xl font-bold" style="color:var(--g-red)">{{ alerts_unresolved }}</div>
+    </div>
+    <div class="rounded-2xl p-4" style="background:var(--g-surface);border:1px solid var(--g-surface-border)">
+      <div class="text-xs font-medium mb-1" style="color:var(--g-text-muted)">{% trans "Actualisation" %}</div>
+      <div class="text-sm font-semibold" style="color:var(--g-emerald)" id="refresh-timer">{% trans "Auto" %} 15s</div>
+    </div>
+  </div>
+
+  <!-- Map -->
+  <div class="rounded-2xl overflow-hidden" style="border:1px solid var(--g-surface-border)">
+    <div id="gps-map"></div>
+  </div>
+
+  <!-- Vehicle list -->
+  <div class="rounded-2xl p-5" style="background:var(--g-surface);border:1px solid var(--g-surface-border)">
+    <h2 class="text-lg font-bold mb-4" style="color:var(--g-text)">{% trans "Véhicules GPS actifs" %}</h2>
+    {% if vehicles %}
+    <div class="overflow-x-auto">
+      <table class="w-full text-sm">
+        <thead>
+          <tr style="color:var(--g-text-muted)">
+            <th class="text-left pb-3 font-medium">{% trans "Véhicule" %}</th>
+            <th class="text-left pb-3 font-medium">{% trans "IMEI / IP" %}</th>
+            <th class="text-left pb-3 font-medium">{% trans "Position" %}</th>
+            <th class="text-left pb-3 font-medium">{% trans "Vitesse" %}</th>
+            <th class="text-left pb-3 font-medium">{% trans "Dernière MAJ" %}</th>
+            <th class="text-left pb-3 font-medium">{% trans "Actions" %}</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for v in vehicles %}
+          <tr class="border-t" style="border-color:var(--g-surface-border);color:var(--g-text)">
+            <td class="py-3 font-medium">{{ v }}</td>
+            <td class="py-3" style="color:var(--g-text-muted)">
+              {% if v.gps_imei %}{{ v.gps_imei }}{% elif v.gps_ip %}{{ v.gps_ip }}{% else %}—{% endif %}
+            </td>
+            <td class="py-3 font-mono text-xs">{{ v.last_lat|floatformat:4 }}, {{ v.last_lng|floatformat:4 }}</td>
+            <td class="py-3">{% if v.last_gps_speed %}{{ v.last_gps_speed|floatformat:0 }} km/h{% else %}—{% endif %}</td>
+            <td class="py-3" style="color:var(--g-text-muted)">{% if v.last_gps_update %}{% blocktrans with since=v.last_gps_update|timesince %}il y a {{ since }}{% endblocktrans %}{% else %}—{% endif %}</td>
+            <td class="py-3">
+              <div class="flex items-center gap-2">
+                <button onclick="focusVehicle({{ v.pk }})" class="text-xs px-2 py-1 rounded-lg" style="background:var(--g-accent-soft);color:var(--g-accent)">{% trans "Centrer" %}</button>
+                <a href="{% url 'dashboard:vehicle_gps_config' pk=v.pk %}" class="text-xs px-2 py-1 rounded-lg" style="background:var(--g-surface-hover);color:var(--g-text-muted)">{% trans "Config" %}</a>
+              </div>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% else %}
+    <p class="text-sm" style="color:var(--g-text-muted)">{% trans "Aucun véhicule avec GPS activé. Configurez le GPS depuis la fiche véhicule." %}</p>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+(function(){
+  const mapEl = document.getElementById('gps-map');
+  if (!window.L || !mapEl) {
+    if (mapEl) {
+      mapEl.innerHTML = "<div style='height:100%;display:flex;align-items:center;justify-content:center;color:var(--g-text-muted);background:var(--g-bg)'>{% trans "Carte indisponible — ressource Leaflet non chargée" %}</div>";
+    }
+    return;
+  }
+  const vehiclesData = {{ vehicles_json|safe }};
+  const zonesData = {{ zones_json|safe }};
+
+  // Init map
+  const map = L.map('gps-map').setView([33.57, -7.59], 10);
+  const tiles = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '&copy; OpenStreetMap',
+    maxZoom: 19,
+  }).addTo(map);
+  tiles.on('tileerror', function(){
+    mapEl.innerHTML = "<div style='height:100%;display:flex;align-items:center;justify-content:center;color:var(--g-text-muted);background:var(--g-bg)'>{% trans "Carte indisponible — tuiles non chargées" %}</div>";
+  });
+
+  // Draw zones
+  zonesData.forEach(z => {
+    L.circle([z.lat, z.lng], {
+      radius: z.radius,
+      color: z.color,
+      fillColor: z.color,
+      fillOpacity: 0.15,
+      weight: 2,
+    }).addTo(map).bindPopup(`<b>${z.name}</b><br>${z.type === 'restricted' ? '{% trans "Zone interdite" %}' : '{% trans "Zone autorisée" %}'}`);
+  });
+
+  // Vehicle markers
+  const markers = {};
+  const carIcon = L.divIcon({
+    html: '<div style="background:var(--g-accent,#6C2BFF);width:12px;height:12px;border-radius:50%;border:2px solid #fff;box-shadow:0 0 6px rgba(0,0,0,.3)"></div>',
+    iconSize: [12, 12],
+    className: '',
+  });
+
+  vehiclesData.forEach(v => {
+    const m = L.marker([v.lat, v.lng], { icon: carIcon }).addTo(map);
+    m.bindPopup(`<b>${v.label}</b><br>{% trans "Vitesse" %}: ${v.speed} km/h<br>{% trans "MAJ" %}: ${v.updated ? new Date(v.updated).toLocaleString() : '—'}`);
+    markers[v.id] = m;
+  });
+
+  // Fit bounds
+  if (vehiclesData.length > 0) {
+    const bounds = vehiclesData.map(v => [v.lat, v.lng]);
+    if (zonesData.length > 0) zonesData.forEach(z => bounds.push([z.lat, z.lng]));
+    map.fitBounds(bounds, { padding: [30, 30] });
+  }
+
+  // Focus on vehicle
+  window.focusVehicle = function(id) {
+    const m = markers[id];
+    if (m) { map.setView(m.getLatLng(), 15); m.openPopup(); }
+  };
+
+  // Auto-refresh positions
+  let countdown = 15;
+  const timerEl = document.getElementById('refresh-timer');
+
+  async function refreshPositions() {
+    try {
+      const resp = await fetch("{% url 'dashboard:api_gps_positions' %}");
+      const data = await resp.json();
+      data.vehicles.forEach(v => {
+        if (markers[v.id]) {
+          markers[v.id].setLatLng([v.lat, v.lng]);
+          markers[v.id].setPopupContent(`<b>${v.label}</b><br>{% trans "Vitesse" %}: ${v.speed} km/h<br>{% trans "MAJ" %}: ${v.updated ? new Date(v.updated).toLocaleString() : '—'}`);
+        } else {
+          const m = L.marker([v.lat, v.lng], { icon: carIcon }).addTo(map);
+          m.bindPopup(`<b>${v.label}</b><br>{% trans "Vitesse" %}: ${v.speed} km/h`);
+          markers[v.id] = m;
+        }
+      });
+    } catch(e) { console.error('GPS refresh error', e); }
+    countdown = 15;
+  }
+
+  setInterval(() => {
+    countdown--;
+    if (timerEl) timerEl.textContent = `{% trans "Auto" %} ${countdown}s`;
+    if (countdown <= 0) refreshPositions();
+  }, 1000);
+
+})();
+</script>
+{% endblock %}

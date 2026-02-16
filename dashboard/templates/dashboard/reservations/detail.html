@@ -1,0 +1,492 @@
+{% extends "dashboard/_layout.html" %}
+{% load i18n %}
+
+{% block page_title %}{% trans "Réservation" %} #{{ r.pk }}{% endblock %}
+{% block page_subtitle %}{{ r.full_name }} — {{ r.get_status_display }}{% endblock %}
+
+{% block page_actions %}
+<a href="{% url 'dashboard:reservation_list' %}" class="inline-flex items-center gap-1.5 text-sm text-slate-500 hover:text-gaboomViolet transition font-medium">
+  <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5"/></svg>
+  {% trans "Retour" %}
+</a>
+{% endblock %}
+
+{% block content %}
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+  <!-- Left column: Client + Reservation + Vehicle -->
+  <div class="lg:col-span-2 space-y-6">
+
+    <!-- Status banner -->
+    <div class="rounded-2xl p-4 flex items-center gap-3 flex-wrap
+      {% if r.status == 'pending' %}bg-amber-50 border border-amber-200
+      {% elif r.status == 'confirmed' %}bg-emerald-50 border border-emerald-200
+      {% elif r.status == 'contracted' %}bg-violet-50 border border-violet-200
+      {% elif r.status == 'rejected' %}bg-red-50 border border-red-200
+      {% else %}bg-slate-50 border border-slate-200{% endif %}">
+      {% if r.status == 'pending' %}
+        <span class="relative flex h-3 w-3"><span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span><span class="relative inline-flex rounded-full h-3 w-3 bg-amber-500"></span></span>
+        <span class="font-semibold text-amber-800">{% trans "En attente de votre décision" %}</span>
+      {% elif r.status == 'confirmed' %}
+        <svg class="w-5 h-5 text-emerald-600" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5"/></svg>
+        <span class="font-semibold text-emerald-800">{% trans "Réservation confirmée — en attente du client" %}</span>
+        <a href="{% url 'dashboard:contract_from_reservation' reservation_pk=r.pk %}" class="ml-auto inline-flex items-center gap-1.5 rounded-xl bg-gaboomViolet text-white px-4 py-2 text-sm font-medium hover:opacity-95 transition">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m3.75 9v6m3-3H9m1.5-12H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z"/></svg>
+          {% trans "Créer le contrat" %}
+        </a>
+      {% elif r.status == 'contracted' %}
+        <svg class="w-5 h-5 text-violet-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z"/></svg>
+        <span class="font-semibold text-violet-800">{% trans "Sous contrat — cette réservation est devenue un contrat" %}</span>
+        {% if r.contract %}
+        <a href="{% url 'dashboard:contract_detail' r.contract.pk %}" class="ml-auto inline-flex items-center gap-1.5 rounded-xl bg-gaboomViolet text-white px-4 py-2 text-sm font-medium hover:opacity-95 transition">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z"/></svg>
+          {% trans "Voir le contrat" %} #{{ r.contract.pk }}
+        </a>
+        {% endif %}
+      {% elif r.status == 'rejected' %}
+        <svg class="w-5 h-5 text-red-600" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12"/></svg>
+        <span class="font-semibold text-red-800">{% trans "Réservation refusée" %}</span>
+      {% endif %}
+      {% if r.decision_message and r.status != 'contracted' %}
+        <span class="text-sm opacity-70 ml-auto">{{ r.decision_message }}</span>
+      {% endif %}
+    </div>
+
+    <!-- Client card -->
+    <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden">
+      <div class="px-5 py-3 border-b border-slate-100 flex items-center gap-2">
+        <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0"/></svg>
+        <h3 class="text-sm font-semibold text-slate-700">{% trans "Client" %}</h3>
+      </div>
+      <div class="p-5 grid grid-cols-2 gap-4 text-sm">
+        <div>
+          <span class="block text-xs text-slate-400 mb-0.5">{% trans "Nom complet" %}</span>
+          <span class="font-medium">{{ r.full_name }}</span>
+        </div>
+        <div>
+          <span class="block text-xs text-slate-400 mb-0.5">{% trans "Téléphone" %}</span>
+          {% if r.phone %}
+            <a href="tel:{{ r.phone }}" class="font-medium text-gaboomViolet hover:underline">{{ r.phone }}</a>
+          {% else %}
+            <span class="text-slate-300">—</span>
+          {% endif %}
+        </div>
+        <div>
+          <span class="block text-xs text-slate-400 mb-0.5">{% trans "Email" %}</span>
+          {% if r.email %}
+            <a href="mailto:{{ r.email }}" class="font-medium text-gaboomViolet hover:underline">{{ r.email }}</a>
+          {% else %}
+            <span class="text-slate-300">—</span>
+          {% endif %}
+        </div>
+        <div>
+          <span class="block text-xs text-slate-400 mb-0.5">{% trans "WhatsApp" %}</span>
+          {% if r.whatsapp %}
+            <a href="https://wa.me/{{ r.whatsapp|cut:' '|cut:'+' }}" target="_blank" class="font-medium text-emerald-600 hover:underline">{{ r.whatsapp }}</a>
+          {% else %}
+            <span class="text-slate-300">—</span>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+
+    <!-- Reservation card -->
+    <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden">
+      <div class="px-5 py-3 border-b border-slate-100 flex items-center gap-2">
+        <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25"/></svg>
+        <h3 class="text-sm font-semibold text-slate-700">{% trans "Réservation" %}</h3>
+      </div>
+      <div class="p-5 grid grid-cols-2 sm:grid-cols-3 gap-4 text-sm">
+        <div>
+          <span class="block text-xs text-slate-400 mb-0.5">{% trans "Date début" %}</span>
+          <span class="font-medium">{{ r.start_date|date:"d M Y" }}</span>
+        </div>
+        <div>
+          <span class="block text-xs text-slate-400 mb-0.5">{% trans "Date fin" %}</span>
+          <span class="font-medium">{{ r.end_date|date:"d M Y" }}</span>
+        </div>
+        <div>
+          <span class="block text-xs text-slate-400 mb-0.5">{% trans "Durée" %}</span>
+          <span class="font-medium">{{ r.duration_days }} jour{{ r.duration_days|pluralize }}</span>
+        </div>
+        <div>
+          <span class="block text-xs text-slate-400 mb-0.5">{% trans "Estimation" %}</span>
+          <span class="font-bold text-gaboomViolet">{{ r.estimated_total }}</span>
+        </div>
+        <div>
+          <span class="block text-xs text-slate-400 mb-0.5">{% trans "Source" %}</span>
+          <span class="font-medium">{{ r.get_source_display }}</span>
+        </div>
+        <div>
+          <span class="block text-xs text-slate-400 mb-0.5">{% trans "Créée le" %}</span>
+          <span class="font-medium">{{ r.created_at|date:"d/m/Y H:i" }}</span>
+        </div>
+      </div>
+      {% if r.message %}
+      <div class="px-5 pb-5 border-t border-slate-50 pt-4">
+        <span class="block text-xs text-slate-400 mb-1">Message du client</span>
+        <p class="text-sm text-slate-700 bg-slate-50 rounded-xl p-3">{{ r.message }}</p>
+      </div>
+      {% endif %}
+    </div>
+
+    <!-- Negotiation card -->
+    {% if r.negotiation_status != 'none' %}
+    <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden">
+      <div class="px-5 py-3 border-b border-slate-100 flex items-center gap-2">
+        <svg class="w-4 h-4 text-orange-500" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v12m-3-2.818.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/></svg>
+        <h3 class="text-sm font-semibold text-slate-700">Négociation prix</h3>
+        <span class="ml-auto text-xs font-semibold px-2 py-0.5 rounded-full
+          {% if r.negotiation_status == 'pending_offer' %}bg-amber-100 text-amber-700
+          {% elif r.negotiation_status == 'countered' %}bg-blue-100 text-blue-700
+          {% elif r.negotiation_status == 'accepted' %}bg-emerald-100 text-emerald-700
+          {% elif r.negotiation_status == 'refused' %}bg-red-100 text-red-700
+          {% endif %}">{{ r.get_negotiation_status_display }}</span>
+      </div>
+      <div class="p-5 space-y-3 text-sm">
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+          <div>
+            <span class="block text-xs text-slate-400 mb-0.5">Prix officiel</span>
+            <span class="font-semibold">{{ r.daily_price_official|default:"—" }} /j</span>
+          </div>
+          <div>
+            <span class="block text-xs text-slate-400 mb-0.5">{% trans "Offre client" %}</span>
+            <span class="font-semibold {% if r.daily_price_offer %}text-orange-600{% endif %}">{{ r.daily_price_offer|default:"—" }} {% if r.daily_price_offer %}/j{% endif %}</span>
+          </div>
+          <div>
+            <span class="block text-xs text-slate-400 mb-0.5">Contre-offre</span>
+            <span class="font-semibold {% if r.daily_price_counter %}text-blue-600{% endif %}">{{ r.daily_price_counter|default:"—" }} {% if r.daily_price_counter %}/j{% endif %}</span>
+          </div>
+          <div>
+            <span class="block text-xs text-slate-400 mb-0.5">Prix final</span>
+            <span class="font-bold {% if r.daily_price_accepted %}text-emerald-600{% endif %}">{{ r.daily_price_accepted|default:"—" }} {% if r.daily_price_accepted %}/j{% endif %}</span>
+          </div>
+        </div>
+        {% if r.daily_price_accepted and r.duration_days %}
+        <div class="rounded-xl bg-emerald-50 border border-emerald-200 px-4 py-2 flex items-center justify-between">
+          <span class="text-emerald-700 text-sm font-medium">Total estimé ({{ r.duration_days }}j)</span>
+          <span class="text-emerald-800 font-bold text-lg">{{ r.estimated_total }}</span>
+        </div>
+        {% endif %}
+        {% if r.negotiation_message %}
+        <div>
+          <span class="block text-xs text-slate-400 mb-1">Message du client</span>
+          <p class="bg-slate-50 rounded-xl p-3 text-sm">{{ r.negotiation_message }}</p>
+        </div>
+        {% endif %}
+        {% if r.agency_message %}
+        <div>
+          <span class="block text-xs text-slate-400 mb-1">Message de l'agence</span>
+          <p class="bg-blue-50 rounded-xl p-3 text-sm text-blue-800">{{ r.agency_message }}</p>
+        </div>
+        {% endif %}
+
+        {% if r.negotiation_status == 'pending_offer' and can_manage %}
+        <div class="border-t border-slate-100 pt-4 space-y-3">
+          <form method="post" action="{% url 'dashboard:nego_accept_offer' pk=r.pk %}" class="inline">
+            {% csrf_token %}
+            <button type="submit" class="w-full py-2.5 rounded-xl bg-emerald-600 text-white font-semibold text-sm hover:bg-emerald-700 transition flex items-center justify-center gap-2">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5"/></svg>
+              Accepter l'offre ({{ r.daily_price_offer }} /j)
+            </button>
+          </form>
+          <button type="button" onclick="document.getElementById('counterModal').classList.remove('hidden')"
+            class="w-full py-2.5 rounded-xl bg-blue-50 text-blue-700 border border-blue-200 font-semibold text-sm hover:bg-blue-100 transition flex items-center justify-center gap-2">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M7.5 21 3 16.5m0 0L7.5 12M3 16.5h13.5m0-13.5L21 7.5m0 0L16.5 12M21 7.5H7.5"/></svg>
+            Faire une contre-offre
+          </button>
+          <form method="post" action="{% url 'dashboard:nego_refuse' pk=r.pk %}" class="inline">
+            {% csrf_token %}
+            <button type="submit" class="w-full py-2 rounded-xl text-red-500 text-xs font-medium hover:bg-red-50 transition">
+              Refuser l'offre
+            </button>
+          </form>
+        </div>
+        {% endif %}
+
+        {% if r.negotiation_status == 'countered' %}
+        <div class="rounded-xl bg-blue-50 border border-blue-200 px-4 py-3 text-sm text-blue-700 font-medium">
+          En attente de la réponse du client à votre contre-offre de {{ r.daily_price_counter }} /jour.
+        </div>
+        {% endif %}
+      </div>
+    </div>
+    {% endif %}
+
+    <!-- Negotiation Messages Chat -->
+    {% if r.negotiation_status != 'none' and r.client_account %}
+    <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden">
+      <div class="px-5 py-3 border-b border-slate-100 flex items-center gap-2">
+        <svg class="w-4 h-4 text-violet-500" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8.625 12a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0H8.25m4.125 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0H12m4.125 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0h-.375M21 12c0 4.556-4.03 8.25-9 8.25a9.764 9.764 0 0 1-2.555-.337A5.972 5.972 0 0 1 5.41 20.97a5.969 5.969 0 0 1-.474-.065 4.48 4.48 0 0 0 .978-2.025c.09-.457-.133-.901-.467-1.226C3.93 16.178 3 14.189 3 12c0-4.556 4.03-8.25 9-8.25s9 3.694 9 8.25Z"/></svg>
+        <h3 class="text-sm font-semibold text-slate-700">Messages de négociation</h3>
+        <span class="ml-auto text-xs text-slate-400">avec {{ r.client_account.full_name }}</span>
+      </div>
+      <div class="p-5">
+        <!-- Messages list -->
+        <div id="negoChat" class="space-y-3 max-h-80 overflow-y-auto mb-4" style="scroll-behavior: smooth;">
+          {% for msg in nego_messages %}
+          <div class="flex {% if msg.sender == 'agency' %}justify-end{% else %}justify-start{% endif %}">
+            <div class="max-w-[80%] rounded-2xl px-4 py-2.5 text-sm
+              {% if msg.sender == 'agency' %}bg-violet-600 text-white rounded-br-md
+              {% else %}bg-slate-100 text-slate-800 rounded-bl-md{% endif %}">
+              <p>{{ msg.body }}</p>
+              <p class="text-xs mt-1 {% if msg.sender == 'agency' %}text-violet-200{% else %}text-slate-400{% endif %}">
+                {{ msg.created_at|date:"d/m H:i" }}
+                {% if msg.sender == 'client' and not msg.is_read %}<span class="ml-1 font-semibold text-amber-500">●</span>{% endif %}
+              </p>
+            </div>
+          </div>
+          {% empty %}
+          <p class="text-center text-sm text-slate-400 py-4">Aucun message pour le moment.</p>
+          {% endfor %}
+        </div>
+
+        <!-- Send message form -->
+        {% if can_manage %}
+        <form method="post" action="{% url 'dashboard:nego_send_message' pk=r.pk %}" class="flex gap-2">
+          {% csrf_token %}
+          <input type="text" name="body" required maxlength="1000" placeholder="Écrire un message…"
+            class="flex-1 rounded-xl border border-slate-200 px-4 py-2.5 text-sm focus:border-violet-400 focus:ring-1 focus:ring-violet-400 outline-none" />
+          <button type="submit" class="shrink-0 rounded-xl bg-violet-600 hover:bg-violet-700 text-white px-4 py-2.5 transition">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 12 3.269 3.125A59.769 59.769 0 0 1 21.485 12 59.768 59.768 0 0 1 3.27 20.875L5.999 12Zm0 0h7.5"/></svg>
+          </button>
+        </form>
+        {% endif %}
+      </div>
+    </div>
+    {% endif %}
+
+    <!-- Vehicle card -->
+    <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden">
+      <div class="px-5 py-3 border-b border-slate-100 flex items-center gap-2">
+        <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 18.75a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 0 1-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m3 0H21"/></svg>
+        <h3 class="text-sm font-semibold text-slate-700">Véhicule</h3>
+      </div>
+      <div class="p-5 flex items-center gap-5">
+        {% if r.vehicle.image %}
+          <img src="{{ r.vehicle.image.url }}" alt="{{ r.vehicle }}" class="w-28 h-20 rounded-xl object-cover shrink-0" />
+        {% else %}
+          <div class="w-28 h-20 rounded-xl bg-slate-100 flex items-center justify-center shrink-0">
+            <svg class="w-10 h-10 text-slate-300" fill="none" stroke="currentColor" stroke-width="1" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 18.75a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 0 1-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m3 0H21"/></svg>
+          </div>
+        {% endif %}
+        <div>
+          <h4 class="font-bold text-lg">{{ r.vehicle.make }} {{ r.vehicle.model }}</h4>
+          <p class="text-sm text-slate-500">{{ r.vehicle.plate_number }}</p>
+          <p class="text-sm font-semibold text-gaboomViolet mt-1">{{ r.vehicle.daily_price }} / jour</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Right column: Decision + Timeline -->
+  <div class="space-y-6">
+
+    <!-- Decision card (only for pending) -->
+    {% if r.status == 'pending' and can_manage %}
+    <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden">
+      <div class="px-5 py-3 border-b border-slate-100">
+        <h3 class="text-sm font-semibold text-slate-700">Décision</h3>
+      </div>
+      <div class="p-5 space-y-4">
+        <!-- Confirm form -->
+        <form method="post" action="{% url 'dashboard:reservation_confirm' pk=r.pk %}" id="confirmForm">
+          {% csrf_token %}
+          <label class="block text-xs text-slate-400 mb-1">Message au client (confirmation)</label>
+          <input type="text" name="decision_message" value="Réservation acceptée, nous vous contactons."
+            maxlength="180" class="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm focus:border-emerald-400 focus:ring-1 focus:ring-emerald-400 outline-none mb-3" />
+          <button type="button" onclick="document.getElementById('confirmModal').classList.remove('hidden')"
+            class="w-full py-2.5 rounded-xl bg-emerald-600 text-white font-semibold text-sm hover:bg-emerald-700 transition flex items-center justify-center gap-2">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5"/></svg>
+            Confirmer la réservation
+          </button>
+        </form>
+
+        <div class="border-t border-slate-100 pt-4">
+          <!-- Reject form -->
+          <form method="post" action="{% url 'dashboard:reservation_reject' pk=r.pk %}" id="rejectForm">
+            {% csrf_token %}
+            <label class="block text-xs text-slate-400 mb-1">Message au client (refus)</label>
+            <input type="text" name="decision_message" value="Ce véhicule n'est plus disponible, choisissez-en un autre."
+              maxlength="180" class="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm focus:border-red-400 focus:ring-1 focus:ring-red-400 outline-none mb-3" />
+            <button type="button" onclick="document.getElementById('rejectModal').classList.remove('hidden')"
+              class="w-full py-2.5 rounded-xl bg-red-50 text-red-600 border border-red-200 font-semibold text-sm hover:bg-red-100 transition flex items-center justify-center gap-2">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12"/></svg>
+              Refuser la réservation
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+    {% endif %}
+
+    <!-- Timeline card -->
+    <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden">
+      <div class="px-5 py-3 border-b border-slate-100">
+        <h3 class="text-sm font-semibold text-slate-700">Historique</h3>
+      </div>
+      <div class="p-5 space-y-4">
+        <div class="flex items-start gap-3">
+          <div class="w-2.5 h-2.5 rounded-full bg-blue-500 mt-1.5 shrink-0"></div>
+          <div>
+            <p class="text-sm font-medium text-slate-700">Demande reçue</p>
+            <p class="text-xs text-slate-400">{{ r.created_at|date:"d M Y H:i" }}</p>
+          </div>
+        </div>
+        {% if r.client_seen_at %}
+        <div class="flex items-start gap-3">
+          <div class="w-2.5 h-2.5 rounded-full bg-slate-400 mt-1.5 shrink-0"></div>
+          <div>
+            <p class="text-sm font-medium text-slate-700">Vue par le client</p>
+            <p class="text-xs text-slate-400">{{ r.client_seen_at|date:"d M Y H:i" }}</p>
+          </div>
+        </div>
+        {% endif %}
+        {% if r.status == 'confirmed' %}
+        <div class="flex items-start gap-3">
+          <div class="w-2.5 h-2.5 rounded-full bg-emerald-500 mt-1.5 shrink-0"></div>
+          <div>
+            <p class="text-sm font-medium text-emerald-700">Confirmée</p>
+            <p class="text-xs text-slate-400">{{ r.updated_at|date:"d M Y H:i" }}</p>
+          </div>
+        </div>
+        <div class="flex items-start gap-3">
+          <div class="w-2.5 h-2.5 rounded-full bg-amber-400 mt-1.5 shrink-0 animate-pulse"></div>
+          <div>
+            <p class="text-sm font-medium text-amber-700">En attente du client…</p>
+          </div>
+        </div>
+        {% elif r.status == 'contracted' %}
+        <div class="flex items-start gap-3">
+          <div class="w-2.5 h-2.5 rounded-full bg-emerald-500 mt-1.5 shrink-0"></div>
+          <div>
+            <p class="text-sm font-medium text-emerald-700">Confirmée</p>
+          </div>
+        </div>
+        <div class="flex items-start gap-3">
+          <div class="w-2.5 h-2.5 rounded-full bg-violet-500 mt-1.5 shrink-0"></div>
+          <div>
+            <p class="text-sm font-medium text-violet-700">Sous contrat</p>
+            <p class="text-xs text-slate-400">{{ r.updated_at|date:"d M Y H:i" }}</p>
+          </div>
+        </div>
+        {% elif r.status == 'rejected' %}
+        <div class="flex items-start gap-3">
+          <div class="w-2.5 h-2.5 rounded-full bg-red-500 mt-1.5 shrink-0"></div>
+          <div>
+            <p class="text-sm font-medium text-red-700">Refusée</p>
+            <p class="text-xs text-slate-400">{{ r.updated_at|date:"d M Y H:i" }}</p>
+          </div>
+        </div>
+        {% elif r.status == 'pending' %}
+        <div class="flex items-start gap-3">
+          <div class="w-2.5 h-2.5 rounded-full bg-amber-400 mt-1.5 shrink-0 animate-pulse"></div>
+          <div>
+            <p class="text-sm font-medium text-amber-700">En attente…</p>
+          </div>
+        </div>
+        {% endif %}
+      </div>
+    </div>
+
+    <!-- Info card -->
+    <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden">
+      <div class="px-5 py-3 border-b border-slate-100">
+        <h3 class="text-sm font-semibold text-slate-700">Infos</h3>
+      </div>
+      <div class="p-5 space-y-2 text-sm">
+        <div class="flex justify-between">
+          <span class="text-slate-400">ID</span>
+          <span class="font-mono text-xs">#{{ r.pk }}</span>
+        </div>
+        <div class="flex justify-between">
+          <span class="text-slate-400">Token</span>
+          <span class="font-mono text-xs">{{ r.public_token|truncatechars:13 }}</span>
+        </div>
+        <div class="flex justify-between">
+          <span class="text-slate-400">Dernière MAJ</span>
+          <span>{{ r.updated_at|date:"d/m/Y H:i" }}</span>
+        </div>
+        {% if r.email %}
+        <div class="flex justify-between">
+          <span class="text-slate-400">Email envoyé</span>
+          <span>{% if r.status != 'pending' %}Oui{% else %}—{% endif %}</span>
+        </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Counter-offer modal -->
+{% if r.negotiation_status == 'pending_offer' and can_manage %}
+<div id="counterModal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur-sm">
+  <div class="bg-white rounded-2xl shadow-2xl max-w-md w-full mx-4 p-6">
+    <h3 class="text-lg font-bold text-slate-900 mb-2">Faire une contre-offre</h3>
+    <p class="text-sm text-slate-500 mb-4">Offre du client : <strong>{{ r.daily_price_offer }} /jour</strong>. Prix officiel : <strong>{{ r.daily_price_official }} /jour</strong>.</p>
+    <form method="post" action="{% url 'dashboard:nego_counter_offer' pk=r.pk %}" id="counterForm">
+      {% csrf_token %}
+      <div class="space-y-3">
+        <div>
+          <label class="block text-xs text-slate-400 mb-1">Votre contre-offre (par jour)</label>
+          <input type="number" name="counter_price" step="0.01" min="0.01" required
+            class="w-full rounded-xl border border-slate-200 px-3 py-2.5 text-sm focus:border-blue-400 focus:ring-1 focus:ring-blue-400 outline-none" />
+        </div>
+        <div>
+          <label class="block text-xs text-slate-400 mb-1">Message au client (optionnel)</label>
+          <textarea name="agency_message" rows="2" maxlength="500"
+            class="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm focus:border-blue-400 focus:ring-1 focus:ring-blue-400 outline-none resize-none"
+            placeholder="Nous pouvons vous proposer..."></textarea>
+        </div>
+      </div>
+      <div class="flex gap-3 mt-5">
+        <button type="button" onclick="document.getElementById('counterModal').classList.add('hidden')" class="flex-1 py-2.5 rounded-xl border border-slate-200 text-sm font-semibold text-slate-600 hover:bg-slate-50 transition">Annuler</button>
+        <button type="submit" class="flex-1 py-2.5 rounded-xl bg-blue-600 text-white text-sm font-semibold hover:bg-blue-700 transition">Envoyer</button>
+      </div>
+    </form>
+  </div>
+</div>
+{% endif %}
+
+<!-- Confirm modal -->
+{% if r.status == 'pending' and can_manage %}
+<div id="confirmModal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur-sm">
+  <div class="bg-white rounded-2xl shadow-2xl max-w-md w-full mx-4 p-6">
+    <h3 class="text-lg font-bold text-slate-900 mb-2">Confirmer cette réservation ?</h3>
+    <p class="text-sm text-slate-500 mb-5">Le véhicule sera bloqué pour les dates {{ r.start_date|date:"d/m/Y" }} → {{ r.end_date|date:"d/m/Y" }}. Le client sera notifié{% if r.email %} par email{% endif %}.</p>
+    <div class="flex gap-3">
+      <button onclick="document.getElementById('confirmModal').classList.add('hidden')" class="flex-1 py-2.5 rounded-xl border border-slate-200 text-sm font-semibold text-slate-600 hover:bg-slate-50 transition">Annuler</button>
+      <button onclick="document.getElementById('confirmForm').submit()" class="flex-1 py-2.5 rounded-xl bg-emerald-600 text-white text-sm font-semibold hover:bg-emerald-700 transition">Confirmer</button>
+    </div>
+  </div>
+</div>
+
+<!-- Reject modal -->
+<div id="rejectModal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur-sm">
+  <div class="bg-white rounded-2xl shadow-2xl max-w-md w-full mx-4 p-6">
+    <h3 class="text-lg font-bold text-slate-900 mb-2">Refuser cette réservation ?</h3>
+    <p class="text-sm text-slate-500 mb-5">Le client sera informé que le véhicule n'est pas disponible{% if r.email %} (notification par email){% endif %}.</p>
+    <div class="flex gap-3">
+      <button onclick="document.getElementById('rejectModal').classList.add('hidden')" class="flex-1 py-2.5 rounded-xl border border-slate-200 text-sm font-semibold text-slate-600 hover:bg-slate-50 transition">Annuler</button>
+      <button onclick="document.getElementById('rejectForm').submit()" class="flex-1 py-2.5 rounded-xl bg-red-600 text-white text-sm font-semibold hover:bg-red-700 transition">Refuser</button>
+    </div>
+  </div>
+</div>
+{% endif %}
+
+<!-- Mobile sticky actions (pending only) -->
+{% if r.status == 'pending' and can_manage %}
+<div class="lg:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-slate-200 p-3 flex gap-3 z-40">
+  <button onclick="document.getElementById('rejectModal').classList.remove('hidden')" class="flex-1 py-2.5 rounded-xl bg-red-50 text-red-600 border border-red-200 font-semibold text-sm">Refuser</button>
+  <button onclick="document.getElementById('confirmModal').classList.remove('hidden')" class="flex-1 py-2.5 rounded-xl bg-emerald-600 text-white font-semibold text-sm">Confirmer</button>
+</div>
+{% endif %}
+
+<!-- Auto-scroll chat to bottom -->
+<script>
+(function(){
+  const chat = document.getElementById('negoChat');
+  if (chat) chat.scrollTop = chat.scrollHeight;
+})();
+</script>
+{% endblock %}

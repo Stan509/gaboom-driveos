@@ -1,0 +1,280 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Créer mon agence — Gaboom DriveOS{% endblock %}
+
+{% block body %}
+  <div class="min-h-screen grid lg:grid-cols-2">
+    <!-- ═══ Left: branding panel ═══ -->
+    <div class="hidden lg:flex flex-col justify-between bg-gradient-to-br from-violet-600 to-violet-800 p-12 text-white">
+      <div>
+        <a href="/"><img src="{% static 'brand/logo.png' %}" alt="Gaboom DriveOS" class="h-9 brightness-0 invert opacity-90" /></a>
+      </div>
+      <div>
+        <h2 class="text-3xl font-bold leading-tight">Lance ton agence<br/>en 30 secondes.</h2>
+        <p class="mt-4 text-violet-200 leading-relaxed">Dashboard, site public, gestion d'équipe — tout est prêt.</p>
+        <div class="mt-8 space-y-3">
+          <div class="flex items-center gap-3 text-sm text-violet-100">
+            <span class="flex-shrink-0 h-6 w-6 rounded-full bg-white/10 flex items-center justify-center text-gaboomYellow text-xs font-bold">✓</span>
+            Essai gratuit, sans carte bancaire
+          </div>
+          <div class="flex items-center gap-3 text-sm text-violet-100">
+            <span class="flex-shrink-0 h-6 w-6 rounded-full bg-white/10 flex items-center justify-center text-gaboomYellow text-xs font-bold">✓</span>
+            Multi-agence natif
+          </div>
+          <div class="flex items-center gap-3 text-sm text-violet-100">
+            <span class="flex-shrink-0 h-6 w-6 rounded-full bg-white/10 flex items-center justify-center text-gaboomYellow text-xs font-bold">✓</span>
+            Site public personnalisable
+          </div>
+          <div class="flex items-center gap-3 text-sm text-violet-100">
+            <span class="flex-shrink-0 h-6 w-6 rounded-full bg-white/10 flex items-center justify-center text-gaboomYellow text-xs font-bold">✓</span>
+            12 thèmes premium inclus
+          </div>
+        </div>
+      </div>
+      <div class="flex items-center gap-2">
+        <span class="h-2 w-2 rounded-full bg-emerald-400 animate-pulse"></span>
+        <span class="text-sm text-violet-300">Tous les systèmes opérationnels</span>
+      </div>
+    </div>
+
+    <!-- ═══ Right: signup form ═══ -->
+    <div class="flex items-center justify-center px-4 py-10 lg:py-12 overflow-y-auto">
+      <div class="w-full max-w-md">
+        <div class="lg:hidden mb-8">
+          <a href="/"><img src="{% static 'brand/logo.png' %}" alt="Gaboom DriveOS" class="h-9" /></a>
+        </div>
+
+        <h1 class="text-2xl font-bold text-slate-900">Créer mon agence</h1>
+        <p class="mt-1 text-slate-500 text-sm">Crée ton espace et accède au dashboard en quelques secondes.</p>
+
+        <!-- Global errors -->
+        {% if form.non_field_errors %}
+          <div class="mt-5 rounded-xl bg-red-50 border border-red-200 p-3 flex items-start gap-2">
+            <svg class="w-4 h-4 text-red-500 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m9-.75a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 3.75h.008v.008H12v-.008Z"/></svg>
+            <div class="text-sm text-red-700">
+              {% for error in form.non_field_errors %}<p>{{ error }}</p>{% endfor %}
+            </div>
+          </div>
+        {% endif %}
+
+        <form method="post" id="signupForm" class="mt-7 space-y-6" novalidate>
+          {% csrf_token %}
+
+          <!-- ── Section: Agence ── -->
+          <fieldset class="space-y-4">
+            <legend class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Agence</legend>
+
+            <!-- Agency name -->
+            <div>
+              <label for="id_agency_name" class="block text-sm font-medium text-slate-700 mb-1.5">Nom de l'agence <span class="text-red-400">*</span></label>
+              <input type="text" name="agency_name" id="id_agency_name" value="{{ form.agency_name.value|default_if_none:'' }}" placeholder="Mon Agence Premium" required class="s-input{% if form.agency_name.errors %} s-input-error{% endif %}" />
+              {% if form.agency_name.errors %}<p class="s-error">{{ form.agency_name.errors.0 }}</p>{% endif %}
+            </div>
+
+            <!-- Slug -->
+            <div>
+              <label for="id_slug" class="block text-sm font-medium text-slate-700 mb-1.5">Slug (URL)</label>
+              <input type="text" name="slug" id="id_slug" value="{{ form.slug.value|default_if_none:'' }}" placeholder="mon-agence-premium" class="s-input{% if form.slug.errors %} s-input-error{% endif %}" />
+              <div class="mt-1.5 flex items-center gap-1.5">
+                <span class="text-xs text-slate-400">Votre site :</span>
+                <span class="text-xs font-mono text-gaboomViolet font-medium">gaboomdriveos.com/a/<span id="slugPreview">{{ form.slug.value|default_if_none:'...' }}</span>/</span>
+              </div>
+              {% if form.slug.errors %}<p class="s-error">{{ form.slug.errors.0 }}</p>{% endif %}
+            </div>
+
+            <!-- City + Phone -->
+            <div class="grid sm:grid-cols-2 gap-4">
+              <div>
+                <label for="id_city" class="block text-sm font-medium text-slate-700 mb-1.5">Ville <span class="text-slate-300">(optionnel)</span></label>
+                <input type="text" name="city" id="id_city" value="{{ form.city.value|default_if_none:'' }}" placeholder="Paris" class="s-input{% if form.city.errors %} s-input-error{% endif %}" />
+                {% if form.city.errors %}<p class="s-error">{{ form.city.errors.0 }}</p>{% endif %}
+              </div>
+              <div>
+                <label for="id_phone" class="block text-sm font-medium text-slate-700 mb-1.5">Téléphone <span class="text-slate-300">(optionnel)</span></label>
+                <input type="tel" name="phone" id="id_phone" value="{{ form.phone.value|default_if_none:'' }}" placeholder="+33 6 12 34 56 78" class="s-input{% if form.phone.errors %} s-input-error{% endif %}" />
+                {% if form.phone.errors %}<p class="s-error">{{ form.phone.errors.0 }}</p>{% endif %}
+              </div>
+            </div>
+          </fieldset>
+
+          <!-- ── Section: Compte owner ── -->
+          <fieldset class="space-y-4">
+            <legend class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Compte propriétaire</legend>
+
+            <!-- Email -->
+            <div>
+              <label for="id_email" class="block text-sm font-medium text-slate-700 mb-1.5">Email <span class="text-red-400">*</span></label>
+              <input type="email" name="email" id="id_email" value="{{ form.email.value|default_if_none:'' }}" placeholder="vous@exemple.com" required class="s-input{% if form.email.errors %} s-input-error{% endif %}" />
+              {% if form.email.errors %}<p class="s-error">{{ form.email.errors.0 }}</p>{% endif %}
+            </div>
+
+            <!-- Passwords -->
+            <div class="grid sm:grid-cols-2 gap-4">
+              <div>
+                <label for="id_password1" class="block text-sm font-medium text-slate-700 mb-1.5">Mot de passe <span class="text-red-400">*</span></label>
+                <div class="relative">
+                  <input type="password" name="password1" id="id_password1" placeholder="8 caractères min." required class="s-input pr-10{% if form.password1.errors %} s-input-error{% endif %}" />
+                  <button type="button" onclick="togglePw('id_password1', this)" class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition" tabindex="-1" aria-label="Afficher le mot de passe">
+                    <svg class="w-4.5 h-4.5 eye-show" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"/></svg>
+                    <svg class="w-4.5 h-4.5 eye-hide hidden" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3.98 8.223A10.477 10.477 0 0 0 1.934 12c1.292 4.338 5.31 7.5 10.066 7.5.993 0 1.953-.138 2.863-.395M6.228 6.228A10.451 10.451 0 0 1 12 4.5c4.756 0 8.773 3.162 10.065 7.498a10.522 10.522 0 0 1-4.293 5.774M6.228 6.228 3 3m3.228 3.228 3.65 3.65m7.894 7.894L21 21m-3.228-3.228-3.65-3.65m0 0a3 3 0 1 0-4.243-4.243m4.242 4.242L9.88 9.88"/></svg>
+                  </button>
+                </div>
+                {% if form.password1.errors %}<p class="s-error">{{ form.password1.errors.0 }}</p>{% endif %}
+              </div>
+              <div>
+                <label for="id_password2" class="block text-sm font-medium text-slate-700 mb-1.5">Confirmation <span class="text-red-400">*</span></label>
+                <div class="relative">
+                  <input type="password" name="password2" id="id_password2" placeholder="Retapez le mot de passe" required class="s-input pr-10{% if form.password2.errors %} s-input-error{% endif %}" />
+                  <button type="button" onclick="togglePw('id_password2', this)" class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition" tabindex="-1" aria-label="Afficher le mot de passe">
+                    <svg class="w-4.5 h-4.5 eye-show" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"/></svg>
+                    <svg class="w-4.5 h-4.5 eye-hide hidden" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3.98 8.223A10.477 10.477 0 0 0 1.934 12c1.292 4.338 5.31 7.5 10.066 7.5.993 0 1.953-.138 2.863-.395M6.228 6.228A10.451 10.451 0 0 1 12 4.5c4.756 0 8.773 3.162 10.065 7.498a10.522 10.522 0 0 1-4.293 5.774M6.228 6.228 3 3m3.228 3.228 3.65 3.65m7.894 7.894L21 21m-3.228-3.228-3.65-3.65m0 0a3 3 0 1 0-4.243-4.243m4.242 4.242L9.88 9.88"/></svg>
+                  </button>
+                </div>
+                {% if form.password2.errors %}<p class="s-error">{{ form.password2.errors.0 }}</p>{% endif %}
+              </div>
+            </div>
+          </fieldset>
+
+          <!-- ── Plan ── -->
+          <fieldset class="space-y-4">
+            <legend class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Plan</legend>
+            <div class="grid gap-3">
+              {% for plan in plan_cards %}
+              <label class="flex items-start gap-3 rounded-2xl border border-slate-200 p-4 hover:border-gaboomViolet transition cursor-pointer">
+                <input type="radio" name="plan_code" value="{{ plan.code }}" class="mt-1.5 h-4 w-4 text-gaboomViolet focus:ring-violet-200"
+                  {% if form.plan_code.value %}
+                    {% if form.plan_code.value == plan.code %}checked{% endif %}
+                  {% else %}
+                    {% if plan.code == "starter" %}checked{% endif %}
+                  {% endif %}
+                  required />
+                <div class="flex-1">
+                  <div class="flex items-center justify-between gap-2">
+                    <div class="text-sm font-semibold text-slate-800">{{ plan.name }}</div>
+                    <div class="text-sm font-bold text-gaboomViolet">${{ plan.price }}</div>
+                  </div>
+                  <div class="mt-1 text-xs text-slate-500">
+                    {% if plan.max_agencies == 0 %}Agences illimitées{% else %}{{ plan.max_agencies }} agence{{ plan.max_agencies|pluralize }}{% endif %}
+                    ·
+                    {% if plan.max_users == 0 %}Utilisateurs illimités{% else %}{{ plan.max_users }} utilisateur{{ plan.max_users|pluralize }}{% endif %}
+                    ·
+                    {% if plan.max_vehicles == 0 %}Véhicules illimités{% else %}{{ plan.max_vehicles }} véhicule{{ plan.max_vehicles|pluralize }}{% endif %}
+                  </div>
+                </div>
+              </label>
+              {% endfor %}
+            </div>
+            {% if form.plan_code.errors %}<p class="s-error">{{ form.plan_code.errors.0 }}</p>{% endif %}
+          </fieldset>
+
+          <!-- ── Terms ── -->
+          <div>
+            <label class="flex items-start gap-2.5 cursor-pointer">
+              <input type="checkbox" name="accept_terms" id="id_accept_terms" class="mt-0.5 h-4 w-4 rounded border-slate-300 text-gaboomViolet focus:ring-violet-200" {% if form.accept_terms.value %}checked{% endif %} required />
+              <span class="text-sm text-slate-600 leading-snug">
+                J'accepte les <a href="#" class="text-gaboomViolet font-medium hover:underline">Conditions d'utilisation</a> et la <a href="#" class="text-gaboomViolet font-medium hover:underline">Politique de confidentialité</a>
+              </span>
+            </label>
+            {% if form.accept_terms.errors %}<p class="s-error mt-1">{{ form.accept_terms.errors.0 }}</p>{% endif %}
+          </div>
+
+          <!-- ── Submit ── -->
+          <div>
+            <button type="submit" id="submitBtn" class="w-full rounded-full bg-gaboomViolet text-white py-3 font-semibold text-sm shadow-lg shadow-violet-200 hover:shadow-xl hover:bg-violet-700 focus:outline-none focus:ring-4 focus:ring-violet-100 transition-all flex items-center justify-center gap-2">
+              <span id="btnText">Créer mon agence</span>
+              <svg id="btnSpinner" class="hidden w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/></svg>
+            </button>
+            <p class="mt-3 text-center">
+              <span class="inline-flex items-center gap-1.5 rounded-full bg-violet-50 border border-violet-100 px-3 py-1 text-xs font-medium text-gaboomViolet">
+                Essai gratuit · Sans carte bancaire
+              </span>
+            </p>
+          </div>
+        </form>
+
+        <div class="mt-6 text-sm text-slate-500 text-center">
+          Déjà un compte ? <a class="text-gaboomViolet font-semibold hover:underline" href="/login/">Connexion</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <style>
+    .s-input {
+      width: 100%;
+      border: 1px solid rgb(226 232 240);
+      border-radius: 0.75rem;
+      padding: 0.75rem 1rem;
+      font-size: 0.875rem;
+      color: #0f172a;
+      background: #fff;
+      transition: border-color 0.15s, box-shadow 0.15s;
+    }
+    .s-input::placeholder { color: #94a3b8; }
+    .s-input:focus {
+      outline: none;
+      border-color: #6D28D9;
+      box-shadow: 0 0 0 3px rgba(109,40,217,0.1);
+    }
+    .s-input-error {
+      border-color: #EF4444 !important;
+      box-shadow: 0 0 0 3px rgba(239,68,68,0.08);
+    }
+    .s-error {
+      color: #DC2626;
+      font-size: 0.8125rem;
+      margin-top: 0.375rem;
+      line-height: 1.3;
+    }
+    ul.errorlist { list-style: none; padding: 0; margin: 0; }
+  </style>
+
+  <script>
+    // ── Slug auto-generation ──
+    const nameInput = document.getElementById('id_agency_name');
+    const slugInput = document.getElementById('id_slug');
+    const slugPreview = document.getElementById('slugPreview');
+    let slugManuallyEdited = false;
+
+    function slugify(str) {
+      return str.toLowerCase()
+        .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+        .replace(/[^a-z0-9]+/g, '-')
+        .replace(/^-+|-+$/g, '')
+        .substring(0, 80);
+    }
+
+    slugInput.addEventListener('input', function() {
+      slugManuallyEdited = this.value.trim() !== '';
+      slugPreview.textContent = this.value.trim() || '...';
+    });
+
+    nameInput.addEventListener('input', function() {
+      if (!slugManuallyEdited) {
+        const s = slugify(this.value);
+        slugInput.value = s;
+        slugPreview.textContent = s || '...';
+      }
+    });
+
+    // ── Show/hide password ──
+    function togglePw(inputId, btn) {
+      const input = document.getElementById(inputId);
+      const isPassword = input.type === 'password';
+      input.type = isPassword ? 'text' : 'password';
+      btn.querySelector('.eye-show').classList.toggle('hidden', isPassword);
+      btn.querySelector('.eye-hide').classList.toggle('hidden', !isPassword);
+    }
+
+    // ── Prevent double submit + loading state ──
+    document.getElementById('signupForm').addEventListener('submit', function(e) {
+      const btn = document.getElementById('submitBtn');
+      if (btn.disabled) { e.preventDefault(); return; }
+      btn.disabled = true;
+      btn.classList.add('opacity-75', 'cursor-not-allowed');
+      document.getElementById('btnText').textContent = 'Création…';
+      document.getElementById('btnSpinner').classList.remove('hidden');
+    });
+  </script>
+{% endblock %}

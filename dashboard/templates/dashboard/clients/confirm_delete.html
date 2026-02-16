@@ -1,0 +1,18 @@
+{% extends "dashboard/_layout.html" %}
+{% load i18n %}
+{% block title %}{% trans "Supprimer client" %} — Dashboard{% endblock %}
+{% block page_title %}{% trans "Supprimer ce client ?" %}{% endblock %}
+{% block content %}
+<div class="max-w-lg">
+  <div class="rounded-2xl border border-red-200 bg-red-50/50 p-8">
+    <h2 class="text-lg font-semibold text-slate-900">{{ client.full_name }}</h2>
+    <p class="mt-2 text-sm text-slate-600">{% trans "Cette action est irréversible. Tous les contrats liés seront conservés." %}</p>
+    <div class="mt-6 flex items-center gap-3">
+      <form method="post">{% csrf_token %}
+        <button type="submit" class="rounded-xl bg-red-600 text-white px-5 py-2.5 font-medium hover:bg-red-700 transition text-sm">{% trans "Confirmer" %}</button>
+      </form>
+      <a href="{% url 'dashboard:client_detail' client.pk %}" class="rounded-xl border border-slate-200 px-5 py-2.5 font-medium text-slate-600 hover:bg-slate-50 transition text-sm">{% trans "Annuler" %}</a>
+    </div>
+  </div>
+</div>
+{% endblock %}

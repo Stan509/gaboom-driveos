@@ -1,0 +1,291 @@
+{% extends "dashboard/_layout.html" %}
+{% load i18n %}
+
+{% block content %}
+<div class="space-y-6 max-w-3xl">
+
+  <!-- Header -->
+  <div class="flex items-center gap-3">
+    <a href="{% url 'dashboard:gps_tracking' %}" class="rounded-xl p-2" style="background:var(--g-surface);border:1px solid var(--g-surface-border);color:var(--g-text-muted)">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5"/></svg>
+    </a>
+    <div>
+      <h1 class="text-2xl font-bold" style="color:var(--g-text)">{% trans "Configuration GPS" %} — {{ vehicle }}</h1>
+      <p class="text-sm mt-0.5" style="color:var(--g-text-muted)">{{ vehicle.plate_number }}</p>
+    </div>
+  </div>
+
+  <!-- GPS Config Form -->
+  <form method="post" class="rounded-2xl p-6 space-y-5" style="background:var(--g-surface);border:1px solid var(--g-surface-border)">
+    {% csrf_token %}
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+      <!-- IMEI -->
+      <div>
+        <label class="block text-sm font-medium mb-1.5" style="color:var(--g-text)">{% trans "IMEI du boîtier GPS" %}</label>
+        <input type="text" name="gps_imei" value="{{ vehicle.gps_imei }}" placeholder="{% trans "Ex: 860012345678901" %}"
+               class="w-full rounded-xl border px-4 py-2.5 text-sm outline-none" style="background:var(--g-bg);border-color:var(--g-surface-border);color:var(--g-text)">
+        <p class="text-xs mt-1" style="color:var(--g-text-dim)">{% trans "Numéro IMEI à 15 chiffres du fabricant du tracker GPS" %}</p>
+      </div>
+
+      <!-- IP -->
+      <div>
+        <label class="block text-sm font-medium mb-1.5" style="color:var(--g-text)">{% trans "Adresse IP du tracker" %}</label>
+        <input type="text" name="gps_ip" value="{{ vehicle.gps_ip|default:'' }}" placeholder="{% trans "Ex: 192.168.1.100" %}"
+               class="w-full rounded-xl border px-4 py-2.5 text-sm outline-none" style="background:var(--g-bg);border-color:var(--g-surface-border);color:var(--g-text)">
+        <p class="text-xs mt-1" style="color:var(--g-text-dim)">{% trans "Adresse IP si le tracker communique par réseau" %}</p>
+      </div>
+    </div>
+
+    <!-- Source -->
+    <div>
+      <label class="block text-sm font-medium mb-1.5" style="color:var(--g-text)">{% trans "Source du signal GPS" %}</label>
+      <select name="gps_source" class="w-full rounded-xl border px-4 py-2.5 text-sm outline-none" style="background:var(--g-bg);border-color:var(--g-surface-border);color:var(--g-text)">
+        <option value="device" {% if vehicle.gps_source == "device" %}selected{% endif %}>{% trans "Boîtier GPS (tracker physique)" %}</option>
+        <option value="phone" {% if vehicle.gps_source == "phone" %}selected{% endif %}>{% trans "Téléphone du client (site public)" %}</option>
+      </select>
+      <p class="text-xs mt-1" style="color:var(--g-text-dim)">
+        <strong>{% trans "Boîtier GPS" %} :</strong> {% trans "le tracker envoie la position automatiquement via l'API." %}<br>
+        <strong>{% trans "Téléphone client" %} :</strong> {% trans "le client partage sa position depuis le portail client (nécessite son accord)." %}
+      </p>
+    </div>
+
+    <!-- Enable toggle -->
+    <div class="flex items-center gap-3 pt-2">
+      <label class="relative inline-flex items-center cursor-pointer">
+        <input type="checkbox" name="gps_enabled" value="1" {% if vehicle.gps_enabled %}checked{% endif %} class="sr-only peer">
+        <div class="w-11 h-6 rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:rounded-full after:h-5 after:w-5 after:transition-all" style="background:var(--g-surface-border)" >
+          <style>.peer:checked ~ div { background: var(--g-emerald) !important; }</style>
+        </div>
+      </label>
+      <span class="text-sm font-medium" style="color:var(--g-text)">{% trans "Suivi GPS activé" %}</span>
+    </div>
+
+    <div class="pt-3 flex items-center gap-3">
+      <button type="submit" class="rounded-xl px-6 py-2.5 text-sm font-semibold" style="background:var(--g-accent);color:#fff">
+        {% trans "Enregistrer" %}
+      </button>
+      <a href="{% url 'dashboard:gps_tracking' %}" class="rounded-xl px-6 py-2.5 text-sm font-medium" style="background:var(--g-surface-hover);color:var(--g-text-muted)">
+        {% trans "Annuler" %}
+      </a>
+    </div>
+  </form>
+
+  <div class="rounded-2xl p-6 space-y-4" style="background:var(--g-surface);border:1px solid var(--g-surface-border)">
+    <h2 class="text-lg font-bold" style="color:var(--g-text)">{% trans "Boîtier GPS" %}</h2>
+    {% if device %}
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
+      <div>
+        <div style="color:var(--g-text-muted)">{% trans "Boîtier" %}</div>
+        <div class="font-medium" style="color:var(--g-text)">{{ device.display_name|default:device.imei }}</div>
+      </div>
+      <div>
+        <div style="color:var(--g-text-muted)">{% trans "Provider" %}</div>
+        <div class="font-medium" style="color:var(--g-text)">{{ device.get_provider_display }}</div>
+      </div>
+      <div>
+        <div style="color:var(--g-text-muted)">{% trans "IMEI" %}</div>
+        <div class="font-mono" style="color:var(--g-text)">{{ device.imei }}</div>
+      </div>
+      <div>
+        <div style="color:var(--g-text-muted)">{% trans "Dernier contact" %}</div>
+        <div class="font-medium" style="color:var(--g-text)">{% if device.last_seen_at %}{% blocktrans with since=device.last_seen_at|timesince %}il y a {{ since }}{% endblocktrans %}{% else %}—{% endif %}</div>
+      </div>
+      <div class="sm:col-span-2">
+        <div style="color:var(--g-text-muted)">{% trans "Token" %}</div>
+        <div class="font-mono text-xs" style="color:var(--g-text)">{{ device.auth_token }}</div>
+      </div>
+    </div>
+    {% else %}
+    <form method="post" class="space-y-4">
+      {% csrf_token %}
+      <input type="hidden" name="action" value="device_create">
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div>
+          <label class="block text-sm font-medium mb-1.5" style="color:var(--g-text)">{% trans "Nom du boîtier" %}</label>
+          <input type="text" name="device_name" placeholder="{% trans "Tracker Gaboom #1" %}"
+                 class="w-full rounded-xl border px-4 py-2.5 text-sm outline-none" style="background:var(--g-bg);border-color:var(--g-surface-border);color:var(--g-text)">
+        </div>
+        <div>
+          <label class="block text-sm font-medium mb-1.5" style="color:var(--g-text)">{% trans "Provider" %}</label>
+          <select name="device_provider" class="w-full rounded-xl border px-4 py-2.5 text-sm outline-none" style="background:var(--g-bg);border-color:var(--g-surface-border);color:var(--g-text)">
+            <option value="generic">{% trans "Generic" %}</option>
+            <option value="brand_x">{% trans "Brand X" %}</option>
+          </select>
+        </div>
+      </div>
+      <div>
+        <label class="block text-sm font-medium mb-1.5" style="color:var(--g-text)">{% trans "IMEI" %}</label>
+        <input type="text" name="device_imei" value="{{ vehicle.gps_imei }}" placeholder="{% trans "Ex: 860012345678901" %}"
+               class="w-full rounded-xl border px-4 py-2.5 text-sm outline-none" style="background:var(--g-bg);border-color:var(--g-surface-border);color:var(--g-text)">
+      </div>
+      <button type="submit" class="rounded-xl px-6 py-2.5 text-sm font-semibold" style="background:var(--g-accent);color:#fff">
+        {% trans "Créer le boîtier" %}
+      </button>
+    </form>
+    {% endif %}
+    <div class="rounded-xl p-4 text-sm" style="background:var(--g-bg);border:1px solid var(--g-surface-border)">
+      <div class="font-medium mb-2" style="color:var(--g-text)">{% trans "Instructions boîtier" %}</div>
+      <div style="color:var(--g-text-muted)">{% trans "Webhook URL" %}</div>
+      <div class="font-mono text-xs mb-2" style="color:var(--g-text)">{{ webhook_url }}</div>
+      <div style="color:var(--g-text-muted)">{% trans "Headers" %}</div>
+      <div class="font-mono text-xs mb-2" style="color:var(--g-text)">X-GPS-Token: {{ device.auth_token|default:"<token>" }}</div>
+      <div class="font-mono text-xs mb-2" style="color:var(--g-text)">X-GPS-IMEI: {{ device.imei|default:"<imei>" }}</div>
+      <div style="color:var(--g-text-muted)">{% trans "Payload JSON" %}</div>
+      <div class="font-mono text-xs" style="color:var(--g-text)">{"lat":7.12345,"lng":-5.12345,"speed":45,"heading":180,"ts":"2025-01-01T10:00:00Z","ignition":true}</div>
+    </div>
+  </div>
+
+  <div class="rounded-2xl p-6 space-y-4" style="background:var(--g-surface);border:1px solid var(--g-surface-border)">
+    <h2 class="text-lg font-bold" style="color:var(--g-text)">{% trans "Simulation GPS" %}</h2>
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+      <div>
+        <label class="block text-sm font-medium mb-1.5" style="color:var(--g-text)">{% trans "Mode" %}</label>
+        <select id="gpsSimMode" class="w-full rounded-xl border px-3 py-2.5 text-sm outline-none" style="background:var(--g-bg);border-color:var(--g-surface-border);color:var(--g-text)">
+          <option value="normal">{% trans "Normal" %}</option>
+          <option value="zone_test">{% trans "Zone test" %}</option>
+          <option value="random_walk">{% trans "Random walk" %}</option>
+        </select>
+      </div>
+      <div>
+        <label class="block text-sm font-medium mb-1.5" style="color:var(--g-text)">{% trans "Points" %}</label>
+        <input id="gpsSimPoints" type="number" min="1" max="200" value="10"
+               class="w-full rounded-xl border px-3 py-2.5 text-sm outline-none" style="background:var(--g-bg);border-color:var(--g-surface-border);color:var(--g-text)">
+      </div>
+      <div class="flex items-end">
+        <button id="gpsSimBtn" class="w-full rounded-xl px-6 py-2.5 text-sm font-semibold" style="background:var(--g-accent);color:#fff">
+          {% trans "Lancer simulation" %}
+        </button>
+      </div>
+    </div>
+    <div id="gpsSimResult" class="rounded-xl p-4 text-sm hidden" style="background:var(--g-bg);border:1px solid var(--g-surface-border)"></div>
+  </div>
+
+  <!-- Current Position -->
+  {% if vehicle.last_lat and vehicle.last_lng %}
+  <div class="rounded-2xl p-5" style="background:var(--g-surface);border:1px solid var(--g-surface-border)">
+    <h2 class="text-lg font-bold mb-3" style="color:var(--g-text)">{% trans "Dernière position connue" %}</h2>
+    <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 text-sm">
+      <div>
+        <span style="color:var(--g-text-muted)">{% trans "Latitude" %}</span>
+        <div class="font-mono font-medium" style="color:var(--g-text)">{{ vehicle.last_lat }}</div>
+      </div>
+      <div>
+        <span style="color:var(--g-text-muted)">{% trans "Longitude" %}</span>
+        <div class="font-mono font-medium" style="color:var(--g-text)">{{ vehicle.last_lng }}</div>
+      </div>
+      <div>
+        <span style="color:var(--g-text-muted)">{% trans "Vitesse" %}</span>
+        <div class="font-medium" style="color:var(--g-text)">{% if vehicle.last_gps_speed %}{{ vehicle.last_gps_speed|floatformat:0 }} km/h{% else %}—{% endif %}</div>
+      </div>
+      <div>
+        <span style="color:var(--g-text-muted)">{% trans "Mise à jour" %}</span>
+        <div class="font-medium" style="color:var(--g-text)">{% if vehicle.last_gps_update %}{% blocktrans with since=vehicle.last_gps_update|timesince %}il y a {{ since }}{% endblocktrans %}{% else %}—{% endif %}</div>
+      </div>
+    </div>
+  </div>
+  {% endif %}
+
+  <!-- Recent Alerts -->
+  {% if alerts %}
+  <div class="rounded-2xl p-5" style="background:var(--g-surface);border:1px solid var(--g-surface-border)">
+    <h2 class="text-lg font-bold mb-3" style="color:var(--g-text)">{% trans "Alertes récentes" %}</h2>
+    <div class="space-y-2">
+      {% for a in alerts %}
+      <div class="flex items-start gap-3 rounded-xl p-3 text-sm" style="background:{% if a.resolved %}var(--g-bg){% else %}rgba(239,68,68,.08){% endif %}">
+        <svg class="w-4 h-4 mt-0.5 flex-shrink-0" style="color:{% if a.resolved %}var(--g-text-dim){% else %}var(--g-red){% endif %}" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z"/></svg>
+        <div>
+          <div class="font-medium" style="color:var(--g-text)">{{ a.get_alert_type_display }}</div>
+          <div style="color:var(--g-text-muted)">{{ a.message }}</div>
+          <div class="text-xs mt-1" style="color:var(--g-text-dim)">{% blocktrans with since=a.created_at|timesince %}il y a {{ since }}{% endblocktrans %}</div>
+        </div>
+        {% if not a.resolved %}
+        <form method="post" action="{% url 'dashboard:gps_alert_resolve' pk=a.pk %}" class="ml-auto">
+          {% csrf_token %}
+          <button class="text-xs px-2 py-1 rounded-lg" style="background:var(--g-surface-hover);color:var(--g-text-muted)">Résoudre</button>
+        </form>
+        {% endif %}
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+  {% endif %}
+
+  <!-- Recent GPS Logs -->
+  {% if logs %}
+  <div class="rounded-2xl p-5" style="background:var(--g-surface);border:1px solid var(--g-surface-border)">
+    <h2 class="text-lg font-bold mb-3" style="color:var(--g-text)">Historique des positions</h2>
+    <div class="overflow-x-auto">
+      <table class="w-full text-sm">
+        <thead>
+          <tr style="color:var(--g-text-muted)">
+            <th class="text-left pb-2 font-medium">Date</th>
+            <th class="text-left pb-2 font-medium">Position</th>
+            <th class="text-left pb-2 font-medium">Vitesse</th>
+            <th class="text-left pb-2 font-medium">Source</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for log in logs %}
+          <tr class="border-t" style="border-color:var(--g-surface-border);color:var(--g-text)">
+            <td class="py-2" style="color:var(--g-text-muted)">{{ log.recorded_at|date:"d/m/Y H:i" }}</td>
+            <td class="py-2 font-mono text-xs">{{ log.lat|floatformat:5 }}, {{ log.lng|floatformat:5 }}</td>
+            <td class="py-2">{% if log.speed %}{{ log.speed|floatformat:0 }} km/h{% else %}—{% endif %}</td>
+            <td class="py-2" style="color:var(--g-text-muted)">{{ log.source }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+  {% endif %}
+
+</div>
+
+<script>
+  function getCookie(name){
+    var value = "; " + document.cookie;
+    var parts = value.split("; " + name + "=");
+    if (parts.length === 2) return parts.pop().split(";").shift();
+  }
+  var simBtn = document.getElementById("gpsSimBtn");
+  if (simBtn){
+    simBtn.addEventListener("click", function(){
+      var mode = document.getElementById("gpsSimMode").value;
+      var points = parseInt(document.getElementById("gpsSimPoints").value || "10", 10);
+      var result = document.getElementById("gpsSimResult");
+      simBtn.disabled = true;
+      fetch("{% url 'dashboard:api_gps_simulate' %}", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-CSRFToken": getCookie("csrftoken")
+        },
+        body: JSON.stringify({vehicle_id: {{ vehicle.pk }}, mode: mode, points: points})
+      })
+      .then(function(r){ return r.json(); })
+      .then(function(data){
+        result.classList.remove("hidden");
+        if (data.status === "ok"){
+          result.innerHTML = "<div style='color:var(--g-text)'>✅ Points injectés: " + data.points_created + "</div>"
+            + "<div style='color:var(--g-text)'>📍 Position mise à jour: " + (data.vehicle_updated ? "oui" : "non") + "</div>"
+            + "<div style='color:var(--g-text)'>⚠️ Alertes déclenchées: " + data.alerts_triggered + "</div>"
+            + "<div style='color:var(--g-text)'>Zones violées: " + (data.zones_violated.length ? data.zones_violated.join(", ") : "aucune") + "</div>";
+        } else {
+          result.innerHTML = "<div style='color:var(--g-red)'>Erreur: " + (data.error || "simulation échouée") + "</div>";
+        }
+        if (window.reloadMapPositions){
+          window.reloadMapPositions();
+        }
+      })
+      .catch(function(){
+        result.classList.remove("hidden");
+        result.innerHTML = "<div style='color:var(--g-red)'>Erreur: simulation échouée</div>";
+      })
+      .finally(function(){
+        simBtn.disabled = false;
+      });
+    });
+  }
+</script>
+{% endblock %}

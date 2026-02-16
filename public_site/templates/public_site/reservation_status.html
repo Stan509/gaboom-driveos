@@ -1,0 +1,389 @@
+{% extends "public_site/_base.html" %}
+{% load i18n %}
+
+{% block ps_content %}
+<div class="max-w-2xl mx-auto px-4 py-10">
+
+  <!-- Status badge -->
+  <div class="text-center mb-8">
+    <div id="statusBadge" class="inline-flex items-center gap-2 rounded-full px-5 py-2 text-sm font-semibold mb-4
+      {% if reservation.status == 'pending' and reservation.negotiation_status == 'countered' %}bg-violet-100 text-violet-800
+      {% elif reservation.status == 'pending' %}bg-amber-100 text-amber-800
+      {% elif reservation.status == 'confirmed' %}bg-emerald-100 text-emerald-800
+      {% elif reservation.status == 'rejected' %}bg-red-100 text-red-800
+      {% else %}bg-slate-100 text-slate-600{% endif %}">
+      {% if reservation.status == 'pending' and reservation.negotiation_status == 'countered' %}
+        <span class="relative flex h-2.5 w-2.5"><span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-violet-400 opacity-75"></span><span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-violet-500"></span></span>
+        {% trans "Contre-offre reçue — Répondez !" %}
+      {% elif reservation.status == 'pending' %}
+        <span class="relative flex h-2.5 w-2.5"><span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span><span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-amber-500"></span></span>
+        {% trans "En attente de confirmation" %}
+      {% elif reservation.status == 'confirmed' %}
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5"/></svg>
+        {% trans "Réservation confirmée" %}
+      {% elif reservation.status == 'rejected' %}
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12"/></svg>
+        {% trans "Réservation refusée" %}
+      {% else %}
+        {% trans "Expirée" %}
+      {% endif %}
+    </div>
+    <h1 class="text-2xl font-bold">{% trans "Suivi de votre demande" %}</h1>
+    <p class="text-sm opacity-50 mt-1">{% trans "Référence :" %} {{ reservation.public_token|truncatechars:13 }}</p>
+  </div>
+
+  <!-- Decision message -->
+  <div id="decisionMsg" class="{% if not reservation.decision_message %}hidden{% endif %}">
+    <div class="rounded-2xl p-5 mb-6
+      {% if reservation.status == 'confirmed' %}bg-emerald-50 border border-emerald-200
+      {% elif reservation.status == 'rejected' %}bg-red-50 border border-red-200
+      {% else %}bg-blue-50 border border-blue-200{% endif %}">
+      <p id="decisionText" class="text-sm font-medium
+        {% if reservation.status == 'confirmed' %}text-emerald-800
+        {% elif reservation.status == 'rejected' %}text-red-800
+        {% else %}text-blue-800{% endif %}">
+        {{ reservation.decision_message }}
+      </p>
+    </div>
+  </div>
+
+  <!-- Reservation details card -->
+  <div class="ps-card rounded-2xl border overflow-hidden" style="border-color: color-mix(in srgb, var(--text) 8%, transparent);">
+    <!-- Vehicle -->
+    <div class="p-5 flex items-center gap-4 border-b" style="border-color: color-mix(in srgb, var(--text) 6%, transparent);">
+      {% if reservation.vehicle.image %}
+        <img src="{{ reservation.vehicle.image.url }}" alt="{{ reservation.vehicle }}" class="w-20 h-14 rounded-xl object-cover shrink-0" />
+      {% else %}
+        <div class="w-20 h-14 rounded-xl bg-slate-100 flex items-center justify-center shrink-0">
+          <svg class="w-8 h-8 text-slate-300" fill="none" stroke="currentColor" stroke-width="1" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 18.75a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 0 1-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m3 0H21"/></svg>
+        </div>
+      {% endif %}
+      <div>
+        <h3 class="font-bold">{{ reservation.vehicle.make }} {{ reservation.vehicle.model }}</h3>
+        <p class="text-sm opacity-60">{{ reservation.vehicle.plate_number }}</p>
+      </div>
+    </div>
+
+    <!-- Details grid -->
+    <div class="p-5 grid grid-cols-2 gap-y-4 gap-x-6 text-sm">
+      <div>
+        <span class="block text-xs uppercase tracking-wider opacity-40 mb-0.5">{% trans "Client" %}</span>
+        <span class="font-medium">{{ reservation.full_name }}</span>
+      </div>
+      <div>
+        <span class="block text-xs uppercase tracking-wider opacity-40 mb-0.5">{% trans "Téléphone" %}</span>
+        <span class="font-medium">{{ reservation.phone|default:"—" }}</span>
+      </div>
+      <div>
+        <span class="block text-xs uppercase tracking-wider opacity-40 mb-0.5">{% trans "Date de début" %}</span>
+        <span class="font-medium">{{ reservation.start_date|date:"d M Y" }}</span>
+      </div>
+      <div>
+        <span class="block text-xs uppercase tracking-wider opacity-40 mb-0.5">{% trans "Date de fin" %}</span>
+        <span class="font-medium">{{ reservation.end_date|date:"d M Y" }}</span>
+      </div>
+      <div>
+        <span class="block text-xs uppercase tracking-wider opacity-40 mb-0.5">{% trans "Durée" %}</span>
+        <span class="font-medium">{% blocktrans count days=reservation.duration_days %}{{ days }} jour{% plural %}{{ days }} jours{% endblocktrans %}</span>
+      </div>
+      <div>
+        <span class="block text-xs uppercase tracking-wider opacity-40 mb-0.5">{% trans "Estimation" %}</span>
+        <span class="font-semibold ps-primary">{{ reservation.estimated_total }} {{ agency.business_settings.currency|default:"EUR" }}</span>
+      </div>
+    </div>
+
+    {% if reservation.message %}
+    <div class="px-5 pb-5">
+      <span class="block text-xs uppercase tracking-wider opacity-40 mb-1">{% trans "Message" %}</span>
+      <p class="text-sm opacity-80">{{ reservation.message }}</p>
+    </div>
+    {% endif %}
+
+    <!-- Negotiation info -->
+    {% if reservation.negotiation_status != "none" %}
+    <div class="px-5 pb-5">
+      <span class="block text-xs uppercase tracking-wider opacity-40 mb-3">{% trans "Négociation" %}</span>
+
+      {% if reservation.daily_price_offer %}
+      <div class="flex items-center gap-3 text-sm mb-2">
+        <span class="opacity-60">{% trans "Votre offre :" %}</span>
+        <span class="font-bold">{{ reservation.daily_price_offer }} {{ agency.business_settings.currency|default:"EUR" }} {% trans "/jour" %}</span>
+      </div>
+      {% endif %}
+
+      {% if reservation.negotiation_status == "countered" and reservation.daily_price_counter %}
+      <!-- Counter-offer from agency -->
+      <div class="rounded-2xl border-2 border-violet-200 bg-violet-50 p-5 space-y-4 mt-3">
+        <div class="flex items-center gap-2">
+          <svg class="w-5 h-5 text-violet-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v12m-3-2.818.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/></svg>
+          <span class="font-bold text-violet-800">{% trans "Contre-offre de l'agence" %}</span>
+        </div>
+        <div class="text-center">
+          <div class="text-3xl font-bold text-violet-700">{{ reservation.daily_price_counter }} {{ agency.business_settings.currency|default:"EUR" }}</div>
+          <div class="text-sm text-violet-600 opacity-80">{% trans "par jour" %}</div>
+          {% if reservation.duration_days %}
+          <div class="text-sm text-violet-600 mt-1 font-semibold">
+            {% trans "Total estimé :" %} {{ reservation.daily_price_counter|floatformat:2 }} × {{ reservation.duration_days }} = 
+            <span class="text-violet-800">{% widthratio reservation.daily_price_counter 1 reservation.duration_days %} {{ agency.business_settings.currency|default:"EUR" }}</span>
+          </div>
+          {% endif %}
+        </div>
+        {% if reservation.agency_message %}
+        <div class="text-sm text-violet-700 bg-violet-100 rounded-xl p-3">
+          <span class="font-semibold">{% trans "Message de l'agence :" %}</span> {{ reservation.agency_message }}
+        </div>
+        {% endif %}
+        <div class="flex gap-3 pt-2">
+          <form method="post" action="{% url 'public_site:reservation_accept_counter' slug=agency.slug token=reservation.public_token %}" class="flex-1">
+            {% csrf_token %}
+            <input type="hidden" name="s" value="{{ secret }}" />
+            <button type="submit" class="w-full rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-3 px-4 text-sm transition flex items-center justify-center gap-2">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5"/></svg>
+              {% trans "Accepter" %}
+            </button>
+          </form>
+          <form method="post" action="{% url 'public_site:reservation_reject_counter' slug=agency.slug token=reservation.public_token %}" class="flex-1">
+            {% csrf_token %}
+            <input type="hidden" name="s" value="{{ secret }}" />
+            <button type="submit" class="w-full rounded-xl bg-red-100 hover:bg-red-200 text-red-700 font-semibold py-3 px-4 text-sm transition flex items-center justify-center gap-2"
+              data-confirm-text="{% filter escapejs %}{% trans "Êtes-vous sûr de vouloir refuser cette contre-offre ? La réservation sera annulée." %}{% endfilter %}"
+              onclick="return confirm(this.dataset.confirmText)">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12"/></svg>
+              {% trans "Refuser" %}
+            </button>
+          </form>
+        </div>
+      </div>
+
+      {% elif reservation.negotiation_status == "accepted" %}
+      <div class="flex items-center gap-2 text-sm text-emerald-700 bg-emerald-50 rounded-xl p-3 mt-2">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5"/></svg>
+        <span class="font-semibold">{% trans "Accord trouvé :" %} {{ reservation.daily_price_accepted }} {{ agency.business_settings.currency|default:"EUR" }} {% trans "/jour" %}</span>
+      </div>
+
+      {% elif reservation.negotiation_status == "refused" %}
+      <div class="flex items-center gap-2 text-sm text-red-700 bg-red-50 rounded-xl p-3 mt-2">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12"/></svg>
+        <span class="font-semibold">{% trans "Négociation refusée" %}</span>
+      </div>
+
+      {% elif reservation.negotiation_status == "pending_offer" %}
+      <div class="flex items-center gap-2 text-sm text-amber-700 bg-amber-50 rounded-xl p-3 mt-2">
+        <span class="relative flex h-2 w-2"><span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span><span class="relative inline-flex rounded-full h-2 w-2 bg-amber-500"></span></span>
+        <span class="font-semibold">{% trans "Offre envoyée — en attente de réponse de l'agence" %}</span>
+      </div>
+      {% endif %}
+    </div>
+    {% endif %}
+
+    <!-- Negotiation Messages Chat -->
+    {% if reservation.negotiation_status != "none" and reservation.client_account %}
+    <div class="px-5 pb-5">
+      <span class="block text-xs uppercase tracking-wider opacity-40 mb-3">{% trans "Messages" %}</span>
+      <div id="negoChat" class="space-y-3 max-h-72 overflow-y-auto mb-4 rounded-xl border p-4" style="border-color: color-mix(in srgb, var(--text) 8%, transparent); scroll-behavior: smooth;">
+        {% for msg in nego_messages %}
+        <div class="flex {% if msg.sender == 'client' %}justify-end{% else %}justify-start{% endif %}">
+          <div class="max-w-[80%] rounded-2xl px-4 py-2.5 text-sm
+            {% if msg.sender == 'client' %}bg-violet-600 text-white rounded-br-md
+            {% else %}bg-slate-100 rounded-bl-md{% endif %}"
+            {% if msg.sender != 'client' %}style="color: var(--text);"{% endif %}>
+            <p class="text-xs font-semibold mb-0.5 {% if msg.sender == 'client' %}text-violet-200{% else %}opacity-50{% endif %}">
+              {% if msg.sender == 'client' %}{% trans "Vous" %}{% else %}{{ agency.name }}{% endif %}
+            </p>
+            <p>{{ msg.body }}</p>
+            <p class="text-xs mt-1 {% if msg.sender == 'client' %}text-violet-200{% else %}opacity-40{% endif %}">
+              {{ msg.created_at|date:"d/m H:i" }}
+            </p>
+          </div>
+        </div>
+        {% empty %}
+        <p class="text-center text-sm opacity-40 py-4">{% trans "Aucun message pour le moment. Envoyez un message à l'agence." %}</p>
+        {% endfor %}
+      </div>
+
+      {% if can_chat %}
+      <form method="post" action="{% url 'public_site:reservation_send_message' slug=agency.slug token=reservation.public_token %}" class="flex gap-2">
+        {% csrf_token %}
+        <input type="hidden" name="s" value="{{ secret }}" />
+        <input type="text" name="body" required maxlength="1000" placeholder="Écrire un message…"
+          class="flex-1 rounded-xl border px-4 py-2.5 text-sm focus:ring-2 outline-none transition"
+          style="border-color: color-mix(in srgb, var(--text) 15%, transparent);" />
+        <button type="submit" class="shrink-0 rounded-xl px-4 py-2.5 transition" style="background: var(--primary); color: white;">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 12 3.269 3.125A59.769 59.769 0 0 1 21.485 12 59.768 59.768 0 0 1 3.27 20.875L5.999 12Zm0 0h7.5"/></svg>
+        </button>
+      </form>
+      {% else %}
+      <div class="text-center text-sm opacity-50 py-2">
+        <a href="{% url 'public_site:client_login' slug=agency.slug %}?next=/a/{{ agency.slug }}/reservation/{{ reservation.public_token }}/?s={{ secret }}" class="ps-primary font-semibold hover:underline">{% trans "Connectez-vous" %}</a> {% trans "pour envoyer un message à l'agence." %}
+      </div>
+      {% endif %}
+    </div>
+    {% endif %}
+
+    <!-- Timeline -->
+    <div class="px-5 pb-5">
+      <span class="block text-xs uppercase tracking-wider opacity-40 mb-3">{% trans "Historique" %}</span>
+      <div class="space-y-3">
+        <div class="flex items-start gap-3">
+          <div class="w-2.5 h-2.5 rounded-full bg-emerald-500 mt-1.5 shrink-0"></div>
+          <div>
+            <p class="text-sm font-medium">{% trans "Demande envoyée" %}</p>
+            <p class="text-xs opacity-50">{{ reservation.created_at|date:"d M Y H:i" }}</p>
+          </div>
+        </div>
+        {% if reservation.daily_price_offer %}
+        <div class="flex items-start gap-3">
+          <div class="w-2.5 h-2.5 rounded-full bg-violet-500 mt-1.5 shrink-0"></div>
+          <div>
+            <p class="text-sm font-medium text-violet-700">{% blocktrans with price=reservation.daily_price_offer %}Offre de {{ price }}/jour envoyée{% endblocktrans %}</p>
+          </div>
+        </div>
+        {% endif %}
+        {% if reservation.daily_price_counter %}
+        <div class="flex items-start gap-3">
+          <div class="w-2.5 h-2.5 rounded-full bg-violet-500 mt-1.5 shrink-0"></div>
+          <div>
+            <p class="text-sm font-medium text-violet-700">{% blocktrans with price=reservation.daily_price_counter %}Contre-offre de l'agence : {{ price }}/jour{% endblocktrans %}</p>
+          </div>
+        </div>
+        {% endif %}
+        {% if reservation.negotiation_status == "accepted" %}
+        <div class="flex items-start gap-3">
+          <div class="w-2.5 h-2.5 rounded-full bg-emerald-500 mt-1.5 shrink-0"></div>
+          <div>
+            <p class="text-sm font-medium text-emerald-700">{% blocktrans with price=reservation.daily_price_accepted %}Contre-offre acceptée — accord à {{ price }}/jour{% endblocktrans %}</p>
+          </div>
+        </div>
+        {% endif %}
+        {% if reservation.status == 'confirmed' %}
+        <div class="flex items-start gap-3">
+          <div class="w-2.5 h-2.5 rounded-full bg-emerald-500 mt-1.5 shrink-0"></div>
+          <div>
+            <p class="text-sm font-medium text-emerald-700">{% trans "Réservation confirmée" %}</p>
+            <p class="text-xs opacity-50">{{ reservation.updated_at|date:"d M Y H:i" }}</p>
+          </div>
+        </div>
+        {% elif reservation.status == 'rejected' %}
+        <div class="flex items-start gap-3">
+          <div class="w-2.5 h-2.5 rounded-full bg-red-500 mt-1.5 shrink-0"></div>
+          <div>
+            <p class="text-sm font-medium text-red-700">{% trans "Réservation refusée" %}</p>
+            <p class="text-xs opacity-50">{{ reservation.updated_at|date:"d M Y H:i" }}</p>
+          </div>
+        </div>
+        {% elif reservation.status == 'pending' and reservation.negotiation_status == 'countered' %}
+        <div class="flex items-start gap-3">
+          <div class="w-2.5 h-2.5 rounded-full bg-violet-400 mt-1.5 shrink-0 animate-pulse"></div>
+          <div>
+            <p class="text-sm font-medium text-violet-700">{% trans "En attente de votre réponse à la contre-offre…" %}</p>
+          </div>
+        </div>
+        {% elif reservation.status == 'pending' %}
+        <div class="flex items-start gap-3">
+          <div class="w-2.5 h-2.5 rounded-full bg-amber-400 mt-1.5 shrink-0 animate-pulse"></div>
+          <div>
+            <p class="text-sm font-medium text-amber-700">{% trans "En attente de réponse de l'agence…" %}</p>
+          </div>
+        </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+  <!-- Actions -->
+  <div class="mt-6 flex flex-col sm:flex-row gap-3">
+    {% if reservation.status == 'rejected' %}
+    <a href="{% url 'public_site:agency_catalog' slug=agency.slug %}" class="ps-btn text-center flex-1 flex items-center justify-center gap-2">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"/></svg>
+      {% trans "Voir les véhicules disponibles" %}
+    </a>
+    {% endif %}
+    {% if agency.site_settings.whatsapp %}
+    <a href="https://wa.me/{{ agency.site_settings.whatsapp|cut:' '|cut:'+' }}?text=Bonjour%2C%20j%27ai%20une%20demande%20de%20r%C3%A9servation%20%28r%C3%A9f%20{{ reservation.public_token|truncatechars:13 }}%29" target="_blank" class="ps-btn-outline text-center flex-1 flex items-center justify-center gap-2">
+      <svg class="w-5 h-5" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.625.846 5.059 2.284 7.034L.789 23.492a.75.75 0 0 0 .918.918l4.458-1.495A11.945 11.945 0 0 0 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0Zm0 22c-2.325 0-4.47-.744-6.227-2.01a.75.75 0 0 0-.635-.112l-3.096 1.038 1.038-3.096a.75.75 0 0 0-.112-.635A9.958 9.958 0 0 1 2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z"/></svg>
+      {% trans "Contacter via WhatsApp" %}
+    </a>
+    {% endif %}
+  </div>
+
+  <p class="text-xs text-center opacity-30 mt-6">{% trans "Conservez ce lien pour suivre votre demande." %}</p>
+</div>
+
+<!-- Auto-scroll chat to bottom -->
+<script>
+(function(){
+  const chat = document.getElementById('negoChat');
+  if (chat) chat.scrollTop = chat.scrollHeight;
+})();
+</script>
+
+<!-- Polling script (only when pending or negotiation active) -->
+{% if reservation.status == 'pending' %}
+<div id="toastContainer" class="fixed top-4 right-4 z-50"></div>
+<script>
+(function(){
+  const pollUrl = "{% url 'public_site:reservation_poll' slug=agency.slug token=reservation.public_token %}?s={{ secret }}";
+  let lastStatus = "{{ reservation.status }}";
+  let lastNego = "{{ reservation.negotiation_status }}";
+  let lastMsgCount = {{ nego_messages.count|default:"0" }};
+
+  function showToast(msg, type) {
+    const c = document.getElementById('toastContainer');
+    const t = document.createElement('div');
+    const colors = {
+      'confirmed': 'bg-emerald-500 text-white',
+      'rejected': 'bg-red-500 text-white',
+      'counter': 'bg-violet-600 text-white',
+      'message': 'bg-blue-600 text-white',
+    };
+    t.className = 'rounded-xl px-5 py-3 text-sm font-semibold shadow-lg mb-2 animate-slide-in ' + (colors[type] || 'bg-blue-500 text-white');
+    t.textContent = msg;
+    c.appendChild(t);
+    setTimeout(() => { t.style.opacity = '0'; t.style.transition = 'opacity .5s'; setTimeout(() => t.remove(), 600); }, 5000);
+  }
+
+  async function poll() {
+    try {
+      const r = await fetch(pollUrl);
+      if (!r.ok) return;
+      const d = await r.json();
+      let changed = false;
+      if (d.status !== lastStatus) {
+        lastStatus = d.status;
+        changed = true;
+        if (d.status === 'confirmed') {
+          showToast('{% trans "Réservation acceptée !" %}', 'confirmed');
+        } else if (d.status === 'rejected') {
+          showToast('{% trans "Réservation refusée" %}', 'rejected');
+        }
+      }
+      if (d.negotiation_status !== lastNego) {
+        lastNego = d.negotiation_status;
+        changed = true;
+        if (d.negotiation_status === 'countered') {
+          showToast('{% trans "Nouvelle contre-offre de l\'agence !" %}', 'counter');
+        }
+      }
+      if (d.msg_count > lastMsgCount) {
+        const newMsgs = d.msg_count - lastMsgCount;
+        lastMsgCount = d.msg_count;
+        if (d.unread_agency_msgs > 0) {
+          showToast('{% trans "Nouveau message de l\'agence !" %}', 'message');
+          changed = true;
+        }
+      }
+      if (changed) {
+        setTimeout(() => location.reload(), 1500);
+      }
+    } catch(e) {}
+  }
+
+  setInterval(poll, 6000);
+})();
+</script>
+<style>
+@keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+.animate-slide-in { animation: slideIn .3s ease-out; }
+</style>
+{% endif %}
+{% endblock %}

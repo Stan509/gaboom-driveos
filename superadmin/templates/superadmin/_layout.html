@@ -1,0 +1,180 @@
+{% load static i18n %}<!doctype html>
+{% get_current_language as LANGUAGE_CODE %}
+<html lang="{{ LANGUAGE_CODE }}" class="scroll-smooth">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#0f172a" />
+  <link rel="icon" type="image/png" sizes="32x32" href="{% static 'brand/favicon-32.png' %}" />
+  <link rel="icon" type="image/png" sizes="16x16" href="{% static 'brand/favicon-16.png' %}" />
+  <link rel="apple-touch-icon" sizes="180x180" href="{% static 'brand/apple-touch-icon.png' %}" />
+  <link rel="manifest" href="{% static 'manifest.json' %}" />
+  <title>{% block title %}SuperAdmin — Gaboom DriveOS{% endblock %}</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { sans: ["Inter", "system-ui", "sans-serif"] },
+          colors: {
+            sa: { 50:"#f0f4ff", 100:"#dbe4ff", 200:"#bac8ff", 400:"#748ffc", 500:"#4c6ef5", 600:"#3b5bdb", 700:"#364fc7", 800:"#1e3a5f", 900:"#0f172a" },
+            gaboomViolet: "#6D28D9",
+          },
+        },
+      },
+    };
+  </script>
+  <style>
+    body{font-family:"Inter",system-ui,sans-serif}
+    .sa-sidebar{position:fixed;top:0;left:0;bottom:0;width:240px;z-index:40;transition:transform .2s}
+    .sa-main{margin-left:240px;transition:margin-left .2s}
+    @media(max-width:1023px){
+      .sa-sidebar{transform:translateX(-100%)}
+      .sa-sidebar.open{transform:translateX(0)}
+      .sa-main{margin-left:0}
+      .sa-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:35;backdrop-filter:blur(2px)}
+      .sa-overlay.show{display:block}
+    }
+    .sa-nav-item{transition:background .15s,color .15s}
+    .sa-nav-item:hover{background:rgba(255,255,255,.08)}
+    .sa-nav-item.active{background:rgba(255,255,255,.12);color:#fff;font-weight:600}
+    .sa-nav-item.active .sa-icon{color:#748ffc}
+  </style>
+  {% block extra_head %}{% endblock %}
+</head>
+<body class="min-h-screen bg-slate-50 text-slate-900 antialiased">
+
+<!-- BUILD BADGE -->
+<div style="position:fixed;top:10px;right:10px;z-index:9999;background:linear-gradient(135deg,#4c6ef5,#3b5bdb);color:#fff;padding:5px 16px;border-radius:999px;font-size:11px;font-weight:700;box-shadow:0 2px 12px rgba(59,91,219,.4);pointer-events:none;letter-spacing:.5px;">BUILD: SUPERADMIN-v1</div>
+
+<!-- Mobile overlay -->
+<div id="saOverlay" class="sa-overlay" onclick="saToggleMobile()"></div>
+
+<!-- ═══════════ SIDEBAR ═══════════ -->
+<aside id="saSidebar" class="sa-sidebar bg-sa-900 flex flex-col">
+  <!-- Logo -->
+  <div class="px-5 py-5 flex items-center gap-3 border-b border-white/10">
+    <img src="{% static 'brand/logo.png' %}" alt="Gaboom DriveOS" class="h-8 w-8 rounded-lg object-cover" />
+    <div>
+      <div class="text-sm font-bold text-white leading-tight">SuperAdmin</div>
+      <div class="text-[10px] text-slate-400">Gaboom DriveOS</div>
+    </div>
+  </div>
+
+  <!-- Nav -->
+  <nav class="flex-1 px-3 py-4 space-y-1 overflow-y-auto">
+    <a href="{% url 'superadmin:overview' %}" class="sa-nav-item flex items-center gap-3 rounded-lg px-3 py-2.5 text-[13px] text-slate-300 {% if page_id == 'overview' %}active{% endif %}">
+      <svg class="sa-icon w-[18px] h-[18px] text-slate-500" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6A2.25 2.25 0 0 1 6 3.75h2.25A2.25 2.25 0 0 1 10.5 6v2.25a2.25 2.25 0 0 1-2.25 2.25H6a2.25 2.25 0 0 1-2.25-2.25V6ZM3.75 15.75A2.25 2.25 0 0 1 6 13.5h2.25a2.25 2.25 0 0 1 2.25 2.25V18a2.25 2.25 0 0 1-2.25 2.25H6A2.25 2.25 0 0 1 3.75 18v-2.25ZM13.5 6a2.25 2.25 0 0 1 2.25-2.25H18A2.25 2.25 0 0 1 20.25 6v2.25A2.25 2.25 0 0 1 18 10.5h-2.25a2.25 2.25 0 0 1-2.25-2.25V6ZM13.5 15.75a2.25 2.25 0 0 1 2.25-2.25H18a2.25 2.25 0 0 1 2.25 2.25V18A2.25 2.25 0 0 1 18 20.25h-2.25a2.25 2.25 0 0 1-2.25-2.25v-2.25Z"/></svg>
+      <span>Overview</span>
+    </a>
+    <a href="{% url 'superadmin:agencies' %}" class="sa-nav-item flex items-center gap-3 rounded-lg px-3 py-2.5 text-[13px] text-slate-300 {% if page_id == 'agencies' %}active{% endif %}">
+      <svg class="sa-icon w-[18px] h-[18px] text-slate-500" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 21h16.5M4.5 3h15M5.25 3v18m13.5-18v18M9 6.75h1.5m-1.5 3h1.5m-1.5 3h1.5m3-6H15m-1.5 3H15m-1.5 3H15M9 21v-3.375c0-.621.504-1.125 1.125-1.125h3.75c.621 0 1.125.504 1.125 1.125V21"/></svg>
+      <span>Agences</span>
+    </a>
+    <a href="{% url 'superadmin:proofs' %}" class="sa-nav-item flex items-center gap-3 rounded-lg px-3 py-2.5 text-[13px] text-slate-300 {% if page_id == 'proofs' %}active{% endif %}">
+      <svg class="sa-icon w-[18px] h-[18px] text-slate-500" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="m2.25 15.75 5.159-5.159a2.25 2.25 0 0 1 3.182 0l5.159 5.159m-1.5-1.5 1.409-1.409a2.25 2.25 0 0 1 3.182 0l2.909 2.909M3.75 21h16.5a1.5 1.5 0 0 0 1.5-1.5V4.5a1.5 1.5 0 0 0-1.5-1.5H3.75a1.5 1.5 0 0 0-1.5 1.5v15a1.5 1.5 0 0 0 1.5 1.5Z"/></svg>
+      <span>Preuves</span>
+    </a>
+    <a href="{% url 'superadmin:settings' %}" class="sa-nav-item flex items-center gap-3 rounded-lg px-3 py-2.5 text-[13px] text-slate-300 {% if page_id == 'settings' %}active{% endif %}">
+      <svg class="sa-icon w-[18px] h-[18px] text-slate-500" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9.594 3.94c.09-.542.56-.94 1.11-.94h2.593c.55 0 1.02.398 1.11.94l.213 1.281c.063.374.313.686.645.87.074.04.147.083.22.127.325.196.72.257 1.075.124l1.217-.456a1.125 1.125 0 0 1 1.37.49l1.296 2.247a1.125 1.125 0 0 1-.26 1.431l-1.003.827c-.293.241-.438.613-.43.992a7.723 7.723 0 0 1 0 .255c-.008.378.137.75.43.991l1.004.827c.424.35.534.955.26 1.43l-1.298 2.247a1.125 1.125 0 0 1-1.369.491l-1.217-.456c-.355-.133-.75-.072-1.076.124a6.47 6.47 0 0 1-.22.128c-.331.183-.581.495-.644.869l-.213 1.281c-.09.543-.56.94-1.11.94h-2.594c-.55 0-1.019-.398-1.11-.94l-.213-1.281c-.062-.374-.312-.686-.644-.87a6.52 6.52 0 0 1-.22-.127c-.325-.196-.72-.257-1.076-.124l-1.217.456a1.125 1.125 0 0 1-1.369-.49l-1.297-2.247a1.125 1.125 0 0 1 .26-1.431l1.004-.827c.292-.24.437-.613.43-.991a6.932 6.932 0 0 1 0-.255c.007-.38-.138-.751-.43-.992l-1.004-.827a1.125 1.125 0 0 1-.26-1.43l1.297-2.247a1.125 1.125 0 0 1 1.37-.491l1.216.456c.356.133.751.072 1.076-.124.072-.044.146-.086.22-.128.332-.183.582-.495.644-.869l.214-1.28Z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"/></svg>
+      <span>Parametres</span>
+    </a>
+    <a href="{% url 'superadmin:payments_settings' %}" class="sa-nav-item flex items-center gap-3 rounded-lg px-3 py-2.5 text-[13px] text-slate-300 {% if page_id == 'payments' %}active{% endif %}">
+      <svg class="sa-icon w-[18px] h-[18px] text-slate-500" fill="currentColor" viewBox="0 0 24 24"><path d="M7.076 21.337H2.47a.641.641 0 0 1-.633-.74L4.944 3.72a.77.77 0 0 1 .757-.644h6.568c2.175 0 3.706.563 4.553 1.674.393.515.635 1.082.725 1.692.095.636.047 1.39-.143 2.306l-.005.025v.463l.36.204c.305.168.548.365.734.592.312.38.514.854.6 1.41.088.574.059 1.24-.084 1.979-.165.852-.432 1.593-.793 2.2a4.453 4.453 0 0 1-1.256 1.418c-.49.357-1.07.62-1.724.78-.635.155-1.36.233-2.153.233h-.512a1.54 1.54 0 0 0-1.52 1.3l-.039.21-.654 4.14-.03.152a.77.77 0 0 1-.757.643H7.076Z"/></svg>
+      <span>Paiements</span>
+    </a>
+    <a href="{% url 'superadmin:webhooks_log' %}" class="sa-nav-item flex items-center gap-3 rounded-lg px-3 py-2.5 text-[13px] text-slate-300 {% if page_id == 'webhooks' %}active{% endif %}">
+      <svg class="sa-icon w-[18px] h-[18px] text-slate-500" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M7.5 21 3 16.5m0 0L7.5 12M3 16.5h13.5m0-13.5L21 7.5m0 0L16.5 12M21 7.5H7.5"/></svg>
+      <span>Webhooks</span>
+    </a>
+    <a href="{% url 'superadmin:alerts' %}" class="sa-nav-item flex items-center gap-3 rounded-lg px-3 py-2.5 text-[13px] text-slate-300 {% if page_id == 'alerts' %}active{% endif %}">
+      <svg class="sa-icon w-[18px] h-[18px] text-slate-500" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M14.857 17.082a23.848 23.848 0 0 0 5.454-1.31A8.967 8.967 0 0 1 18 9.75V9A6 6 0 0 0 6 9v.75a8.967 8.967 0 0 1-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 0 1-5.714 0m5.714 0a3 3 0 1 1-5.714 0"/></svg>
+      <span>Alertes</span>
+    </a>
+    <a href="{% url 'superadmin:audit' %}" class="sa-nav-item flex items-center gap-3 rounded-lg px-3 py-2.5 text-[13px] text-slate-300 {% if page_id == 'audit' %}active{% endif %}">
+      <svg class="sa-icon w-[18px] h-[18px] text-slate-500" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/></svg>
+      <span>Audit</span>
+    </a>
+
+    <div class="mt-4 mb-1 px-3"><div class="text-[9px] font-bold text-slate-500 uppercase tracking-widest">Setup</div></div>
+    <a href="{% url 'superadmin:setup_wizard' %}" class="sa-nav-item flex items-center gap-3 rounded-lg px-3 py-2.5 text-[13px] text-slate-300 {% if page_id == 'setup' %}active{% endif %}">
+      <svg class="sa-icon w-[18px] h-[18px] text-slate-500" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M11.42 15.17 17.25 21A2.652 2.652 0 0 0 21 17.25l-5.877-5.877M11.42 15.17l2.496-3.03c.317-.384.74-.626 1.208-.766M11.42 15.17l-4.655 5.653a2.548 2.548 0 1 1-3.586-3.586l6.837-5.63m5.108-.233c.55-.164 1.163-.188 1.743-.14a4.5 4.5 0 0 0 4.486-6.336l-3.276 3.277a3.004 3.004 0 0 1-2.25-2.25l3.276-3.276a4.5 4.5 0 0 0-6.336 4.486c.049.58.025 1.193-.14 1.743"/></svg>
+      <span>Setup PayPal</span>
+    </a>
+  </nav>
+
+  <!-- Footer -->
+  <div class="px-4 py-3 border-t border-white/10">
+    <div class="text-[11px] text-slate-500 mb-2 truncate">{{ request.user.email }}</div>
+    <div class="flex items-center gap-2">
+      <a href="/dashboard/" class="flex-1 text-center py-1.5 rounded-lg bg-white/5 text-[11px] text-slate-400 hover:bg-white/10 transition">Dashboard</a>
+      <form method="post" action="/logout/" class="flex-1">{% csrf_token %}
+        <button type="submit" class="w-full py-1.5 rounded-lg bg-white/5 text-[11px] text-red-400 hover:bg-red-500/10 transition">Logout</button>
+      </form>
+    </div>
+  </div>
+</aside>
+
+<!-- ═══════════ MAIN ═══════════ -->
+<div class="sa-main min-h-screen flex flex-col">
+  <!-- Mobile topbar -->
+  <div class="lg:hidden flex items-center gap-3 px-4 py-3 bg-sa-900 text-white shrink-0">
+    <button onclick="saToggleMobile()" class="p-1.5 rounded-lg hover:bg-white/10 transition">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"/></svg>
+    </button>
+    <span class="font-semibold text-sm">{% trans "SuperAdmin" %}</span>
+  </div>
+
+  <!-- Sticky topbar -->
+  <header class="sticky top-0 z-30 bg-white border-b border-slate-200 shadow-sm px-5 lg:px-8 py-3">
+    {% get_available_languages as LANGUAGES %}
+    {% get_language_info_list for LANGUAGES as languages %}
+    <div class="flex items-center justify-between gap-4">
+      <div>
+        <h1 class="text-lg font-bold text-slate-900">{% block page_title %}SuperAdmin{% endblock %}</h1>
+        <p class="text-[13px] text-slate-500 mt-0.5">{% block page_subtitle %}{% endblock %}</p>
+      </div>
+      <div class="flex items-center gap-2 shrink-0">
+        {% block page_actions %}{% endblock %}
+        <form action="{% url 'set_language' %}" method="post" class="hidden sm:block">
+          {% csrf_token %}
+          <input type="hidden" name="next" value="{{ request.get_full_path }}">
+          <select name="language" onchange="this.form.submit()" class="rounded-lg border border-slate-200 px-2 py-1 text-[11px] bg-white/70">
+            {% for lang in languages %}
+              <option value="{{ lang.code }}" {% if lang.code == LANGUAGE_CODE %}selected{% endif %}>{{ lang.name_local }}</option>
+            {% endfor %}
+          </select>
+        </form>
+      </div>
+    </div>
+  </header>
+
+  {% if messages %}
+  <div class="px-5 lg:px-8 pt-3">
+    {% for message in messages %}
+    <div class="rounded-xl px-4 py-2.5 text-sm font-medium mb-2
+      {% if message.tags == 'success' %}bg-emerald-50 text-emerald-700 border border-emerald-200
+      {% elif message.tags == 'error' %}bg-red-50 text-red-700 border border-red-200
+      {% else %}bg-blue-50 text-blue-700 border border-blue-200{% endif %}">
+      {{ message }}
+    </div>
+    {% endfor %}
+  </div>
+  {% endif %}
+
+  <main class="flex-1 p-5 lg:p-8">
+    {% block content %}{% endblock %}
+  </main>
+</div>
+
+<script>
+function saToggleMobile(){
+  document.getElementById('saSidebar').classList.toggle('open');
+  document.getElementById('saOverlay').classList.toggle('show');
+}
+</script>
+</body>
+</html>

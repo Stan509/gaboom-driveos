@@ -1,0 +1,490 @@
+{% extends "superadmin/_layout.html" %}
+
+{% block page_title %}Setup PayPal{% endblock %}
+{% block page_subtitle %}Assistant de configuration en 5 etapes{% endblock %}
+
+{% block extra_head %}
+<style>
+  .wz-step{transition:all .3s ease}
+  .wz-step.active .wz-num{background:#4c6ef5;color:#fff;box-shadow:0 0 0 4px rgba(76,110,245,.2)}
+  .wz-step.done .wz-num{background:#10b981;color:#fff}
+  .wz-step .wz-num{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;background:#e2e8f0;color:#64748b;transition:all .3s}
+  .wz-line{flex:1;height:2px;background:#e2e8f0;transition:background .3s}
+  .wz-line.done{background:#10b981}
+  .wz-panel{display:none;animation:wzFadeIn .3s ease}
+  .wz-panel.active{display:block}
+  @keyframes wzFadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+  .wz-result{padding:10px 14px;border-radius:12px;font-size:13px;font-weight:500;margin-top:8px;display:none}
+  .wz-result.show{display:flex;align-items:center;gap:8px}
+  .wz-result.ok{background:#ecfdf5;color:#065f46;border:1px solid #a7f3d0}
+  .wz-result.fail{background:#fef2f2;color:#991b1b;border:1px solid #fecaca}
+  .wz-btn{padding:8px 20px;border-radius:12px;font-size:13px;font-weight:600;transition:all .15s;cursor:pointer;border:none}
+  .wz-btn-primary{background:#4c6ef5;color:#fff}.wz-btn-primary:hover{background:#3b5bdb}
+  .wz-btn-secondary{background:#f1f5f9;color:#475569}.wz-btn-secondary:hover{background:#e2e8f0}
+  .wz-btn-success{background:#10b981;color:#fff}.wz-btn-success:hover{background:#059669}
+  .wz-btn-amber{background:#f59e0b;color:#fff}.wz-btn-amber:hover{background:#d97706}
+  .wz-btn:disabled{opacity:.5;cursor:not-allowed}
+  .wz-input{width:100%;border-radius:12px;border:1px solid #e2e8f0;padding:8px 14px;font-size:13px;outline:none;transition:border .15s}
+  .wz-input:focus{border-color:#748ffc}
+  .wz-select{width:100%;border-radius:12px;border:1px solid #e2e8f0;padding:8px 14px;font-size:13px;outline:none;background:#fff}
+  .wz-label{display:block;font-size:10px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px}
+  .wz-card{background:#fff;border-radius:16px;border:1px solid #e2e8f0;overflow:hidden}
+  .wz-card-head{padding:14px 20px;border-bottom:1px solid #f1f5f9;display:flex;align-items:center;gap:8px}
+  .wz-card-body{padding:20px}
+  .spin{animation:spin 1s linear infinite}
+  @keyframes spin{to{transform:rotate(360deg)}}
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- ═══════════ STEPPER BAR ═══════════ -->
+<div class="flex items-center gap-0 mb-8 max-w-3xl mx-auto px-2">
+  <div class="wz-step flex items-center gap-2" id="stepTab1" onclick="goStep(1)">
+    <div class="wz-num cursor-pointer" id="stepNum1">1</div>
+    <span class="text-xs font-semibold text-slate-500 hidden sm:inline">Domaine</span>
+  </div>
+  <div class="wz-line" id="line1"></div>
+  <div class="wz-step flex items-center gap-2" id="stepTab2" onclick="goStep(2)">
+    <div class="wz-num cursor-pointer" id="stepNum2">2</div>
+    <span class="text-xs font-semibold text-slate-500 hidden sm:inline">Cles</span>
+  </div>
+  <div class="wz-line" id="line2"></div>
+  <div class="wz-step flex items-center gap-2" id="stepTab3" onclick="goStep(3)">
+    <div class="wz-num cursor-pointer" id="stepNum3">3</div>
+    <span class="text-xs font-semibold text-slate-500 hidden sm:inline">Plan</span>
+  </div>
+  <div class="wz-line" id="line3"></div>
+  <div class="wz-step flex items-center gap-2" id="stepTab4" onclick="goStep(4)">
+    <div class="wz-num cursor-pointer" id="stepNum4">4</div>
+    <span class="text-xs font-semibold text-slate-500 hidden sm:inline">Webhook</span>
+  </div>
+  <div class="wz-line" id="line4"></div>
+  <div class="wz-step flex items-center gap-2" id="stepTab5" onclick="goStep(5)">
+    <div class="wz-num cursor-pointer" id="stepNum5">5</div>
+    <span class="text-xs font-semibold text-slate-500 hidden sm:inline">Test</span>
+  </div>
+</div>
+
+<div class="max-w-3xl mx-auto space-y-6">
+
+<!-- ═══════════ STEP 1: DOMAIN ═══════════ -->
+<div class="wz-panel active" id="panel1">
+  <div class="wz-card">
+    <div class="wz-card-head">
+      <svg class="w-5 h-5 text-sa-500" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 21a9.004 9.004 0 0 0 8.716-6.747M12 21a9.004 9.004 0 0 1-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S14.485 3 12 3m0 18c-2.485 0-4.5-4.03-4.5-9S9.515 3 12 3m0 0a8.997 8.997 0 0 1 7.843 4.582M12 3a8.997 8.997 0 0 0-7.843 4.582"/></svg>
+      <h3 class="text-sm font-bold text-slate-700">Etape 1 — Domaine public</h3>
+    </div>
+    <div class="wz-card-body space-y-4">
+      <p class="text-xs text-slate-500">URL publique de votre plateforme. Necessaire pour les webhooks PayPal et les redirections.</p>
+      <div>
+        <label class="wz-label">URL publique</label>
+        <input type="url" id="inp_base_url" class="wz-input" placeholder="https://app.gaboomdriveos.com" value="{{ ps.public_base_url }}" />
+      </div>
+      <div class="flex items-center gap-3">
+        <button class="wz-btn wz-btn-primary" onclick="saveDomain()">Enregistrer</button>
+        <button class="wz-btn wz-btn-secondary" onclick="goStep(2)">Suivant &rarr;</button>
+      </div>
+      <div class="wz-result" id="res_domain"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ STEP 2: KEYS ═══════════ -->
+<div class="wz-panel" id="panel2">
+  <div class="wz-card">
+    <div class="wz-card-head">
+      <svg class="w-5 h-5 text-sa-500" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 5.25a3 3 0 0 1 3 3m3 0a6 6 0 0 1-7.029 5.912c-.563-.097-1.159.026-1.563.43L10.5 17.25H8.25v2.25H6v2.25H2.25v-2.818c0-.597.237-1.17.659-1.591l6.499-6.499c.404-.404.527-1 .43-1.563A6 6 0 1 1 21.75 8.25Z"/></svg>
+      <h3 class="text-sm font-bold text-slate-700">Etape 2 — Identifiants PayPal</h3>
+    </div>
+    <div class="wz-card-body space-y-4">
+      {% if not fernet_ok %}
+      <div class="rounded-xl border-2 border-blue-300 bg-blue-50 p-3 flex items-start gap-2">
+        <svg class="w-4 h-4 text-blue-500 shrink-0 mt-0.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="m11.25 11.25.041-.02a.75.75 0 0 1 1.063.852l-.708 2.836a.75.75 0 0 0 1.063.853l.041-.021M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9-3.75h.008v.008H12V8.25Z"/></svg>
+        <div class="text-xs text-blue-800"><strong>FERNET_KEY sera generee automatiquement</strong> lors de l'enregistrement du secret. Elle sera sauvegardee dans <code class="bg-blue-100 px-1 rounded">.env</code>.</div>
+      </div>
+      {% else %}
+      <div class="rounded-xl border border-emerald-200 bg-emerald-50 p-3 flex items-start gap-2">
+        <svg class="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5"/></svg>
+        <div class="text-xs text-emerald-800"><strong>FERNET_KEY configuree.</strong> Le chiffrement du secret est operationnel.</div>
+      </div>
+      {% endif %}
+      <div>
+        <label class="wz-label">Mode</label>
+        <select id="inp_mode" class="wz-select">
+          <option value="sandbox" {% if ps.paypal_mode == 'sandbox' %}selected{% endif %}>Sandbox (test)</option>
+          <option value="live" {% if ps.paypal_mode == 'live' %}selected{% endif %}>Live (production)</option>
+        </select>
+      </div>
+      <div>
+        <label class="wz-label">Client ID</label>
+        <input type="text" id="inp_client_id" class="wz-input font-mono" placeholder="AaBbCc..." value="{{ ps.active_client_id }}" />
+      </div>
+      <div>
+        <label class="wz-label">Client Secret</label>
+        <input type="password" id="inp_secret" class="wz-input font-mono" placeholder="{% if ps.active_client_secret_encrypted %}(secret chiffre enregistre){% else %}EeFfGg...{% endif %}" autocomplete="off" />
+        {% if ps.active_client_secret_encrypted %}
+        <p class="text-xs text-emerald-600 mt-1 flex items-center gap-1">
+          <svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5"/></svg>
+          Secret chiffre enregistre. Laissez vide pour le conserver.
+        </p>
+        {% endif %}
+      </div>
+      <div>
+        <label class="flex items-center gap-2 text-sm text-slate-700 cursor-pointer">
+          <input type="checkbox" id="inp_enable_paypal" class="rounded border-slate-300 text-sa-500 focus:ring-sa-500" {% if ps.enable_paypal_auto %}checked{% endif %} />
+          <span class="text-xs">Activer PayPal auto pour les agences</span>
+        </label>
+      </div>
+      <div class="flex flex-wrap items-center gap-3">
+        <button class="wz-btn wz-btn-primary" onclick="saveKeys()">Enregistrer</button>
+        <button class="wz-btn wz-btn-secondary" onclick="testToken()">
+          <span id="testTokenLabel">Tester connexion PayPal</span>
+        </button>
+        <button class="wz-btn wz-btn-secondary" onclick="goStep(3)">Suivant &rarr;</button>
+      </div>
+      <div class="wz-result" id="res_keys"></div>
+      <div class="wz-result" id="res_token"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ STEP 3: PLAN ═══════════ -->
+<div class="wz-panel" id="panel3">
+  <div class="wz-card">
+    <div class="wz-card-head">
+      <svg class="w-5 h-5 text-sa-500" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 18.75a60.07 60.07 0 0 1 15.797 2.101c.727.198 1.453-.342 1.453-1.096V18.75M3.75 4.5v.75A.75.75 0 0 1 3 6h-.75m0 0v-.375c0-.621.504-1.125 1.125-1.125H20.25M2.25 6v9m18-10.5v.75c0 .414.336.75.75.75h.75m-1.5-1.5h.375c.621 0 1.125.504 1.125 1.125v9.75c0 .621-.504 1.125-1.125 1.125h-.375m1.5-1.5H21a.75.75 0 0 0-.75.75v.75m0 0H3.75m0 0h-.375a1.125 1.125 0 0 1-1.125-1.125V15m1.5 1.5v-.75A.75.75 0 0 0 3 15h-.75M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Zm3 0h.008v.008H18V10.5Zm-12 0h.008v.008H6V10.5Z"/></svg>
+      <h3 class="text-sm font-bold text-slate-700">Etape 3 — Plan d'abonnement</h3>
+    </div>
+    <div class="wz-card-body space-y-4">
+      <p class="text-xs text-slate-500">Entrez le Plan ID si vous l'avez deja, ou creez-en un via l'API.</p>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div>
+          <label class="wz-label">Plan ID Sandbox</label>
+          <input type="text" id="inp_plan_sandbox" class="wz-input font-mono" placeholder="P-XXXXX..." value="{{ ps.paypal_plan_id_sandbox }}" />
+        </div>
+        <div>
+          <label class="wz-label">Plan ID Live</label>
+          <input type="text" id="inp_plan_live" class="wz-input font-mono" placeholder="P-XXXXX..." value="{{ ps.paypal_plan_id_live }}" />
+        </div>
+      </div>
+      <div class="flex flex-wrap items-center gap-3">
+        <button class="wz-btn wz-btn-primary" onclick="savePlans()">Enregistrer</button>
+        <button class="wz-btn wz-btn-secondary" onclick="testPlan()">Valider Plan ID</button>
+        <button class="wz-btn wz-btn-secondary" onclick="goStep(4)">Suivant &rarr;</button>
+      </div>
+      <div class="wz-result" id="res_plans"></div>
+      <div class="wz-result" id="res_plan_test"></div>
+
+      <!-- Create plan section -->
+      <details class="mt-4">
+        <summary class="text-xs font-bold text-sa-500 cursor-pointer hover:text-sa-600 transition">Creer un plan via l'API PayPal (optionnel)</summary>
+        <div class="mt-3 p-4 rounded-xl bg-slate-50 border border-slate-200 space-y-3">
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label class="wz-label">Prix mensuel</label>
+              <input type="text" id="inp_plan_price" class="wz-input" placeholder="29.99" />
+            </div>
+            <div>
+              <label class="wz-label">Devise</label>
+              <select id="inp_plan_currency" class="wz-select">
+                <option value="USD">USD</option>
+                <option value="EUR">EUR</option>
+                <option value="HTG">HTG</option>
+              </select>
+            </div>
+          </div>
+          <button class="wz-btn wz-btn-amber" onclick="createPlan()">Creer Plan via API</button>
+          <div class="wz-result" id="res_create_plan"></div>
+        </div>
+      </details>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ STEP 4: WEBHOOK ═══════════ -->
+<div class="wz-panel" id="panel4">
+  <div class="wz-card">
+    <div class="wz-card-head">
+      <svg class="w-5 h-5 text-sa-500" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75m-3-7.036A11.959 11.959 0 0 1 3.598 6 11.99 11.99 0 0 0 3 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285Z"/></svg>
+      <h3 class="text-sm font-bold text-slate-700">Etape 4 — Webhook</h3>
+    </div>
+    <div class="wz-card-body space-y-4">
+      <!-- Webhook URL display -->
+      {% if cfg.webhook_url %}
+      <div class="rounded-xl bg-slate-50 border border-slate-200 p-3">
+        <div class="wz-label mb-1">Webhook URL a coller dans PayPal</div>
+        <div class="flex items-center gap-2">
+          <code id="webhookUrlDisplay" class="flex-1 text-xs font-mono text-sa-600 bg-white border border-slate-200 rounded-lg px-3 py-2 select-all">{{ cfg.webhook_url }}</code>
+          <button type="button" onclick="copyText('webhookUrlDisplay',this)" class="shrink-0 px-3 py-2 rounded-lg bg-sa-500 text-white text-xs font-semibold hover:bg-sa-600 transition">Copier</button>
+        </div>
+      </div>
+      {% else %}
+      <div class="rounded-xl bg-amber-50 border border-amber-200 p-3 flex items-center gap-2">
+        <svg class="w-4 h-4 text-amber-500 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z"/></svg>
+        <span class="text-xs text-amber-700 font-medium">Configurez d'abord le domaine (etape 1) pour afficher l'URL webhook.</span>
+      </div>
+      {% endif %}
+
+      <div>
+        <label class="wz-label">Webhook ID PayPal (optionnel)</label>
+        <input type="text" id="inp_webhook_id" class="wz-input font-mono" placeholder="WH-XXXXX..." value="{{ ps.active_webhook_id }}" />
+      </div>
+      <label class="flex items-center gap-2 text-sm text-slate-700 cursor-pointer">
+        <input type="checkbox" id="inp_webhook_verify" class="rounded border-slate-300 text-sa-500 focus:ring-sa-500" {% if ps.paypal_webhook_verify %}checked{% endif %} />
+        <span class="text-xs">Activer la verification de signature</span>
+      </label>
+      <div class="flex flex-wrap items-center gap-3">
+        <button class="wz-btn wz-btn-primary" onclick="saveWebhook()">Enregistrer</button>
+        <button class="wz-btn wz-btn-secondary" onclick="testWebhook()">Tester endpoint</button>
+        <button class="wz-btn wz-btn-secondary" onclick="goStep(5)">Suivant &rarr;</button>
+      </div>
+      <div class="wz-result" id="res_webhook_save"></div>
+      <div class="wz-result" id="res_webhook_test"></div>
+
+      <!-- Recent events -->
+      {% if recent_events %}
+      <div class="mt-4">
+        <div class="wz-label mb-2">Derniers evenements recus</div>
+        <div class="space-y-1.5 max-h-48 overflow-y-auto">
+          {% for ev in recent_events %}
+          <div class="flex items-center gap-2 text-xs bg-slate-50 rounded-lg px-3 py-2">
+            {% if 'COMPLETED' in ev.event_type or 'ACTIVATED' in ev.event_type %}
+              <span class="w-2 h-2 rounded-full bg-emerald-500 shrink-0"></span>
+            {% elif 'FAILED' in ev.event_type %}
+              <span class="w-2 h-2 rounded-full bg-red-500 shrink-0"></span>
+            {% else %}
+              <span class="w-2 h-2 rounded-full bg-slate-400 shrink-0"></span>
+            {% endif %}
+            <span class="font-mono text-slate-600">{{ ev.event_type }}</span>
+            <span class="text-slate-400 ml-auto">{{ ev.created_at|date:"d/m H:i" }}</span>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ STEP 5: END-TO-END ═══════════ -->
+<div class="wz-panel" id="panel5">
+  <div class="wz-card">
+    <div class="wz-card-head">
+      <svg class="w-5 h-5 text-sa-500" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12c0 1.268-.63 2.39-1.593 3.068a3.745 3.745 0 0 1-1.043 3.296 3.745 3.745 0 0 1-3.296 1.043A3.745 3.745 0 0 1 12 21c-1.268 0-2.39-.63-3.068-1.593a3.746 3.746 0 0 1-3.296-1.043 3.745 3.745 0 0 1-1.043-3.296A3.745 3.745 0 0 1 3 12c0-1.268.63-2.39 1.593-3.068a3.745 3.745 0 0 1 1.043-3.296 3.746 3.746 0 0 1 3.296-1.043A3.746 3.746 0 0 1 12 3c1.268 0 2.39.63 3.068 1.593a3.746 3.746 0 0 1 3.296 1.043 3.746 3.746 0 0 1 1.043 3.296A3.745 3.745 0 0 1 21 12Z"/></svg>
+      <h3 class="text-sm font-bold text-slate-700">Etape 5 — Validation finale</h3>
+    </div>
+    <div class="wz-card-body space-y-4">
+      <p class="text-xs text-slate-500">Verification automatique de toutes les etapes.</p>
+
+      <div class="space-y-2" id="checklistContainer">
+        <div class="flex items-center gap-3 p-3 rounded-xl bg-slate-50" id="chk1">
+          <div class="w-6 h-6 rounded-full bg-slate-200 flex items-center justify-center shrink-0" id="chkIcon1">
+            <svg class="w-3.5 h-3.5 text-slate-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z"/></svg>
+          </div>
+          <span class="text-sm text-slate-600" id="chkText1">Domaine public configure</span>
+        </div>
+        <div class="flex items-center gap-3 p-3 rounded-xl bg-slate-50" id="chk2">
+          <div class="w-6 h-6 rounded-full bg-slate-200 flex items-center justify-center shrink-0" id="chkIcon2">
+            <svg class="w-3.5 h-3.5 text-slate-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z"/></svg>
+          </div>
+          <span class="text-sm text-slate-600" id="chkText2">Cles PayPal configurees</span>
+        </div>
+        <div class="flex items-center gap-3 p-3 rounded-xl bg-slate-50" id="chk3">
+          <div class="w-6 h-6 rounded-full bg-slate-200 flex items-center justify-center shrink-0" id="chkIcon3">
+            <svg class="w-3.5 h-3.5 text-slate-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z"/></svg>
+          </div>
+          <span class="text-sm text-slate-600" id="chkText3">Plan d'abonnement configure</span>
+        </div>
+        <div class="flex items-center gap-3 p-3 rounded-xl bg-slate-50" id="chk4">
+          <div class="w-6 h-6 rounded-full bg-slate-200 flex items-center justify-center shrink-0" id="chkIcon4">
+            <svg class="w-3.5 h-3.5 text-slate-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z"/></svg>
+          </div>
+          <span class="text-sm text-slate-600" id="chkText4">Webhook URL configuree</span>
+        </div>
+        <div class="flex items-center gap-3 p-3 rounded-xl bg-slate-50" id="chk5">
+          <div class="w-6 h-6 rounded-full bg-slate-200 flex items-center justify-center shrink-0" id="chkIcon5">
+            <svg class="w-3.5 h-3.5 text-slate-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z"/></svg>
+          </div>
+          <span class="text-sm text-slate-600" id="chkText5">Au moins 1 evenement recu</span>
+        </div>
+      </div>
+
+      <!-- All OK banner -->
+      <div class="hidden rounded-2xl bg-emerald-50 border-2 border-emerald-300 p-4 text-center" id="allOkBanner">
+        <svg class="w-10 h-10 text-emerald-500 mx-auto mb-2" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/></svg>
+        <div class="text-lg font-bold text-emerald-800">Configuration terminee !</div>
+        <p class="text-sm text-emerald-600 mt-1">PayPal est pret a recevoir des abonnements.</p>
+      </div>
+
+      <div class="flex flex-wrap items-center gap-3">
+        <button class="wz-btn wz-btn-primary" onclick="refreshChecklist()">Verifier tout</button>
+        {% if is_debug %}
+        <button class="wz-btn wz-btn-amber" onclick="simulateWebhook()">Simuler evenement webhook</button>
+        {% endif %}
+      </div>
+      <div class="wz-result" id="res_simulate"></div>
+    </div>
+  </div>
+</div>
+
+</div><!-- max-w-3xl -->
+
+<script>
+const CSRF = '{{ csrf_token }}';
+let currentStep = 1;
+
+// ── Stepper navigation ────────────────────────────────────────────
+function goStep(n) {
+  currentStep = n;
+  for (let i = 1; i <= 5; i++) {
+    document.getElementById('panel' + i).classList.toggle('active', i === n);
+    document.getElementById('stepTab' + i).classList.toggle('active', i === n);
+  }
+  refreshChecklist();
+}
+
+function setStepDone(n, done) {
+  const tab = document.getElementById('stepTab' + n);
+  tab.classList.toggle('done', done);
+  if (n < 5) {
+    document.getElementById('line' + n).classList.toggle('done', done);
+  }
+}
+
+// ── AJAX helper ───────────────────────────────────────────────────
+async function api(url, body) {
+  const resp = await fetch(url, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'X-CSRFToken': CSRF },
+    body: JSON.stringify(body || {}),
+  });
+  return resp.json();
+}
+
+function showResult(id, ok, msg) {
+  const el = document.getElementById(id);
+  el.className = 'wz-result show ' + (ok ? 'ok' : 'fail');
+  el.innerHTML = (ok
+    ? '<svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5"/></svg>'
+    : '<svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12"/></svg>'
+  ) + '<span>' + msg + '</span>';
+}
+
+function copyText(elId, btn) {
+  const el = document.getElementById(elId);
+  navigator.clipboard.writeText(el.textContent.trim()).then(() => {
+    const orig = btn.textContent;
+    btn.textContent = 'Copie!';
+    setTimeout(() => { btn.textContent = orig; }, 1500);
+  });
+}
+
+// ── Step 1: Domain ────────────────────────────────────────────────
+async function saveDomain() {
+  const url = document.getElementById('inp_base_url').value.trim();
+  const r = await api('{% url "superadmin:setup_save_domain" %}', { public_base_url: url });
+  showResult('res_domain', r.ok, r.message);
+  if (r.ok) setStepDone(1, true);
+}
+
+// ── Step 2: Keys ──────────────────────────────────────────────────
+async function saveKeys() {
+  const r = await api('{% url "superadmin:setup_save_keys" %}', {
+    paypal_mode: document.getElementById('inp_mode').value,
+    paypal_client_id: document.getElementById('inp_client_id').value.trim(),
+    paypal_client_secret: document.getElementById('inp_secret').value.trim(),
+    enable_paypal_auto: document.getElementById('inp_enable_paypal').checked,
+  });
+  showResult('res_keys', r.ok, r.message);
+  if (r.ok) setStepDone(2, true);
+}
+
+async function testToken() {
+  document.getElementById('testTokenLabel').textContent = 'Test en cours...';
+  const r = await api('{% url "superadmin:setup_test_token" %}');
+  showResult('res_token', r.ok, r.message);
+  document.getElementById('testTokenLabel').textContent = 'Tester connexion PayPal';
+  if (r.ok) setStepDone(2, true);
+}
+
+// ── Step 3: Plan ──────────────────────────────────────────────────
+async function savePlans() {
+  const r = await api('{% url "superadmin:setup_save_plans" %}', {
+    paypal_plan_id_sandbox: document.getElementById('inp_plan_sandbox').value.trim(),
+    paypal_plan_id_live: document.getElementById('inp_plan_live').value.trim(),
+  });
+  showResult('res_plans', r.ok, r.message);
+  if (r.ok) setStepDone(3, true);
+}
+
+async function testPlan() {
+  const mode = document.getElementById('inp_mode') ? document.getElementById('inp_mode').value : 'sandbox';
+  const pid = mode === 'live'
+    ? document.getElementById('inp_plan_live').value.trim()
+    : document.getElementById('inp_plan_sandbox').value.trim();
+  const r = await api('{% url "superadmin:setup_test_plan" %}', { plan_id: pid });
+  showResult('res_plan_test', r.ok, r.message);
+  if (r.ok) setStepDone(3, true);
+}
+
+async function createPlan() {
+  const price = document.getElementById('inp_plan_price').value.trim();
+  const currency = document.getElementById('inp_plan_currency').value;
+  const r = await api('{% url "superadmin:setup_create_plan" %}', { price, currency });
+  showResult('res_create_plan', r.ok, r.message);
+  if (r.ok && r.plan_id) {
+    const mode = document.getElementById('inp_mode') ? document.getElementById('inp_mode').value : 'sandbox';
+    if (mode === 'live') {
+      document.getElementById('inp_plan_live').value = r.plan_id;
+    } else {
+      document.getElementById('inp_plan_sandbox').value = r.plan_id;
+    }
+    setStepDone(3, true);
+  }
+}
+
+// ── Step 4: Webhook ───────────────────────────────────────────────
+async function saveWebhook() {
+  const r = await api('{% url "superadmin:setup_save_webhook" %}', {
+    paypal_webhook_id: document.getElementById('inp_webhook_id').value.trim(),
+    paypal_webhook_verify: document.getElementById('inp_webhook_verify').checked,
+  });
+  showResult('res_webhook_save', r.ok, r.message);
+  if (r.ok) setStepDone(4, true);
+}
+
+async function testWebhook() {
+  const r = await api('{% url "superadmin:setup_test_webhook" %}');
+  showResult('res_webhook_test', r.ok, r.message);
+  if (r.ok) setStepDone(4, true);
+}
+
+// ── Step 5: Validation ────────────────────────────────────────────
+const CHK_OK = '<svg class="w-3.5 h-3.5 text-white" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5"/></svg>';
+const CHK_FAIL = '<svg class="w-3.5 h-3.5 text-white" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12"/></svg>';
+
+async function refreshChecklist() {
+  const r = await api('{% url "superadmin:setup_status" %}');
+  const steps = [r.step1, r.step2, r.step3, r.step4, r.step5];
+  let allOk = true;
+  for (let i = 0; i < 5; i++) {
+    const ok = steps[i];
+    const icon = document.getElementById('chkIcon' + (i + 1));
+    icon.className = 'w-6 h-6 rounded-full flex items-center justify-center shrink-0 ' + (ok ? 'bg-emerald-500' : 'bg-red-400');
+    icon.innerHTML = ok ? CHK_OK : CHK_FAIL;
+    setStepDone(i + 1, ok);
+    if (!ok) allOk = false;
+  }
+  document.getElementById('allOkBanner').classList.toggle('hidden', !allOk);
+}
+
+async function simulateWebhook() {
+  const r = await api('{% url "superadmin:setup_simulate_webhook" %}');
+  showResult('res_simulate', r.ok, r.message);
+  if (r.ok) setTimeout(refreshChecklist, 500);
+}
+
+// Initial check on load
+document.addEventListener('DOMContentLoaded', refreshChecklist);
+</script>
+{% endblock %}

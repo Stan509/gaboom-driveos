@@ -1,0 +1,134 @@
+{% extends "dashboard/_layout.html" %}
+{% load i18n %}
+{% block title %}{% trans "WhatsApp Outbox — Marketing Engine" %}{% endblock %}
+{% block page_title %}{% trans "WhatsApp Outbox" %}{% endblock %}
+{% block page_subtitle %}{% trans "File d'attente des messages WhatsApp — envoi via API" %}{% endblock %}
+
+{% block page_css %}
+<style>
+@keyframes cardIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.mkt-card{animation:cardIn .3s ease-out both;border-radius:16px;border:1px solid var(--g-card-border,rgba(255,255,255,.06));background:var(--g-card,rgba(255,255,255,.03));padding:1.25rem;transition:box-shadow .2s,transform .15s}
+.mkt-card:hover{box-shadow:0 0 24px rgba(109,40,217,.08);transform:translateY(-1px)}
+.kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:1rem;margin-bottom:1.5rem}
+.kpi-box{border-radius:14px;padding:1rem 1.15rem;border:1px solid var(--g-card-border,rgba(255,255,255,.06));background:var(--g-card,rgba(255,255,255,.03));position:relative;overflow:hidden}
+.kpi-box::after{content:'';position:absolute;top:0;right:0;width:50px;height:50px;border-radius:50%;filter:blur(25px);opacity:.15}
+.kpi-box.kpi-wa::after{background:#25D366}
+.kpi-box.kpi-pending::after{background:#FACC15}
+.kpi-box.kpi-sent::after{background:#10B981}
+.kpi-box.kpi-failed::after{background:#EF4444}
+.kpi-val{font-size:1.5rem;font-weight:700;line-height:1.1}
+.kpi-label{font-size:.7rem;opacity:.6;margin-top:.2rem}
+.tbl{width:100%;border-collapse:separate;border-spacing:0}
+.tbl th{font-size:.7rem;text-transform:uppercase;letter-spacing:.05em;padding:.75rem 1rem;text-align:left;opacity:.5;font-weight:600}
+.tbl td{padding:.85rem 1rem;border-top:1px solid var(--g-card-border,rgba(255,255,255,.06));font-size:.85rem}
+.tbl tr:hover td{background:rgba(37,211,102,.03)}
+.status-badge{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:600}
+.st-pending{background:rgba(250,204,21,.12);color:#FACC15}
+.st-sent{background:rgba(16,185,129,.12);color:#34D399}
+.st-failed{background:rgba(239,68,68,.12);color:#F87171}
+.wa-link{display:inline-flex;align-items:center;gap:6px;padding:6px 14px;border-radius:10px;font-size:12px;font-weight:600;background:rgba(37,211,102,.12);color:#25D366;border:1px solid rgba(37,211,102,.2);text-decoration:none;transition:all .15s}
+.wa-link:hover{background:rgba(37,211,102,.2);transform:scale(1.03)}
+.wa-link svg{width:14px;height:14px}
+.mark-btn{padding:5px 12px;border-radius:10px;font-size:12px;font-weight:600;transition:all .15s;border:1px solid rgba(16,185,129,.2);background:rgba(16,185,129,.08);color:#34D399;cursor:pointer}
+.mark-btn:hover{background:rgba(16,185,129,.18);transform:scale(1.03)}
+.msg-preview{max-width:280px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.filter-bar{display:flex;align-items:center;gap:.75rem;margin-bottom:1rem;flex-wrap:wrap}
+.filter-tab{padding:6px 16px;border-radius:10px;font-size:.78rem;font-weight:600;cursor:pointer;border:1px solid var(--g-card-border,rgba(255,255,255,.08));transition:all .15s;color:var(--g-text-muted);text-decoration:none}
+.filter-tab:hover{border-color:rgba(109,40,217,.3)}
+.filter-tab.active{background:rgba(109,40,217,.15);color:#A78BFA;border-color:rgba(109,40,217,.3)}
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- KPI Cards -->
+<div class="kpi-grid">
+  <div class="kpi-box kpi-wa">
+    <div class="kpi-val" style="color:var(--g-text)">{{ kpi_total }}</div>
+    <div class="kpi-label" style="color:var(--g-text-muted)">{% trans "Total messages" %}</div>
+  </div>
+  <div class="kpi-box kpi-pending">
+    <div class="kpi-val" style="color:var(--g-text)">{{ kpi_pending }}</div>
+    <div class="kpi-label" style="color:var(--g-text-muted)">{% trans "En attente" %}</div>
+  </div>
+  <div class="kpi-box kpi-sent">
+    <div class="kpi-val" style="color:var(--g-text)">{{ kpi_sent }}</div>
+    <div class="kpi-label" style="color:var(--g-text-muted)">{% trans "Envoyés" %}</div>
+  </div>
+  <div class="kpi-box kpi-failed">
+    <div class="kpi-val" style="color:var(--g-text)">{{ kpi_failed }}</div>
+    <div class="kpi-label" style="color:var(--g-text-muted)">{% trans "Échoués" %}</div>
+  </div>
+</div>
+
+<!-- Filter Tabs -->
+<div class="filter-bar">
+  <a href="?status=" class="filter-tab {% if not filter_status %}active{% endif %}">{% trans "Tous" %}</a>
+  <a href="?status=pending" class="filter-tab {% if filter_status == 'pending' %}active{% endif %}">{% trans "En attente" %}</a>
+  <a href="?status=sent" class="filter-tab {% if filter_status == 'sent' %}active{% endif %}">{% trans "Envoyés" %}</a>
+  <a href="?status=failed" class="filter-tab {% if filter_status == 'failed' %}active{% endif %}">{% trans "Échoués" %}</a>
+</div>
+
+<!-- Messages Table -->
+<div class="mkt-card" style="padding:0;overflow:hidden">
+  {% if wa_messages %}
+  <table class="tbl">
+    <thead>
+      <tr>
+        <th style="color:var(--g-text-muted)">{% trans "Destinataire" %}</th>
+        <th style="color:var(--g-text-muted)">{% trans "Téléphone" %}</th>
+        <th style="color:var(--g-text-muted)">{% trans "Message" %}</th>
+        <th style="color:var(--g-text-muted)">{% trans "Campagne" %}</th>
+        <th style="color:var(--g-text-muted)">{% trans "Statut" %}</th>
+        <th style="color:var(--g-text-muted)">{% trans "Date" %}</th>
+        <th style="color:var(--g-text-muted)">{% trans "Actions" %}</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for m in wa_messages %}
+      <tr>
+        <td>
+          <div class="font-semibold" style="color:var(--g-text)">{{ m.client.full_name }}</div>
+        </td>
+        <td style="color:var(--g-text-muted)">{{ m.phone }}</td>
+        <td>
+          <div class="msg-preview" style="color:var(--g-text-muted)" title="{{ m.message }}">{{ m.message|truncatechars:60 }}</div>
+        </td>
+        <td style="color:var(--g-text-dim)">
+          {% if m.campaign %}{{ m.campaign.name|truncatechars:20 }}{% else %}—{% endif %}
+        </td>
+        <td>
+          <span class="status-badge st-{{ m.status }}">
+            <span class="w-1.5 h-1.5 rounded-full {% if m.status == 'pending' %}bg-yellow-400{% elif m.status == 'sent' %}bg-emerald-400{% else %}bg-red-400{% endif %}"></span>
+            {% if m.status == 'pending' %}{% trans "En attente" %}{% elif m.status == 'sent' %}{% trans "Envoyé" %}{% else %}{% trans "Échoué" %}{% endif %}
+          </span>
+        </td>
+        <td style="color:var(--g-text-dim)">{{ m.created_at|date:"d/m H:i" }}</td>
+        <td>
+          <div class="flex items-center gap-2">
+            {% if m.status == 'pending' %}
+            <a href="{{ m.wa_link }}" target="_blank" rel="noopener" class="wa-link" title="{% trans "Ouvrir WhatsApp" %}">
+              <svg fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8.625 9.75a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0H8.25m4.125 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0H12m3.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0h-.375m-13.5 3.01c0 1.6 1.123 2.994 2.707 3.227 1.087.16 2.185.283 3.293.369V21l4.184-4.183a1.14 1.14 0 0 1 .778-.332 48.294 48.294 0 0 0 5.83-.498c1.585-.233 2.708-1.626 2.708-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0 0 12 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018Z"/></svg>
+              {% trans "Envoyer" %}
+            </a>
+            <form method="post" action="{% url 'dashboard:mkt_wa_mark_sent' m.pk %}" class="inline">
+              {% csrf_token %}
+              <button type="submit" class="mark-btn">{% trans "Marquer envoyé" %}</button>
+            </form>
+            {% elif m.status == 'sent' %}
+            <span class="text-xs" style="color:var(--g-text-dim)">{{ m.sent_at|date:"d/m H:i" }}</span>
+            {% endif %}
+          </div>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+  <div class="text-center py-16">
+    <svg class="w-12 h-12 mx-auto mb-3" style="color:#25D366;opacity:.3" fill="none" stroke="currentColor" stroke-width="1" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8.625 9.75a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0H8.25m4.125 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0H12m3.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0h-.375m-13.5 3.01c0 1.6 1.123 2.994 2.707 3.227 1.087.16 2.185.283 3.293.369V21l4.184-4.183a1.14 1.14 0 0 1 .778-.332 48.294 48.294 0 0 0 5.83-.498c1.585-.233 2.708-1.626 2.708-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0 0 12 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018Z"/></svg>
+    <p class="text-sm font-medium" style="color:var(--g-text-muted)">{% trans "Aucun message WhatsApp en file d'attente" %}</p>
+    <p class="text-xs mt-1" style="color:var(--g-text-dim)">{% trans "Les messages apparaîtront ici lorsque vous enverrez une campagne WhatsApp" %}</p>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}

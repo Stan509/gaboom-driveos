@@ -1,0 +1,39 @@
+{% extends "public_site/_base.html" %}
+{% load i18n %}
+
+{% block ps_content %}
+<!-- Hero -->
+<div class="relative overflow-hidden" style="animation: fadeIn .4s ease both;">
+  <div class="absolute inset-0 ps-primary-bg opacity-[0.07]"></div>
+  <div class="max-w-5xl mx-auto px-4 py-20 sm:py-28 text-center relative">
+    <h1 class="text-4xl sm:text-5xl font-extrabold leading-tight mb-4">{{ page.title }}</h1>
+    {% if page.seo_description %}
+    <p class="text-lg opacity-60 max-w-2xl mx-auto">{{ page.seo_description }}</p>
+    {% endif %}
+    {% if page.cta_label and page.cta_url %}
+    <div class="mt-8">
+      <a href="{{ page.cta_url }}" class="ps-btn text-base !py-3.5 !px-10 inline-block shadow-lg hover:shadow-xl transition-shadow">{{ page.cta_label }}</a>
+    </div>
+    {% endif %}
+  </div>
+</div>
+
+<!-- Content cards -->
+<div class="max-w-5xl mx-auto px-4 py-12" style="animation: fadeIn .5s ease .15s both;">
+  <div class="prose max-w-none text-sm leading-relaxed opacity-80 space-y-6
+    [&_h2]:text-xl [&_h2]:font-bold [&_h2]:mt-10 [&_h2]:mb-3
+    [&_h3]:text-base [&_h3]:font-semibold [&_h3]:mt-6 [&_h3]:mb-2
+    [&_ul]:list-disc [&_ul]:pl-5 [&_ol]:list-decimal [&_ol]:pl-5">
+    {{ rendered_content|safe }}
+  </div>
+
+  {% if page.cta_label and page.cta_url %}
+  <div class="mt-16 text-center py-10 rounded-2xl ps-card border" style="border-color: color-mix(in srgb, var(--text) 10%, transparent);">
+    <p class="text-lg font-bold mb-2">{% trans "Prêt à commencer ?" %}</p>
+    <p class="text-sm opacity-50 mb-6">{% trans "Profitez de cette offre dès maintenant." %}</p>
+    <a href="{{ page.cta_url }}" class="ps-btn text-sm !py-3 !px-8 inline-block">{{ page.cta_label }}</a>
+  </div>
+  {% endif %}
+</div>
+<style>@keyframes fadeIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}</style>
+{% endblock %}

@@ -1,0 +1,411 @@
+{% extends "dashboard/_layout.html" %}
+{% load humanize i18n %}
+
+{% block title %}{% trans "Paiements" %} — Dashboard{% endblock %}
+{% block page_title %}{% trans "Paiements" %}{% endblock %}
+{% block page_subtitle %}{% trans "Historique et suivi des encaissements" %}{% endblock %}
+
+{% block page_css %}
+<style>
+  @keyframes cardIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+  .card-in{animation:cardIn .3s ease-out both}
+  .kpi-mini{animation:cardIn .35s ease-out both}
+  @keyframes fadeIn{from{opacity:0}to{opacity:1}}
+  .modal-fade{animation:fadeIn .15s ease-out both}
+  .kpi-mini:hover{transform:translateY(-1px);box-shadow:0 4px 12px rgba(0,0,0,.06)}
+  .kpi-mini{transition:transform .15s,box-shadow .15s}
+</style>
+{% endblock %}
+
+{% block page_actions %}
+<a href="{% url 'dashboard:payment_export' %}?period={{ filters.period }}&q={{ filters.q }}&method={{ filters.method }}&status={{ filters.status }}&sort={{ filters.sort }}&from={{ filters.date_from }}&to={{ filters.date_to }}" class="rounded-xl border border-slate-200 text-slate-600 px-4 py-2.5 text-sm font-medium hover:bg-slate-50 transition inline-flex items-center gap-1.5">
+  <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3"/></svg>
+  {% trans "Export CSV" %}
+</a>
+{% endblock %}
+
+{% block content %}
+<!-- ═══════ KPI ROW ═══════ -->
+<div class="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-5">
+  <!-- Total encaissé -->
+  <div class="kpi-mini rounded-xl bg-white border border-slate-200 shadow-sm px-4 py-3 flex items-center gap-3" style="animation-delay:0ms">
+    <div class="h-9 w-9 rounded-xl bg-emerald-50 flex items-center justify-center shrink-0">
+      <svg class="w-4.5 h-4.5 text-emerald-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v12m-3-2.818.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/></svg>
+    </div>
+    <div>
+      <div class="text-lg font-bold text-emerald-700">{{ kpi.total_collected|intcomma }}</div>
+      <div class="text-[11px] text-slate-400 font-medium">{% trans "Total encaissé" %}</div>
+    </div>
+  </div>
+  <!-- Aujourd'hui -->
+  <div class="kpi-mini rounded-xl bg-white border border-slate-200 shadow-sm px-4 py-3 flex items-center gap-3" style="animation-delay:60ms">
+    <div class="h-9 w-9 rounded-xl bg-blue-50 flex items-center justify-center shrink-0">
+      <svg class="w-4.5 h-4.5 text-blue-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5"/></svg>
+    </div>
+    <div>
+      <div class="text-lg font-bold text-blue-700">{{ kpi.today_collected|intcomma }}</div>
+      <div class="text-[11px] text-slate-400 font-medium">{% trans "Aujourd'hui" %}</div>
+    </div>
+  </div>
+  <!-- Nb paiements -->
+  <div class="kpi-mini rounded-xl bg-white border border-slate-200 shadow-sm px-4 py-3 flex items-center gap-3" style="animation-delay:120ms">
+    <div class="h-9 w-9 rounded-xl bg-violet-50 flex items-center justify-center shrink-0">
+      <svg class="w-4.5 h-4.5 text-gaboomViolet" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 18.75a60.07 60.07 0 0 1 15.797 2.101c.727.198 1.453-.342 1.453-1.096V18.75M3.75 4.5v.75A.75.75 0 0 1 3 6h-.75m0 0v-.375c0-.621.504-1.125 1.125-1.125H20.25M2.25 6v9m18-10.5v.75c0 .414.336.75.75.75h.75m-1.5-1.5h.375c.621 0 1.125.504 1.125 1.125v9.75c0 .621-.504 1.125-1.125 1.125h-.375m1.5-1.5H21a.75.75 0 0 0-.75.75v.75m0 0H3.75m0 0h-.375a1.125 1.125 0 0 1-1.125-1.125V15m1.5 1.5v-.75A.75.75 0 0 0 3 15h-.75M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Zm3 0h.008v.008H18V10.5Zm-12 0h.008v.008H6V10.5Z"/></svg>
+    </div>
+    <div>
+      <div class="text-lg font-bold text-gaboomViolet">{{ kpi.count }}</div>
+      <div class="text-[11px] text-slate-400 font-medium">{% trans "Paiements" %}</div>
+    </div>
+  </div>
+  <!-- Méthode dominante -->
+  <div class="kpi-mini rounded-xl bg-white border border-slate-200 shadow-sm px-4 py-3 flex items-center gap-3" style="animation-delay:180ms">
+    <div class="h-9 w-9 rounded-xl bg-amber-50 flex items-center justify-center shrink-0">
+      <svg class="w-4.5 h-4.5 text-amber-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 0 1 3 19.875v-6.75ZM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 0 1-1.125-1.125V8.625ZM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 0 1-1.125-1.125V4.125Z"/></svg>
+    </div>
+    <div>
+      <div class="text-lg font-bold text-amber-700 truncate">{{ kpi.dominant_method }}</div>
+      <div class="text-[11px] text-slate-400 font-medium">{% trans "Méthode principale" %}</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════ FILTER BAR ═══════ -->
+<div class="card-in rounded-2xl bg-white border border-slate-200 shadow-sm overflow-hidden mb-5">
+  <form method="get" class="p-4 flex flex-wrap items-center gap-2">
+    <!-- Search -->
+    <div class="relative flex-1 min-w-[180px]">
+      <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"/></svg>
+      <input type="text" name="q" value="{{ filters.q }}" placeholder="{% trans "Client, véhicule, immat, réf…" %}" class="w-full rounded-xl border border-slate-200 pl-9 pr-3 py-2 text-sm focus:border-violet-400 focus:ring-1 focus:ring-violet-400 outline-none">
+    </div>
+    <!-- Period -->
+    <select name="period" id="periodSelect" onchange="toggleCustomDates();this.form.submit()" class="rounded-xl border border-slate-200 px-3 py-2 text-sm focus:border-violet-400 focus:ring-1 focus:ring-violet-400 outline-none">
+      <option value="30d" {% if filters.period == "30d" %}selected{% endif %}>{% trans "30 derniers jours" %}</option>
+      <option value="today" {% if filters.period == "today" %}selected{% endif %}>{% trans "Aujourd'hui" %}</option>
+      <option value="7d" {% if filters.period == "7d" %}selected{% endif %}>{% trans "7 derniers jours" %}</option>
+      <option value="all" {% if filters.period == "all" %}selected{% endif %}>{% trans "Tout" %}</option>
+      <option value="custom" {% if filters.period == "custom" %}selected{% endif %}>{% trans "Personnalisé" %}</option>
+    </select>
+    <!-- Custom dates (shown only when period=custom) -->
+    <div id="customDates" class="{% if filters.period != 'custom' %}hidden{% endif %} flex items-center gap-1.5">
+      <input type="date" name="from" value="{{ filters.date_from }}" class="rounded-xl border border-slate-200 px-2.5 py-2 text-sm focus:border-violet-400 focus:ring-1 focus:ring-violet-400 outline-none">
+      <span class="text-slate-300 text-xs">→</span>
+      <input type="date" name="to" value="{{ filters.date_to }}" class="rounded-xl border border-slate-200 px-2.5 py-2 text-sm focus:border-violet-400 focus:ring-1 focus:ring-violet-400 outline-none">
+    </div>
+    <!-- Method -->
+    <select name="method" onchange="this.form.submit()" class="rounded-xl border border-slate-200 px-3 py-2 text-sm focus:border-violet-400 focus:ring-1 focus:ring-violet-400 outline-none">
+      <option value="">{% trans "Méthode : toutes" %}</option>
+      <option value="cash" {% if filters.method == "cash" %}selected{% endif %}>{% trans "Espèces" %}</option>
+      <option value="card_terminal" {% if filters.method == "card_terminal" %}selected{% endif %}>{% trans "Terminal CB" %}</option>
+      <option value="bank_transfer" {% if filters.method == "bank_transfer" %}selected{% endif %}>{% trans "Virement" %}</option>
+    </select>
+    <!-- Status -->
+    <select name="status" onchange="this.form.submit()" class="rounded-xl border border-slate-200 px-3 py-2 text-sm focus:border-violet-400 focus:ring-1 focus:ring-violet-400 outline-none">
+      <option value="">{% trans "Statut : tous" %}</option>
+      <option value="succeeded" {% if filters.status == "succeeded" %}selected{% endif %}>{% trans "Réussi" %}</option>
+      <option value="refunded" {% if filters.status == "refunded" %}selected{% endif %}>{% trans "Remboursé" %}</option>
+      <option value="failed" {% if filters.status == "failed" %}selected{% endif %}>{% trans "Échoué" %}</option>
+    </select>
+    <!-- Sort -->
+    <select name="sort" onchange="this.form.submit()" class="rounded-xl border border-slate-200 px-3 py-2 text-sm focus:border-violet-400 focus:ring-1 focus:ring-violet-400 outline-none">
+      <option value="date" {% if filters.sort == "date" %}selected{% endif %}>{% trans "Tri : Date" %}</option>
+      <option value="amount" {% if filters.sort == "amount" %}selected{% endif %}>{% trans "Tri : Montant" %}</option>
+      <option value="client" {% if filters.sort == "client" %}selected{% endif %}>{% trans "Tri : Client" %}</option>
+    </select>
+    <button type="submit" class="rounded-xl bg-slate-100 text-slate-600 px-3 py-2 text-sm font-medium hover:bg-slate-200 transition">{% trans "Filtrer" %}</button>
+    <a href="{% url 'dashboard:payment_list' %}" class="rounded-xl border border-slate-200 text-slate-400 px-3 py-2 text-sm font-medium hover:bg-slate-50 transition" title="{% trans "Réinitialiser" %}">
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182"/></svg>
+    </a>
+  </form>
+</div>
+
+<!-- ═══════ TABLE / CARDS ═══════ -->
+<div class="card-in rounded-2xl bg-white border border-slate-200 shadow-sm overflow-hidden" style="animation-delay:80ms">
+  {% if payments %}
+  <!-- Desktop Table -->
+  <div class="hidden md:block overflow-x-auto">
+    <table class="w-full text-sm">
+      <thead>
+        <tr class="border-b border-slate-100 text-left text-[11px] font-semibold text-slate-400 uppercase tracking-wider">
+          <th class="px-4 py-3">{% trans "Date" %}</th>
+          <th class="px-4 py-3">{% trans "Montant" %}</th>
+          <th class="px-4 py-3">{% trans "Méthode" %}</th>
+          <th class="px-4 py-3">{% trans "Statut" %}</th>
+          <th class="px-4 py-3">{% trans "Client" %}</th>
+          <th class="px-4 py-3">{% trans "Véhicule" %}</th>
+          <th class="px-4 py-3">{% trans "Contrat" %}</th>
+          <th class="px-4 py-3 text-right">{% trans "Actions" %}</th>
+        </tr>
+      </thead>
+      <tbody class="divide-y divide-slate-50">
+        {% for p in payments %}
+        <tr class="hover:bg-slate-50/60 transition cursor-pointer" onclick="openPayDetail({{ p.pk }})">
+          <td class="px-4 py-3 text-xs text-slate-500">{{ p.created_at|date:"d/m/Y" }}<br><span class="text-[10px] text-slate-400">{{ p.created_at|date:"H:i" }}</span></td>
+          <td class="px-4 py-3">
+            <span class="font-bold text-slate-800">{{ p.amount|intcomma }}</span>
+            <span class="text-[10px] text-slate-400 ml-0.5">{{ p.currency }}</span>
+          </td>
+          <td class="px-4 py-3">
+            {% if p.method == "cash" %}
+            <span class="inline-flex items-center gap-1 rounded-full bg-green-50 text-green-700 px-2 py-0.5 text-[10px] font-semibold">
+              <svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 18.75a60.07 60.07 0 0 1 15.797 2.101c.727.198 1.453-.342 1.453-1.096V18.75M3.75 4.5v.75A.75.75 0 0 1 3 6h-.75m0 0v-.375c0-.621.504-1.125 1.125-1.125H20.25M2.25 6v9m18-10.5v.75c0 .414.336.75.75.75h.75m-1.5-1.5h.375c.621 0 1.125.504 1.125 1.125v9.75c0 .621-.504 1.125-1.125 1.125h-.375m1.5-1.5H21a.75.75 0 0 0-.75.75v.75m0 0H3.75m0 0h-.375a1.125 1.125 0 0 1-1.125-1.125V15m1.5 1.5v-.75A.75.75 0 0 0 3 15h-.75M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"/></svg>
+              {% trans "Espèces" %}
+            </span>
+            {% elif p.method == "card_terminal" %}
+            <span class="inline-flex items-center gap-1 rounded-full bg-blue-50 text-blue-700 px-2 py-0.5 text-[10px] font-semibold">
+              <svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 8.25h19.5M2.25 9h19.5m-16.5 5.25h6m-6 2.25h3m-3.75 3h15a2.25 2.25 0 0 0 2.25-2.25V6.75A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25v10.5A2.25 2.25 0 0 0 4.5 19.5Z"/></svg>
+              {% trans "Terminal CB" %}
+            </span>
+            {% else %}
+            <span class="inline-flex items-center gap-1 rounded-full bg-purple-50 text-purple-700 px-2 py-0.5 text-[10px] font-semibold">
+              <svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M7.5 21 3 16.5m0 0L7.5 12M3 16.5h13.5m0-13.5L21 7.5m0 0L16.5 12M21 7.5H7.5"/></svg>
+              {% trans "Virement" %}
+            </span>
+            {% endif %}
+          </td>
+          <td class="px-4 py-3">
+            {% if p.status == "succeeded" %}
+            <span class="inline-flex items-center gap-1 rounded-full bg-emerald-100 text-emerald-700 px-2.5 py-0.5 text-[11px] font-semibold"><span class="h-1.5 w-1.5 rounded-full bg-emerald-500"></span>{% trans "Réussi" %}</span>
+            {% elif p.status == "refunded" %}
+            <span class="inline-flex items-center gap-1 rounded-full bg-slate-100 text-slate-600 px-2.5 py-0.5 text-[11px] font-semibold"><span class="h-1.5 w-1.5 rounded-full bg-slate-400"></span>{% trans "Remboursé" %}</span>
+            {% else %}
+            <span class="inline-flex items-center gap-1 rounded-full bg-red-100 text-red-600 px-2.5 py-0.5 text-[11px] font-semibold"><span class="h-1.5 w-1.5 rounded-full bg-red-400"></span>{% trans "Échoué" %}</span>
+            {% endif %}
+          </td>
+          <td class="px-4 py-3">
+            <div class="text-xs font-medium text-slate-800">{{ p.contract.client.full_name }}</div>
+            {% if p.contract.client.phone %}<div class="text-[10px] text-slate-400">{{ p.contract.client.phone }}</div>{% endif %}
+          </td>
+          <td class="px-4 py-3">
+            <div class="text-xs text-slate-600">{{ p.contract.vehicle.make }} {{ p.contract.vehicle.model }}</div>
+            <div class="text-[10px] text-slate-400">{{ p.contract.vehicle.plate_number }}</div>
+          </td>
+          <td class="px-4 py-3" onclick="event.stopPropagation()">
+            <a href="{% url 'dashboard:contract_detail' p.contract.pk %}" class="text-gaboomViolet hover:underline font-medium text-xs">#{{ p.contract.pk }}</a>
+            <div class="text-[10px] text-slate-400">{{ p.contract.start_date|date:"d/m" }} → {{ p.contract.end_date|date:"d/m" }}</div>
+          </td>
+          <td class="px-4 py-3 text-right" onclick="event.stopPropagation()">
+            <button onclick="openPayDetail({{ p.pk }})" class="rounded-lg p-1.5 hover:bg-slate-100 text-slate-400 hover:text-slate-600 transition" title="{% trans "Détails" %}">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"/></svg>
+            </button>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Mobile Cards -->
+  <div class="md:hidden divide-y divide-slate-100">
+    {% for p in payments %}
+    <div class="px-4 py-3 hover:bg-slate-50/60 transition cursor-pointer" onclick="openPayDetail({{ p.pk }})">
+      <div class="flex items-center justify-between mb-1.5">
+        <div class="flex items-center gap-2">
+          <span class="font-bold text-slate-800">{{ p.amount|intcomma }} {{ p.currency }}</span>
+          {% if p.status == "succeeded" %}
+          <span class="inline-flex items-center gap-1 rounded-full bg-emerald-100 text-emerald-700 px-2 py-0.5 text-[10px] font-semibold">{% trans "Réussi" %}</span>
+          {% elif p.status == "refunded" %}
+          <span class="inline-flex items-center gap-1 rounded-full bg-slate-100 text-slate-600 px-2 py-0.5 text-[10px] font-semibold">{% trans "Remboursé" %}</span>
+          {% else %}
+          <span class="inline-flex items-center gap-1 rounded-full bg-red-100 text-red-600 px-2 py-0.5 text-[10px] font-semibold">{% trans "Échoué" %}</span>
+          {% endif %}
+        </div>
+        <span class="text-[10px] text-slate-400">{{ p.created_at|date:"d/m/Y H:i" }}</span>
+      </div>
+      <div class="text-xs text-slate-600">{{ p.contract.client.full_name }} — {{ p.contract.vehicle }}</div>
+      <div class="flex items-center gap-2 mt-1.5">
+        {% if p.method == "cash" %}
+        <span class="inline-flex items-center gap-1 rounded-full bg-green-50 text-green-700 px-2 py-0.5 text-[10px] font-semibold">{% trans "Espèces" %}</span>
+        {% elif p.method == "card_terminal" %}
+        <span class="inline-flex items-center gap-1 rounded-full bg-blue-50 text-blue-700 px-2 py-0.5 text-[10px] font-semibold">{% trans "Terminal CB" %}</span>
+        {% else %}
+        <span class="inline-flex items-center gap-1 rounded-full bg-purple-50 text-purple-700 px-2 py-0.5 text-[10px] font-semibold">{% trans "Virement" %}</span>
+        {% endif %}
+        {% if p.reference %}<span class="text-[10px] text-slate-400">{% trans "Réf" %}: {{ p.reference }}</span>{% endif %}
+        <a href="{% url 'dashboard:contract_detail' p.contract.pk %}" class="ml-auto text-gaboomViolet text-[10px] font-medium hover:underline" onclick="event.stopPropagation()">{% trans "Contrat" %} #{{ p.contract.pk }}</a>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+
+  <!-- Pagination -->
+  {% if total_pages > 1 %}
+  <div class="px-4 py-3 border-t border-slate-100 flex items-center justify-between">
+    <div class="text-xs text-slate-400">{{ total_count }} {% trans "paiement" %}{{ total_count|pluralize }} — {% trans "Page" %} {{ page_num }}/{{ total_pages }}</div>
+    <div class="flex items-center gap-1">
+      {% if has_prev %}
+      <a href="?page={{ page_num|add:"-1" }}&period={{ filters.period }}&q={{ filters.q }}&method={{ filters.method }}&status={{ filters.status }}&sort={{ filters.sort }}&from={{ filters.date_from }}&to={{ filters.date_to }}" class="rounded-lg border border-slate-200 px-3 py-1.5 text-xs font-medium text-slate-600 hover:bg-slate-50 transition">← {% trans "Préc." %}</a>
+      {% endif %}
+      {% if has_next %}
+      <a href="?page={{ page_num|add:"1" }}&period={{ filters.period }}&q={{ filters.q }}&method={{ filters.method }}&status={{ filters.status }}&sort={{ filters.sort }}&from={{ filters.date_from }}&to={{ filters.date_to }}" class="rounded-lg border border-slate-200 px-3 py-1.5 text-xs font-medium text-slate-600 hover:bg-slate-50 transition">{% trans "Suiv." %} →</a>
+      {% endif %}
+    </div>
+  </div>
+  {% endif %}
+
+  {% else %}
+  <!-- Empty State -->
+  <div class="text-center py-16 px-6">
+    <div class="mx-auto w-16 h-16 rounded-2xl bg-violet-50 flex items-center justify-center mb-4">
+      <svg class="w-8 h-8 text-gaboomViolet" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 18.75a60.07 60.07 0 0 1 15.797 2.101c.727.198 1.453-.342 1.453-1.096V18.75M3.75 4.5v.75A.75.75 0 0 1 3 6h-.75m0 0v-.375c0-.621.504-1.125 1.125-1.125H20.25M2.25 6v9m18-10.5v.75c0 .414.336.75.75.75h.75m-1.5-1.5h.375c.621 0 1.125.504 1.125 1.125v9.75c0 .621-.504 1.125-1.125 1.125h-.375m1.5-1.5H21a.75.75 0 0 0-.75.75v.75m0 0H3.75m0 0h-.375a1.125 1.125 0 0 1-1.125-1.125V15m1.5 1.5v-.75A.75.75 0 0 0 3 15h-.75M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Zm3 0h.008v.008H18V10.5Zm-12 0h.008v.008H6V10.5Z"/></svg>
+    </div>
+    <h3 class="font-semibold text-slate-800">{% trans "Aucun paiement" %}</h3>
+    <p class="text-sm text-slate-400 mt-1">{% trans "Les paiements apparaîtront ici une fois enregistrés sur les contrats." %}</p>
+    <a href="{% url 'dashboard:contract_hub' %}" class="inline-flex items-center gap-1.5 mt-4 rounded-xl bg-gaboomViolet text-white px-4 py-2.5 text-sm font-medium hover:opacity-95 transition">
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/></svg>
+      {% trans "Créer un contrat" %}
+    </a>
+  </div>
+  {% endif %}
+</div>
+
+<!-- ═══════ DETAIL MODAL ═══════ -->
+<!-- Hidden data for JS modal -->
+{% for p in payments %}
+<div id="payData-{{ p.pk }}" class="hidden"
+  data-amount="{{ p.amount|intcomma }}"
+  data-currency="{{ p.currency }}"
+  data-date="{{ p.created_at|date:'d/m/Y à H:i' }}"
+  data-method="{{ p.get_method_display }}"
+  data-method-raw="{{ p.method }}"
+  data-status="{{ p.get_status_display }}"
+  data-status-raw="{{ p.status }}"
+  data-reference="{{ p.reference|default:'-' }}"
+  data-note="{{ p.note|default:'' }}"
+  data-client="{{ p.contract.client.full_name }}"
+  data-client-phone="{{ p.contract.client.phone|default:'' }}"
+  data-vehicle="{{ p.contract.vehicle.make }} {{ p.contract.vehicle.model }}"
+  data-plate="{{ p.contract.vehicle.plate_number }}"
+  data-contract-id="{{ p.contract.pk }}"
+  data-contract-period="{{ p.contract.start_date|date:'d/m/Y' }} → {{ p.contract.end_date|date:'d/m/Y' }}"
+  data-created-by="{% if p.created_by %}{{ p.created_by.get_full_name|default:p.created_by.email }}{% else %}-{% endif %}"
+></div>
+{% endfor %}
+
+<div id="payDetailModal" class="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4" role="dialog" aria-modal="true" aria-label="Détails du paiement">
+  <div class="modal-fade bg-white rounded-2xl shadow-2xl w-full max-w-md border border-slate-200">
+    <!-- Modal header -->
+    <div class="px-5 py-4 border-b border-slate-100 flex items-center justify-between">
+      <h3 class="font-semibold text-sm text-slate-800">Détails du paiement</h3>
+      <button onclick="closePayDetail()" class="rounded-lg p-1.5 hover:bg-slate-100 text-slate-400 transition" aria-label="Fermer">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <!-- Modal body -->
+    <div class="p-5 space-y-4">
+      <!-- Amount + status -->
+      <div class="flex items-center justify-between">
+        <div>
+          <div class="text-2xl font-bold text-slate-800"><span id="mdAmount"></span> <span id="mdCurrency" class="text-sm text-slate-400"></span></div>
+          <div class="text-xs text-slate-400 mt-0.5"><span id="mdDate"></span></div>
+        </div>
+        <div id="mdStatusBadge"></div>
+      </div>
+      <!-- Info grid -->
+      <dl class="grid grid-cols-2 gap-3 text-sm">
+        <div>
+          <dt class="text-slate-400 text-[11px] uppercase tracking-wider">Méthode</dt>
+          <dd class="font-medium mt-0.5" id="mdMethodBadge"></dd>
+        </div>
+        <div>
+          <dt class="text-slate-400 text-[11px] uppercase tracking-wider">Référence</dt>
+          <dd class="font-medium mt-0.5" id="mdRef"></dd>
+        </div>
+        <div>
+          <dt class="text-slate-400 text-[11px] uppercase tracking-wider">Client</dt>
+          <dd class="font-medium mt-0.5" id="mdClient"></dd>
+          <dd class="text-[10px] text-slate-400" id="mdClientPhone"></dd>
+        </div>
+        <div>
+          <dt class="text-slate-400 text-[11px] uppercase tracking-wider">Véhicule</dt>
+          <dd class="font-medium mt-0.5" id="mdVehicle"></dd>
+          <dd class="text-[10px] text-slate-400" id="mdPlate"></dd>
+        </div>
+        <div>
+          <dt class="text-slate-400 text-[11px] uppercase tracking-wider">Contrat</dt>
+          <dd class="font-medium mt-0.5">#<span id="mdContractId"></span></dd>
+          <dd class="text-[10px] text-slate-400" id="mdContractPeriod"></dd>
+        </div>
+        <div>
+          <dt class="text-slate-400 text-[11px] uppercase tracking-wider">Créé par</dt>
+          <dd class="font-medium mt-0.5" id="mdCreatedBy"></dd>
+        </div>
+      </dl>
+      <!-- Note -->
+      <div id="mdNoteWrap" class="hidden">
+        <dt class="text-slate-400 text-[11px] uppercase tracking-wider">Note</dt>
+        <dd class="font-medium mt-0.5 text-sm text-slate-600 whitespace-pre-line" id="mdNote"></dd>
+      </div>
+    </div>
+    <!-- Modal footer -->
+    <div class="px-5 py-3 border-t border-slate-100 flex items-center gap-2">
+      <a id="mdContractLink" href="#" class="flex-1 text-center rounded-xl bg-gaboomViolet text-white px-4 py-2.5 text-sm font-medium hover:opacity-95 transition">Ouvrir le contrat</a>
+      <button type="button" disabled class="rounded-xl border border-slate-200 px-4 py-2.5 text-sm font-medium text-slate-400 cursor-not-allowed" title="Bientôt disponible">Rembourser</button>
+      <button onclick="closePayDetail()" class="rounded-xl border border-slate-200 px-4 py-2.5 text-sm font-medium text-slate-600 hover:bg-slate-50 transition">Fermer</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════ JS ═══════ -->
+<script>
+// Custom dates toggle
+function toggleCustomDates(){
+  var sel=document.getElementById('periodSelect');
+  var cd=document.getElementById('customDates');
+  if(sel&&cd){cd.classList.toggle('hidden',sel.value!=='custom');}
+}
+
+// Detail modal
+function openPayDetail(pk){
+  var d=document.getElementById('payData-'+pk);
+  if(!d)return;
+  document.getElementById('mdAmount').textContent=d.dataset.amount;
+  document.getElementById('mdCurrency').textContent=d.dataset.currency;
+  document.getElementById('mdDate').textContent=d.dataset.date;
+  document.getElementById('mdRef').textContent=d.dataset.reference;
+  document.getElementById('mdClient').textContent=d.dataset.client;
+  document.getElementById('mdClientPhone').textContent=d.dataset.clientPhone;
+  document.getElementById('mdVehicle').textContent=d.dataset.vehicle;
+  document.getElementById('mdPlate').textContent=d.dataset.plate;
+  document.getElementById('mdContractId').textContent=d.dataset.contractId;
+  document.getElementById('mdContractPeriod').textContent=d.dataset.contractPeriod;
+  document.getElementById('mdCreatedBy').textContent=d.dataset.createdBy;
+  document.getElementById('mdContractLink').href='/dashboard/contracts/'+d.dataset.contractId+'/';
+
+  // Status badge
+  var sb=document.getElementById('mdStatusBadge');
+  var sr=d.dataset.statusRaw;
+  if(sr==='succeeded')sb.innerHTML='<span class="inline-flex items-center gap-1 rounded-full bg-emerald-100 text-emerald-700 px-2.5 py-0.5 text-[11px] font-semibold"><span class="h-1.5 w-1.5 rounded-full bg-emerald-500"></span>'+d.dataset.status+'</span>';
+  else if(sr==='refunded')sb.innerHTML='<span class="inline-flex items-center gap-1 rounded-full bg-slate-100 text-slate-600 px-2.5 py-0.5 text-[11px] font-semibold"><span class="h-1.5 w-1.5 rounded-full bg-slate-400"></span>'+d.dataset.status+'</span>';
+  else sb.innerHTML='<span class="inline-flex items-center gap-1 rounded-full bg-red-100 text-red-600 px-2.5 py-0.5 text-[11px] font-semibold"><span class="h-1.5 w-1.5 rounded-full bg-red-400"></span>'+d.dataset.status+'</span>';
+
+  // Method badge
+  var mb=document.getElementById('mdMethodBadge');
+  var mr=d.dataset.methodRaw;
+  if(mr==='cash')mb.innerHTML='<span class="inline-flex items-center gap-1 rounded-full bg-green-50 text-green-700 px-2 py-0.5 text-[10px] font-semibold">'+d.dataset.method+'</span>';
+  else if(mr==='card_terminal')mb.innerHTML='<span class="inline-flex items-center gap-1 rounded-full bg-blue-50 text-blue-700 px-2 py-0.5 text-[10px] font-semibold">'+d.dataset.method+'</span>';
+  else mb.innerHTML='<span class="inline-flex items-center gap-1 rounded-full bg-purple-50 text-purple-700 px-2 py-0.5 text-[10px] font-semibold">'+d.dataset.method+'</span>';
+
+  // Note
+  var note=d.dataset.note;
+  var nw=document.getElementById('mdNoteWrap');
+  if(note){nw.classList.remove('hidden');document.getElementById('mdNote').textContent=note;}
+  else{nw.classList.add('hidden');}
+
+  document.getElementById('payDetailModal').classList.remove('hidden');
+}
+
+function closePayDetail(){
+  document.getElementById('payDetailModal').classList.add('hidden');
+}
+
+// Escape key
+document.addEventListener('keydown',function(e){
+  if(e.key==='Escape')closePayDetail();
+});
+
+// Click overlay to close
+document.getElementById('payDetailModal').addEventListener('click',function(e){
+  if(e.target===this)closePayDetail();
+});
+</script>
+{% endblock %}

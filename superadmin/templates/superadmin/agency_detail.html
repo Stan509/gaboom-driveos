@@ -1,0 +1,296 @@
+{% extends "superadmin/_layout.html" %}
+
+{% block page_title %}{{ agency.name }}{% endblock %}
+{% block page_subtitle %}{{ access.get_status_display }} · {{ agency.slug }}{% endblock %}
+
+{% block page_actions %}
+<a href="{% url 'superadmin:agencies' %}" class="inline-flex items-center gap-1.5 text-sm text-slate-500 hover:text-sa-500 transition font-medium">
+  <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5"/></svg>
+  Retour
+</a>
+{% endblock %}
+
+{% block content %}
+<!-- Status banner -->
+<div class="rounded-2xl p-4 flex items-center gap-3 mb-6
+  {% if access.status == 'trial' %}bg-blue-50 border border-blue-200
+  {% elif access.status == 'active' %}bg-emerald-50 border border-emerald-200
+  {% elif access.status == 'suspended' %}bg-red-50 border border-red-200{% endif %}">
+  {% if access.status == 'trial' %}
+    <span class="relative flex h-3 w-3"><span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span><span class="relative inline-flex rounded-full h-3 w-3 bg-blue-500"></span></span>
+    <span class="font-semibold text-blue-800">Essai gratuit — {{ access.countdown_label }}</span>
+  {% elif access.status == 'active' %}
+    <svg class="w-5 h-5 text-emerald-600" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5"/></svg>
+    <span class="font-semibold text-emerald-800">Actif — expire le {{ access.access_ends_at|date:"d/m/Y H:i" }}</span>
+  {% elif access.status == 'suspended' %}
+    <svg class="w-5 h-5 text-red-600" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12"/></svg>
+    <span class="font-semibold text-red-800">Suspendu — {{ access.suspended_reason|default:"Raison non precisee" }}</span>
+  {% endif %}
+</div>
+
+<!-- Admin alert banner -->
+{% if access.needs_admin_attention %}
+<div class="rounded-2xl border-2 border-red-300 bg-red-50 p-4 mb-6 flex items-start gap-3">
+  <svg class="w-5 h-5 text-red-500 shrink-0 mt-0.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z"/></svg>
+  <div class="flex-1">
+    <div class="text-sm font-bold text-red-800">{{ access.get_admin_alert_code_display }}</div>
+    <p class="text-xs text-red-700 mt-0.5">{{ access.admin_alert_message }}</p>
+  </div>
+  <form method="post" action="{% url 'superadmin:action_dismiss_alert' pk=access.pk %}">{% csrf_token %}<input type="hidden" name="next" value="/saas/agencies/{{ access.pk }}/" />
+    <button type="submit" class="px-3 py-1.5 rounded-lg bg-red-600 text-white text-xs font-semibold hover:bg-red-700 transition">Marquer traite</button>
+  </form>
+</div>
+{% endif %}
+
+<!-- PayPal billing info -->
+{% if access.billing_mode == 'paypal' %}
+<div class="rounded-2xl border border-blue-200 bg-blue-50 p-4 mb-6">
+  <div class="flex items-center gap-2 mb-2">
+    <svg class="w-5 h-5 text-blue-500" fill="currentColor" viewBox="0 0 24 24"><path d="M7.076 21.337H2.47a.641.641 0 0 1-.633-.74L4.944 3.72a.77.77 0 0 1 .757-.644h6.568c2.175 0 3.706.563 4.553 1.674.393.515.635 1.082.725 1.692.095.636.047 1.39-.143 2.306l-.005.025v.463l.36.204c.305.168.548.365.734.592.312.38.514.854.6 1.41.088.574.059 1.24-.084 1.979-.165.852-.432 1.593-.793 2.2a4.453 4.453 0 0 1-1.256 1.418c-.49.357-1.07.62-1.724.78-.635.155-1.36.233-2.153.233h-.512a1.54 1.54 0 0 0-1.52 1.3l-.039.21-.654 4.14-.03.152a.77.77 0 0 1-.757.643H7.076Z"/></svg>
+    <span class="text-sm font-bold text-blue-800">Mode PayPal automatique</span>
+  </div>
+  <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs">
+    <div>
+      <div class="text-[10px] text-blue-500 uppercase tracking-wider mb-0.5">Statut PayPal</div>
+      {% if access.paypal_status == 'active' %}
+        <span class="inline-flex items-center gap-1 rounded-full bg-emerald-100 text-emerald-700 px-2 py-0.5 font-bold"><span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>Actif</span>
+      {% elif access.paypal_status == 'cancelled' %}
+        <span class="rounded-full bg-red-100 text-red-700 px-2 py-0.5 font-bold">Annule</span>
+      {% elif access.paypal_status == 'suspended' %}
+        <span class="rounded-full bg-amber-100 text-amber-700 px-2 py-0.5 font-bold">Suspendu</span>
+      {% elif access.paypal_status == 'expired' %}
+        <span class="rounded-full bg-slate-100 text-slate-600 px-2 py-0.5 font-bold">Expire</span>
+      {% else %}
+        <span class="text-slate-500">{{ access.paypal_status }}</span>
+      {% endif %}
+    </div>
+    <div>
+      <div class="text-[10px] text-blue-500 uppercase tracking-wider mb-0.5">Subscription ID</div>
+      <div class="text-blue-800 font-mono">{{ access.paypal_subscription_id|default:"—" }}</div>
+    </div>
+    <div>
+      <div class="text-[10px] text-blue-500 uppercase tracking-wider mb-0.5">Dernier event</div>
+      <div class="text-blue-800">{{ access.paypal_last_event_at|date:"d/m/Y H:i"|default:"—" }}</div>
+    </div>
+    <div>
+      <div class="text-[10px] text-blue-500 uppercase tracking-wider mb-0.5">Annule le</div>
+      <div class="text-blue-800">{{ access.paypal_cancelled_at|date:"d/m/Y H:i"|default:"—" }}</div>
+    </div>
+  </div>
+</div>
+{% else %}
+<div class="rounded-2xl border border-slate-200 bg-slate-50 p-3 mb-6 flex items-center gap-2">
+  <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 8.25h19.5M2.25 9h19.5m-16.5 5.25h6m-6 2.25h3m-3.75 3h15a2.25 2.25 0 0 0 2.25-2.25V6.75A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25v10.5A2.25 2.25 0 0 0 4.5 19.5Z"/></svg>
+  <span class="text-xs font-semibold text-slate-500">Mode de paiement : Manuel (preuve)</span>
+</div>
+{% endif %}
+
+<!-- Quick stats -->
+<div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+  <div class="bg-white rounded-2xl border border-slate-200 p-4">
+    <div class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Deadline</div>
+    <div class="text-sm font-bold text-slate-900">{{ access.access_ends_at|date:"d/m/Y H:i" }}</div>
+  </div>
+  <div class="bg-white rounded-2xl border border-slate-200 p-4">
+    <div class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Vehicules</div>
+    <div class="text-2xl font-extrabold text-slate-900">{{ vehicle_count }}</div>
+  </div>
+  <div class="bg-white rounded-2xl border border-slate-200 p-4">
+    <div class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Contrats</div>
+    <div class="text-2xl font-extrabold text-slate-900">{{ contract_count }}</div>
+  </div>
+  <div class="bg-white rounded-2xl border border-slate-200 p-4">
+    <div class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Utilisateurs</div>
+    <div class="text-2xl font-extrabold text-slate-900">{{ user_count }}</div>
+  </div>
+</div>
+
+<!-- Tabs -->
+<div class="flex gap-1 mb-6 border-b border-slate-200">
+  <a href="?tab=access" class="px-4 py-2.5 text-sm font-semibold border-b-2 transition {% if tab == 'access' %}border-sa-500 text-sa-600{% else %}border-transparent text-slate-400 hover:text-slate-600{% endif %}">Acces</a>
+  <a href="?tab=proofs" class="px-4 py-2.5 text-sm font-semibold border-b-2 transition {% if tab == 'proofs' %}border-sa-500 text-sa-600{% else %}border-transparent text-slate-400 hover:text-slate-600{% endif %}">Preuves ({{ proofs|length }})</a>
+  <a href="?tab=notes" class="px-4 py-2.5 text-sm font-semibold border-b-2 transition {% if tab == 'notes' %}border-sa-500 text-sa-600{% else %}border-transparent text-slate-400 hover:text-slate-600{% endif %}">Notes</a>
+  <a href="?tab=timeline" class="px-4 py-2.5 text-sm font-semibold border-b-2 transition {% if tab == 'timeline' %}border-sa-500 text-sa-600{% else %}border-transparent text-slate-400 hover:text-slate-600{% endif %}">Timeline</a>
+</div>
+
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+  <!-- Main content (2 cols) -->
+  <div class="lg:col-span-2">
+
+    {% if tab == 'access' %}
+    <!-- Access info -->
+    <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden">
+      <div class="px-5 py-3 border-b border-slate-100"><h3 class="text-sm font-bold text-slate-700">Details acces</h3></div>
+      <div class="p-5 grid grid-cols-2 sm:grid-cols-3 gap-4 text-sm">
+        <div>
+          <span class="block text-[11px] text-slate-400 mb-0.5">Statut</span>
+          <span class="font-bold">{{ access.get_status_display }}</span>
+        </div>
+        <div>
+          <span class="block text-[11px] text-slate-400 mb-0.5">Essai debut</span>
+          <span>{{ access.trial_started_at|date:"d/m/Y H:i" }}</span>
+        </div>
+        <div>
+          <span class="block text-[11px] text-slate-400 mb-0.5">Deadline</span>
+          <span>{{ access.access_ends_at|date:"d/m/Y H:i" }}</span>
+        </div>
+        <div>
+          <span class="block text-[11px] text-slate-400 mb-0.5">Countdown</span>
+          <span class="font-bold {% if access.days_remaining <= 1 %}text-red-600{% elif access.days_remaining <= 3 %}text-amber-600{% else %}text-slate-900{% endif %}">{{ access.countdown_label }}</span>
+        </div>
+        <div>
+          <span class="block text-[11px] text-slate-400 mb-0.5">Owner</span>
+          <span>{{ owner.email|default:"—" }}</span>
+        </div>
+        {% if access.suspended_reason %}
+        <div>
+          <span class="block text-[11px] text-slate-400 mb-0.5">Raison suspension</span>
+          <span class="text-red-600">{{ access.suspended_reason }}</span>
+        </div>
+        {% endif %}
+      </div>
+    </div>
+
+    {% elif tab == 'proofs' %}
+    <!-- Proofs list -->
+    <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden">
+      <div class="px-5 py-3 border-b border-slate-100"><h3 class="text-sm font-bold text-slate-700">Preuves de paiement ({{ proofs|length }})</h3></div>
+      {% if proofs %}
+      <div class="divide-y divide-slate-50">
+        {% for p in proofs %}
+        <div class="p-5 flex items-start gap-4">
+          <a href="{{ p.image.url }}" target="_blank" class="shrink-0">
+            <img src="{{ p.image.url }}" alt="Preuve #{{ p.pk }}" class="w-20 h-16 rounded-xl object-cover border border-slate-200 hover:opacity-80 transition" />
+          </a>
+          <div class="flex-1 min-w-0">
+            <div class="flex items-center gap-2 mb-1">
+              {% if p.status == 'pending' %}
+                <span class="inline-flex items-center gap-1 rounded-full bg-amber-100 text-amber-800 px-2 py-0.5 text-[11px] font-bold"><span class="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse"></span>En attente</span>
+              {% elif p.status == 'approved' %}
+                <span class="inline-flex items-center gap-1 rounded-full bg-emerald-100 text-emerald-800 px-2 py-0.5 text-[11px] font-bold">Approuvee</span>
+              {% elif p.status == 'rejected' %}
+                <span class="inline-flex items-center gap-1 rounded-full bg-red-100 text-red-800 px-2 py-0.5 text-[11px] font-bold">Rejetee</span>
+              {% endif %}
+              <span class="text-[11px] text-slate-400">{{ p.uploaded_at|date:"d/m/Y H:i" }}</span>
+            </div>
+            <div class="text-[11px] text-slate-500">
+              Par {{ p.uploaded_by.email|default:"—" }}
+              {% if p.reviewed_by %} · Revue par {{ p.reviewed_by.email }} le {{ p.reviewed_at|date:"d/m/Y H:i" }}{% endif %}
+            </div>
+            {% if p.review_note %}
+            <p class="text-[11px] text-slate-600 mt-1 bg-slate-50 rounded-lg px-3 py-1.5">{{ p.review_note }}</p>
+            {% endif %}
+          </div>
+          <div class="shrink-0 flex flex-col gap-1.5">
+            {% if p.status == 'pending' %}
+            <form method="post" action="{% url 'superadmin:action_proof_approve' proof_pk=p.pk %}">{% csrf_token %}<input type="hidden" name="next" value="/saas/agencies/{{ access.pk }}/?tab=proofs" /><button type="submit" class="px-3 py-1.5 rounded-lg bg-emerald-100 text-emerald-700 text-xs font-semibold hover:bg-emerald-200 transition w-full">Approuver</button></form>
+            <button onclick="document.getElementById('rejectModal{{ p.pk }}').classList.remove('hidden')" class="px-3 py-1.5 rounded-lg bg-red-50 text-red-600 text-xs font-semibold hover:bg-red-100 transition w-full">Rejeter</button>
+            {% endif %}
+          </div>
+        </div>
+        {% if p.status == 'pending' %}
+        <div id="rejectModal{{ p.pk }}" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur-sm">
+          <div class="bg-white rounded-2xl shadow-2xl max-w-md w-full mx-4 p-6">
+            <h3 class="text-lg font-bold text-slate-900 mb-2">Rejeter la preuve #{{ p.pk }} ?</h3>
+            <form method="post" action="{% url 'superadmin:action_proof_reject' proof_pk=p.pk %}">{% csrf_token %}<input type="hidden" name="next" value="/saas/agencies/{{ access.pk }}/?tab=proofs" />
+              <label class="block text-sm text-slate-600 mb-1">Raison (visible par l'agence)</label>
+              <textarea name="review_note" rows="3" required class="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm focus:border-red-400 outline-none resize-none mb-4" placeholder="Preuve non conforme, illisible, etc."></textarea>
+              <div class="flex gap-3">
+                <button type="button" onclick="this.closest('[id^=rejectModal]').classList.add('hidden')" class="flex-1 py-2.5 rounded-xl border border-slate-200 text-sm font-semibold text-slate-600 hover:bg-slate-50 transition">Annuler</button>
+                <button type="submit" class="flex-1 py-2.5 rounded-xl bg-red-600 text-white text-sm font-semibold hover:bg-red-700 transition">Rejeter</button>
+              </div>
+            </form>
+          </div>
+        </div>
+        {% endif %}
+        {% endfor %}
+      </div>
+      {% else %}
+      <div class="p-5 text-center text-slate-400 text-sm">Aucune preuve envoyee.</div>
+      {% endif %}
+    </div>
+
+    {% elif tab == 'notes' %}
+    <!-- Internal notes -->
+    <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden">
+      <div class="px-5 py-3 border-b border-slate-100"><h3 class="text-sm font-bold text-slate-700">Notes internes</h3></div>
+      <div class="p-5">
+        <form method="post" action="{% url 'superadmin:action_save_notes' pk=access.pk %}">{% csrf_token %}
+          <input type="hidden" name="next" value="/saas/agencies/{{ access.pk }}/?tab=notes" />
+          <textarea name="notes_internal" rows="8" class="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm focus:border-sa-400 outline-none resize-none mb-3" placeholder="Notes privees sur cette agence...">{{ access.notes_internal }}</textarea>
+          <button type="submit" class="px-5 py-2.5 rounded-xl bg-sa-500 text-white text-sm font-semibold hover:bg-sa-600 transition">Enregistrer</button>
+        </form>
+      </div>
+    </div>
+
+    {% elif tab == 'timeline' %}
+    <!-- Audit timeline -->
+    <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden">
+      <div class="px-5 py-3 border-b border-slate-100"><h3 class="text-sm font-bold text-slate-700">Timeline</h3></div>
+      {% if logs %}
+      <div class="p-5 space-y-4">
+        {% for log in logs %}
+        <div class="flex items-start gap-3">
+          <div class="w-2.5 h-2.5 rounded-full mt-1.5 shrink-0
+            {% if 'RENEW' in log.action or 'APPROVE' in log.action or 'BONUS' in log.action %}bg-emerald-500
+            {% elif 'SUSPEND' in log.action or 'REJECT' in log.action %}bg-red-500
+            {% else %}bg-slate-400{% endif %}"></div>
+          <div class="min-w-0 flex-1">
+            <div class="flex items-center gap-2">
+              <span class="text-sm font-semibold text-slate-700">{{ log.get_action_display }}</span>
+              <span class="text-[11px] text-slate-400">{{ log.created_at|date:"d/m/Y H:i" }}</span>
+            </div>
+            {% if log.note %}<p class="text-[11px] text-slate-500 mt-0.5">{{ log.note }}</p>{% endif %}
+            {% if log.by_user %}<p class="text-[10px] text-slate-400">par {{ log.by_user.email }}</p>{% endif %}
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+      {% else %}
+      <div class="p-5 text-center text-slate-400 text-sm">Aucun evenement enregistre.</div>
+      {% endif %}
+    </div>
+    {% endif %}
+  </div>
+
+  <!-- Right column: Quick actions -->
+  <div class="space-y-6">
+    <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden">
+      <div class="px-5 py-3 border-b border-slate-100"><h3 class="text-sm font-bold text-slate-700">Actions rapides</h3></div>
+      <div class="p-5 space-y-3">
+        <form method="post" action="{% url 'superadmin:action_renew' pk=access.pk %}">{% csrf_token %}<input type="hidden" name="next" value="/saas/agencies/{{ access.pk }}/" />
+          <button type="submit" class="w-full py-2.5 rounded-xl bg-sa-500 text-white font-semibold text-sm hover:bg-sa-600 transition flex items-center justify-center gap-2">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182"/></svg>
+            Renouveler 30 jours
+          </button>
+        </form>
+        <form method="post" action="{% url 'superadmin:action_bonus' pk=access.pk %}">{% csrf_token %}<input type="hidden" name="next" value="/saas/agencies/{{ access.pk }}/" /><input type="hidden" name="days" value="7" />
+          <button type="submit" class="w-full py-2.5 rounded-xl bg-slate-100 text-slate-700 font-semibold text-sm hover:bg-slate-200 transition flex items-center justify-center gap-2">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v12m6-6H6"/></svg>
+            +7 jours bonus
+          </button>
+        </form>
+        {% if access.status != 'suspended' %}
+        <form method="post" action="{% url 'superadmin:action_suspend' pk=access.pk %}">{% csrf_token %}<input type="hidden" name="next" value="/saas/agencies/{{ access.pk }}/" />
+          <button type="submit" class="w-full py-2.5 rounded-xl bg-red-50 text-red-600 border border-red-200 font-semibold text-sm hover:bg-red-100 transition flex items-center justify-center gap-2">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 0 0 5.636 5.636m12.728 12.728A9 9 0 0 1 5.636 5.636m12.728 12.728L5.636 5.636"/></svg>
+            Suspendre
+          </button>
+        </form>
+        {% endif %}
+      </div>
+    </div>
+
+    <!-- Agency info card -->
+    <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden">
+      <div class="px-5 py-3 border-b border-slate-100"><h3 class="text-sm font-bold text-slate-700">Agence</h3></div>
+      <div class="p-5 space-y-3 text-sm">
+        <div><span class="block text-[11px] text-slate-400 mb-0.5">Nom</span><span class="font-medium">{{ agency.name }}</span></div>
+        <div><span class="block text-[11px] text-slate-400 mb-0.5">Slug</span><span class="font-mono text-xs">{{ agency.slug }}</span></div>
+        <div><span class="block text-[11px] text-slate-400 mb-0.5">Owner</span><span>{{ owner.email|default:"—" }}</span></div>
+        <div><span class="block text-[11px] text-slate-400 mb-0.5">Creee le</span><span>{{ agency.created_at|date:"d/m/Y H:i" }}</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

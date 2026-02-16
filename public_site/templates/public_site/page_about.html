@@ -1,0 +1,36 @@
+{% extends "public_site/_base.html" %}
+{% load i18n %}
+
+{% block ps_content %}
+<!-- Hero -->
+<div class="relative overflow-hidden" style="animation: fadeIn .4s ease both;">
+  <div class="absolute inset-0 ps-primary-bg opacity-5"></div>
+  <div class="max-w-4xl mx-auto px-4 py-16 sm:py-24 relative">
+    <h1 class="text-4xl sm:text-5xl font-extrabold leading-tight mb-4">{{ page.title }}</h1>
+    {% if page.seo_description %}
+    <p class="text-lg opacity-60 max-w-2xl">{{ page.seo_description }}</p>
+    {% endif %}
+    {% if page.cta_label and page.cta_url %}
+    <div class="mt-8">
+      <a href="{{ page.cta_url }}" class="ps-btn text-sm !py-3 !px-8 inline-block">{{ page.cta_label }}</a>
+    </div>
+    {% endif %}
+  </div>
+</div>
+
+<!-- Content sections -->
+<div class="max-w-4xl mx-auto px-4 py-12" style="animation: fadeIn .5s ease .15s both;">
+  <div class="prose max-w-none text-sm leading-relaxed opacity-80 space-y-6">
+    {{ rendered_content|safe }}
+  </div>
+  {% if page.cta_label and page.cta_url %}
+  <div class="mt-12 text-center">
+    <a href="{{ page.cta_url }}" class="ps-btn text-sm !py-3 !px-8 inline-block">{{ page.cta_label }}</a>
+  </div>
+  {% endif %}
+  <div class="mt-10 text-xs opacity-30">
+    {% trans "Dernière mise à jour" %} : {{ page.updated_at|date:"d/m/Y" }}
+  </div>
+</div>
+<style>@keyframes fadeIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}</style>
+{% endblock %}

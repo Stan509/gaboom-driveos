@@ -1,0 +1,15 @@
+{% extends "public_site/_base.html" %}
+{% load i18n %}
+
+{% block ps_content %}
+<div class="max-w-3xl mx-auto px-4 py-12" style="animation: fadeIn .4s ease both;">
+  <article>
+    <h1 class="text-2xl font-bold mb-1">{{ page.title }}</h1>
+    <p class="text-xs opacity-30 mb-8">{% trans "Dernière mise à jour" %} : {{ page.updated_at|date:"d/m/Y" }}</p>
+    <div class="text-[13px] leading-relaxed opacity-70 space-y-3 [&_h2]:text-base [&_h2]:font-bold [&_h2]:mt-6 [&_h2]:mb-2 [&_h3]:text-sm [&_h3]:font-semibold [&_h3]:mt-4 [&_h3]:mb-1 [&_ul]:list-disc [&_ul]:pl-5 [&_ol]:list-decimal [&_ol]:pl-5">
+      {{ rendered_content|safe }}
+    </div>
+  </article>
+</div>
+<style>@keyframes fadeIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}</style>
+{% endblock %}

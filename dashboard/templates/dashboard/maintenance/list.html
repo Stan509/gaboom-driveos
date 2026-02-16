@@ -1,0 +1,314 @@
+{% extends "dashboard/_layout.html" %}
+{% load humanize i18n %}
+
+{% block title %}{% trans "Maintenance" %} — Dashboard{% endblock %}
+{% block page_title %}{% trans "Maintenance" %}{% endblock %}
+{% block page_subtitle %}{% trans "Suivi intelligent de l'entretien de votre flotte" %}{% endblock %}
+
+{% block page_css %}
+<style>
+  @keyframes kpiIn{from{opacity:0;transform:translateY(10px) scale(.97)}to{opacity:1;transform:translateY(0) scale(1)}}
+  .kpi-card{animation:kpiIn .3s ease-out both}
+  .kpi-card:nth-child(1){animation-delay:0ms}
+  .kpi-card:nth-child(2){animation-delay:60ms}
+  .kpi-card:nth-child(3){animation-delay:120ms}
+  .kpi-card:nth-child(4){animation-delay:180ms}
+  .progress-track{height:7px;border-radius:4px;background:#e2e8f0;overflow:hidden}
+  .progress-fill{height:100%;border-radius:4px;transition:width .5s cubic-bezier(.4,0,.2,1)}
+  /* Modal */
+  .modal-bg{display:none;position:fixed;inset:0;background:rgba(15,23,42,.4);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);z-index:50}
+  .modal-bg.open{display:flex;align-items:center;justify-content:center}
+  .modal-box{background:#fff;border-radius:1.25rem;box-shadow:0 25px 60px rgba(0,0,0,.18);width:100%;max-width:480px;max-height:90vh;overflow-y:auto;padding:1.75rem;transform:scale(.95);opacity:0;transition:transform .2s ease-out,opacity .2s ease-out}
+  .modal-bg.open .modal-box{transform:scale(1);opacity:1}
+  /* Responsive */
+  @media(max-width:767px){.desktop-table{display:none}.mobile-cards{display:block}}
+  @media(min-width:768px){.mobile-cards{display:none}}
+</style>
+{% endblock %}
+
+{% block page_actions %}
+  {% if can_edit %}
+  <a href="{% url 'dashboard:business_settings' %}" class="hidden sm:inline-flex rounded-xl border border-slate-200 text-slate-600 px-4 py-2 text-sm font-medium hover:bg-slate-50 transition items-center gap-1.5">
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9.594 3.94c.09-.542.56-.94 1.11-.94h2.593c.55 0 1.02.398 1.11.94l.213 1.281c.063.374.313.686.645.87.074.04.147.083.22.127.325.196.72.257 1.075.124l1.217-.456a1.125 1.125 0 0 1 1.37.49l1.296 2.247a1.125 1.125 0 0 1-.26 1.431l-1.003.827c-.293.241-.438.613-.43.992a7.723 7.723 0 0 1 0 .255c-.008.378.137.75.43.991l1.004.827c.424.35.534.955.26 1.43l-1.298 2.247a1.125 1.125 0 0 1-1.369.491l-1.217-.456c-.355-.133-.75-.072-1.076.124a6.47 6.47 0 0 1-.22.128c-.331.183-.581.495-.644.869l-.213 1.281c-.09.543-.56.94-1.11.94h-2.594c-.55 0-1.019-.398-1.11-.94l-.213-1.281c-.062-.374-.312-.686-.644-.87a6.52 6.52 0 0 1-.22-.127c-.325-.196-.72-.257-1.076-.124l-1.217.456a1.125 1.125 0 0 1-1.369-.49l-1.297-2.247a1.125 1.125 0 0 1 .26-1.431l1.004-.827c.292-.24.437-.613.43-.991a6.932 6.932 0 0 1 0-.255c.007-.38-.138-.751-.43-.992l-1.004-.827a1.125 1.125 0 0 1-.26-1.43l1.297-2.247a1.125 1.125 0 0 1 1.37-.491l1.216.456c.356.133.751.072 1.076-.124.072-.044.146-.086.22-.128.332-.183.582-.495.644-.869l.214-1.28Z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"/></svg>
+      {% trans "Paramètres" %}
+    </a>
+  {% endif %}
+{% endblock %}
+
+{% block content %}
+
+<!-- ═══════ KPI WIDGETS ═══════ -->
+<div class="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-6">
+  <!-- OK -->
+  <div class="kpi-card rounded-2xl border border-emerald-200 shadow-sm p-4 flex items-center gap-3 bg-gradient-to-br from-white to-emerald-50/60 hover:shadow-md transition-shadow">
+    <div class="h-11 w-11 rounded-xl bg-emerald-500/10 text-emerald-600 flex items-center justify-center shrink-0">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/></svg>
+    </div>
+    <div>
+      <div class="text-2xl font-bold text-slate-900 leading-none">{{ kpi.ok }}</div>
+      <div class="text-[11px] font-semibold text-emerald-600 uppercase tracking-wider mt-0.5">{% trans "À jour" %}</div>
+    </div>
+  </div>
+  <!-- Soon -->
+  <div class="kpi-card rounded-2xl border border-amber-200 shadow-sm p-4 flex items-center gap-3 bg-gradient-to-br from-white to-amber-50/60 hover:shadow-md transition-shadow">
+    <div class="h-11 w-11 rounded-xl bg-amber-500/10 text-amber-600 flex items-center justify-center shrink-0">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z"/></svg>
+    </div>
+    <div>
+      <div class="text-2xl font-bold text-slate-900 leading-none">{{ kpi.soon }}</div>
+      <div class="text-[11px] font-semibold text-amber-600 uppercase tracking-wider mt-0.5">{% trans "Bientôt" %}</div>
+    </div>
+  </div>
+  <!-- Urgent -->
+  <div class="kpi-card rounded-2xl border border-red-200 shadow-sm p-4 flex items-center gap-3 bg-gradient-to-br from-white to-red-50/60 hover:shadow-md transition-shadow">
+    <div class="h-11 w-11 rounded-xl bg-red-500/10 text-red-600 flex items-center justify-center shrink-0">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m0-10.036A11.959 11.959 0 0 1 3.598 6 11.99 11.99 0 0 0 3 9.75c0 5.592 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.57-.598-3.75h-.152c-3.196 0-6.1-1.249-8.25-3.286Zm0 13.036h.008v.008H12v-.008Z"/></svg>
+    </div>
+    <div>
+      <div class="text-2xl font-bold text-slate-900 leading-none">{{ kpi.urgent }}</div>
+      <div class="text-[11px] font-semibold text-red-600 uppercase tracking-wider mt-0.5">{% trans "Urgent" %}</div>
+    </div>
+  </div>
+  <!-- Blocked -->
+  <div class="kpi-card rounded-2xl border border-slate-300 shadow-sm p-4 flex items-center gap-3 bg-gradient-to-br from-white to-slate-100/60 hover:shadow-md transition-shadow">
+    <div class="h-11 w-11 rounded-xl bg-slate-500/10 text-slate-500 flex items-center justify-center shrink-0">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 0 0 5.636 5.636m12.728 12.728A9 9 0 0 1 5.636 5.636m12.728 12.728L5.636 5.636"/></svg>
+    </div>
+    <div>
+      <div class="text-2xl font-bold text-slate-900 leading-none">{{ kpi.blocked }}</div>
+      <div class="text-[11px] font-semibold text-slate-500 uppercase tracking-wider mt-0.5">{% trans "Bloqués" %}</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════ FILTERS + TABLE ═══════ -->
+<div class="rounded-2xl bg-white border border-slate-200 shadow-sm">
+  <div class="px-5 py-3 border-b border-slate-100 flex flex-wrap items-center gap-3">
+    <form method="get" class="flex flex-wrap items-center gap-3 flex-1">
+      <div class="relative flex-1 min-w-[180px] max-w-xs">
+        <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"/></svg>
+        <input type="text" name="q" value="{{ q }}" placeholder="{% trans "Rechercher véhicule…" %}" class="w-full pl-9 pr-3 py-2 rounded-xl border border-slate-200 text-sm focus:border-violet-400 focus:ring-1 focus:ring-violet-400 outline-none">
+      </div>
+      <select name="status" onchange="this.form.submit()" class="rounded-xl border border-slate-200 px-3 py-2 text-sm focus:border-violet-400 focus:ring-1 focus:ring-violet-400 outline-none">
+        <option value="">{% trans "Tous les statuts" %}</option>
+        <option value="ok" {% if status_filter == "ok" %}selected{% endif %}>{% trans "À jour" %}</option>
+        <option value="soon" {% if status_filter == "soon" %}selected{% endif %}>{% trans "Bientôt" %}</option>
+        <option value="urgent" {% if status_filter == "urgent" %}selected{% endif %}>{% trans "Urgent" %}</option>
+        <option value="blocked" {% if status_filter == "blocked" %}selected{% endif %}>{% trans "Bloqué" %}</option>
+      </select>
+      <select name="sort" onchange="this.form.submit()" class="rounded-xl border border-slate-200 px-3 py-2 text-sm focus:border-violet-400 focus:ring-1 focus:ring-violet-400 outline-none">
+        <option value="urgency" {% if sort_by == "urgency" %}selected{% endif %}>{% trans "Tri : Urgence" %}</option>
+        <option value="km" {% if sort_by == "km" %}selected{% endif %}>{% trans "Tri : KM actuel" %}</option>
+        <option value="date" {% if sort_by == "date" %}selected{% endif %}>{% trans "Tri : Dernier entretien" %}</option>
+      </select>
+      <button type="submit" class="rounded-xl bg-gaboomViolet text-white px-4 py-2 text-sm font-medium hover:opacity-95 transition">{% trans "Filtrer" %}</button>
+    </form>
+  </div>
+
+  <!-- ═══════ DESKTOP TABLE ═══════ -->
+  <div class="desktop-table overflow-x-auto">
+    <table class="w-full text-sm">
+      <thead>
+        <tr class="border-b border-slate-200 text-left text-[11px] font-semibold text-slate-400 uppercase tracking-wider">
+          <th class="px-5 py-3">{% trans "Véhicule" %}</th>
+          <th class="px-3 py-3">{% trans "KM actuel" %}</th>
+          <th class="px-3 py-3">{% trans "Prochain entretien" %}</th>
+          <th class="px-3 py-3">{% trans "Km restants" %}</th>
+          <th class="px-3 py-3 min-w-[130px]">{% trans "Progression" %}</th>
+          <th class="px-3 py-3">{% trans "Statut" %}</th>
+          {% if can_edit %}<th class="px-3 py-3 text-right">{% trans "Actions" %}</th>{% endif %}
+        </tr>
+      </thead>
+      <tbody class="divide-y divide-slate-100">
+        {% for v in vehicles %}
+        <tr class="transition {% if v.maintenance_status == 'blocked' %}bg-red-50/50 hover:bg-red-50/70{% elif v.maintenance_status == 'urgent' %}bg-red-50/25 hover:bg-red-50/40{% elif v.maintenance_status == 'soon' %}bg-amber-50/25 hover:bg-amber-50/40{% else %}hover:bg-slate-50/60{% endif %}">
+          <td class="px-5 py-3">
+            <div class="font-medium text-slate-800">{{ v.make }} {{ v.model }}</div>
+            <div class="font-mono text-[11px] text-slate-400">{{ v.plate_number }}</div>
+          </td>
+          <td class="px-3 py-3 font-medium">{{ v.current_km|intcomma }} km</td>
+          <td class="px-3 py-3 text-slate-500">{{ v.next_maintenance_km|intcomma }} km</td>
+          <td class="px-3 py-3">
+            {% if v.maintenance_status == "blocked" %}
+            <span class="text-red-600 font-semibold">+{{ v.maintenance_overflow_km|intcomma }} km</span>
+            {% elif v.maintenance_status == "urgent" %}
+            <span class="text-red-500 font-medium">+{{ v.maintenance_overflow_km|intcomma }} km</span>
+            {% else %}
+            <span class="text-slate-600">{{ v.km_remaining|intcomma }} km</span>
+            {% endif %}
+          </td>
+          <td class="px-3 py-3">
+            <div class="flex items-center gap-2">
+              <div class="progress-track flex-1">
+                <div class="progress-fill {% if v.maintenance_status == 'blocked' %}bg-red-600{% elif v.maintenance_status == 'urgent' %}bg-red-500{% elif v.maintenance_status == 'soon' %}bg-amber-500{% else %}bg-emerald-500{% endif %}" style="width:{{ v.maintenance_progress_pct }}%"></div>
+              </div>
+              <span class="text-[11px] font-semibold {% if v.maintenance_status == 'blocked' %}text-red-600{% elif v.maintenance_status == 'urgent' %}text-red-500{% else %}text-slate-500{% endif %} w-9 text-right">{{ v.maintenance_progress_pct }}%</span>
+            </div>
+          </td>
+          <td class="px-3 py-3">
+            {% if v.maintenance_status == "ok" %}
+            <span class="inline-flex items-center gap-1 rounded-full bg-emerald-100 text-emerald-700 px-2.5 py-0.5 text-[11px] font-semibold"><span class="h-1.5 w-1.5 rounded-full bg-emerald-500"></span>{% trans "À jour" %}</span>
+            {% elif v.maintenance_status == "soon" %}
+            <span class="inline-flex items-center gap-1 rounded-full bg-amber-100 text-amber-700 px-2.5 py-0.5 text-[11px] font-semibold"><span class="h-1.5 w-1.5 rounded-full bg-amber-500"></span>{% trans "Bientôt" %}</span>
+            {% elif v.maintenance_status == "urgent" %}
+            <span class="inline-flex items-center gap-1 rounded-full bg-red-100 text-red-700 px-2.5 py-0.5 text-[11px] font-semibold"><span class="h-1.5 w-1.5 rounded-full bg-red-500"></span>{% trans "Urgent" %}</span>
+            {% elif v.maintenance_status == "blocked" %}
+            <span class="inline-flex items-center gap-1 rounded-full bg-red-600 text-white px-2.5 py-0.5 text-[11px] font-bold animate-pulse"><span class="h-1.5 w-1.5 rounded-full bg-white"></span>{% trans "Bloqué" %}</span>
+            {% endif %}
+          </td>
+          {% if can_edit %}
+          <td class="px-3 py-3 text-right">
+            <div class="flex items-center justify-end gap-1">
+              <button onclick="openRecordModal({{ v.pk }}, '{{ v.make }} {{ v.model }}', {{ v.current_km }})" class="rounded-lg {% if v.maintenance_status == 'blocked' %}bg-red-600 hover:bg-red-700 ring-2 ring-red-200{% else %}bg-emerald-600 hover:bg-emerald-700{% endif %} text-white px-2.5 py-1.5 text-[11px] font-medium transition" title="{% trans "Enregistrer entretien" %}">
+                <svg class="w-3.5 h-3.5 inline -mt-0.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M11.42 15.17 17.25 21A2.652 2.652 0 0 0 21 17.25l-5.877-5.877M11.42 15.17l2.496-3.03c.317-.384.74-.626 1.208-.766M11.42 15.17l-4.655 5.653a2.548 2.548 0 1 1-3.586-3.586l6.837-5.63m5.108-.233c.55-.164 1.163-.188 1.743-.14a4.5 4.5 0 0 0 4.486-6.336l-3.276 3.277a3.004 3.004 0 0 1-2.25-2.25l3.276-3.276a4.5 4.5 0 0 0-6.336 4.486c.049.58.025 1.194-.14 1.743"/></svg>
+              </button>
+              <button onclick="openKmModal({{ v.pk }}, '{{ v.make }} {{ v.model }}', {{ v.current_km }})" class="rounded-lg bg-blue-600 text-white px-2.5 py-1.5 text-[11px] font-medium hover:bg-blue-700 transition" title="{% trans "Modifier km" %}">
+                <svg class="w-3.5 h-3.5 inline -mt-0.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125"/></svg>
+              </button>
+              <a href="{% url 'dashboard:maintenance_history' v.pk %}" class="rounded-lg bg-slate-100 text-slate-600 px-2.5 py-1.5 text-[11px] font-medium hover:bg-slate-200 transition" title="{% trans "Historique" %}">
+                <svg class="w-3.5 h-3.5 inline -mt-0.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/></svg>
+              </a>
+            </div>
+          </td>
+          {% endif %}
+        </tr>
+        {% empty %}
+        <tr>
+          <td colspan="8" class="px-5 py-16 text-center">
+            <svg class="w-10 h-10 mx-auto text-slate-300 mb-3" fill="none" stroke="currentColor" stroke-width="1" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M11.42 15.17 17.25 21A2.652 2.652 0 0 0 21 17.25l-5.877-5.877M11.42 15.17l2.496-3.03c.317-.384.74-.626 1.208-.766M11.42 15.17l-4.655 5.653a2.548 2.548 0 1 1-3.586-3.586l6.837-5.63m5.108-.233c.55-.164 1.163-.188 1.743-.14a4.5 4.5 0 0 0 4.486-6.336l-3.276 3.277a3.004 3.004 0 0 1-2.25-2.25l3.276-3.276a4.5 4.5 0 0 0-6.336 4.486c.049.58.025 1.192-.14 1.743"/></svg>
+            <h3 class="font-semibold text-slate-900">{% trans "Aucun véhicule" %}</h3>
+            <p class="mt-1 text-sm text-slate-500">{% trans "Ajoutez des véhicules pour suivre leur maintenance." %}</p>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ═══════ MOBILE CARDS ═══════ -->
+  <div class="mobile-cards p-3 space-y-3">
+    {% for v in vehicles %}
+    <div class="rounded-xl border p-4 {% if v.maintenance_status == 'blocked' %}border-red-300 bg-red-50/60{% elif v.maintenance_status == 'urgent' %}border-red-200 bg-red-50/30{% elif v.maintenance_status == 'soon' %}border-amber-200 bg-amber-50/30{% else %}border-slate-200 bg-white{% endif %}">
+      <div class="flex items-center justify-between mb-2">
+        <div>
+          <div class="font-semibold text-sm text-slate-800">{{ v.make }} {{ v.model }}</div>
+          <div class="font-mono text-[11px] text-slate-400">{{ v.plate_number }}</div>
+        </div>
+        {% if v.maintenance_status == "ok" %}
+        <span class="inline-flex items-center gap-1 rounded-full bg-emerald-100 text-emerald-700 px-2.5 py-0.5 text-[11px] font-semibold"><span class="h-1.5 w-1.5 rounded-full bg-emerald-500"></span>{% trans "À jour" %}</span>
+        {% elif v.maintenance_status == "soon" %}
+        <span class="inline-flex items-center gap-1 rounded-full bg-amber-100 text-amber-700 px-2.5 py-0.5 text-[11px] font-semibold"><span class="h-1.5 w-1.5 rounded-full bg-amber-500"></span>{% trans "Bientôt" %}</span>
+        {% elif v.maintenance_status == "urgent" %}
+        <span class="inline-flex items-center gap-1 rounded-full bg-red-100 text-red-700 px-2.5 py-0.5 text-[11px] font-semibold"><span class="h-1.5 w-1.5 rounded-full bg-red-500"></span>{% trans "Urgent" %}</span>
+        {% elif v.maintenance_status == "blocked" %}
+        <span class="inline-flex items-center gap-1 rounded-full bg-red-600 text-white px-2.5 py-0.5 text-[11px] font-bold animate-pulse"><span class="h-1.5 w-1.5 rounded-full bg-white"></span>{% trans "Bloqué" %}</span>
+        {% endif %}
+      </div>
+      <div class="grid grid-cols-2 gap-2 text-xs text-slate-600 mb-2">
+        <div><span class="text-slate-400">{% trans "KM :" %}</span> {{ v.current_km|intcomma }}</div>
+        <div><span class="text-slate-400">{% trans "Prochain :" %}</span> {{ v.next_maintenance_km|intcomma }} km</div>
+        <div><span class="text-slate-400">{% trans "Dernier :" %}</span> {% if v.last_maintenance_date %}{{ v.last_maintenance_date|date:"d/m/Y" }}{% else %}—{% endif %}</div>
+        <div><span class="text-slate-400">{% trans "Restant :" %}</span>
+          {% if v.maintenance_status == "blocked" or v.maintenance_status == "urgent" %}
+          <span class="text-red-600 font-semibold">+{{ v.maintenance_overflow_km|intcomma }} km</span>
+          {% else %}{{ v.km_remaining|intcomma }} km{% endif %}
+        </div>
+      </div>
+      <div class="flex items-center gap-2 mb-3">
+        <div class="progress-track flex-1">
+          <div class="progress-fill {% if v.maintenance_status == 'blocked' %}bg-red-600{% elif v.maintenance_status == 'urgent' %}bg-red-500{% elif v.maintenance_status == 'soon' %}bg-amber-500{% else %}bg-emerald-500{% endif %}" style="width:{{ v.maintenance_progress_pct }}%"></div>
+        </div>
+        <span class="text-[11px] font-semibold text-slate-500">{{ v.maintenance_progress_pct }}%</span>
+      </div>
+      {% if can_edit %}
+      <div class="flex items-center gap-2">
+        <button onclick="openRecordModal({{ v.pk }}, '{{ v.make }} {{ v.model }}', {{ v.current_km }})" class="flex-1 rounded-lg {% if v.maintenance_status == 'blocked' %}bg-red-600 hover:bg-red-700{% else %}bg-emerald-600 hover:bg-emerald-700{% endif %} text-white py-1.5 text-xs font-medium transition text-center">{% trans "Entretien" %}</button>
+        <button onclick="openKmModal({{ v.pk }}, '{{ v.make }} {{ v.model }}', {{ v.current_km }})" class="flex-1 rounded-lg bg-blue-600 text-white py-1.5 text-xs font-medium hover:bg-blue-700 transition text-center">{% trans "Modifier km" %}</button>
+        <a href="{% url 'dashboard:maintenance_history' v.pk %}" class="flex-1 rounded-lg bg-slate-100 text-slate-600 py-1.5 text-xs font-medium hover:bg-slate-200 transition text-center">{% trans "Historique" %}</a>
+      </div>
+      {% endif %}
+    </div>
+    {% empty %}
+    <div class="text-center py-12">
+      <h3 class="font-semibold text-slate-900">{% trans "Aucun véhicule" %}</h3>
+      <p class="mt-1 text-sm text-slate-500">{% trans "Ajoutez des véhicules pour suivre leur maintenance." %}</p>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+
+<!-- ═══════ MODAL: Enregistrer entretien ═══════ -->
+<div id="recordModal" class="modal-bg" onclick="if(event.target===this)closeRecordModal()">
+  <div class="modal-box">
+    <div class="flex items-center justify-between mb-4">
+      <div>
+        <h3 class="font-semibold text-slate-800 text-base">{% trans "Enregistrer un entretien" %}</h3>
+        <p class="text-sm text-slate-500 mt-0.5" id="recordVehicleName"></p>
+      </div>
+      <button onclick="closeRecordModal()" class="h-8 w-8 rounded-lg hover:bg-slate-100 flex items-center justify-center text-slate-400 hover:text-slate-600 transition text-lg">&times;</button>
+    </div>
+    <form method="post" id="recordForm">
+      {% csrf_token %}
+      <div class="space-y-3">
+        {% for field in record_form %}
+        <div>
+          <label class="block text-[13px] font-medium text-slate-700 mb-1">{{ field.label }}</label>
+          {{ field }}
+          {% if field.errors %}<p class="mt-0.5 text-[11px] text-red-500">{{ field.errors.0 }}</p>{% endif %}
+        </div>
+        {% endfor %}
+      </div>
+      <div class="mt-5 flex justify-end gap-2 pt-4 border-t border-slate-100">
+        <button type="button" onclick="closeRecordModal()" class="rounded-xl border border-slate-200 px-4 py-2 text-sm font-medium text-slate-600 hover:bg-slate-50 transition">{% trans "Annuler" %}</button>
+        <button type="submit" class="rounded-xl bg-emerald-600 text-white px-5 py-2 text-sm font-medium hover:bg-emerald-700 transition shadow-sm">{% trans "Enregistrer" %}</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- ═══════ MODAL: Modifier km ═══════ -->
+<div id="kmModal" class="modal-bg" onclick="if(event.target===this)closeKmModal()">
+  <div class="modal-box">
+    <div class="flex items-center justify-between mb-4">
+      <div>
+        <h3 class="font-semibold text-slate-800 text-base">{% trans "Modifier le kilométrage" %}</h3>
+        <p class="text-sm text-slate-500 mt-0.5" id="kmVehicleName"></p>
+      </div>
+      <button onclick="closeKmModal()" class="h-8 w-8 rounded-lg hover:bg-slate-100 flex items-center justify-center text-slate-400 hover:text-slate-600 transition text-lg">&times;</button>
+    </div>
+    <form method="post" id="kmForm">
+      {% csrf_token %}
+      <div>
+        <label class="block text-[13px] font-medium text-slate-700 mb-1">{{ km_form.current_km.label }}</label>
+        {{ km_form.current_km }}
+      </div>
+      <div class="mt-5 flex justify-end gap-2 pt-4 border-t border-slate-100">
+        <button type="button" onclick="closeKmModal()" class="rounded-xl border border-slate-200 px-4 py-2 text-sm font-medium text-slate-600 hover:bg-slate-50 transition">{% trans "Annuler" %}</button>
+        <button type="submit" class="rounded-xl bg-blue-600 text-white px-5 py-2 text-sm font-medium hover:bg-blue-700 transition shadow-sm">{% trans "Mettre à jour" %}</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+function openRecordModal(pk, name, km){
+  document.getElementById('recordVehicleName').textContent = name + ' — ' + km.toLocaleString() + ' km';
+  document.getElementById('recordForm').action = '/dashboard/maintenance/' + pk + '/record/';
+  var kmField = document.querySelector('#recordForm [name="km_at_service"]');
+  if(kmField) kmField.value = km;
+  var dateField = document.querySelector('#recordForm [name="date"]');
+  if(dateField && !dateField.value) dateField.value = new Date().toISOString().slice(0,10);
+  document.getElementById('recordModal').classList.add('open');
+}
+function closeRecordModal(){ document.getElementById('recordModal').classList.remove('open'); }
+
+function openKmModal(pk, name, km){
+  document.getElementById('kmVehicleName').textContent = name + ' — actuel : ' + km.toLocaleString() + ' km';
+  document.getElementById('kmForm').action = '/dashboard/maintenance/' + pk + '/update-km/';
+  var kmField = document.querySelector('#kmForm [name="current_km"]');
+  if(kmField) kmField.value = km;
+  document.getElementById('kmModal').classList.add('open');
+}
+function closeKmModal(){ document.getElementById('kmModal').classList.remove('open'); }
+</script>
+{% endblock %}

@@ -1,0 +1,498 @@
+{% extends "base.html" %}
+{% load static i18n %}
+
+{% block title %}{% trans "Gaboom DriveOS — Le système d'exploitation pour agences de location" %}{% endblock %}
+
+{% block extra_head %}
+<style>
+  details[open] summary .faq-chevron { transform: rotate(180deg); }
+  details summary { cursor: pointer; list-style: none; }
+  details summary::-webkit-details-marker { display: none; }
+</style>
+{% endblock %}
+
+{% block body %}
+
+  <!-- ═══════════════════ NAVBAR ═══════════════════ -->
+  <nav class="sticky top-0 z-50 bg-white/80 backdrop-blur-lg border-b border-slate-100">
+    {% get_current_language as LANGUAGE_CODE %}
+    {% get_available_languages as LANGUAGES %}
+    {% get_language_info_list for LANGUAGES as languages %}
+    <div class="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
+      <a href="/" class="flex items-center gap-2.5">
+        <img src="{% static 'brand/logo.png' %}" alt="Gaboom DriveOS" class="h-9" />
+      </a>
+      <div class="hidden md:flex items-center gap-8 text-sm font-medium text-slate-600">
+        <a href="#features" class="hover:text-gaboomViolet transition">{% trans "Fonctionnalités" %}</a>
+        <a href="#pricing" class="hover:text-gaboomViolet transition">{% trans "Tarifs" %}</a>
+        <a href="/demo/" class="hover:text-gaboomViolet transition">{% trans "Démo" %}</a>
+        <a href="/login/" class="hover:text-gaboomViolet transition">{% trans "Connexion" %}</a>
+      </div>
+      <div class="flex items-center gap-3">
+        <form action="{% url 'set_language' %}" method="post" class="hidden sm:block">
+          {% csrf_token %}
+          <input type="hidden" name="next" value="{{ request.get_full_path }}">
+          <select name="language" onchange="this.form.submit()" class="rounded-lg border border-slate-200 px-2 py-1 text-[11px] bg-white/70">
+            {% for lang in languages %}
+              <option value="{{ lang.code }}" {% if lang.code == LANGUAGE_CODE %}selected{% endif %}>{{ lang.name_local }}</option>
+            {% endfor %}
+          </select>
+        </form>
+        <a href="/signup/" class="rounded-full bg-gaboomViolet text-white px-5 py-2 text-sm font-semibold shadow-md shadow-violet-200 hover:shadow-lg hover:shadow-violet-300 transition-all">
+          {% trans "Créer mon agence" %}
+        </a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ═══════════════════ HERO ═══════════════════ -->
+  <section class="relative overflow-hidden">
+    <div class="absolute inset-0 bg-gradient-to-br from-violet-50 via-white to-amber-50/40 -z-10"></div>
+    <div class="max-w-6xl mx-auto px-4 pt-20 pb-24 lg:pt-28 lg:pb-32">
+      <div class="grid lg:grid-cols-2 gap-14 items-center">
+        <div class="max-w-xl">
+          <div class="inline-flex items-center gap-2 rounded-full bg-white border border-violet-100 px-4 py-1.5 text-sm text-gaboomViolet font-medium shadow-sm">
+            <span class="h-2 w-2 rounded-full bg-gaboomYellow animate-pulse"></span>
+            {% trans "Multi-agence natif" %}
+          </div>
+          <div class="inline-flex items-center gap-2 rounded-full bg-white border border-emerald-100 px-4 py-1.5 text-sm text-emerald-700 font-medium shadow-sm ml-2">
+            <span class="text-emerald-500 text-xs font-bold">✓</span>
+            {% trans "Client retention intégré" %}
+          </div>
+          <h1 class="mt-6 text-5xl lg:text-6xl font-extrabold tracking-tight leading-[1.1]">
+            Gaboom<br/><span class="text-gaboomViolet">DriveOS</span>
+          </h1>
+          <p class="mt-5 text-xl text-slate-600 leading-relaxed">
+            {% trans "Le système d'exploitation pour agences de location modernes." %}
+            {% trans "Gérez votre flotte, automatisez vos contrats, encaissez en ligne et fidélisez vos clients — le tout depuis un seul dashboard." %}
+          </p>
+          <div class="mt-8 flex flex-col sm:flex-row gap-3">
+            <a href="/signup/" class="rounded-full bg-gaboomViolet text-white px-7 py-3.5 font-semibold text-center shadow-lg shadow-violet-200 hover:shadow-xl hover:shadow-violet-300 transition-all">
+              {% trans "Créer mon agence" %}
+            </a>
+            <a href="/demo/" class="rounded-full bg-white border border-slate-200 px-7 py-3.5 font-semibold text-slate-700 text-center shadow-sm hover:border-slate-300 hover:shadow-md transition-all">
+              {% trans "Voir la démo" %}
+            </a>
+          </div>
+          <p class="mt-4 text-sm text-slate-400">{% trans "Aucune carte bancaire requise. Activation immédiate." %}</p>
+        </div>
+
+        <!-- Mockup dashboard -->
+        <div class="hidden lg:block">
+          <div class="rounded-3xl bg-white border border-slate-200 shadow-xl glow-violet p-6 space-y-4">
+            <div class="flex items-center gap-2">
+              <div class="h-3 w-3 rounded-full bg-red-300"></div>
+              <div class="h-3 w-3 rounded-full bg-amber-300"></div>
+              <div class="h-3 w-3 rounded-full bg-emerald-300"></div>
+              <span class="ml-3 text-xs text-slate-400 font-mono">dashboard.gaboom.io</span>
+            </div>
+            <div class="grid grid-cols-3 gap-3">
+              <div class="rounded-2xl bg-gradient-to-br from-violet-50 to-violet-100/50 border border-violet-100 p-4">
+                <div class="text-[11px] text-violet-400 font-medium uppercase tracking-wider">{% trans "Véhicules" %}</div>
+                <div class="mt-1 text-2xl font-bold text-gaboomViolet">24</div>
+              </div>
+              <div class="rounded-2xl bg-gradient-to-br from-amber-50 to-amber-100/50 border border-amber-100 p-4">
+                <div class="text-[11px] text-amber-500 font-medium uppercase tracking-wider">{% trans "Contrats" %}</div>
+                <div class="mt-1 text-2xl font-bold text-amber-600">18</div>
+              </div>
+              <div class="rounded-2xl bg-gradient-to-br from-emerald-50 to-emerald-100/50 border border-emerald-100 p-4">
+                <div class="text-[11px] text-emerald-500 font-medium uppercase tracking-wider">{% trans "Revenus" %}</div>
+                <div class="mt-1 text-2xl font-bold text-emerald-600">€12k</div>
+              </div>
+            </div>
+            <div class="rounded-2xl bg-slate-50 border border-slate-100 p-4 space-y-2">
+              <div class="flex justify-between text-xs text-slate-500"><span>Peugeot 208 · AB-123-CD</span><span class="text-emerald-600 font-medium">{% trans "En location" %}</span></div>
+              <div class="flex justify-between text-xs text-slate-500"><span>Renault Clio · EF-456-GH</span><span class="text-gaboomViolet font-medium">{% trans "Disponible" %}</span></div>
+              <div class="flex justify-between text-xs text-slate-500"><span>Dacia Duster · IJ-789-KL</span><span class="text-amber-600 font-medium">{% trans "Maintenance" %}</span></div>
+            </div>
+            <div class="flex items-center justify-between">
+              <span class="inline-flex items-center rounded-full bg-emerald-50 text-emerald-700 px-3 py-1 text-xs font-medium border border-emerald-200">{% trans "Opérationnel" %}</span>
+              <span class="text-xs text-slate-400">{% trans "Mis à jour il y a 2 min" %}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════ PROBLÈME / SOLUTION ═══════════════════ -->
+  <section class="max-w-6xl mx-auto px-4 py-24">
+    <div class="grid md:grid-cols-2 gap-6">
+      <div class="rounded-3xl border border-red-100 bg-gradient-to-br from-red-50/60 to-white p-8 lg:p-10">
+        <div class="inline-flex items-center gap-2 rounded-full bg-red-100 text-red-600 px-3 py-1 text-xs font-semibold uppercase tracking-wider">{% trans "Problème" %}</div>
+        <h2 class="mt-5 text-2xl font-bold text-slate-900">{% trans "Gestion papier, pertes, retards" %}</h2>
+        <ul class="mt-5 space-y-3 text-slate-600">
+          <li class="flex items-start gap-3"><span class="mt-1 text-red-400">✕</span> {% trans "Tableurs dispersés, données incohérentes" %}</li>
+          <li class="flex items-start gap-3"><span class="mt-1 text-red-400">✕</span> {% trans "Véhicules mal suivis, inspections oubliées" %}</li>
+          <li class="flex items-start gap-3"><span class="mt-1 text-red-400">✕</span> {% trans "Aucune visibilité sur la rentabilité réelle" %}</li>
+          <li class="flex items-start gap-3"><span class="mt-1 text-red-400">✕</span> {% trans "Communication WhatsApp, zéro traçabilité" %}</li>
+        </ul>
+      </div>
+      <div class="rounded-3xl border border-emerald-100 bg-gradient-to-br from-emerald-50/60 to-white p-8 lg:p-10">
+        <div class="inline-flex items-center gap-2 rounded-full bg-emerald-100 text-emerald-700 px-3 py-1 text-xs font-semibold uppercase tracking-wider">{% trans "Solution" %}</div>
+        <h2 class="mt-5 text-2xl font-bold text-slate-900">{% trans "Tout centralisé, en temps réel" %}</h2>
+        <ul class="mt-5 space-y-3 text-slate-600">
+          <li class="flex items-start gap-3"><span class="mt-1 text-emerald-500">✓</span> {% trans "Un cockpit unique pour toute la flotte" %}</li>
+          <li class="flex items-start gap-3"><span class="mt-1 text-emerald-500">✓</span> {% trans "Tracking, inspections, maintenance planifiée" %}</li>
+          <li class="flex items-start gap-3"><span class="mt-1 text-emerald-500">✓</span> {% trans "Analytics et KPIs orientés décision" %}</li>
+          <li class="flex items-start gap-3"><span class="mt-1 text-emerald-500">✓</span> {% trans "Équipe structurée, rôles, permissions" %}</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════ RÉTENTION & REVENUS ═══════════════════ -->
+  <section class="bg-white">
+    <div class="max-w-6xl mx-auto px-4 py-24">
+      <div class="text-center max-w-2xl mx-auto">
+        <div class="inline-flex items-center gap-2 rounded-full bg-amber-100 text-amber-700 px-4 py-1.5 text-xs font-semibold uppercase tracking-wider">{% trans "Croissance" %}</div>
+        <h2 class="mt-5 text-3xl lg:text-4xl font-bold">{% trans "Augmente tes revenus sans augmenter ta flotte" %}</h2>
+        <p class="mt-3 text-slate-500">{% trans "Optimise chaque véhicule, chaque client, chaque euro." %}</p>
+      </div>
+      <div class="mt-14 grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
+        <div class="rounded-2xl border border-slate-200 bg-gradient-to-br from-amber-50/60 to-white p-6 text-center">
+          <div class="mx-auto h-12 w-12 rounded-2xl bg-amber-100 text-amber-600 flex items-center justify-center">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 0 1 3 19.875v-6.75ZM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 0 1-1.125-1.125V8.625ZM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 0 1-1.125-1.125V4.125Z"/></svg>
+          </div>
+          <h3 class="mt-4 font-semibold text-slate-900">{% trans "Optimisation taux d'occupation" %}</h3>
+          <p class="mt-2 text-sm text-slate-500">{% trans "Maximise le temps de location de chaque véhicule." %}</p>
+        </div>
+        <div class="rounded-2xl border border-slate-200 bg-gradient-to-br from-violet-50/60 to-white p-6 text-center">
+          <div class="mx-auto h-12 w-12 rounded-2xl bg-violet-100 text-gaboomViolet flex items-center justify-center">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904 9 18.75l-.813-2.846a4.5 4.5 0 0 0-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 0 0 3.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 0 0 3.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 0 0-3.09 3.09ZM18.259 8.715 18 9.75l-.259-1.035a3.375 3.375 0 0 0-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 0 0 2.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 0 0 2.455 2.456L21.75 6l-1.036.259a3.375 3.375 0 0 0-2.455 2.456Z"/></svg>
+          </div>
+          <h3 class="mt-4 font-semibold text-slate-900">{% trans "Recommandations intelligentes" %}</h3>
+          <p class="mt-2 text-sm text-slate-500">{% trans "Suggestions basées sur l'historique et la saisonnalité." %}</p>
+        </div>
+        <div class="rounded-2xl border border-slate-200 bg-gradient-to-br from-emerald-50/60 to-white p-6 text-center">
+          <div class="mx-auto h-12 w-12 rounded-2xl bg-emerald-100 text-emerald-600 flex items-center justify-center">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M14.857 17.082a23.848 23.848 0 0 0 5.454-1.31A8.967 8.967 0 0 1 18 9.75V9A6 6 0 0 0 6 9v.75a8.967 8.967 0 0 1-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 0 1-5.714 0m5.714 0a3 3 0 1 1-5.714 0"/></svg>
+          </div>
+          <h3 class="mt-4 font-semibold text-slate-900">{% trans "Rappels de retour" %}</h3>
+          <p class="mt-2 text-sm text-slate-500">{% trans "Notifications automatiques pour réduire les retards." %}</p>
+        </div>
+        <div class="rounded-2xl border border-slate-200 bg-gradient-to-br from-pink-50/60 to-white p-6 text-center">
+          <div class="mx-auto h-12 w-12 rounded-2xl bg-pink-100 text-pink-600 flex items-center justify-center">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19.128a9.38 9.38 0 0 0 2.625.372 9.337 9.337 0 0 0 4.121-.952 4.125 4.125 0 0 0-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 0 1 8.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0 1 11.964-3.07M12 6.375a3.375 3.375 0 1 1-6.75 0 3.375 3.375 0 0 1 6.75 0Zm8.25 2.25a2.625 2.625 0 1 1-5.25 0 2.625 2.625 0 0 1 5.25 0Z"/></svg>
+          </div>
+          <h3 class="mt-4 font-semibold text-slate-900">{% trans "Relances clients inactifs" %}</h3>
+          <p class="mt-2 text-sm text-slate-500">{% trans "Réactive les anciens clients avec des offres ciblées." %}</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════ FEATURES ═══════════════════ -->
+  <section id="features" class="bg-slate-50/60 border-y border-slate-100">
+    <div class="max-w-6xl mx-auto px-4 py-24">
+      <div class="text-center max-w-2xl mx-auto">
+        <div class="inline-flex items-center gap-2 rounded-full bg-violet-100 text-gaboomViolet px-4 py-1.5 text-xs font-semibold uppercase tracking-wider">{% trans "Fonctionnalités" %}</div>
+        <h2 class="mt-5 text-3xl lg:text-4xl font-bold">{% trans "Tout ce qu'il faut pour scaler" %}</h2>
+        <p class="mt-3 text-slate-500">{% trans "Chaque module est pensé pour fonctionner seul et s'intégrer au reste." %}</p>
+      </div>
+
+      <div class="mt-14 grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+        <!-- Card 1 -->
+        <div class="group rounded-3xl bg-white border border-slate-200 p-7 shadow-sm hover:shadow-lg hover:border-violet-200 transition-all">
+          <div class="h-12 w-12 rounded-2xl bg-violet-100 text-gaboomViolet flex items-center justify-center">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z"/></svg>
+          </div>
+          <h3 class="mt-5 text-lg font-semibold">{% trans "Contrats & réservations" %}</h3>
+          <p class="mt-2 text-slate-500 text-sm leading-relaxed">{% trans "Crée, signe et archive tes contrats. Suivi du cycle complet de chaque location." %}</p>
+        </div>
+        <!-- Card 2 -->
+        <div class="group rounded-3xl bg-white border border-slate-200 p-7 shadow-sm hover:shadow-lg hover:border-violet-200 transition-all">
+          <div class="h-12 w-12 rounded-2xl bg-amber-100 text-amber-600 flex items-center justify-center">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6.827 6.175A2.31 2.31 0 0 1 5.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 0 0 2.25 2.25h15A2.25 2.25 0 0 0 21.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 0 0-1.134-.175 2.31 2.31 0 0 1-1.64-1.055l-.822-1.316a2.192 2.192 0 0 0-1.736-1.039 48.774 48.774 0 0 0-5.232 0 2.192 2.192 0 0 0-1.736 1.039l-.821 1.316Z"/><path stroke-linecap="round" stroke-linejoin="round" d="M16.5 12.75a4.5 4.5 0 1 1-9 0 4.5 4.5 0 0 1 9 0Z"/></svg>
+          </div>
+          <h3 class="mt-5 text-lg font-semibold">{% trans "Inspection & photos" %}</h3>
+          <p class="mt-2 text-slate-500 text-sm leading-relaxed">{% trans "Checklists visuelles, photos avant/après, historique complet de l'état véhicule." %}</p>
+        </div>
+        <!-- Card 3 -->
+        <div class="group rounded-3xl bg-white border border-slate-200 p-7 shadow-sm hover:shadow-lg hover:border-violet-200 transition-all">
+          <div class="h-12 w-12 rounded-2xl bg-emerald-100 text-emerald-600 flex items-center justify-center">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M11.42 15.17 17.25 21A2.652 2.652 0 0 0 21 17.25l-5.877-5.877M11.42 15.17l2.496-3.03c.317-.384.74-.626 1.208-.766M11.42 15.17l-4.655 5.653a2.548 2.548 0 1 1-3.586-3.586l6.837-5.63m5.108-.233c.55-.164 1.163-.188 1.743-.14a4.5 4.5 0 0 0 4.486-6.336l-3.276 3.277a3.004 3.004 0 0 1-2.25-2.25l3.276-3.276a4.5 4.5 0 0 0-6.336 4.486c.049.58.025 1.193-.14 1.743"/></svg>
+          </div>
+          <h3 class="mt-5 text-lg font-semibold">{% trans "Maintenance intelligente" %}</h3>
+          <p class="mt-2 text-slate-500 text-sm leading-relaxed">{% trans "Planifie les entretiens, reçois des alertes, réduis les immobilisations." %}</p>
+        </div>
+        <!-- Card 4 -->
+        <div class="group rounded-3xl bg-white border border-slate-200 p-7 shadow-sm hover:shadow-lg hover:border-violet-200 transition-all">
+          <div class="h-12 w-12 rounded-2xl bg-blue-100 text-blue-600 flex items-center justify-center">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"/><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z"/></svg>
+          </div>
+          <h3 class="mt-5 text-lg font-semibold">{% trans "GPS tracking & géofencing" %}</h3>
+          <p class="mt-2 text-slate-500 text-sm leading-relaxed">{% trans "Localise ta flotte, définis des zones, reçois des alertes de sortie en temps réel." %}</p>
+        </div>
+        <!-- Card 5 -->
+        <div class="group rounded-3xl bg-white border border-slate-200 p-7 shadow-sm hover:shadow-lg hover:border-violet-200 transition-all">
+          <div class="h-12 w-12 rounded-2xl bg-pink-100 text-pink-600 flex items-center justify-center">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 0 1 3 19.875v-6.75ZM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 0 1-1.125-1.125V8.625ZM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 0 1-1.125-1.125V4.125Z"/></svg>
+          </div>
+          <h3 class="mt-5 text-lg font-semibold">{% trans "Analytics rentabilité" %}</h3>
+          <p class="mt-2 text-slate-500 text-sm leading-relaxed">{% trans "KPIs par véhicule, taux d'occupation, revenus. Décide avec de la data, pas au feeling." %}</p>
+        </div>
+        <!-- Card 6 -->
+        <div class="group rounded-3xl bg-white border border-slate-200 p-7 shadow-sm hover:shadow-lg hover:border-violet-200 transition-all">
+          <div class="h-12 w-12 rounded-2xl bg-violet-100 text-gaboomViolet flex items-center justify-center">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19.128a9.38 9.38 0 0 0 2.625.372 9.337 9.337 0 0 0 4.121-.952 4.125 4.125 0 0 0-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 0 1 8.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0 1 11.964-3.07M12 6.375a3.375 3.375 0 1 1-6.75 0 3.375 3.375 0 0 1 6.75 0Zm8.25 2.25a2.625 2.625 0 1 1-5.25 0 2.625 2.625 0 0 1 5.25 0Z"/></svg>
+          </div>
+          <h3 class="mt-5 text-lg font-semibold">{% trans "Équipe & permissions" %}</h3>
+          <p class="mt-2 text-slate-500 text-sm leading-relaxed">{% trans "Owner, Admin, Staff — chaque rôle a ses droits. Multi-agence natif." %}</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════ FIDÉLISATION CLIENT ═══════════════════ -->
+  <section class="bg-white">
+    <div class="max-w-6xl mx-auto px-4 py-24">
+      <div class="text-center max-w-2xl mx-auto">
+        <div class="inline-flex items-center gap-2 rounded-full bg-emerald-100 text-emerald-700 px-4 py-1.5 text-xs font-semibold uppercase tracking-wider">{% trans "Fidélisation" %}</div>
+        <h2 class="mt-5 text-3xl lg:text-4xl font-bold">{% trans "Fidélise tes clients automatiquement" %}</h2>
+        <p class="mt-3 text-slate-500">{% trans "Ne perds plus jamais un ancien client. Gaboom DriveOS t'aide à garder le contact et à maximiser la valeur de chaque location." %}</p>
+      </div>
+      <div class="mt-14 grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
+        <div class="group rounded-3xl bg-white border border-slate-200 p-7 shadow-sm hover:shadow-lg hover:border-emerald-200 transition-all">
+          <div class="h-12 w-12 rounded-2xl bg-emerald-100 text-emerald-600 flex items-center justify-center">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/></svg>
+          </div>
+          <h3 class="mt-5 text-lg font-semibold">{% trans "Historique client complet" %}</h3>
+          <p class="mt-2 text-slate-500 text-sm leading-relaxed">{% trans "Fiche client avec historique des locations, préférences et notes." %}</p>
+        </div>
+        <div class="group rounded-3xl bg-white border border-slate-200 p-7 shadow-sm hover:shadow-lg hover:border-emerald-200 transition-all">
+          <div class="h-12 w-12 rounded-2xl bg-violet-100 text-gaboomViolet flex items-center justify-center">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 12 3.269 3.125A59.769 59.769 0 0 1 21.485 12 59.768 59.768 0 0 1 3.27 20.875L5.999 12Zm0 0h7.5"/></svg>
+          </div>
+          <h3 class="mt-5 text-lg font-semibold">{% trans "Relances automatiques" %}</h3>
+          <p class="mt-2 text-slate-500 text-sm leading-relaxed">{% trans "Relance automatique après restitution pour rebooker rapidement." %}</p>
+        </div>
+        <div class="group rounded-3xl bg-white border border-slate-200 p-7 shadow-sm hover:shadow-lg hover:border-emerald-200 transition-all">
+          <div class="h-12 w-12 rounded-2xl bg-amber-100 text-amber-600 flex items-center justify-center">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M14.857 17.082a23.848 23.848 0 0 0 5.454-1.31A8.967 8.967 0 0 1 18 9.75V9A6 6 0 0 0 6 9v.75a8.967 8.967 0 0 1-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 0 1-5.714 0m5.714 0a3 3 0 1 1-5.714 0"/></svg>
+          </div>
+          <h3 class="mt-5 text-lg font-semibold">{% trans "Notifications promotions" %}</h3>
+          <p class="mt-2 text-slate-500 text-sm leading-relaxed">{% trans "Offres spéciales ciblées pour anciens clients et périodes creuses." %}</p>
+        </div>
+        <div class="group rounded-3xl bg-white border border-slate-200 p-7 shadow-sm hover:shadow-lg hover:border-emerald-200 transition-all">
+          <div class="h-12 w-12 rounded-2xl bg-blue-100 text-blue-600 flex items-center justify-center">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M20.25 6.375c0 2.278-3.694 4.125-8.25 4.125S3.75 8.653 3.75 6.375m16.5 0c0-2.278-3.694-4.125-8.25-4.125S3.75 4.097 3.75 6.375m16.5 0v11.25c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125V6.375m16.5 0v3.75m-16.5-3.75v3.75m16.5 0v3.75C20.25 16.153 16.556 18 12 18s-8.25-1.847-8.25-4.125v-3.75m16.5 0c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125"/></svg>
+          </div>
+          <h3 class="mt-5 text-lg font-semibold">{% trans "Base CRM intégrée" %}</h3>
+          <p class="mt-2 text-slate-500 text-sm leading-relaxed">{% trans "Base de données centralisée de tous vos clients et interactions." %}</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════ SÉCURITÉ ═══════════════════ -->
+  <section class="max-w-6xl mx-auto px-4 py-24">
+    <div class="rounded-3xl bg-gradient-to-br from-violet-600 to-violet-800 p-10 lg:p-14 text-white">
+      <div class="max-w-3xl">
+        <div class="inline-flex items-center gap-2 rounded-full bg-white/10 px-4 py-1.5 text-xs font-semibold uppercase tracking-wider">{% trans "Sécurité" %}</div>
+        <h2 class="mt-5 text-3xl font-bold">{% trans "Ta flotte est protégée" %}</h2>
+        <p class="mt-3 text-violet-200 leading-relaxed">{% trans "Isolation stricte des données par agence. Architecture multi-tenant sécurisée. Logs d'audit prêts pour conformité." %}</p>
+      </div>
+      <div class="mt-10 grid sm:grid-cols-3 gap-5">
+        <div class="rounded-2xl bg-white/10 backdrop-blur p-6">
+          <div class="h-10 w-10 rounded-xl bg-gaboomYellow/20 text-gaboomYellow flex items-center justify-center">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 1 0-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 0 0 2.25-2.25v-6.75a2.25 2.25 0 0 0-2.25-2.25H6.75a2.25 2.25 0 0 0-2.25 2.25v6.75a2.25 2.25 0 0 0 2.25 2.25Z"/></svg>
+          </div>
+          <h3 class="mt-4 font-semibold">{% trans "Isolation par agence" %}</h3>
+          <p class="mt-2 text-sm text-violet-200">{% trans "Chaque agence est un silo étanche. Aucun accès croisé possible entre les données." %}</p>
+        </div>
+        <div class="rounded-2xl bg-white/10 backdrop-blur p-6">
+          <div class="h-10 w-10 rounded-xl bg-gaboomYellow/20 text-gaboomYellow flex items-center justify-center">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75m-3-7.036A11.959 11.959 0 0 1 3.598 6 11.99 11.99 0 0 0 3 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285Z"/></svg>
+          </div>
+          <h3 class="mt-4 font-semibold">{% trans "Architecture multi-tenant" %}</h3>
+          <p class="mt-2 text-sm text-violet-200">{% trans "Séparation stricte au niveau base de données, middleware et permissions." %}</p>
+        </div>
+        <div class="rounded-2xl bg-white/10 backdrop-blur p-6">
+          <div class="h-10 w-10 rounded-xl bg-gaboomYellow/20 text-gaboomYellow flex items-center justify-center">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z"/></svg>
+          </div>
+          <h3 class="mt-4 font-semibold">{% trans "Logs d'audit" %}</h3>
+          <p class="mt-2 text-sm text-violet-200">{% trans "Traçabilité complète des actions. Prêt pour conformité et audits." %}</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════ TARIFS ═══════════════════ -->
+  <section id="pricing" class="bg-slate-50/60 border-y border-slate-100">
+    <div class="max-w-6xl mx-auto px-4 py-24">
+      <div class="text-center max-w-2xl mx-auto">
+        <div class="inline-flex items-center gap-2 rounded-full bg-amber-100 text-amber-700 px-4 py-1.5 text-xs font-semibold uppercase tracking-wider">{% trans "Tarifs" %}</div>
+        <h2 class="mt-5 text-3xl lg:text-4xl font-bold">{% trans "Simple, transparent, sans surprise" %}</h2>
+        <p class="mt-3 text-slate-500">{% trans "Essai gratuit sur tous les plans. Aucune carte requise." %}</p>
+      </div>
+
+      <div class="mt-14 grid md:grid-cols-3 gap-6">
+        <!-- Starter -->
+        <div class="rounded-3xl bg-white border border-slate-200 p-8 shadow-sm flex flex-col">
+          <div class="text-sm font-semibold text-slate-400 uppercase tracking-wider">{% trans "Starter" %}</div>
+          <div class="mt-4 flex items-baseline gap-1">
+            <span class="text-4xl font-extrabold">$59</span>
+            <span class="text-slate-400 text-sm">{% trans "/mois" %}</span>
+          </div>
+          <p class="mt-3 text-sm text-slate-500">{% trans "Pour démarrer avec une agence." %}</p>
+          <ul class="mt-6 space-y-3 text-sm text-slate-600 flex-1">
+            <li class="flex items-center gap-2"><span class="text-emerald-500">✓</span> {% trans "1 agence" %}</li>
+            <li class="flex items-center gap-2"><span class="text-emerald-500">✓</span> {% trans "3 utilisateurs" %}</li>
+            <li class="flex items-center gap-2"><span class="text-emerald-500">✓</span> {% trans "20 véhicules" %}</li>
+            <li class="flex items-center gap-2"><span class="text-emerald-500">✓</span> {% trans "Support email" %}</li>
+          </ul>
+          <a href="/signup/" class="mt-8 block rounded-full border-2 border-gaboomViolet text-gaboomViolet px-6 py-3 text-center font-semibold hover:bg-gaboomViolet hover:text-white transition-all">
+            {% trans "Essai gratuit" %}
+          </a>
+        </div>
+        <!-- Business -->
+        <div class="rounded-3xl bg-white border-2 border-gaboomViolet p-8 shadow-xl glow-violet flex flex-col relative">
+          <div class="absolute -top-3.5 left-1/2 -translate-x-1/2 rounded-full bg-gaboomYellow text-slate-900 px-4 py-1 text-xs font-bold uppercase tracking-wider shadow-sm">{% trans "Populaire" %}</div>
+          <div class="text-sm font-semibold text-gaboomViolet uppercase tracking-wider">{% trans "Business" %}</div>
+          <div class="mt-4 flex items-baseline gap-1">
+            <span class="text-4xl font-extrabold">$99</span>
+            <span class="text-slate-400 text-sm">{% trans "/mois" %}</span>
+          </div>
+          <p class="mt-3 text-sm text-slate-500">{% trans "Multi-agence, équipe complète." %}</p>
+          <ul class="mt-6 space-y-3 text-sm text-slate-600 flex-1">
+            <li class="flex items-center gap-2"><span class="text-emerald-500">✓</span> {% trans "Multi-agence" %}</li>
+            <li class="flex items-center gap-2"><span class="text-emerald-500">✓</span> {% trans "15 utilisateurs" %}</li>
+            <li class="flex items-center gap-2"><span class="text-emerald-500">✓</span> {% trans "Véhicules illimités" %}</li>
+            <li class="flex items-center gap-2"><span class="text-emerald-500">✓</span> {% trans "GPS tracking" %}</li>
+            <li class="flex items-center gap-2"><span class="text-emerald-500">✓</span> {% trans "Support prioritaire" %}</li>
+          </ul>
+          <a href="/signup/" class="mt-8 block rounded-full bg-gaboomViolet text-white px-6 py-3 text-center font-semibold shadow-lg shadow-violet-200 hover:shadow-xl transition-all">
+            {% trans "Essai gratuit" %}
+          </a>
+        </div>
+        <!-- Entreprise -->
+        <div class="rounded-3xl bg-white border border-slate-200 p-8 shadow-sm flex flex-col">
+          <div class="text-sm font-semibold text-slate-400 uppercase tracking-wider">{% trans "Entreprise" %}</div>
+          <div class="mt-4 flex items-baseline gap-1">
+            <span class="text-4xl font-extrabold">199</span>
+            <span class="text-slate-400 text-sm">{% trans "/mois" %}</span>
+          </div>
+          <p class="mt-3 text-sm text-slate-500">{% trans "Sur mesure, accompagnement dédié." %}</p>
+          <ul class="mt-6 space-y-3 text-sm text-slate-600 flex-1">
+            <li class="flex items-center gap-2"><span class="text-emerald-500">✓</span> {% trans "Tout Pro inclus" %}</li>
+            <li class="flex items-center gap-2"><span class="text-emerald-500">✓</span> {% trans "Workflows custom" %}</li>
+            <li class="flex items-center gap-2"><span class="text-emerald-500">✓</span> {% trans "Intégrations avancées" %}</li>
+            <li class="flex items-center gap-2"><span class="text-emerald-500">✓</span> {% trans "Onboarding personnalisé" %}</li>
+            <li class="flex items-center gap-2"><span class="text-emerald-500">✓</span> {% trans "SLA garanti" %}</li>
+          </ul>
+          <a href="/signup/" class="mt-8 block rounded-full border-2 border-gaboomViolet text-gaboomViolet px-6 py-3 text-center font-semibold hover:bg-gaboomViolet hover:text-white transition-all">
+            {% trans "Essai gratuit" %}
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════ FAQ ═══════════════════ -->
+  <section class="max-w-3xl mx-auto px-4 py-24">
+    <div class="text-center">
+      <h2 class="text-3xl font-bold">{% trans "Questions fréquentes" %}</h2>
+      <p class="mt-3 text-slate-500">{% trans "Tout ce que tu dois savoir avant de commencer." %}</p>
+    </div>
+    <div class="mt-12 space-y-3">
+      <details class="group rounded-2xl border border-slate-200 bg-white">
+        <summary class="flex items-center justify-between p-5 font-semibold">
+          {% trans "Est-ce vraiment multi-agence ?" %}
+          <svg class="faq-chevron w-5 h-5 text-slate-400 transition-transform" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5"/></svg>
+        </summary>
+        <div class="px-5 pb-5 text-sm text-slate-600">{% trans "Oui. Chaque utilisateur est rattaché à une agence. Les données sont strictement séparées. Tu peux gérer plusieurs agences depuis un seul compte owner." %}</div>
+      </details>
+      <details class="group rounded-2xl border border-slate-200 bg-white">
+        <summary class="flex items-center justify-between p-5 font-semibold">
+          {% trans "Puis-je essayer gratuitement ?" %}
+          <svg class="faq-chevron w-5 h-5 text-slate-400 transition-transform" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5"/></svg>
+        </summary>
+        <div class="px-5 pb-5 text-sm text-slate-600">{% trans "Absolument. Tous les plans incluent un essai gratuit sans carte bancaire. Tu testes, tu décides." %}</div>
+      </details>
+      <details class="group rounded-2xl border border-slate-200 bg-white">
+        <summary class="flex items-center justify-between p-5 font-semibold">
+          {% trans "Le paiement Stripe est-il inclus ?" %}
+          <svg class="faq-chevron w-5 h-5 text-slate-400 transition-transform" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5"/></svg>
+        </summary>
+        <div class="px-5 pb-5 text-sm text-slate-600">{% trans "Oui. Stripe est intégré pour permettre à vos clients de payer leurs réservations en ligne directement sur votre site public. Vous connectez votre compte Stripe et recevez les paiements directement. Gaboom DriveOS ne prend pas le contrôle de vos fonds." %}</div>
+      </details>
+      <details class="group rounded-2xl border border-slate-200 bg-white">
+        <summary class="flex items-center justify-between p-5 font-semibold">
+          {% trans "Mes clients peuvent-ils réserver en ligne ?" %}
+          <svg class="faq-chevron w-5 h-5 text-slate-400 transition-transform" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5"/></svg>
+        </summary>
+        <div class="px-5 pb-5 text-sm text-slate-600">{% trans "Oui. Chaque agence dispose d'un site public avec catalogue et formulaire de réservation, activable en un clic." %}</div>
+      </details>
+      <details class="group rounded-2xl border border-slate-200 bg-white">
+        <summary class="flex items-center justify-between p-5 font-semibold">
+          {% trans "Le GPS est-il intégré ?" %}
+          <svg class="faq-chevron w-5 h-5 text-slate-400 transition-transform" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5"/></svg>
+        </summary>
+        <div class="px-5 pb-5 text-sm text-slate-600">{% trans "Le module GPS tracking avec géofencing est prévu dans le plan Pro. L'architecture supporte déjà les fournisseurs tiers." %}</div>
+      </details>
+      <details class="group rounded-2xl border border-slate-200 bg-white">
+        <summary class="flex items-center justify-between p-5 font-semibold">
+          {% trans "Puis-je personnaliser le site de mon agence ?" %}
+          <svg class="faq-chevron w-5 h-5 text-slate-400 transition-transform" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5"/></svg>
+        </summary>
+        <div class="px-5 pb-5 text-sm text-slate-600">{% trans "Oui. Couleurs, thème, activation/désactivation, mode maintenance — tout est configurable depuis le dashboard." %}</div>
+      </details>
+    </div>
+  </section>
+
+  <!-- ═══════════════════ FINAL CTA ═══════════════════ -->
+  <section class="bg-gaboomViolet">
+    <div class="max-w-4xl mx-auto px-4 py-20 text-center">
+      <h2 class="text-3xl lg:text-4xl font-bold text-white">{% trans "Prêt à piloter ta flotte ?" %}</h2>
+      <p class="mt-4 text-violet-200 text-lg">{% trans "Rejoins les agences qui passent au niveau supérieur." %}</p>
+      <a href="/signup/" class="mt-8 inline-block rounded-full bg-gaboomYellow text-slate-900 px-8 py-4 font-bold text-lg shadow-xl hover:shadow-2xl transition-all">
+        {% trans "Démarrer maintenant" %}
+      </a>
+      <p class="mt-4 text-sm text-violet-300">{% trans "Gratuit · Sans engagement · En 30 secondes" %}</p>
+    </div>
+  </section>
+
+  <!-- ═══════════════════ FOOTER ═══════════════════ -->
+  <footer class="bg-slate-900 text-slate-400">
+    <div class="max-w-6xl mx-auto px-4 py-14">
+      <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-10">
+        <div>
+          <img src="{% static 'brand/logo.png' %}" alt="Gaboom DriveOS" class="h-8 brightness-0 invert opacity-80" />
+          <p class="mt-4 text-sm leading-relaxed">{% trans "Le système d'exploitation pour agences de location modernes." %}</p>
+        </div>
+        <div>
+          <h4 class="text-white font-semibold text-sm uppercase tracking-wider">{% trans "Produit" %}</h4>
+          <ul class="mt-4 space-y-2 text-sm">
+            <li><a href="#features" class="hover:text-white transition">{% trans "Fonctionnalités" %}</a></li>
+            <li><a href="#pricing" class="hover:text-white transition">{% trans "Tarifs" %}</a></li>
+            <li><a href="/demo/" class="hover:text-white transition">{% trans "Démo" %}</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4 class="text-white font-semibold text-sm uppercase tracking-wider">{% trans "Compte" %}</h4>
+          <ul class="mt-4 space-y-2 text-sm">
+            <li><a href="/signup/" class="hover:text-white transition">{% trans "Créer une agence" %}</a></li>
+            <li><a href="/login/" class="hover:text-white transition">{% trans "Connexion" %}</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4 class="text-white font-semibold text-sm uppercase tracking-wider">{% trans "Légal" %}</h4>
+          <ul class="mt-4 space-y-2 text-sm">
+            <li><span class="text-slate-500">{% trans "CGU (bientôt)" %}</span></li>
+            <li><span class="text-slate-500">{% trans "Confidentialité (bientôt)" %}</span></li>
+          </ul>
+        </div>
+      </div>
+      <div class="mt-12 pt-8 border-t border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-4">
+        <p class="text-sm">© {% now "Y" %} Gaboom DriveOS. {% trans "Tous droits réservés." %}</p>
+        <div class="flex items-center gap-1.5">
+          <span class="h-2 w-2 rounded-full bg-emerald-400 animate-pulse"></span>
+          <span class="text-xs text-slate-500">{% trans "Tous les systèmes opérationnels" %}</span>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+{% endblock %}

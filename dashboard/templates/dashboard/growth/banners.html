@@ -1,0 +1,60 @@
+{% extends "dashboard/_layout.html" %}
+{% load i18n %}
+
+{% block page_title %}{% trans "Bannières" %}{% endblock %}
+{% block page_subtitle %}{% trans "Gérez les bannières de votre site public" %}{% endblock %}
+
+{% block page_actions %}
+<a href="{% url 'dashboard:banner_create' %}" class="d-btn px-4 py-2 text-sm font-semibold inline-flex items-center gap-1.5">
+  <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/></svg>
+  {% trans "Nouvelle bannière" %}
+</a>
+{% endblock %}
+
+{% block content %}
+{% if banners %}
+<div class="grid gap-3">
+  {% for b in banners %}
+  <div class="d-card p-5 flex flex-col sm:flex-row sm:items-center gap-4 d-fade-in" style="animation-delay:{{ forloop.counter0 }}50ms">
+    {% if b.image %}
+    <img src="{{ b.image.url }}" alt="" class="w-20 h-14 rounded-xl object-cover shrink-0" />
+    {% else %}
+    <div class="w-20 h-14 rounded-xl bg-slate-100 flex items-center justify-center shrink-0">
+      <svg class="w-6 h-6 text-slate-300" fill="none" stroke="currentColor" stroke-width="1" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="m2.25 15.75 5.159-5.159a2.25 2.25 0 0 1 3.182 0l5.159 5.159m-1.5-1.5 1.409-1.409a2.25 2.25 0 0 1 3.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 0 0 1.5-1.5V6a1.5 1.5 0 0 0-1.5-1.5H3.75A1.5 1.5 0 0 0 2.25 6v12a1.5 1.5 0 0 0 1.5 1.5Z"/></svg>
+    </div>
+    {% endif %}
+    <div class="flex-1 min-w-0">
+      <div class="flex items-center gap-2">
+        <span class="font-semibold text-sm truncate">{{ b.title|default:_("Sans titre") }}</span>
+        <span class="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-slate-100">{{ b.get_type_display }}</span>
+        {% if b.is_active_now %}
+        <span class="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-700">{% trans "Actif" %}</span>
+        {% else %}
+        <span class="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-red-100 text-red-700">{% trans "Inactif" %}</span>
+        {% endif %}
+      </div>
+      <div class="text-xs opacity-50 mt-0.5">
+        {% trans "Priorité" %} {{ b.priority }} · {{ b.get_target_device_display }} · {{ b.get_animation_type_display }}
+        {% if b.start_date %} · {% trans "Du" %} {{ b.start_date|date:"d/m" }}{% endif %}
+        {% if b.end_date %} {% trans "au" %} {{ b.end_date|date:"d/m" }}{% endif %}
+      </div>
+    </div>
+    <div class="flex items-center gap-2 shrink-0">
+      <a href="{% url 'dashboard:banner_edit' pk=b.pk %}" class="px-3 py-1.5 rounded-lg border border-slate-200 text-xs font-medium hover:bg-slate-50 transition">{% trans "Modifier" %}</a>
+      <form method="post" action="{% url 'dashboard:banner_delete' pk=b.pk %}" onsubmit="return confirm('{% trans "Supprimer cette bannière ?" %}')">
+        {% csrf_token %}
+        <button type="submit" class="px-3 py-1.5 rounded-lg text-red-500 text-xs font-medium hover:bg-red-50 transition">{% trans "Supprimer" %}</button>
+      </form>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+{% else %}
+<div class="d-card p-12 text-center">
+  <div class="text-4xl mb-3">🖼️</div>
+  <div class="font-semibold">{% trans "Aucune bannière" %}</div>
+  <p class="text-sm opacity-50 mt-1">{% trans "Créez des bannières pour votre site public." %}</p>
+  <a href="{% url 'dashboard:banner_create' %}" class="d-btn px-5 py-2 text-sm font-semibold mt-4 inline-block">{% trans "Créer une bannière" %}</a>
+</div>
+{% endif %}
+{% endblock %}

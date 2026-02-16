@@ -1,0 +1,35 @@
+{% extends "public_site/_base.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "Réserver" %} — {{ agency.name }}{% endblock %}
+
+{% block ps_content %}
+  <section class="max-w-xl mx-auto px-4 py-16">
+    <div class="rounded-2xl ps-card border p-8" style="border-color: color-mix(in srgb, var(--text) 8%, transparent);">
+      <h1 class="text-2xl font-bold">{% trans "Réserver un véhicule" %}</h1>
+      <p class="mt-2 opacity-60 text-sm">{% trans "Remplis le formulaire et nous te recontactons rapidement." %}</p>
+
+      <div class="mt-6 space-y-4">
+        <div>
+          <label class="block text-sm font-medium mb-1.5">{% trans "Ton email" %}</label>
+          <input class="w-full rounded-xl border px-4 py-2.5 text-sm" style="border-color: color-mix(in srgb, var(--text) 15%, transparent); background: var(--bg);" type="email" placeholder="ton@email.com" />
+        </div>
+        <div>
+          <label class="block text-sm font-medium mb-1.5">{% trans "Véhicule souhaité" %}</label>
+          <input class="w-full rounded-xl border px-4 py-2.5 text-sm" style="border-color: color-mix(in srgb, var(--text) 15%, transparent); background: var(--bg);" type="text" placeholder="Ex: Peugeot 208" />
+        </div>
+        <div>
+          <label class="block text-sm font-medium mb-1.5">{% trans "Message" %} ({% trans "optionnel" %})</label>
+          <textarea class="w-full rounded-xl border px-4 py-2.5 text-sm h-24 resize-none" style="border-color: color-mix(in srgb, var(--text) 15%, transparent); background: var(--bg);" placeholder="Dates souhaitées, questions..."></textarea>
+        </div>
+        <button class="ps-btn w-full" type="button">{% trans "Envoyer la demande" %}</button>
+      </div>
+
+      <p class="mt-4 text-xs opacity-40 text-center">{% trans "Formulaire de contact — l'intégration paiement arrive bientôt." %}</p>
+    </div>
+
+    <div class="mt-6 text-center">
+      <a href="{% url 'public_site:agency_catalog' slug=agency.slug %}" class="ps-btn-outline text-sm">← {% trans "Retour au catalogue" %}</a>
+    </div>
+  </section>
+{% endblock %}

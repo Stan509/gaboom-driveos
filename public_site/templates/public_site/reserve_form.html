@@ -1,0 +1,217 @@
+{% extends "public_site/_base.html" %}
+{% load i18n %}
+
+{% block ps_content %}
+<div class="max-w-3xl mx-auto px-4 py-10">
+
+  <!-- Back link -->
+  <a href="{% url 'public_site:vehicle_detail' slug=agency.slug vehicle_id=vehicle.pk %}" class="inline-flex items-center gap-1.5 text-sm opacity-60 hover:opacity-100 transition mb-6">
+    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5"/></svg>
+    {% trans "Retour au véhicule" %}
+  </a>
+
+  <!-- Vehicle summary card -->
+  <div class="ps-card rounded-2xl p-5 flex items-center gap-5 mb-8 border" style="border-color: color-mix(in srgb, var(--text) 8%, transparent);">
+    {% if vehicle.image %}
+      <img src="{{ vehicle.image.url }}" alt="{{ vehicle }}" class="w-24 h-18 rounded-xl object-cover shrink-0" />
+    {% else %}
+      <div class="w-24 h-18 rounded-xl bg-slate-100 flex items-center justify-center shrink-0">
+        <svg class="w-10 h-10 text-slate-300" fill="none" stroke="currentColor" stroke-width="1" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 18.75a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 0 1-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m3 0H21"/></svg>
+      </div>
+    {% endif %}
+    <div class="min-w-0">
+      <h2 class="font-bold text-lg truncate">{{ vehicle.make }} {{ vehicle.model }}</h2>
+      <p class="text-sm opacity-60">{{ vehicle.plate_number }}</p>
+      <p class="font-semibold mt-1 ps-primary">{{ vehicle.daily_price }} {{ agency.business_settings.currency|default:"EUR" }} {% trans "/jour" %}</p>
+    </div>
+  </div>
+
+  <!-- Vehicle unavailable alert -->
+  {% if vehicle_unavailable %}
+  <div class="rounded-2xl border-2 border-red-300 bg-red-50 p-5 mb-8">
+    <div class="flex items-start gap-3">
+      <svg class="w-6 h-6 text-red-500 shrink-0 mt-0.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 0 0 5.636 5.636m12.728 12.728A9 9 0 0 1 5.636 5.636m12.728 12.728L5.636 5.636"/></svg>
+      <div>
+        <h3 class="font-bold text-red-800">{% trans "Ce véhicule n'est plus disponible" %}</h3>
+        <p class="text-sm text-red-700 mt-1">{% trans "Ce véhicule est actuellement en location ou en maintenance. Veuillez choisir un autre véhicule." %}</p>
+        <a href="{% url 'public_site:agency_public_home' slug=agency.slug %}" class="inline-flex items-center gap-2 mt-4 px-4 py-2 rounded-xl bg-red-600 text-white text-sm font-semibold hover:bg-red-700 transition">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5"/></svg>
+          {% trans "Voir les véhicules disponibles" %}
+        </a>
+      </div>
+    </div>
+  </div>
+  {% endif %}
+
+  <!-- Conflict alert -->
+  {% if conflict %}
+  <div class="rounded-2xl border-2 border-amber-300 bg-amber-50 p-5 mb-8">
+    <div class="flex items-start gap-3">
+      <svg class="w-6 h-6 text-amber-500 shrink-0 mt-0.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z"/></svg>
+      <div>
+        <h3 class="font-bold text-amber-800">{% trans "Ce véhicule n'est plus disponible pour ces dates" %}</h3>
+        <p class="text-sm text-amber-700 mt-1">{% trans "Une réservation confirmée existe déjà pour cette période. Choisissez d'autres dates ou un autre véhicule." %}</p>
+      </div>
+    </div>
+    {% if alternatives %}
+    <div class="mt-5">
+      <p class="text-sm font-semibold text-amber-800 mb-3">{% trans "Véhicules disponibles :" %}</p>
+      <div class="grid gap-3">
+        {% for alt in alternatives %}
+        <a href="{% url 'public_site:reserve_vehicle' slug=agency.slug vehicle_id=alt.pk %}" class="flex items-center gap-4 bg-white rounded-xl p-3 border border-amber-200 hover:border-amber-400 transition">
+          {% if alt.image %}
+            <img src="{{ alt.image.url }}" alt="{{ alt }}" class="w-16 h-12 rounded-lg object-cover" />
+          {% else %}
+            <div class="w-16 h-12 rounded-lg bg-slate-100 flex items-center justify-center">
+              <svg class="w-6 h-6 text-slate-300" fill="none" stroke="currentColor" stroke-width="1" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 18.75a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 0 1-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m3 0H21"/></svg>
+            </div>
+          {% endif %}
+          <div class="min-w-0 flex-1">
+            <div class="font-semibold text-sm truncate">{{ alt.make }} {{ alt.model }}</div>
+            <div class="text-xs opacity-60">{{ alt.daily_price }} {% trans "/jour" %}</div>
+          </div>
+          <svg class="w-5 h-5 opacity-40" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5"/></svg>
+        </a>
+        {% endfor %}
+      </div>
+    </div>
+    {% endif %}
+  </div>
+  {% endif %}
+
+  <!-- Reservation form -->
+  {% if not vehicle_unavailable %}
+  <div class="ps-card rounded-2xl p-6 sm:p-8 border" style="border-color: color-mix(in srgb, var(--text) 8%, transparent);">
+    <h1 class="text-xl font-bold mb-1">{% trans "Demande de réservation" %}</h1>
+    {% trans "Remplissez le formulaire ci-dessous." as reserve_help %}
+    {% trans "Créez un compte pour négocier le prix." as reserve_neg_help %}
+    <p class="text-sm opacity-60 mb-6">{{ reserve_help }}{% if allow_negotiation and not client_logged_in %} {{ reserve_neg_help }}{% endif %}</p>
+
+    {% if client_logged_in %}
+    <div class="flex items-center gap-2 mb-5 px-4 py-2.5 rounded-xl bg-emerald-50 border border-emerald-200 text-sm text-emerald-800">
+      <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5"/></svg>
+      {% trans "Connecté en tant que" %} <strong>{{ client_account.full_name }}</strong>
+    </div>
+    {% endif %}
+
+    <form method="post" class="space-y-5" novalidate>
+      {% csrf_token %}
+      <!-- Honeypot -->
+      <div style="position:absolute;left:-9999px;"><input type="text" name="website" tabindex="-1" autocomplete="off" /></div>
+
+      <!-- Contact - Téléphone & Email -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div>
+          <label class="block text-sm font-medium mb-1.5">{% trans "Téléphone" %} <span class="text-red-500">*</span></label>
+          <input type="tel" name="phone" value="{% if form_data.phone %}{{ form_data.phone }}{% elif client_account %}{{ client_account.phone }}{% endif %}" required maxlength="30"
+            class="w-full rounded-xl border px-4 py-2.5 text-sm focus:ring-2 outline-none transition {% if errors.phone %}border-red-400 focus:ring-red-300{% else %}border-slate-200 focus:ring-violet-300{% endif %}"
+            style="border-color: {% if errors.phone %}#f87171{% else %}color-mix(in srgb, var(--text) 15%, transparent){% endif %};"
+            placeholder="+509 1234 5678" />
+          {% if errors.phone %}<p class="text-red-500 text-xs mt-1">{{ errors.phone }}</p>{% endif %}
+        </div>
+        <div>
+          <label class="block text-sm font-medium mb-1.5">{% trans "Email" %} <span class="text-red-500">*</span></label>
+          <input type="email" name="email" value="{% if form_data.email %}{{ form_data.email }}{% elif client_account %}{{ client_account.email }}{% endif %}" required maxlength="254"
+            class="w-full rounded-xl border px-4 py-2.5 text-sm focus:ring-2 outline-none transition {% if errors.email %}border-red-400 focus:ring-red-300{% else %}border-slate-200 focus:ring-violet-300{% endif %}"
+            style="border-color: {% if errors.email %}#f87171{% else %}color-mix(in srgb, var(--text) 15%, transparent){% endif %};"
+            placeholder="client@example.com" />
+          {% if errors.email %}<p class="text-red-500 text-xs mt-1">{{ errors.email }}</p>{% endif %}
+        </div>
+      </div>
+
+      <!-- Dates -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div>
+          <label class="block text-sm font-medium mb-1.5">{% trans "Date de début" %} <span class="text-red-500">*</span></label>
+          <input type="date" name="start_date" value="{{ form_data.start_date|default:'' }}" min="{{ today }}" required
+            class="w-full rounded-xl border px-4 py-2.5 text-sm focus:ring-2 outline-none transition {% if errors.start_date %}border-red-400 focus:ring-red-300{% else %}border-slate-200 focus:ring-violet-300{% endif %}"
+            style="border-color: {% if errors.start_date %}#f87171{% else %}color-mix(in srgb, var(--text) 15%, transparent){% endif %};" />
+          {% if errors.start_date %}<p class="text-red-500 text-xs mt-1">{{ errors.start_date }}</p>{% endif %}
+        </div>
+        <div>
+          <label class="block text-sm font-medium mb-1.5">{% trans "Date de fin" %} <span class="text-red-500">*</span></label>
+          <input type="date" name="end_date" value="{{ form_data.end_date|default:'' }}" min="{{ today }}" required
+            class="w-full rounded-xl border px-4 py-2.5 text-sm focus:ring-2 outline-none transition {% if errors.end_date %}border-red-400 focus:ring-red-300{% else %}border-slate-200 focus:ring-violet-300{% endif %}"
+            style="border-color: {% if errors.end_date %}#f87171{% else %}color-mix(in srgb, var(--text) 15%, transparent){% endif %};" />
+          {% if errors.end_date %}<p class="text-red-500 text-xs mt-1">{{ errors.end_date }}</p>{% endif %}
+        </div>
+      </div>
+
+      <!-- Message -->
+      <div>
+        <label class="block text-sm font-medium mb-1.5">{% trans "Message" %} <span class="text-xs opacity-50">({% trans "optionnel" %})</span></label>
+        <textarea name="message" rows="3" maxlength="500"
+          class="w-full rounded-xl border px-4 py-2.5 text-sm focus:ring-2 outline-none transition border-slate-200 focus:ring-violet-300 resize-none"
+          style="border-color: color-mix(in srgb, var(--text) 15%, transparent);"
+          placeholder="Précisions, lieu de livraison, etc.">{{ form_data.message|default:'' }}</textarea>
+      </div>
+
+      <!-- Code promo -->
+      <div>
+        <label class="block text-sm font-medium mb-1.5">{% trans "Code promo" %} <span class="text-xs opacity-50">({% trans "optionnel" %})</span></label>
+        <input type="text" name="promo_code" value="{{ form_data.promo_code|default:'' }}" maxlength="50" placeholder="SUMMER25"
+          class="w-full rounded-xl border px-4 py-2.5 text-sm focus:ring-2 outline-none transition font-mono uppercase {% if errors.promo_code %}border-red-400 focus:ring-red-300{% else %}border-slate-200 focus:ring-violet-300{% endif %}"
+          style="border-color: {% if errors.promo_code %}#f87171{% else %}color-mix(in srgb, var(--text) 15%, transparent){% endif %};" />
+        {% if errors.promo_code %}<p class="text-red-500 text-xs mt-1">{{ errors.promo_code }}</p>{% endif %}
+      </div>
+
+      {% if allow_negotiation %}
+      {% if client_logged_in %}
+      <!-- Négociation prix - client connecté -->
+      <input type="hidden" name="want_negotiate" value="1" />
+      <div class="rounded-2xl border-2 border-violet-200 bg-violet-50/50 p-5 space-y-4">
+        <div class="flex items-center gap-2">
+          <svg class="w-5 h-5 text-violet-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v12m-3-2.818.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/></svg>
+          <span class="font-semibold text-violet-800">{% trans "Proposez votre prix" %}</span>
+        </div>
+        <div class="text-xs text-violet-700 opacity-80">
+          {% trans "Prix affiché :" %} <strong>{{ vehicle.daily_price }} {{ currency }} {% trans "/jour" %}</strong> — {% trans "Offre minimum :" %} <strong>{{ min_offer_price }} {{ currency }}</strong>
+        </div>
+        <div>
+          <label class="block text-sm font-medium mb-1.5 text-violet-900">{% trans "Votre prix par jour" %} ({{ currency }}) <span class="text-red-500">*</span></label>
+          <input type="number" name="price_offer" step="0.01" min="{{ min_offer_price }}" max="{{ vehicle.daily_price }}"
+            value="{{ form_data.price_offer|default:'' }}" required
+            class="w-full rounded-xl border-2 px-4 py-2.5 text-sm focus:ring-2 outline-none transition {% if errors.price_offer %}border-red-400 focus:ring-red-300{% else %}border-violet-300 focus:ring-violet-400{% endif %}"
+            placeholder="{{ min_offer_price }}" />
+          {% if errors.price_offer %}<p class="text-red-500 text-xs mt-1">{{ errors.price_offer }}</p>{% endif %}
+        </div>
+        <p class="text-xs text-violet-600 opacity-70">{% trans "Les échanges de négociation se feront via la messagerie interne de votre espace client." %}</p>
+      </div>
+      {% else %}
+      <!-- Négociation prix - client non connecté → inscription requise -->
+      <div class="rounded-2xl border-2 border-violet-200 bg-violet-50/50 p-5 space-y-4">
+        <div class="flex items-center gap-2">
+          <svg class="w-5 h-5 text-violet-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v12m-3-2.818.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/></svg>
+          <span class="font-semibold text-violet-800">{% trans "Ce véhicule est négociable" %}</span>
+        </div>
+        <p class="text-sm text-violet-700">
+          {% trans "Vous pouvez proposer votre prix pour ce véhicule ! Pour négocier, créez un compte gratuit ou connectez-vous. Les échanges se feront via la messagerie interne." %}
+        </p>
+        <div class="flex flex-col sm:flex-row gap-2">
+          <a href="{% url 'public_site:client_signup' slug=agency.slug %}?next={% url 'public_site:reserve_vehicle' slug=agency.slug vehicle_id=vehicle.pk %}"
+            class="flex-1 text-center rounded-xl bg-violet-600 hover:bg-violet-700 text-white font-semibold py-2.5 px-4 text-sm transition flex items-center justify-center gap-2">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M18 7.5v3m0 0v3m0-3h3m-3 0h-3m-2.25-4.125a3.375 3.375 0 1 1-6.75 0 3.375 3.375 0 0 1 6.75 0ZM3 19.235v-.11a6.375 6.375 0 0 1 12.75 0v.109A12.318 12.318 0 0 1 9.374 21c-2.331 0-4.512-.645-6.374-1.766Z"/></svg>
+            {% trans "Créer un compte" %}
+          </a>
+          <a href="{% url 'public_site:client_login' slug=agency.slug %}?next={% url 'public_site:reserve_vehicle' slug=agency.slug vehicle_id=vehicle.pk %}"
+            class="flex-1 text-center rounded-xl bg-violet-100 hover:bg-violet-200 text-violet-700 font-semibold py-2.5 px-4 text-sm transition flex items-center justify-center gap-2">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0 0 13.5 3h-6a2.25 2.25 0 0 0-2.25 2.25v13.5A2.25 2.25 0 0 0 7.5 21h6a2.25 2.25 0 0 0 2.25-2.25V15m3 0 3-3m0 0-3-3m3 3H9"/></svg>
+            {% trans "Se connecter" %}
+          </a>
+        </div>
+      </div>
+      {% endif %}
+      {% endif %}
+
+      <!-- Submit -->
+      <button type="submit" class="ps-btn w-full !py-3 text-base flex items-center justify-center gap-2">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 12 3.269 3.125A59.769 59.769 0 0 1 21.485 12 59.768 59.768 0 0 1 3.27 20.875L5.999 12Zm0 0h7.5"/></svg>
+        {% trans "Envoyer la demande" %}
+      </button>
+
+      <p class="text-xs text-center opacity-40">{% trans "Votre demande sera traitée par l'agence. Vous recevrez un lien de suivi." %}</p>
+    </form>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}

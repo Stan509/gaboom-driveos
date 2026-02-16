@@ -1,0 +1,718 @@
+{% extends "dashboard/_layout.html" %}
+{% load humanize i18n %}
+
+{% block title %}{% trans "Contrat" %} #{{ contract.pk }} — Dashboard{% endblock %}
+{% block page_title %}{% trans "Contrat" %} #{{ contract.pk }}{% endblock %}
+{% block page_subtitle %}{{ contract.client.full_name }} — {{ contract.vehicle }}{% endblock %}
+
+{% block page_css %}
+<style>
+  @keyframes cardIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+  .card-in{animation:cardIn .3s ease-out both}
+  @keyframes fadeIn{from{opacity:0}to{opacity:1}}
+  .modal-fade{animation:fadeIn .15s ease-out both}
+</style>
+{% endblock %}
+
+{% block page_actions %}
+  <a href="{% url 'dashboard:contract_hub' %}" class="hidden sm:inline-flex rounded-xl border border-slate-200 px-4 py-2 text-sm font-medium text-slate-600 hover:bg-slate-50 transition items-center gap-1.5">
+    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 15 3 9m0 0 6-6M3 9h12a6 6 0 0 1 0 12h-3"/></svg>
+    {% trans "Retour" %}
+  </a>
+  {% if can_edit %}
+  <a href="{% url 'dashboard:contract_hub' %}?edit={{ contract.pk }}" class="rounded-xl bg-gaboomViolet text-white px-4 py-2 text-sm font-medium hover:opacity-95 transition inline-flex items-center gap-1.5">
+    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125"/></svg>
+    {% trans "Modifier" %}
+  </a>
+  {% if contract.status == "draft" %}
+  <form method="post" action="{% url 'dashboard:contract_send_to_sign' contract.pk %}" class="inline">
+    {% csrf_token %}
+    <button type="submit" class="rounded-xl bg-blue-600 text-white px-4 py-2 text-sm font-medium hover:bg-blue-700 transition">{% trans "Envoyer pour signature" %}</button>
+  </form>
+  {% endif %}
+  {% if contract.status == "draft" or contract.status == "pending_signature" %}
+  <form method="post" action="{% url 'dashboard:contract_activate' contract.pk %}" class="inline">
+    {% csrf_token %}
+    <button type="submit" class="rounded-xl bg-emerald-600 text-white px-4 py-2 text-sm font-medium hover:bg-emerald-700 transition">{% trans "Activer le contrat" %}</button>
+  </form>
+  {% endif %}
+  {% if contract.status == "active" %}
+  <form method="post" action="{% url 'dashboard:contract_start_return' contract.pk %}" class="inline">
+    {% csrf_token %}
+    <button type="submit" class="rounded-xl bg-amber-500 text-white px-4 py-2 text-sm font-medium hover:bg-amber-600 transition">{% trans "Retour véhicule" %}</button>
+  </form>
+  {% endif %}
+  {% if contract.status == "pending_return" %}
+  <a href="{% url 'dashboard:contract_inspection' contract.pk %}" class="rounded-xl bg-amber-500 text-white px-4 py-2 text-sm font-medium hover:bg-amber-600 transition">{% trans "Inspection" %}</a>
+  {% endif %}
+  {% if contract.status == "draft" or contract.status == "active" or contract.status == "pending_signature" %}
+  <form method="post" action="{% url 'dashboard:contract_cancel' contract.pk %}" class="inline">
+    {% csrf_token %}
+    <button type="submit" onclick="return confirm('{% trans "Annuler ce contrat ?" %}')" class="rounded-xl border border-red-200 px-4 py-2 text-sm font-medium text-red-600 hover:bg-red-50 transition">{% trans "Annuler" %}</button>
+  </form>
+  {% endif %}
+  {% endif %}
+{% endblock %}
+
+{% block content %}
+<!-- ═══════ HEADER CARD ═══════ -->
+<div class="card-in rounded-2xl bg-white border border-slate-200 shadow-sm p-5 mb-6">
+  <div class="flex items-center gap-4 flex-wrap">
+    <div class="h-14 w-14 rounded-2xl bg-gradient-to-br from-violet-100 to-violet-50 flex items-center justify-center shrink-0 text-lg font-bold text-gaboomViolet">
+      #{{ contract.pk }}
+    </div>
+    <div class="flex-1 min-w-0">
+      <h2 class="text-lg font-bold text-slate-800">{{ contract.client.full_name }}</h2>
+      <div class="flex items-center gap-2 mt-1 flex-wrap">
+        {% if contract.status == "active" %}
+        <span class="inline-flex items-center gap-1 rounded-full bg-emerald-100 text-emerald-700 px-2.5 py-0.5 text-[11px] font-semibold"><span class="h-1.5 w-1.5 rounded-full bg-emerald-500"></span>{% trans "Actif" %}</span>
+        {% elif contract.status == "pending_signature" %}
+        <span class="inline-flex items-center gap-1 rounded-full bg-violet-100 text-violet-700 px-2.5 py-0.5 text-[11px] font-semibold"><span class="h-1.5 w-1.5 rounded-full bg-violet-500 animate-pulse"></span>{% trans "En attente de signature" %}</span>
+        {% elif contract.status == "pending_return" %}
+        <span class="inline-flex items-center gap-1 rounded-full bg-amber-100 text-amber-700 px-2.5 py-0.5 text-[11px] font-semibold"><span class="h-1.5 w-1.5 rounded-full bg-amber-500 animate-pulse"></span>{% trans "Retour en cours" %}</span>
+        {% elif contract.status == "closed" %}
+        <span class="inline-flex items-center gap-1 rounded-full bg-slate-100 text-slate-600 px-2.5 py-0.5 text-[11px] font-semibold"><span class="h-1.5 w-1.5 rounded-full bg-slate-400"></span>{% trans "Clôturé" %}</span>
+        {% elif contract.status == "cancelled" %}
+        <span class="inline-flex items-center gap-1 rounded-full bg-red-100 text-red-600 px-2.5 py-0.5 text-[11px] font-semibold"><span class="h-1.5 w-1.5 rounded-full bg-red-400"></span>{% trans "Annulé" %}</span>
+        {% else %}
+        <span class="inline-flex items-center gap-1 rounded-full bg-blue-100 text-blue-700 px-2.5 py-0.5 text-[11px] font-semibold"><span class="h-1.5 w-1.5 rounded-full bg-blue-500"></span>{% trans "Brouillon" %}</span>
+        {% endif %}
+        {% if contract.payment_status == "paid" %}
+        <span class="inline-flex items-center gap-1 rounded-full bg-emerald-100 text-emerald-700 px-2.5 py-0.5 text-[11px] font-semibold">{% trans "Payé" %}</span>
+        {% elif contract.payment_status == "partial" %}
+        <span class="inline-flex items-center gap-1 rounded-full bg-amber-100 text-amber-700 px-2.5 py-0.5 text-[11px] font-semibold">{% trans "Partiel" %}</span>
+        {% else %}
+        <span class="inline-flex items-center gap-1 rounded-full bg-red-100 text-red-700 px-2.5 py-0.5 text-[11px] font-semibold">{% trans "Impayé" %}</span>
+        {% endif %}
+        {% if is_overdue %}
+        <span class="inline-flex items-center gap-1 rounded-full bg-red-100 text-red-700 px-2.5 py-0.5 text-[11px] font-semibold animate-pulse">{% trans "EN RETARD" %}</span>
+        {% endif %}
+        {% if days_remaining is not None and days_remaining >= 0 %}
+        <span class="text-[11px] text-slate-400">J-{{ days_remaining }}</span>
+        {% endif %}
+      </div>
+    </div>
+    <div class="text-right shrink-0">
+      <div class="text-2xl font-bold text-slate-800">{{ contract.montant_ttc }} {{ contract.currency|default:"€"|translate_if_static }}</div>
+      <div class="text-xs text-slate-400">{% blocktrans count days=contract.nb_days %}{{ days }} jour{% plural %}{{ days }} jours{% endblocktrans %} × {{ contract.price_per_day }}</div>
+    </div>
+  </div>
+</div>
+
+<div class="grid lg:grid-cols-3 gap-6">
+  <!-- ═══════ MAIN COLUMN ═══════ -->
+  <div class="lg:col-span-2 space-y-6">
+    <!-- Contract info -->
+    <div class="card-in rounded-2xl bg-white border border-slate-200 shadow-sm p-5" style="animation-delay:50ms">
+      <h3 class="font-semibold text-sm text-slate-800 mb-4 flex items-center gap-2">
+        <svg class="w-4 h-4 text-gaboomViolet" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z"/></svg>
+        {% trans "Détails du contrat" %}
+      </h3>
+      <dl class="grid sm:grid-cols-2 gap-x-6 gap-y-3 text-sm">
+        <div><dt class="text-slate-400 text-xs uppercase tracking-wider">{% trans "Client" %}</dt><dd class="font-medium mt-0.5"><a href="{% url 'dashboard:client_detail' contract.client.pk %}" class="text-gaboomViolet hover:underline">{{ contract.client.full_name }}</a></dd></div>
+        <div><dt class="text-slate-400 text-xs uppercase tracking-wider">{% trans "Véhicule" %}</dt><dd class="font-medium mt-0.5">{{ contract.vehicle }}</dd></div>
+        <div><dt class="text-slate-400 text-xs uppercase tracking-wider">{% trans "Période" %}</dt><dd class="font-medium mt-0.5">{{ contract.start_date|date:"d/m/Y" }} → {{ contract.end_date|date:"d/m/Y" }} <span class="text-slate-400">({{ contract.nb_days }}j)</span></dd></div>
+        <div><dt class="text-slate-400 text-xs uppercase tracking-wider">{% trans "Prix / jour" %}</dt><dd class="font-medium mt-0.5">{{ contract.price_per_day }} {{ contract.currency|default:"€"|translate_if_static }}</dd></div>
+        <div><dt class="text-slate-400 text-xs uppercase tracking-wider">{% trans "Caution" %}</dt><dd class="font-medium mt-0.5">{{ contract.deposit }} {{ contract.currency|default:"€"|translate_if_static }}</dd></div>
+        <div><dt class="text-slate-400 text-xs uppercase tracking-wider">{% trans "Km départ" %}</dt><dd class="font-medium mt-0.5">{{ contract.km_depart }} km</dd></div>
+        {% if contract.km_retour is not None %}
+        <div><dt class="text-slate-400 text-xs uppercase tracking-wider">{% trans "Km retour" %}</dt><dd class="font-medium mt-0.5">{{ contract.km_retour }} km</dd></div>
+        {% endif %}
+        <div><dt class="text-slate-400 text-xs uppercase tracking-wider">{% trans "Km inclus" %}</dt><dd class="font-medium mt-0.5">{{ contract.km_included }} km</dd></div>
+        <div><dt class="text-slate-400 text-xs uppercase tracking-wider">{% trans "Prix km sup." %}</dt><dd class="font-medium mt-0.5">{{ contract.km_price }} {{ contract.currency|default:"€"|translate_if_static }}</dd></div>
+        <div><dt class="text-slate-400 text-xs uppercase tracking-wider">{% trans "Frais carburant" %}</dt><dd class="font-medium mt-0.5">{{ contract.fuel_fee }} {{ contract.currency|default:"€"|translate_if_static }}</dd></div>
+        <div><dt class="text-slate-400 text-xs uppercase tracking-wider">{% trans "Frais retard / jour" %}</dt><dd class="font-medium mt-0.5">{{ contract.late_fee }} {{ contract.currency|default:"€"|translate_if_static }}</dd></div>
+        {% if contract.pickup_datetime %}
+        <div><dt class="text-slate-400 text-xs uppercase tracking-wider">{% trans "Remise véhicule" %}</dt><dd class="font-medium mt-0.5">{{ contract.pickup_datetime|date:"d/m/Y H:i" }}</dd></div>
+        {% endif %}
+        {% if contract.return_datetime %}
+        <div><dt class="text-slate-400 text-xs uppercase tracking-wider">{% trans "Retour prévu" %}</dt><dd class="font-medium mt-0.5">{{ contract.return_datetime|date:"d/m/Y H:i" }}</dd></div>
+        {% endif %}
+        {% if contract.actual_return_datetime %}
+        <div><dt class="text-slate-400 text-xs uppercase tracking-wider">{% trans "Retour effectif" %}</dt><dd class="font-medium mt-0.5">{{ contract.actual_return_datetime|date:"d/m/Y H:i" }}</dd></div>
+        {% endif %}
+        {% if contract.notes %}
+        <div class="sm:col-span-2"><dt class="text-slate-400 text-xs uppercase tracking-wider">{% trans "Notes" %}</dt><dd class="font-medium mt-0.5 whitespace-pre-line text-slate-600">{{ contract.notes }}</dd></div>
+        {% endif %}
+      </dl>
+    </div>
+
+    <!-- Contract clause -->
+    {% if contract.contract_clause or contract.penalty_clause %}
+    <div class="card-in rounded-2xl bg-white border border-slate-200 shadow-sm p-5" style="animation-delay:70ms">
+      <h3 class="font-semibold text-sm text-slate-800 mb-4 flex items-center gap-2">
+        <svg class="w-4 h-4 text-gaboomViolet" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.042A8.967 8.967 0 0 0 6 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 0 1 6 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 0 1 6-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0 0 18 18a8.967 8.967 0 0 0-6 2.292m0-14.25v14.25"/></svg>
+        {% trans "Clauses du contrat" %}
+      </h3>
+      {% if contract.contract_clause %}
+      <div class="mb-4">
+        <h4 class="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">{% trans "Clause générale" %}</h4>
+        <p class="text-sm text-slate-700 bg-slate-50 rounded-xl p-4 whitespace-pre-line">{{ contract.contract_clause }}</p>
+      </div>
+      {% endif %}
+      {% if contract.penalty_clause %}
+      <div>
+        <h4 class="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">{% trans "Clause de pénalité" %}</h4>
+        <p class="text-sm text-slate-700 bg-amber-50 rounded-xl p-4 whitespace-pre-line border border-amber-100">{{ contract.penalty_clause }}</p>
+      </div>
+      {% endif %}
+      {% if plan_features.gps_tracking and contract.gps_clause %}
+      <div class="mt-4">
+        <h4 class="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2 flex items-center gap-1.5">
+          <svg class="w-3.5 h-3.5 text-emerald-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"/><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z"/></svg>
+          {% trans "Clause GPS / Géolocalisation" %}
+        </h4>
+        <p class="text-sm text-slate-700 bg-emerald-50 rounded-xl p-4 whitespace-pre-line border border-emerald-100">{{ contract.gps_clause }}</p>
+      </div>
+      {% endif %}
+    </div>
+    {% endif %}
+
+    <!-- ═══════ GPS CONFIGURATION ═══════ -->
+    {% if plan_features.gps_tracking and can_edit and contract.status != "closed" and contract.status != "cancelled" %}
+    <div class="card-in rounded-2xl bg-white border border-slate-200 shadow-sm p-5" style="animation-delay:75ms" id="gps-config">
+      <h3 class="font-semibold text-sm text-slate-800 mb-4 flex items-center gap-2">
+        <svg class="w-4 h-4 text-emerald-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"/><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z"/></svg>
+        {% trans "Configuration GPS du véhicule" %}
+        {% if contract.vehicle.gps_enabled %}
+        <span class="ml-auto inline-flex items-center gap-1 rounded-full bg-emerald-100 text-emerald-700 px-2.5 py-0.5 text-[10px] font-semibold"><span class="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse"></span>{% trans "Actif" %}</span>
+        {% else %}
+        <span class="ml-auto inline-flex items-center gap-1 rounded-full bg-slate-100 text-slate-500 px-2.5 py-0.5 text-[10px] font-semibold">{% trans "Inactif" %}</span>
+        {% endif %}
+      </h3>
+
+      <form method="post" action="{% url 'dashboard:contract_gps_config' pk=contract.pk %}" class="space-y-4">
+        {% csrf_token %}
+
+        <!-- Toggle GPS -->
+        <div class="flex items-center gap-3">
+          <label class="relative inline-flex items-center cursor-pointer">
+            <input type="checkbox" name="gps_enabled" value="1" {% if contract.vehicle.gps_enabled %}checked{% endif %} id="gps-toggle" class="sr-only peer" onchange="toggleGpsFields()">
+            <div class="w-9 h-5 bg-slate-200 peer-focus:ring-2 peer-focus:ring-violet-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-emerald-500"></div>
+          </label>
+          <span class="text-sm font-medium text-slate-700">{% trans "Activer le suivi GPS pour ce contrat" %}</span>
+        </div>
+
+        <!-- GPS fields (shown when enabled) -->
+        <div id="gps-fields" class="{% if not contract.vehicle.gps_enabled %}hidden{% endif %} space-y-4 pt-2 border-t border-slate-100">
+
+          <!-- Source selector -->
+          <div>
+            <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">{% trans "Mode de suivi" %}</label>
+            <div class="grid grid-cols-2 gap-3">
+              <label class="relative flex items-center gap-3 rounded-xl border-2 px-4 py-3 cursor-pointer transition hover:border-violet-300 {% if contract.vehicle.gps_source == 'device' or not contract.vehicle.gps_source %}border-violet-400 bg-violet-50/50{% else %}border-slate-200{% endif %}" id="label-device">
+                <input type="radio" name="gps_source" value="device" {% if contract.vehicle.gps_source == 'device' or not contract.vehicle.gps_source %}checked{% endif %} class="sr-only" onchange="switchGpsMode('device')">
+                <div class="w-9 h-9 rounded-lg bg-violet-100 text-violet-600 flex items-center justify-center shrink-0">
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8.288 15.038a5.25 5.25 0 0 1 7.424 0M5.106 11.856c3.807-3.808 9.98-3.808 13.788 0M1.924 8.674c5.565-5.565 14.587-5.565 20.152 0M12.53 18.22l-.53.53-.53-.53a.75.75 0 0 1 1.06 0Z"/></svg>
+                </div>
+                <div>
+                  <div class="text-sm font-semibold text-slate-800">{% trans "Boîtier GPS" %}</div>
+                  <div class="text-[11px] text-slate-400">{% trans "Tracker physique (IMEI / IP)" %}</div>
+                </div>
+              </label>
+              <label class="relative flex items-center gap-3 rounded-xl border-2 px-4 py-3 cursor-pointer transition hover:border-violet-300 {% if contract.vehicle.gps_source == 'phone' %}border-violet-400 bg-violet-50/50{% else %}border-slate-200{% endif %}" id="label-phone">
+                <input type="radio" name="gps_source" value="phone" {% if contract.vehicle.gps_source == 'phone' %}checked{% endif %} class="sr-only" onchange="switchGpsMode('phone')">
+                <div class="w-9 h-9 rounded-lg bg-amber-100 text-amber-600 flex items-center justify-center shrink-0">
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M10.5 1.5H8.25A2.25 2.25 0 0 0 6 3.75v16.5a2.25 2.25 0 0 0 2.25 2.25h7.5A2.25 2.25 0 0 0 18 20.25V3.75a2.25 2.25 0 0 0-2.25-2.25H13.5m-3 0V3h3V1.5m-3 0h3m-3 18.75h3"/></svg>
+                </div>
+                <div>
+                  <div class="text-sm font-semibold text-slate-800">{% trans "Smartphone" %}</div>
+                  <div class="text-[11px] text-slate-400">{% trans "GPS du téléphone du client" %}</div>
+                </div>
+              </label>
+            </div>
+          </div>
+
+          <!-- Device fields (IMEI / IP) -->
+          <div id="gps-device-fields" class="{% if contract.vehicle.gps_source == 'phone' %}hidden{% endif %} grid sm:grid-cols-2 gap-4">
+            <div>
+              <label for="gps_imei" class="block text-xs font-medium text-slate-500 mb-1">{% trans "IMEI du boîtier GPS" %}</label>
+              <input type="text" name="gps_imei" id="gps_imei" value="{{ contract.vehicle.gps_imei }}" placeholder="Ex: 123456789012345" maxlength="50"
+                     class="w-full rounded-xl border border-slate-200 px-3 py-2.5 text-sm outline-none focus:border-violet-400 focus:ring-1 focus:ring-violet-400 font-mono">
+            </div>
+            <div>
+              <label for="gps_ip" class="block text-xs font-medium text-slate-500 mb-1">{% trans "IP du tracker GPS" %}</label>
+              <input type="text" name="gps_ip" id="gps_ip" value="{{ contract.vehicle.gps_ip|default:'' }}" placeholder="Ex: 192.168.1.100"
+                     class="w-full rounded-xl border border-slate-200 px-3 py-2.5 text-sm outline-none focus:border-violet-400 focus:ring-1 focus:ring-violet-400 font-mono">
+            </div>
+          </div>
+
+          <!-- Phone mode info -->
+          <div id="gps-phone-info" class="{% if contract.vehicle.gps_source != 'phone' %}hidden{% endif %} rounded-xl bg-amber-50 border border-amber-200 p-4">
+            <div class="flex items-start gap-3">
+              <svg class="w-5 h-5 text-amber-500 shrink-0 mt-0.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="m11.25 11.25.041-.02a.75.75 0 0 1 1.063.852l-.708 2.836a.75.75 0 0 0 1.063.853l.041-.021M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9-3.75h.008v.008H12V8.25Z"/></svg>
+              <div>
+                <p class="text-sm font-semibold text-amber-800">{% trans "Mode smartphone activé" %}</p>
+                <p class="text-xs text-amber-700 mt-1">{% trans "Le client devra accepter le partage GPS depuis son espace client. Une demande de consentement lui sera présentée automatiquement. Sa position sera envoyée toutes les 15 secondes vers votre tableau de bord." %}</p>
+                {% if contract.gps_consent_signed_at %}
+                <div class="mt-2 flex items-center gap-2">
+                  <svg class="w-4 h-4 text-emerald-600" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5"/></svg>
+                  <span class="text-xs font-medium text-emerald-700">{% trans "Consentement GPS signé le" %} {{ contract.gps_consent_signed_at|date:"d/m/Y H:i" }}</span>
+                </div>
+                {% else %}
+                <div class="mt-2 flex items-center gap-2">
+                  <svg class="w-4 h-4 text-amber-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/></svg>
+                  <span class="text-xs font-medium text-amber-600">{% trans "En attente du consentement du client" %}</span>
+                </div>
+                {% endif %}
+              </div>
+            </div>
+          </div>
+
+          <!-- Last position info -->
+          {% if contract.vehicle.last_gps_update %}
+          <div class="rounded-xl bg-slate-50 border border-slate-200 p-3 flex items-center gap-3 text-sm">
+            <div class="w-8 h-8 rounded-lg bg-emerald-100 text-emerald-600 flex items-center justify-center shrink-0">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"/><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z"/></svg>
+            </div>
+            <div>
+              <span class="text-slate-500">{% trans "Dernière position :" %}</span>
+              <span class="font-mono text-slate-700">{{ contract.vehicle.last_lat|floatformat:5 }}, {{ contract.vehicle.last_lng|floatformat:5 }}</span>
+              <span class="text-slate-400 ml-2">{{ contract.vehicle.last_gps_update|timesince }}</span>
+              {% if contract.vehicle.last_gps_speed %}<span class="text-slate-400 ml-2">{{ contract.vehicle.last_gps_speed|floatformat:0 }} km/h</span>{% endif %}
+            </div>
+            <a href="{% url 'dashboard:gps_tracking' %}" class="ml-auto text-xs font-medium text-gaboomViolet hover:underline shrink-0">{% trans "Voir sur la carte" %} →</a>
+          </div>
+          {% endif %}
+        </div>
+
+        <div class="pt-2">
+          <button type="submit" class="rounded-xl bg-gaboomViolet text-white px-5 py-2.5 text-sm font-medium hover:opacity-95 transition">
+            {% trans "Enregistrer la configuration GPS" %}
+          </button>
+        </div>
+      </form>
+    </div>
+    {% elif plan_features.gps_tracking and contract.vehicle.gps_enabled %}
+    <!-- Read-only GPS status for closed/cancelled contracts -->
+    <div class="card-in rounded-2xl bg-white border border-slate-200 shadow-sm p-5" style="animation-delay:75ms">
+      <h3 class="font-semibold text-sm text-slate-800 mb-3 flex items-center gap-2">
+        <svg class="w-4 h-4 text-emerald-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"/><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z"/></svg>
+        {% trans "Suivi GPS" %}
+        <span class="ml-auto inline-flex items-center gap-1 rounded-full bg-slate-100 text-slate-500 px-2.5 py-0.5 text-[10px] font-semibold">{% trans "Terminé" %}</span>
+      </h3>
+      <div class="text-sm text-slate-500">
+        {% trans "Mode :" %} <span class="font-medium text-slate-700">{{ contract.vehicle.get_gps_source_display }}</span>
+        {% if contract.vehicle.gps_imei %} · IMEI : <span class="font-mono text-slate-700">{{ contract.vehicle.gps_imei }}</span>{% endif %}
+        {% if contract.gps_consent_signed_at %} · {% trans "Consentement signé le" %} {{ contract.gps_consent_signed_at|date:"d/m/Y H:i" }}{% endif %}
+      </div>
+    </div>
+    {% endif %}
+
+    <!-- Signature status -->
+    <div class="card-in rounded-2xl bg-white border border-slate-200 shadow-sm p-5" style="animation-delay:80ms">
+      <h3 class="font-semibold text-sm text-slate-800 mb-4 flex items-center gap-2">
+        <svg class="w-4 h-4 text-gaboomViolet" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L6.832 19.82a4.5 4.5 0 0 1-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 0 1 1.13-1.897L16.863 4.487Zm0 0L19.5 7.125"/></svg>
+        {% trans "Signature client" %}
+      </h3>
+      {% if contract.is_signed %}
+      <div class="flex items-center gap-3 bg-emerald-50 rounded-xl p-4 border border-emerald-200">
+        <svg class="w-6 h-6 text-emerald-600 shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5"/></svg>
+        <div>
+          <p class="text-sm font-semibold text-emerald-800">{% trans "Contrat signé" %}</p>
+          <p class="text-xs text-emerald-600">{{ contract.client_signed_at|date:"d/m/Y H:i" }} — IP: {{ contract.client_signed_ip|default:"N/A" }}</p>
+        </div>
+        {% if contract.client_signature %}
+        <img src="{{ contract.client_signature.url }}" alt="{% trans "Signature" %}" class="ml-auto h-12 border rounded-lg bg-white p-1" />
+        {% endif %}
+      </div>
+      {% else %}
+      <div class="flex items-center gap-3 bg-slate-50 rounded-xl p-4 border border-slate-200">
+        <svg class="w-6 h-6 text-slate-400 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/></svg>
+        <div>
+          <p class="text-sm font-medium text-slate-600">{% trans "En attente de signature" %}</p>
+          <p class="text-xs text-slate-400">{% trans "Le client n'a pas encore signé ce contrat." %}</p>
+        </div>
+      </div>
+      {% endif %}
+    </div>
+
+    <!-- Vehicle state photos -->
+    <div class="card-in rounded-2xl bg-white border border-slate-200 shadow-sm p-5" style="animation-delay:90ms">
+      <h3 class="font-semibold text-sm text-slate-800 mb-4 flex items-center gap-2">
+        <svg class="w-4 h-4 text-gaboomViolet" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="m2.25 15.75 5.159-5.159a2.25 2.25 0 0 1 3.182 0l5.159 5.159m-1.5-1.5 1.409-1.409a2.25 2.25 0 0 1 3.182 0l2.909 2.909M18 3.75H6A2.25 2.25 0 0 0 3.75 6v12A2.25 2.25 0 0 0 6 20.25h12A2.25 2.25 0 0 0 20.25 18V6A2.25 2.25 0 0 0 18 3.75Z"/></svg>
+        {% trans "État du véhicule — Photos" %}
+      </h3>
+
+      <!-- Pickup photos -->
+      <div class="mb-5">
+        <h4 class="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">{% trans "Départ" %} ({{ pickup_photos|length }} photo{{ pickup_photos|length|pluralize }})</h4>
+        {% if pickup_photos %}
+        <div class="grid grid-cols-3 sm:grid-cols-4 gap-2">
+          {% for p in pickup_photos %}
+          <div class="relative group">
+            <img src="{{ p.photo.url }}" alt="{{ p.description }}" class="w-full h-24 object-cover rounded-xl border border-slate-200" />
+            {% if can_edit and contract.status != "closed" and contract.status != "cancelled" %}
+            <form method="post" action="{% url 'dashboard:contract_photo_delete' pk=contract.pk photo_pk=p.pk %}" class="absolute top-1 right-1 hidden group-hover:block">
+              {% csrf_token %}
+              <button type="submit" class="bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs hover:bg-red-600">&times;</button>
+            </form>
+            {% endif %}
+            {% if p.description %}<span class="absolute bottom-1 left-1 text-[10px] bg-black/50 text-white px-1.5 py-0.5 rounded">{{ p.description }}</span>{% endif %}
+          </div>
+          {% endfor %}
+        </div>
+        {% else %}
+        <p class="text-sm text-slate-400">{% trans "Aucune photo de départ." %}</p>
+        {% endif %}
+      </div>
+
+      <!-- Return photos -->
+      <div class="mb-5">
+        <h4 class="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">{% trans "Retour" %} ({{ return_photos|length }} photo{{ return_photos|length|pluralize }})</h4>
+        {% if return_photos %}
+        <div class="grid grid-cols-3 sm:grid-cols-4 gap-2">
+          {% for p in return_photos %}
+          <div class="relative group">
+            <img src="{{ p.photo.url }}" alt="{{ p.description }}" class="w-full h-24 object-cover rounded-xl border border-slate-200" />
+            {% if can_edit and contract.status != "closed" and contract.status != "cancelled" %}
+            <form method="post" action="{% url 'dashboard:contract_photo_delete' pk=contract.pk photo_pk=p.pk %}" class="absolute top-1 right-1 hidden group-hover:block">
+              {% csrf_token %}
+              <button type="submit" class="bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs hover:bg-red-600">&times;</button>
+            </form>
+            {% endif %}
+            {% if p.description %}<span class="absolute bottom-1 left-1 text-[10px] bg-black/50 text-white px-1.5 py-0.5 rounded">{{ p.description }}</span>{% endif %}
+          </div>
+          {% endfor %}
+        </div>
+        {% else %}
+        <p class="text-sm text-slate-400">{% trans "Aucune photo de retour." %}</p>
+        {% endif %}
+      </div>
+
+      <!-- Upload form -->
+      {% if can_edit and contract.status != "closed" and contract.status != "cancelled" %}
+      <form method="post" action="{% url 'dashboard:contract_photo_upload' pk=contract.pk %}" enctype="multipart/form-data" class="flex flex-wrap items-end gap-3 pt-3 border-t border-slate-200">
+        {% csrf_token %}
+        <div>
+          <label class="block text-xs font-medium text-slate-500 mb-1">{% trans "Moment" %}</label>
+          <select name="moment" class="rounded-xl border border-slate-200 px-3 py-2 text-sm">
+            <option value="pickup">{% trans "Départ" %}</option>
+            <option value="return" {% if contract.status == "pending_return" or contract.status == "active" %}selected{% endif %}>{% trans "Retour" %}</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-xs font-medium text-slate-500 mb-1">{% trans "Description" %}</label>
+          <input type="text" name="description" maxlength="255" placeholder="{% trans "Ex: avant gauche" %}" class="rounded-xl border border-slate-200 px-3 py-2 text-sm" />
+        </div>
+        <div>
+          <label class="block text-xs font-medium text-slate-500 mb-1">{% trans "Photos" %}</label>
+          <input type="file" name="photos" accept="image/*" multiple class="text-sm" />
+        </div>
+        <button type="submit" class="rounded-xl bg-gaboomViolet text-white px-4 py-2.5 text-sm font-medium hover:opacity-95 transition">{% trans "Ajouter" %}</button>
+      </form>
+      {% endif %}
+    </div>
+
+    <!-- Inspection results (if closed) -->
+    {% if inspection %}
+    <div class="card-in rounded-2xl bg-white border border-slate-200 shadow-sm p-5" style="animation-delay:95ms">
+      <h3 class="font-semibold text-sm text-slate-800 mb-4 flex items-center gap-2">
+        <svg class="w-4 h-4 text-gaboomViolet" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 0 0 2.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 0 0-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 0 0 .75-.75 2.25 2.25 0 0 0-.1-.664m-5.8 0A2.251 2.251 0 0 1 13.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25Z"/></svg>
+        {% trans "Rapport d'inspection" %}
+      </h3>
+      <div class="grid sm:grid-cols-2 gap-4 text-sm mb-4">
+        <div class="flex items-center justify-between rounded-xl bg-slate-50 px-4 py-3">
+          <span class="text-slate-500">{% trans "Extérieur" %}</span>
+          <span class="font-semibold {% if inspection.exterior_condition == 'damaged' %}text-red-600{% elif inspection.exterior_condition == 'fair' %}text-amber-600{% else %}text-emerald-600{% endif %}">{{ inspection.get_exterior_condition_display }}</span>
+        </div>
+        <div class="flex items-center justify-between rounded-xl bg-slate-50 px-4 py-3">
+          <span class="text-slate-500">{% trans "Intérieur" %}</span>
+          <span class="font-semibold {% if inspection.interior_condition == 'damaged' %}text-red-600{% elif inspection.interior_condition == 'fair' %}text-amber-600{% else %}text-emerald-600{% endif %}">{{ inspection.get_interior_condition_display }}</span>
+        </div>
+        <div class="flex items-center justify-between rounded-xl bg-slate-50 px-4 py-3">
+          <span class="text-slate-500">{% trans "Pneus" %}</span>
+          <span class="font-semibold {% if inspection.tires_condition == 'damaged' %}text-red-600{% elif inspection.tires_condition == 'fair' %}text-amber-600{% else %}text-emerald-600{% endif %}">{{ inspection.get_tires_condition_display }}</span>
+        </div>
+        <div class="flex items-center justify-between rounded-xl bg-slate-50 px-4 py-3">
+          <span class="text-slate-500">{% trans "Éclairage" %}</span>
+          <span class="font-semibold {% if inspection.lights_condition == 'damaged' %}text-red-600{% elif inspection.lights_condition == 'fair' %}text-amber-600{% else %}text-emerald-600{% endif %}">{{ inspection.get_lights_condition_display }}</span>
+        </div>
+        <div class="flex items-center justify-between rounded-xl bg-slate-50 px-4 py-3">
+          <span class="text-slate-500">{% trans "Moteur" %}</span>
+          <span class="font-semibold {% if inspection.engine_condition == 'damaged' %}text-red-600{% elif inspection.engine_condition == 'fair' %}text-amber-600{% else %}text-emerald-600{% endif %}">{{ inspection.get_engine_condition_display }}</span>
+        </div>
+        <div class="flex items-center justify-between rounded-xl bg-slate-50 px-4 py-3">
+          <span class="text-slate-500">{% trans "Propreté" %}</span>
+          <span class="font-semibold {% if inspection.cleanliness_ok %}text-emerald-600{% else %}text-red-600{% endif %}">{% if inspection.cleanliness_ok %}OK{% else %}{% trans "Non" %}{% endif %}</span>
+        </div>
+      </div>
+      {% if inspection.has_new_damage %}
+      <div class="rounded-xl bg-red-50 border border-red-200 p-4 mb-4">
+        <h4 class="text-sm font-semibold text-red-800 mb-1">{% trans "Dommages constatés" %}</h4>
+        <p class="text-sm text-red-700">{{ inspection.damage_description }}</p>
+        {% if inspection.damage_cost_estimate %}
+        <p class="text-sm font-semibold text-red-800 mt-2">{% trans "Estimation :" %} {{ inspection.damage_cost_estimate }} {{ contract.currency }}</p>
+        {% endif %}
+      </div>
+      {% endif %}
+      {% if inspection.notes %}
+      <div class="rounded-xl bg-slate-50 p-4 mb-4">
+        <h4 class="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">{% trans "Notes d'inspection" %}</h4>
+        <p class="text-sm text-slate-700 whitespace-pre-line">{{ inspection.notes }}</p>
+      </div>
+      {% endif %}
+      <div class="flex items-center gap-2">
+        <span class="text-xs text-slate-400">{% trans "Décision :" %}</span>
+        {% if inspection.decision == "maintenance" %}
+        <span class="inline-flex items-center gap-1 rounded-full bg-amber-100 text-amber-700 px-2.5 py-0.5 text-[11px] font-semibold">{% trans "En maintenance" %}</span>
+        {% else %}
+        <span class="inline-flex items-center gap-1 rounded-full bg-emerald-100 text-emerald-700 px-2.5 py-0.5 text-[11px] font-semibold">{% trans "Disponible" %}</span>
+        {% endif %}
+        <span class="text-xs text-slate-400 ml-auto">{% trans "Inspecté le" %} {{ inspection.inspected_at|date:"d/m/Y H:i" }}</span>
+      </div>
+    </div>
+    {% endif %}
+
+    {% if contract.status == "closed" %}
+    <!-- Invoice summary -->
+    <div class="card-in rounded-2xl bg-white border border-slate-200 shadow-sm p-5" style="animation-delay:100ms">
+      <h3 class="font-semibold text-sm text-slate-800 mb-4 flex items-center gap-2">
+        <svg class="w-4 h-4 text-gaboomViolet" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 14.25l6-6m4.5-3.493V21.75l-3.75-1.5-3.75 1.5-3.75-1.5-3.75 1.5V4.757c0-1.108.806-2.057 1.907-2.185a48.507 48.507 0 0 1 11.186 0c1.1.128 1.907 1.077 1.907 2.185Z"/></svg>
+        {% trans "Résumé facture" %}
+      </h3>
+      <table class="w-full text-sm">
+        <tbody class="divide-y divide-slate-100">
+          <tr><td class="py-2.5 text-slate-500">{% trans "Location" %} ({{ contract.nb_days }}j × {{ contract.price_per_day }})</td><td class="py-2.5 text-right font-medium">{{ contract.subtotal_ht }} {{ contract.currency }}</td></tr>
+          {% if contract.frais_km %}<tr><td class="py-2.5 text-slate-500">{% trans "Frais km supplémentaires" %}</td><td class="py-2.5 text-right">{{ contract.frais_km }} {{ contract.currency }}</td></tr>{% endif %}
+          {% if contract.frais_carburant %}<tr><td class="py-2.5 text-slate-500">{% trans "Frais carburant" %}</td><td class="py-2.5 text-right">{{ contract.frais_carburant }} {{ contract.currency }}</td></tr>{% endif %}
+          {% if contract.frais_degats %}<tr><td class="py-2.5 text-slate-500">{% trans "Frais dégâts" %}</td><td class="py-2.5 text-right">{{ contract.frais_degats }} {{ contract.currency }}</td></tr>{% endif %}
+          {% if contract.frais_retard %}<tr><td class="py-2.5 text-slate-500">{% trans "Frais retard" %}</td><td class="py-2.5 text-right">{{ contract.frais_retard }} {{ contract.currency }}</td></tr>{% endif %}
+          <tr class="border-t-2 border-slate-300"><td class="py-2.5 font-semibold">{% trans "Sous-total HT" %}</td><td class="py-2.5 text-right font-semibold">{{ contract.subtotal_ht }} {{ contract.currency }}</td></tr>
+          {% if contract.montant_tva %}<tr><td class="py-2.5 text-slate-500">{% trans "TVA" %} ({{ contract.vat_percent }}%)</td><td class="py-2.5 text-right">{{ contract.montant_tva }} {{ contract.currency }}</td></tr>{% endif %}
+          <tr class="border-t-2 border-slate-900"><td class="py-2.5 font-bold text-base">{% trans "Total TTC" %}</td><td class="py-2.5 text-right font-bold text-base">{{ contract.montant_ttc }} {{ contract.currency }}</td></tr>
+          <tr><td class="py-2.5 text-slate-500">{% trans "Payé" %}</td><td class="py-2.5 text-right text-emerald-600 font-medium">{{ contract.amount_paid }} {{ contract.currency }}</td></tr>
+          <tr><td class="py-2.5 font-semibold text-red-600">{% trans "Reste dû" %}</td><td class="py-2.5 text-right font-semibold text-red-600">{{ contract.amount_due }} {{ contract.currency }}</td></tr>
+        </tbody>
+      </table>
+    </div>
+    {% endif %}
+
+    <!-- Payments -->
+    <div class="card-in rounded-2xl bg-white border border-slate-200 shadow-sm p-5" style="animation-delay:150ms">
+      <div class="flex items-center justify-between mb-3">
+        <h3 class="font-semibold text-sm text-slate-800 flex items-center gap-2">
+          <svg class="w-4 h-4 text-gaboomViolet" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 18.75a60.07 60.07 0 0 1 15.797 2.101c.727.198 1.453-.342 1.453-1.096V18.75M3.75 4.5v.75A.75.75 0 0 1 3 6h-.75m0 0v-.375c0-.621.504-1.125 1.125-1.125H20.25M2.25 6v9m18-10.5v.75c0 .414.336.75.75.75h.75m-1.5-1.5h.375c.621 0 1.125.504 1.125 1.125v9.75c0 .621-.504 1.125-1.125 1.125h-.375m1.5-1.5H21a.75.75 0 0 0-.75.75v.75m0 0H3.75m0 0h-.375a1.125 1.125 0 0 1-1.125-1.125V15m1.5 1.5v-.75A.75.75 0 0 0 3 15h-.75M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Zm3 0h.008v.008H18V10.5Zm-12 0h.008v.008H6V10.5Z"/></svg>
+          {% trans "Paiements" %}
+        </h3>
+        <span class="text-xs text-slate-400">{% blocktrans count count=payments|length %}{{ count }} paiement{% plural %}{{ count }} paiements{% endblocktrans %}</span>
+      </div>
+      {% if payments %}
+      <div class="space-y-2 mb-4">
+        {% for p in payments %}
+        <div class="flex items-center justify-between rounded-xl px-4 py-3 text-sm border border-slate-100 hover:bg-slate-50/60 transition">
+          <div class="flex items-center gap-3">
+            <div class="h-8 w-8 rounded-lg {% if p.status == 'succeeded' %}bg-emerald-50{% elif p.status == 'refunded' %}bg-amber-50{% else %}bg-red-50{% endif %} flex items-center justify-center shrink-0">
+              <svg class="w-4 h-4 {% if p.status == 'succeeded' %}text-emerald-600{% elif p.status == 'refunded' %}text-amber-600{% else %}text-red-600{% endif %}" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v12m-3-2.818.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/></svg>
+            </div>
+            <div>
+              <span class="font-medium text-slate-800">{{ p.amount }} {{ p.currency }}</span>
+              <span class="text-slate-400 ml-1.5 text-xs">{{ p.get_method_display }}</span>
+              {% if p.reference %}<span class="text-slate-300 ml-1.5 text-xs">{% trans "Réf:" %} {{ p.reference }}</span>{% endif %}
+            </div>
+          </div>
+          <div class="text-right shrink-0">
+            <div class="text-xs text-slate-400">{{ p.created_at|date:"d/m/Y H:i" }}</div>
+            {% if p.status == "succeeded" %}
+            <span class="text-[10px] text-emerald-600 font-medium">{% trans "Réussi" %}</span>
+            {% elif p.status == "refunded" %}
+            <span class="text-[10px] text-amber-600 font-medium">{% trans "Remboursé" %}</span>
+            {% else %}
+            <span class="text-[10px] text-red-600 font-medium">{% trans "Échoué" %}</span>
+            {% endif %}
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+      {% else %}
+      <p class="text-sm text-slate-400 mb-4">{% trans "Aucun paiement enregistré." %}</p>
+      {% endif %}
+
+      {% if can_edit and contract.status != "cancelled" %}
+      <form method="post" action="{% url 'dashboard:payment_create' contract.pk %}" class="flex flex-wrap items-end gap-3 pt-3 border-t border-slate-200">
+        {% csrf_token %}
+        <div>
+          <label class="block text-xs font-medium text-slate-500 mb-1">{% trans "Montant" %}</label>
+          {{ pay_form.amount }}
+        </div>
+        <div>
+          <label class="block text-xs font-medium text-slate-500 mb-1">{% trans "Méthode" %}</label>
+          {{ pay_form.method }}
+        </div>
+        <div>
+          <label class="block text-xs font-medium text-slate-500 mb-1">{% trans "Réf." %}</label>
+          {{ pay_form.reference }}
+        </div>
+        <button type="submit" class="rounded-xl bg-emerald-600 text-white px-4 py-2.5 text-sm font-medium hover:bg-emerald-700 transition">+ {% trans "Paiement" %}</button>
+      </form>
+      {% endif %}
+    </div>
+  </div>
+
+  <!-- ═══════ SIDEBAR ═══════ -->
+  <div class="space-y-4">
+    <!-- Financial summary -->
+    <div class="card-in rounded-2xl bg-white border border-slate-200 shadow-sm p-5" style="animation-delay:80ms">
+      <h3 class="font-semibold text-sm text-slate-800 mb-3 flex items-center gap-2">
+        <svg class="w-4 h-4 text-gaboomViolet" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 0 1 3 19.875v-6.75ZM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 0 1-1.125-1.125V8.625ZM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 0 1-1.125-1.125V4.125Z"/></svg>
+        Résumé financier
+      </h3>
+      <dl class="space-y-3 text-sm">
+        <div class="flex items-center justify-between">
+          <dt class="text-slate-400 text-xs uppercase tracking-wider">Total TTC</dt>
+          <dd class="text-xl font-bold text-slate-800">{{ contract.montant_ttc|intcomma }} {{ contract.currency }}</dd>
+        </div>
+        <div class="flex items-center justify-between">
+          <dt class="text-slate-400 text-xs uppercase tracking-wider">Payé</dt>
+          <dd class="text-xl font-bold text-emerald-600">{{ contract.amount_paid|intcomma }} {{ contract.currency }}</dd>
+        </div>
+        <div class="flex items-center justify-between">
+          <dt class="text-slate-400 text-xs uppercase tracking-wider">Reste dû</dt>
+          <dd class="text-xl font-bold {% if contract.amount_due > 0 %}text-red-600{% else %}text-slate-400{% endif %}">{{ contract.amount_due|intcomma }} {{ contract.currency }}</dd>
+        </div>
+        {% if contract.montant_ttc > 0 %}
+        <div class="pt-2">
+          <div class="flex items-center justify-between text-xs text-slate-400 mb-1">
+            <span>Progression</span>
+            <span>{% widthratio contract.amount_paid contract.montant_ttc 100 %}%</span>
+          </div>
+          <div class="h-2.5 rounded-full bg-slate-100 overflow-hidden">
+            <div class="h-full rounded-full transition-all {% if contract.payment_status == 'paid' %}bg-emerald-500{% elif contract.payment_status == 'partial' %}bg-amber-400{% else %}bg-red-400{% endif %}" style="width:{% widthratio contract.amount_paid contract.montant_ttc 100 %}%"></div>
+          </div>
+        </div>
+        {% endif %}
+        <div class="pt-2 border-t border-slate-100">
+          <dt class="text-slate-400 text-xs uppercase tracking-wider">Statut paiement</dt>
+          <dd class="mt-1">
+            {% if contract.payment_status == "paid" %}
+            <span class="inline-flex items-center gap-1 rounded-full bg-emerald-100 text-emerald-700 px-2.5 py-0.5 text-[11px] font-semibold">Payé</span>
+            {% elif contract.payment_status == "partial" %}
+            <span class="inline-flex items-center gap-1 rounded-full bg-amber-100 text-amber-700 px-2.5 py-0.5 text-[11px] font-semibold">Partiel</span>
+            {% else %}
+            <span class="inline-flex items-center gap-1 rounded-full bg-red-100 text-red-700 px-2.5 py-0.5 text-[11px] font-semibold">Impayé</span>
+            {% endif %}
+          </dd>
+        </div>
+        <div>
+          <dt class="text-slate-400 text-xs uppercase tracking-wider">Caution</dt>
+          <dd class="font-medium mt-0.5">{{ contract.deposit|intcomma }} {{ contract.currency }}</dd>
+        </div>
+      </dl>
+    </div>
+
+    <!-- Quick actions -->
+    {% if can_edit %}
+    <div class="card-in rounded-2xl bg-white border border-slate-200 shadow-sm p-5" style="animation-delay:130ms">
+      <h3 class="font-semibold text-sm text-slate-800 mb-3">Actions rapides</h3>
+      <div class="space-y-2">
+        <a href="{% url 'dashboard:contract_hub' %}?edit={{ contract.pk }}" class="flex items-center gap-2 rounded-xl px-3 py-2.5 text-sm font-medium text-slate-600 hover:bg-violet-50 hover:text-gaboomViolet transition border border-slate-100">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125"/></svg>
+          Modifier le contrat
+        </a>
+
+        {% if contract.status == "draft" %}
+        <form method="post" action="{% url 'dashboard:contract_send_to_sign' contract.pk %}">
+          {% csrf_token %}
+          <button type="submit" class="w-full flex items-center gap-2 rounded-xl px-3 py-2.5 text-sm font-medium text-blue-700 hover:bg-blue-50 transition border border-slate-100">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 12 3.269 3.125A59.769 59.769 0 0 1 21.485 12 59.768 59.768 0 0 1 3.27 20.875L5.999 12Zm0 0h7.5"/></svg>
+            Envoyer pour signature
+          </button>
+        </form>
+        {% endif %}
+
+        {% if contract.status == "draft" or contract.status == "pending_signature" %}
+        <form method="post" action="{% url 'dashboard:contract_activate' contract.pk %}">
+          {% csrf_token %}
+          <button type="submit" class="w-full flex items-center gap-2 rounded-xl px-3 py-2.5 text-sm font-medium text-emerald-700 hover:bg-emerald-50 transition border border-slate-100">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5"/></svg>
+            Activer le contrat
+          </button>
+        </form>
+        {% endif %}
+
+        {% if contract.status == "active" %}
+        <form method="post" action="{% url 'dashboard:contract_start_return' contract.pk %}">
+          {% csrf_token %}
+          <button type="submit" class="w-full flex items-center gap-2 rounded-xl px-3 py-2.5 text-sm font-medium text-amber-700 hover:bg-amber-50 transition border border-slate-100">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 15 3 9m0 0 6-6M3 9h12a6 6 0 0 1 0 12h-3"/></svg>
+            Retour du véhicule
+          </button>
+        </form>
+        {% endif %}
+
+        {% if contract.status == "pending_return" %}
+        <a href="{% url 'dashboard:contract_inspection' contract.pk %}" class="flex items-center gap-2 rounded-xl px-3 py-2.5 text-sm font-medium text-amber-700 hover:bg-amber-50 transition border border-slate-100">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 0 0 2.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 0 0-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 0 0 .75-.75 2.25 2.25 0 0 0-.1-.664m-5.8 0A2.251 2.251 0 0 1 13.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25Z"/></svg>
+          Faire l'inspection
+        </a>
+        {% endif %}
+
+        {% if contract.status != "closed" and contract.status != "cancelled" %}
+        <form method="post" action="{% url 'dashboard:contract_cancel' contract.pk %}">
+          {% csrf_token %}
+          <button type="submit" onclick="return confirm('Annuler ce contrat ?')" class="w-full flex items-center gap-2 rounded-xl px-3 py-2.5 text-sm font-medium text-red-500 hover:bg-red-50 transition border border-slate-100">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 0 0 5.636 5.636m12.728 12.728A9 9 0 0 1 5.636 5.636m12.728 12.728L5.636 5.636"/></svg>
+            Annuler le contrat
+          </button>
+        </form>
+        {% endif %}
+      </div>
+    </div>
+    {% endif %}
+
+    <!-- Workflow status -->
+    <div class="card-in rounded-2xl bg-white border border-slate-200 shadow-sm p-5" style="animation-delay:160ms">
+      <h3 class="font-semibold text-sm text-slate-800 mb-3">Flux du contrat</h3>
+      <div class="space-y-3">
+        <div class="flex items-center gap-3">
+          <div class="w-2.5 h-2.5 rounded-full {% if contract.status != 'draft' %}bg-emerald-500{% else %}bg-blue-500 animate-pulse{% endif %} shrink-0"></div>
+          <span class="text-sm {% if contract.status == 'draft' %}font-semibold text-blue-700{% else %}text-slate-500{% endif %}">Brouillon</span>
+        </div>
+        <div class="flex items-center gap-3">
+          <div class="w-2.5 h-2.5 rounded-full {% if contract.status == 'pending_signature' %}bg-violet-500 animate-pulse{% elif contract.is_signed or contract.status == 'active' or contract.status == 'pending_return' or contract.status == 'closed' %}bg-emerald-500{% else %}bg-slate-200{% endif %} shrink-0"></div>
+          <span class="text-sm {% if contract.status == 'pending_signature' %}font-semibold text-violet-700{% else %}text-slate-500{% endif %}">Signature client</span>
+        </div>
+        <div class="flex items-center gap-3">
+          <div class="w-2.5 h-2.5 rounded-full {% if contract.status == 'active' %}bg-emerald-500 animate-pulse{% elif contract.status == 'pending_return' or contract.status == 'closed' %}bg-emerald-500{% else %}bg-slate-200{% endif %} shrink-0"></div>
+          <span class="text-sm {% if contract.status == 'active' %}font-semibold text-emerald-700{% else %}text-slate-500{% endif %}">Contrat actif</span>
+        </div>
+        <div class="flex items-center gap-3">
+          <div class="w-2.5 h-2.5 rounded-full {% if contract.status == 'pending_return' %}bg-amber-500 animate-pulse{% elif contract.status == 'closed' %}bg-emerald-500{% else %}bg-slate-200{% endif %} shrink-0"></div>
+          <span class="text-sm {% if contract.status == 'pending_return' %}font-semibold text-amber-700{% else %}text-slate-500{% endif %}">Retour & inspection</span>
+        </div>
+        <div class="flex items-center gap-3">
+          <div class="w-2.5 h-2.5 rounded-full {% if contract.status == 'closed' %}bg-slate-500{% else %}bg-slate-200{% endif %} shrink-0"></div>
+          <span class="text-sm {% if contract.status == 'closed' %}font-semibold text-slate-700{% else %}text-slate-500{% endif %}">Clôturé</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function toggleGpsFields() {
+  const on = document.getElementById('gps-toggle').checked;
+  document.getElementById('gps-fields').classList.toggle('hidden', !on);
+}
+function switchGpsMode(mode) {
+  const ld = document.getElementById('label-device');
+  const lp = document.getElementById('label-phone');
+  const df = document.getElementById('gps-device-fields');
+  const pi = document.getElementById('gps-phone-info');
+  if (mode === 'device') {
+    ld.classList.add('border-violet-400','bg-violet-50/50'); ld.classList.remove('border-slate-200');
+    lp.classList.remove('border-violet-400','bg-violet-50/50'); lp.classList.add('border-slate-200');
+    df.classList.remove('hidden');
+    pi.classList.add('hidden');
+  } else {
+    lp.classList.add('border-violet-400','bg-violet-50/50'); lp.classList.remove('border-slate-200');
+    ld.classList.remove('border-violet-400','bg-violet-50/50'); ld.classList.add('border-slate-200');
+    df.classList.add('hidden');
+    pi.classList.remove('hidden');
+  }
+}
+</script>
+{% endblock %}

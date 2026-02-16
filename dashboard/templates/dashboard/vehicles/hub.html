@@ -1,0 +1,536 @@
+{% extends "dashboard/_layout.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "Véhicules" %} — Dashboard{% endblock %}
+{% block page_title %}{% trans "Véhicules" %}{% endblock %}
+{% block page_subtitle %}{% trans "Gestion de votre flotte" %}{% endblock %}
+
+{% block page_css %}
+<style>
+  @keyframes cardIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+  .card-in{animation:cardIn .3s ease-out both}
+  .row-selected{background:rgba(109,40,217,.04);border-left:3px solid #6D28D9}
+  .drop-highlight{border-color:#6D28D9!important;background:rgba(109,40,217,.04)}
+  @keyframes slideIn{from{transform:translateX(100%)}to{transform:translateX(0)}}
+  @keyframes slideOut{from{transform:translateX(0)}to{transform:translateX(100%)}}
+  .drawer-open{animation:slideIn .25s ease-out both}
+  .drawer-close{animation:slideOut .2s ease-in both}
+</style>
+{% endblock %}
+
+{% block page_actions %}
+{% if can_edit %}
+<a href="{% url 'dashboard:vehicle_hub' %}" class="rounded-xl bg-gaboomViolet text-white px-4 py-2.5 text-sm font-medium hover:opacity-95 transition inline-flex items-center gap-1.5">
+  <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/></svg>
+  {% trans "Nouveau" %}
+</a>
+<!-- Mobile drawer trigger -->
+<button onclick="openDrawer()" class="lg:hidden rounded-xl border border-slate-200 text-slate-600 px-3 py-2.5 text-sm font-medium hover:bg-slate-50 transition inline-flex items-center gap-1.5">
+  <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125"/></svg>
+</button>
+{% endif %}
+{% endblock %}
+
+{% block content %}
+<!-- ═══════ QUICK STATS ═══════ -->
+<div class="flex items-center gap-3 mb-5 flex-wrap">
+  <span class="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-700 px-3 py-1 text-xs font-semibold">
+    <span class="h-2 w-2 rounded-full bg-emerald-500"></span>{{ stats.available }} {% trans "disponible" %}{{ stats.available|pluralize }}
+  </span>
+  {% if stats.maintenance %}
+  <span class="inline-flex items-center gap-1.5 rounded-full bg-amber-50 border border-amber-200 text-amber-700 px-3 py-1 text-xs font-semibold">
+    <span class="h-2 w-2 rounded-full bg-amber-500"></span>{{ stats.maintenance }} {% trans "maintenance" %}
+  </span>
+  {% endif %}
+  {% if stats.hidden %}
+  <span class="inline-flex items-center gap-1.5 rounded-full bg-slate-100 border border-slate-200 text-slate-500 px-3 py-1 text-xs font-semibold">
+    <span class="h-2 w-2 rounded-full bg-slate-400"></span>{{ stats.hidden }} {% trans "masqué" %}{{ stats.hidden|pluralize }}
+  </span>
+  {% endif %}
+  <span class="text-xs text-slate-400 ml-auto">{{ vehicles|length }} {% trans "véhicule" %}{{ vehicles|length|pluralize }}</span>
+</div>
+
+<div class="grid lg:grid-cols-12 gap-5">
+
+<!-- ═══════ LEFT: LIST ═══════ -->
+<div class="lg:col-span-7">
+  <div class="card-in rounded-2xl bg-white border border-slate-200 shadow-sm overflow-hidden">
+
+    <!-- Toolbar -->
+    <div class="p-4 border-b border-slate-100">
+      <form method="get" class="flex flex-wrap items-center gap-2">
+        <div class="relative flex-1 min-w-[180px]">
+          <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"/></svg>
+          <input type="text" name="q" value="{{ q }}" placeholder="{% trans "Rechercher…" %}" class="w-full rounded-xl border border-slate-200 pl-9 pr-3 py-2 text-sm focus:border-violet-400 focus:ring-1 focus:ring-violet-400 outline-none">
+        </div>
+        <select name="status" onchange="this.form.submit()" class="rounded-xl border border-slate-200 px-3 py-2 text-sm focus:border-violet-400 focus:ring-1 focus:ring-violet-400 outline-none">
+          <option value="">{% trans "Statut : tous" %}</option>
+          <option value="available" {% if status_filter == "available" %}selected{% endif %}>{% trans "Disponible" %}</option>
+          <option value="rented" {% if status_filter == "rented" %}selected{% endif %}>{% trans "En location" %}</option>
+          <option value="maintenance" {% if status_filter == "maintenance" %}selected{% endif %}>{% trans "Maintenance" %}</option>
+        </select>
+        <select name="visible" onchange="this.form.submit()" class="rounded-xl border border-slate-200 px-3 py-2 text-sm focus:border-violet-400 focus:ring-1 focus:ring-violet-400 outline-none">
+          <option value="">{% trans "Visibilité : tous" %}</option>
+          <option value="1" {% if visible_filter == "1" %}selected{% endif %}>{% trans "Visible" %}</option>
+          <option value="0" {% if visible_filter == "0" %}selected{% endif %}>{% trans "Masqué" %}</option>
+        </select>
+        <select name="sort" onchange="this.form.submit()" class="rounded-xl border border-slate-200 px-3 py-2 text-sm focus:border-violet-400 focus:ring-1 focus:ring-violet-400 outline-none">
+          <option value="name" {% if sort_by == "name" %}selected{% endif %}>{% trans "Tri : Nom" %}</option>
+          <option value="price" {% if sort_by == "price" %}selected{% endif %}>{% trans "Tri : Prix" %}</option>
+          <option value="km" {% if sort_by == "km" %}selected{% endif %}>{% trans "Tri : KM" %}</option>
+          <option value="status" {% if sort_by == "status" %}selected{% endif %}>{% trans "Tri : Statut" %}</option>
+        </select>
+        <button type="submit" class="rounded-xl bg-slate-100 text-slate-600 px-3 py-2 text-sm font-medium hover:bg-slate-200 transition">{% trans "Filtrer" %}</button>
+      </form>
+    </div>
+
+    {% if vehicles %}
+    <!-- Desktop Table -->
+    <div class="hidden md:block overflow-x-auto">
+      <table class="w-full text-sm">
+        <thead>
+          <tr class="border-b border-slate-100 text-left text-[11px] font-semibold text-slate-400 uppercase tracking-wider">
+            <th class="px-4 py-3">{% trans "Véhicule" %}</th>
+            <th class="px-4 py-3">{% trans "Immat" %}</th>
+            <th class="px-4 py-3">{% trans "Prix/j" %}</th>
+            <th class="px-4 py-3">{% trans "KM" %}</th>
+            <th class="px-4 py-3">{% trans "Statut" %}</th>
+            <th class="px-4 py-3">{% trans "Négo" %}</th>
+            <th class="px-4 py-3 text-right">{% trans "Actions" %}</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-slate-50">
+          {% for v in vehicles %}
+          <tr class="hover:bg-slate-50/60 transition cursor-pointer {% if editing and editing.pk == v.pk %}row-selected{% endif %}"
+              onclick="window.location='?edit={{ v.pk }}&q={{ q }}&status={{ status_filter }}&visible={{ visible_filter }}&sort={{ sort_by }}'">
+            <td class="px-4 py-3">
+              <div class="flex items-center gap-3">
+                {% if v.image %}
+                <img src="{{ v.image.url }}" alt="" class="h-9 w-14 rounded-lg object-cover border border-slate-200 shrink-0">
+                {% else %}
+                <div class="h-9 w-14 rounded-lg bg-slate-100 flex items-center justify-center shrink-0">
+                  <svg class="w-5 h-5 text-slate-300" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 18.75a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 0 1-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m3 0H21M3.375 14.25h17.25M3.375 14.25V6.375c0-.621.504-1.125 1.125-1.125h9.75"/></svg>
+                </div>
+                {% endif %}
+                <div>
+                  <div class="font-medium text-slate-800">{{ v.make }} {{ v.model }}</div>
+                  {% if not v.public_visible %}
+                  <span class="text-[10px] text-slate-400 font-medium">{% trans "Masqué" %}</span>
+                  {% endif %}
+                </div>
+              </div>
+            </td>
+            <td class="px-4 py-3 font-mono text-xs text-slate-500">{{ v.plate_number }}</td>
+            <td class="px-4 py-3 font-semibold text-slate-700">{{ v.daily_price }}€</td>
+            <td class="px-4 py-3">
+              <div class="text-xs text-slate-500">{{ v.current_km|stringformat:"d" }} km</div>
+              <div class="text-[10px] text-slate-400">→ {{ v.next_maintenance_km|stringformat:"d" }} km</div>
+            </td>
+            <td class="px-4 py-3">
+              {% if v.status == "available" %}
+              <span class="inline-flex items-center gap-1 rounded-full bg-emerald-50 text-emerald-700 px-2.5 py-0.5 text-[11px] font-semibold"><span class="h-1.5 w-1.5 rounded-full bg-emerald-500"></span>{% trans "Disponible" %}</span>
+              {% elif v.status == "rented" %}
+              <span class="inline-flex items-center gap-1 rounded-full bg-blue-50 text-blue-700 px-2.5 py-0.5 text-[11px] font-semibold"><span class="h-1.5 w-1.5 rounded-full bg-blue-500"></span>{% trans "En location" %}</span>
+              {% elif v.status == "maintenance" %}
+              <span class="inline-flex items-center gap-1 rounded-full bg-amber-50 text-amber-700 px-2.5 py-0.5 text-[11px] font-semibold"><span class="h-1.5 w-1.5 rounded-full bg-amber-500"></span>{% trans "Maintenance" %}</span>
+              {% endif %}
+              {% if v.maintenance_status == "blocked" %}
+              <span class="inline-flex items-center gap-1 rounded-full bg-red-50 text-red-600 px-2 py-0.5 text-[10px] font-semibold mt-1"><span class="h-1.5 w-1.5 rounded-full bg-red-500 animate-pulse"></span>{% trans "Bloqué" %}</span>
+              {% elif v.maintenance_status == "urgent" %}
+              <span class="inline-flex items-center gap-1 rounded-full bg-orange-50 text-orange-600 px-2 py-0.5 text-[10px] font-semibold mt-1">{% trans "Urgent" %}</span>
+              {% endif %}
+            </td>
+            <td class="px-4 py-3" onclick="event.stopPropagation()">
+              {% if can_edit %}
+              <form method="post" action="{% url 'dashboard:vehicle_toggle_negotiation' v.pk %}?{{ q }}&status={{ status_filter }}&visible={{ visible_filter }}&sort={{ sort_by }}" class="inline">
+                {% csrf_token %}
+                <button type="submit" title="{% if v.allow_negotiation %}{% trans 'Désactiver négociation' %}{% else %}{% trans 'Activer négociation' %}{% endif %}" class="rounded-lg p-1.5 transition {% if v.allow_negotiation %}bg-violet-100 text-gaboomViolet hover:bg-violet-200{% else %}bg-slate-100 text-slate-400 hover:bg-slate-200{% endif %}">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 18.75a60.07 60.07 0 0 1 15.797 2.101c.727.198 1.453-.342 1.453-1.096V18.75M3.75 4.5v.75A.75.75 0 0 1 3 6h-.75m0 0v-.375c0-.621.504-1.125 1.125-1.125H20.25M2.25 6v9m18-10.5v.75c0 .414.336.75.75.75h.75m-1.5-1.5h.375c.621 0 1.125.504 1.125 1.125v9.75c0 .621-.504 1.125-1.125 1.125h-.375m1.5-1.5H21a.75.75 0 0 0-.75.75v.75m0 0H3.75m0 0h-.375a1.125 1.125 0 0 1-1.125-1.125V15m1.5 1.5v-.75A.75.75 0 0 0 3 15h-.75M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Zm3 0h.008v.008H18V10.5Zm-12 0h.008v.008H6V10.5Z"/></svg>
+                </button>
+              </form>
+              {% else %}
+              {% if v.allow_negotiation %}
+              <span class="inline-flex items-center gap-1 rounded-full bg-violet-50 text-gaboomViolet px-2 py-0.5 text-[10px] font-semibold">{% trans "Négo" %}</span>
+              {% else %}
+              <span class="text-slate-300">—</span>
+              {% endif %}
+              {% endif %}
+            </td>
+            <td class="px-4 py-3 text-right" onclick="event.stopPropagation()">
+              <div class="flex items-center justify-end gap-1">
+                {% if can_edit %}
+                <a href="?edit={{ v.pk }}&q={{ q }}&status={{ status_filter }}&visible={{ visible_filter }}&sort={{ sort_by }}" class="rounded-lg p-1.5 hover:bg-violet-50 text-slate-400 hover:text-gaboomViolet transition" title="{% trans 'Modifier' %}">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125"/></svg>
+                </a>
+                <form method="post" action="{% url 'dashboard:vehicle_duplicate' v.pk %}" class="inline">
+                  {% csrf_token %}
+                  <button type="submit" class="rounded-lg p-1.5 hover:bg-blue-50 text-slate-400 hover:text-blue-600 transition" title="{% trans 'Dupliquer' %}">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 0 1-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 0 1 1.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 0 0-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5m7.5 10.375H9.375a1.125 1.125 0 0 1-1.125-1.125v-9.25m12 6.625v-1.875a3.375 3.375 0 0 0-3.375-3.375h-1.5a1.125 1.125 0 0 1-1.125-1.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H9.75"/></svg>
+                  </button>
+                </form>
+                <a href="{% url 'dashboard:vehicle_delete' v.pk %}" class="rounded-lg p-1.5 hover:bg-red-50 text-slate-400 hover:text-red-500 transition" title="{% trans 'Supprimer' %}">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0"/></svg>
+                </a>
+                {% endif %}
+              </div>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Mobile Cards -->
+    <div class="md:hidden divide-y divide-slate-100">
+      {% for v in vehicles %}
+      <a href="?edit={{ v.pk }}&q={{ q }}&status={{ status_filter }}&visible={{ visible_filter }}&sort={{ sort_by }}"
+         class="block px-4 py-3 hover:bg-slate-50/60 transition {% if editing and editing.pk == v.pk %}row-selected{% endif %}"
+         onclick="openDrawer()">
+        <div class="flex items-center gap-3">
+          {% if v.image %}
+          <img src="{{ v.image.url }}" alt="" class="h-10 w-16 rounded-lg object-cover border border-slate-200 shrink-0">
+          {% else %}
+          <div class="h-10 w-16 rounded-lg bg-slate-100 flex items-center justify-center shrink-0">
+            <svg class="w-5 h-5 text-slate-300" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 18.75a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 0 1-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m3 0H21M3.375 14.25h17.25M3.375 14.25V6.375c0-.621.504-1.125 1.125-1.125h9.75"/></svg>
+          </div>
+          {% endif %}
+          <div class="flex-1 min-w-0">
+            <div class="font-medium text-slate-800 text-sm truncate">{{ v.make }} {{ v.model }}</div>
+            <div class="text-xs text-slate-400 font-mono">{{ v.plate_number }}</div>
+          </div>
+          <div class="text-right shrink-0">
+            <div class="font-semibold text-sm text-slate-700">{{ v.daily_price }}€<span class="text-slate-400 font-normal">/j</span></div>
+            <div class="flex items-center justify-end gap-1 flex-wrap">
+              {% if v.status == "available" %}
+              <span class="inline-flex items-center gap-1 rounded-full bg-emerald-50 text-emerald-700 px-2 py-0.5 text-[10px] font-semibold"><span class="h-1.5 w-1.5 rounded-full bg-emerald-500"></span>{% trans "Dispo" %}</span>
+              {% elif v.status == "rented" %}
+              <span class="inline-flex items-center gap-1 rounded-full bg-blue-50 text-blue-700 px-2 py-0.5 text-[10px] font-semibold"><span class="h-1.5 w-1.5 rounded-full bg-blue-500"></span>{% trans "Loué" %}</span>
+              {% elif v.status == "maintenance" %}
+              <span class="inline-flex items-center gap-1 rounded-full bg-amber-50 text-amber-700 px-2 py-0.5 text-[10px] font-semibold"><span class="h-1.5 w-1.5 rounded-full bg-amber-500"></span>{% trans "Maint." %}</span>
+              {% endif %}
+              {% if v.allow_negotiation %}
+              <span class="inline-flex items-center gap-1 rounded-full bg-violet-50 text-gaboomViolet px-2 py-0.5 text-[10px] font-semibold">{% trans "Négo" %}</span>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+      </a>
+      {% endfor %}
+    </div>
+
+    {% else %}
+    <!-- Empty State -->
+    <div class="text-center py-16 px-6">
+      <div class="mx-auto w-16 h-16 rounded-2xl bg-violet-50 flex items-center justify-center mb-4">
+        <svg class="w-8 h-8 text-gaboomViolet" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 18.75a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 0 1-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m3 0H21M3.375 14.25h17.25M3.375 14.25V6.375c0-.621.504-1.125 1.125-1.125h9.75"/></svg>
+      </div>
+      <h3 class="font-semibold text-slate-800">{% trans "Aucun véhicule" %}</h3>
+      <p class="text-sm text-slate-400 mt-1">{% trans "Ajoutez votre premier véhicule via le formulaire ci-contre." %}</p>
+      {% if can_edit %}
+      <a href="{% url 'dashboard:vehicle_hub' %}" class="inline-flex items-center gap-1.5 mt-4 rounded-xl bg-gaboomViolet text-white px-4 py-2 text-sm font-medium hover:opacity-95 transition">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/></svg>
+        {% trans "Ajouter un véhicule" %}
+      </a>
+      {% endif %}
+    </div>
+    {% endif %}
+  </div>
+</div>
+
+<!-- ═══════ RIGHT: FORM PANEL ═══════ -->
+{% if can_edit %}
+<!-- Desktop panel -->
+<div class="hidden lg:block lg:col-span-5">
+  <div class="card-in rounded-2xl bg-white border border-slate-200 shadow-sm lg:sticky lg:top-24" style="animation-delay:100ms">
+    <!-- Form header -->
+    <div class="px-5 py-4 border-b border-slate-100 flex items-center justify-between">
+      <div>
+        <h3 class="font-semibold text-sm text-slate-800">{% if editing %}{% trans "Modifier le véhicule" %}{% else %}{% trans "Nouveau véhicule" %}{% endif %}</h3>
+        {% if editing %}
+        <p class="text-xs text-slate-400 mt-0.5">{{ editing.make }} {{ editing.model }} — {{ editing.plate_number }}</p>
+        {% endif %}
+      </div>
+      {% if editing %}
+      <a href="{% url 'dashboard:vehicle_hub' %}?q={{ q }}&status={{ status_filter }}&visible={{ visible_filter }}&sort={{ sort_by }}" class="text-xs text-gaboomViolet hover:underline font-medium">+ {% trans "Nouveau" %}</a>
+      {% endif %}
+    </div>
+
+    <form method="post" enctype="multipart/form-data" class="p-5 space-y-4">
+      {% csrf_token %}
+      {% if editing %}<input type="hidden" name="vehicle_id" value="{{ editing.pk }}">{% endif %}
+
+      {% if form.non_field_errors %}
+      <div class="rounded-xl bg-red-50 border border-red-200 text-red-700 px-4 py-2.5 text-sm">
+        {% for error in form.non_field_errors %}
+        <p>{{ error }}</p>
+        {% endfor %}
+      </div>
+      {% endif %}
+
+      <!-- Section: Identité -->
+      <div class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">{% trans "Identité" %}</div>
+      <div class="grid grid-cols-2 gap-3">
+        <div>
+          <label class="block text-xs font-medium text-slate-600 mb-1">{{ form.make.label }}</label>
+          {{ form.make }}
+          {% if form.make.errors %}<p class="mt-0.5 text-[11px] text-red-600">{{ form.make.errors.0 }}</p>{% endif %}
+        </div>
+        <div>
+          <label class="block text-xs font-medium text-slate-600 mb-1">{{ form.model.label }}</label>
+          {{ form.model }}
+          {% if form.model.errors %}<p class="mt-0.5 text-[11px] text-red-600">{{ form.model.errors.0 }}</p>{% endif %}
+        </div>
+      </div>
+      <div>
+        <label class="block text-xs font-medium text-slate-600 mb-1">{{ form.plate_number.label }}</label>
+        {{ form.plate_number }}
+        {% if form.plate_number.errors %}<p class="mt-0.5 text-[11px] text-red-600">{{ form.plate_number.errors.0 }}</p>{% endif %}
+      </div>
+
+      <!-- Section: Tarification -->
+      <div class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider pt-2">{% trans "Tarification" %}</div>
+      <div>
+        <label class="block text-xs font-medium text-slate-600 mb-1">{{ form.daily_price.label }}</label>
+        {{ form.daily_price }}
+        {% if form.daily_price.errors %}<p class="mt-0.5 text-[11px] text-red-600">{{ form.daily_price.errors.0 }}</p>{% endif %}
+      </div>
+
+      {% if editing and smart_pricing %}
+      <div class="rounded-xl border p-3.5 space-y-2 {% if smart_pricing.direction == 'up' %}border-emerald-200 bg-emerald-50{% elif smart_pricing.direction == 'down' %}border-amber-200 bg-amber-50{% else %}border-slate-200 bg-slate-50{% endif %}">
+        <div class="flex items-center gap-2 text-xs font-semibold {% if smart_pricing.direction == 'up' %}text-emerald-700{% elif smart_pricing.direction == 'down' %}text-amber-700{% else %}text-slate-600{% endif %}">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 18v-5.25m0 0a6.01 6.01 0 0 0 1.5-.189m-1.5.189a6.01 6.01 0 0 1-1.5-.189m3.75 7.478a12.06 12.06 0 0 1-4.5 0m3.75 2.383a14.406 14.406 0 0 1-3 0M14.25 18v-.192c0-.983.658-1.823 1.508-2.316a7.5 7.5 0 1 0-7.517 0c.85.493 1.509 1.333 1.509 2.316V18"/></svg>
+          {% trans "Recommandation intelligente" %}
+        </div>
+        <div class="text-xs opacity-70">{{ smart_pricing.message }}</div>
+        <div class="flex items-center gap-3">
+          <span class="text-sm font-bold">{{ smart_pricing.recommended_price }} {% trans "€/j" %}</span>
+          <span class="text-[10px] opacity-50">{% trans "Confiance :" %} {{ smart_pricing.confidence_score }}%</span>
+          <button type="button" onclick="document.querySelector('[name=daily_price]').value='{{ smart_pricing.recommended_price }}'"
+            class="ml-auto text-[11px] font-semibold px-2.5 py-1 rounded-lg {% if smart_pricing.direction == 'up' %}bg-emerald-600 text-white hover:bg-emerald-700{% elif smart_pricing.direction == 'down' %}bg-amber-600 text-white hover:bg-amber-700{% else %}bg-slate-600 text-white hover:bg-slate-700{% endif %} transition">
+            {% trans "Appliquer" %}
+          </button>
+        </div>
+      </div>
+      {% endif %}
+
+      <!-- Section: Statut -->
+      <div class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider pt-2">{% trans "Statut & visibilité" %}</div>
+      <div class="grid grid-cols-2 gap-3">
+        <div>
+          <label class="block text-xs font-medium text-slate-600 mb-1">{{ form.status.label }}</label>
+          {{ form.status }}
+          {% if form.status.errors %}<p class="mt-0.5 text-[11px] text-red-600">{{ form.status.errors.0 }}</p>{% endif %}
+        </div>
+        <div class="flex items-center gap-2 pt-5">
+          {{ form.public_visible }}
+          <label class="text-xs text-slate-600">{{ form.public_visible.label }}</label>
+        </div>
+      </div>
+      <div class="flex items-center gap-2">
+        {{ form.allow_negotiation }}
+        <label class="text-xs text-slate-600">{{ form.allow_negotiation.label }}</label>
+      </div>
+
+      <!-- Section: Détails -->
+      <div class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider pt-2">{% trans "Détails" %}</div>
+      <div>
+        <label class="block text-xs font-medium text-slate-600 mb-1">{{ form.current_km.label }}</label>
+        {{ form.current_km }}
+        {% if form.current_km.errors %}<p class="mt-0.5 text-[11px] text-red-600">{{ form.current_km.errors.0 }}</p>{% endif %}
+      </div>
+
+      <!-- Section: Photo -->
+      <div class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider pt-2">{% trans "Photo" %}</div>
+      {% if editing and editing.image %}
+      <div class="flex items-center gap-3 mb-1">
+        <img src="{{ editing.image.url }}" alt="" class="h-14 w-20 rounded-lg object-cover border border-slate-200">
+        <span class="text-xs text-slate-400">{% trans "Photo actuelle" %}</span>
+      </div>
+      {% endif %}
+      <div id="dropZone" class="relative rounded-xl border-2 border-dashed border-slate-200 p-4 text-center hover:border-violet-300 transition cursor-pointer">
+        <input type="file" name="image" accept="image/png,image/jpeg,image/webp" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer" id="imageInput">
+        <div id="dropPlaceholder">
+          <svg class="w-8 h-8 mx-auto text-slate-300 mb-1" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="m2.25 15.75 5.159-5.159a2.25 2.25 0 0 1 3.182 0l5.159 5.159m-1.5-1.5 1.409-1.409a2.25 2.25 0 0 1 3.182 0l2.909 2.909M3.75 21h16.5A2.25 2.25 0 0 0 22.5 18.75V5.25A2.25 2.25 0 0 0 20.25 3H3.75A2.25 2.25 0 0 0 1.5 5.25v13.5A2.25 2.25 0 0 0 3.75 21Z"/></svg>
+          <p class="text-xs text-slate-400">{% trans "Glissez ou cliquez — PNG, JPG, WebP (max 5 Mo)" %}</p>
+        </div>
+        <img id="imagePreview" class="hidden mx-auto rounded-lg max-h-32 object-contain" alt="{% trans 'Aperçu' %}">
+      </div>
+      {% if form.image.errors %}<p class="mt-0.5 text-[11px] text-red-600">{{ form.image.errors.0 }}</p>{% endif %}
+
+      <!-- Buttons -->
+      <div class="flex items-center gap-2 pt-3">
+        <button type="submit" class="flex-1 rounded-xl bg-gaboomViolet text-white px-4 py-2.5 text-sm font-medium hover:opacity-95 transition">
+          {% if editing %}{% trans "Enregistrer" %}{% else %}{% trans "Ajouter" %}{% endif %}
+        </button>
+        {% if editing %}
+        <a href="{% url 'dashboard:vehicle_hub' %}?q={{ q }}&status={{ status_filter }}&visible={{ visible_filter }}&sort={{ sort_by }}" class="rounded-xl border border-slate-200 px-4 py-2.5 text-sm font-medium text-slate-600 hover:bg-slate-50 transition">{% trans "Annuler" %}</a>
+        {% endif %}
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Mobile Drawer -->
+<div id="mobileDrawerOverlay" class="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 hidden lg:hidden" onclick="closeDrawer()"></div>
+<div id="mobileDrawer" class="fixed top-0 right-0 bottom-0 w-full max-w-md bg-white shadow-2xl z-50 hidden lg:hidden overflow-y-auto">
+  <div class="sticky top-0 bg-white/95 backdrop-blur border-b border-slate-200 px-5 py-4 flex items-center justify-between z-10">
+    <h3 class="font-semibold text-sm text-slate-800">{% if editing %}{% trans "Modifier le véhicule" %}{% else %}{% trans "Nouveau véhicule" %}{% endif %}</h3>
+    <button onclick="closeDrawer()" class="rounded-lg p-1.5 hover:bg-slate-100 text-slate-400 transition">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12"/></svg>
+    </button>
+  </div>
+
+  <form method="post" enctype="multipart/form-data" class="p-5 space-y-4">
+    {% csrf_token %}
+    {% if editing %}<input type="hidden" name="vehicle_id" value="{{ editing.pk }}">{% endif %}
+
+    {% if form.non_field_errors %}
+    <div class="rounded-xl bg-red-50 border border-red-200 text-red-700 px-4 py-2.5 text-sm">
+      {% for error in form.non_field_errors %}<p>{{ error }}</p>{% endfor %}
+    </div>
+    {% endif %}
+
+    <div class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">{% trans "Identité" %}</div>
+    <div class="grid grid-cols-2 gap-3">
+      <div>
+        <label class="block text-xs font-medium text-slate-600 mb-1">{{ form.make.label }}</label>
+        {{ form.make }}
+        {% if form.make.errors %}<p class="mt-0.5 text-[11px] text-red-600">{{ form.make.errors.0 }}</p>{% endif %}
+      </div>
+      <div>
+        <label class="block text-xs font-medium text-slate-600 mb-1">{{ form.model.label }}</label>
+        {{ form.model }}
+        {% if form.model.errors %}<p class="mt-0.5 text-[11px] text-red-600">{{ form.model.errors.0 }}</p>{% endif %}
+      </div>
+    </div>
+    <div>
+      <label class="block text-xs font-medium text-slate-600 mb-1">{{ form.plate_number.label }}</label>
+      {{ form.plate_number }}
+      {% if form.plate_number.errors %}<p class="mt-0.5 text-[11px] text-red-600">{{ form.plate_number.errors.0 }}</p>{% endif %}
+    </div>
+
+    <div class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider pt-2">{% trans "Tarification" %}</div>
+    <div>
+      <label class="block text-xs font-medium text-slate-600 mb-1">{{ form.daily_price.label }}</label>
+      {{ form.daily_price }}
+      {% if form.daily_price.errors %}<p class="mt-0.5 text-[11px] text-red-600">{{ form.daily_price.errors.0 }}</p>{% endif %}
+    </div>
+
+    {% if editing and smart_pricing %}
+    <div class="rounded-xl border p-3 space-y-1.5 {% if smart_pricing.direction == 'up' %}border-emerald-200 bg-emerald-50{% elif smart_pricing.direction == 'down' %}border-amber-200 bg-amber-50{% else %}border-slate-200 bg-slate-50{% endif %}">
+      <div class="flex items-center gap-1.5 text-[11px] font-semibold {% if smart_pricing.direction == 'up' %}text-emerald-700{% elif smart_pricing.direction == 'down' %}text-amber-700{% else %}text-slate-600{% endif %}">
+        <svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 18v-5.25m0 0a6.01 6.01 0 0 0 1.5-.189m-1.5.189a6.01 6.01 0 0 1-1.5-.189m3.75 7.478a12.06 12.06 0 0 1-4.5 0m3.75 2.383a14.406 14.406 0 0 1-3 0M14.25 18v-.192c0-.983.658-1.823 1.508-2.316a7.5 7.5 0 1 0-7.517 0c.85.493 1.509 1.333 1.509 2.316V18"/></svg>
+        {% trans "Recommandation :" %} {{ smart_pricing.recommended_price }} {% trans "€/j" %}
+      </div>
+      <div class="text-[10px] opacity-60">{{ smart_pricing.message }}</div>
+    </div>
+    {% endif %}
+
+    <div class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider pt-2">{% trans "Statut & visibilité" %}</div>
+    <div class="grid grid-cols-2 gap-3">
+      <div>
+        <label class="block text-xs font-medium text-slate-600 mb-1">{{ form.status.label }}</label>
+        {{ form.status }}
+      </div>
+      <div class="flex items-center gap-2 pt-5">
+        {{ form.public_visible }}
+        <label class="text-xs text-slate-600">{{ form.public_visible.label }}</label>
+      </div>
+    </div>
+    <div class="flex items-center gap-2">
+      {{ form.allow_negotiation }}
+      <label class="text-xs text-slate-600">{{ form.allow_negotiation.label }}</label>
+    </div>
+
+    <div class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider pt-2">{% trans "Détails" %}</div>
+    <div>
+      <label class="block text-xs font-medium text-slate-600 mb-1">{{ form.current_km.label }}</label>
+      {{ form.current_km }}
+    </div>
+
+    <div class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider pt-2">{% trans "Photo" %}</div>
+    {% if editing and editing.image %}
+    <div class="flex items-center gap-3 mb-1">
+      <img src="{{ editing.image.url }}" alt="" class="h-14 w-20 rounded-lg object-cover border border-slate-200">
+      <span class="text-xs text-slate-400">{% trans "Photo actuelle" %}</span>
+    </div>
+    {% endif %}
+    <div id="dropZoneMobile" class="relative rounded-xl border-2 border-dashed border-slate-200 p-4 text-center hover:border-violet-300 transition cursor-pointer">
+      <input type="file" name="image" accept="image/png,image/jpeg,image/webp" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer" id="imageInputMobile">
+      <div id="dropPlaceholderMobile">
+        <svg class="w-8 h-8 mx-auto text-slate-300 mb-1" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="m2.25 15.75 5.159-5.159a2.25 2.25 0 0 1 3.182 0l5.159 5.159m-1.5-1.5 1.409-1.409a2.25 2.25 0 0 1 3.182 0l2.909 2.909M3.75 21h16.5A2.25 2.25 0 0 0 22.5 18.75V5.25A2.25 2.25 0 0 0 20.25 3H3.75A2.25 2.25 0 0 0 1.5 5.25v13.5A2.25 2.25 0 0 0 3.75 21Z"/></svg>
+        <p class="text-xs text-slate-400">{% trans "Glissez ou cliquez — max 5 Mo" %}</p>
+      </div>
+      <img id="imagePreviewMobile" class="hidden mx-auto rounded-lg max-h-32 object-contain" alt="{% trans 'Aperçu' %}">
+    </div>
+
+    <div class="flex items-center gap-2 pt-3">
+      <button type="submit" class="flex-1 rounded-xl bg-gaboomViolet text-white px-4 py-2.5 text-sm font-medium hover:opacity-95 transition">
+        {% if editing %}{% trans "Enregistrer" %}{% else %}{% trans "Ajouter" %}{% endif %}
+      </button>
+      <button type="button" onclick="closeDrawer()" class="rounded-xl border border-slate-200 px-4 py-2.5 text-sm font-medium text-slate-600 hover:bg-slate-50 transition">{% trans "Annuler" %}</button>
+    </div>
+  </form>
+</div>
+{% endif %}
+
+</div>
+
+<!-- ═══════ JS ═══════ -->
+<script>
+// ── Image preview (desktop + mobile) ──
+function setupPreview(inputId, previewId, placeholderId, zoneId){
+  var input = document.getElementById(inputId);
+  var preview = document.getElementById(previewId);
+  var placeholder = document.getElementById(placeholderId);
+  var zone = document.getElementById(zoneId);
+  if(!input) return;
+
+  input.addEventListener('change', function(){
+    if(this.files && this.files[0]){
+      var reader = new FileReader();
+      reader.onload = function(e){
+        preview.src = e.target.result;
+        preview.classList.remove('hidden');
+        placeholder.classList.add('hidden');
+      };
+      reader.readAsDataURL(this.files[0]);
+    }
+  });
+
+  if(zone){
+    zone.addEventListener('dragover', function(e){ e.preventDefault(); zone.classList.add('drop-highlight'); });
+    zone.addEventListener('dragleave', function(){ zone.classList.remove('drop-highlight'); });
+    zone.addEventListener('drop', function(e){
+      e.preventDefault(); zone.classList.remove('drop-highlight');
+      if(e.dataTransfer.files.length){ input.files = e.dataTransfer.files; input.dispatchEvent(new Event('change')); }
+    });
+  }
+}
+setupPreview('imageInput','imagePreview','dropPlaceholder','dropZone');
+setupPreview('imageInputMobile','imagePreviewMobile','dropPlaceholderMobile','dropZoneMobile');
+
+// ── Mobile drawer ──
+function openDrawer(){
+  var o = document.getElementById('mobileDrawerOverlay');
+  var d = document.getElementById('mobileDrawer');
+  if(!o||!d) return;
+  o.classList.remove('hidden');
+  d.classList.remove('hidden','drawer-close');
+  d.classList.add('drawer-open');
+}
+function closeDrawer(){
+  var o = document.getElementById('mobileDrawerOverlay');
+  var d = document.getElementById('mobileDrawer');
+  if(!o||!d) return;
+  d.classList.remove('drawer-open');
+  d.classList.add('drawer-close');
+  setTimeout(function(){ o.classList.add('hidden'); d.classList.add('hidden'); }, 200);
+}
+
+// Auto-open drawer on mobile if editing
+{% if editing %}
+if(window.innerWidth < 1024){ openDrawer(); }
+{% endif %}
+</script>
+{% endblock %}

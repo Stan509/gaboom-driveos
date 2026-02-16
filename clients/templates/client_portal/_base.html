@@ -1,0 +1,284 @@
+{% extends "public_site/_base.html" %}
+{% load i18n %}
+
+{% block ps_content %}
+{% if portal_disabled %}
+<div class="min-h-[80vh] flex items-center justify-center px-4">
+  <div class="max-w-2xl w-full text-center">
+    <!-- Icon animé -->
+    <div class="relative mx-auto w-24 h-24 mb-8">
+      <div class="absolute inset-0 bg-gradient-to-br from-violet-500 to-purple-600 rounded-2xl opacity-10 animate-pulse"></div>
+      <div class="relative bg-gradient-to-br from-violet-500 to-purple-600 rounded-2xl w-24 h-24 mx-auto flex items-center justify-center shadow-lg">
+        <svg class="w-12 h-12 text-white" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 1 0-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 0 0 2.25-2.25v-6.75a2.25 2.25 0 0 0-2.25-2.25H6.75a2.25 2.25 0 0 0-2.25 2.25v6.75a2.25 2.25 0 0 0 2.25 2.25Z"/>
+        </svg>
+      </div>
+      <!-- Badge cadenas -->
+      <div class="absolute -top-2 -right-2 bg-amber-400 text-amber-900 rounded-full w-8 h-8 flex items-center justify-center text-xs font-bold shadow-md">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 1 0-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 0 0 2.25-2.25v-6.75a2.25 2.25 0 0 0-2.25-2.25H6.75a2.25 2.25 0 0 0-2.25 2.25v6.75a2.25 2.25 0 0 0 2.25 2.25Z"/>
+        </svg>
+      </div>
+    </div>
+
+    <!-- Titre principal -->
+    <h1 class="text-3xl font-bold text-slate-900 mb-4">
+      {% trans "Portail client non disponible" %}
+    </h1>
+    
+    <!-- Message explicatif -->
+    <div class="space-y-4 mb-8">
+      <p class="text-lg text-slate-600 leading-relaxed">
+        {% trans "Cette fonctionnalité n'est pas incluse dans votre plan actuel." %}
+      </p>
+      <p class="text-slate-500">
+        {% trans "Le portail client permet à vos clients de suivre leurs réservations, signer leurs contrats et gérer leur profil en toute autonomie." %}
+      </p>
+    </div>
+
+    <!-- Carte des avantages -->
+    <div class="bg-gradient-to-br from-violet-50 to-purple-50 rounded-2xl border border-violet-100 p-6 mb-8">
+      <h3 class="font-semibold text-violet-900 mb-4">{% trans "Avec le portail client, vos clients peuvent :" %}</h3>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
+        <div class="flex items-center gap-2 text-violet-700">
+          <svg class="w-4 h-4 text-violet-500" fill="currentColor" viewBox="0 0 20 20">
+            <path fill-rule="evenodd" d="M10 18a8 8 0 1 0 0-16 8 8 0 0 0 0 16zm3.857-9.809a.75.75 0 0 0-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 1 0-1.06 1.061l2.5 2.5a.75.75 0 0 0 1.137-.089l4-5.5z" clip-rule="evenodd"/>
+          </svg>
+          {% trans "Suivre leurs réservations en temps réel" %}
+        </div>
+        <div class="flex items-center gap-2 text-violet-700">
+          <svg class="w-4 h-4 text-violet-500" fill="currentColor" viewBox="0 0 20 20">
+            <path fill-rule="evenodd" d="M10 18a8 8 0 1 0 0-16 8 8 0 0 0 0 16zm3.857-9.809a.75.75 0 0 0-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 1 0-1.06 1.061l2.5 2.5a.75.75 0 0 0 1.137-.089l4-5.5z" clip-rule="evenodd"/>
+          </svg>
+          {% trans "Signer numériquement leurs contrats" %}
+        </div>
+        <div class="flex items-center gap-2 text-violet-700">
+          <svg class="w-4 h-4 text-violet-500" fill="currentColor" viewBox="0 0 20 20">
+            <path fill-rule="evenodd" d="M10 18a8 8 0 1 0 0-16 8 8 0 0 0 0 16zm3.857-9.809a.75.75 0 0 0-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 1 0-1.06 1.061l2.5 2.5a.75.75 0 0 0 1.137-.089l4-5.5z" clip-rule="evenodd"/>
+          </svg>
+          {% trans "Consulter leurs documents" %}
+        </div>
+        <div class="flex items-center gap-2 text-violet-700">
+          <svg class="w-4 h-4 text-violet-500" fill="currentColor" viewBox="0 0 20 20">
+            <path fill-rule="evenodd" d="M10 18a8 8 0 1 0 0-16 8 8 0 0 0 0 16zm3.857-9.809a.75.75 0 0 0-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 1 0-1.06 1.061l2.5 2.5a.75.75 0 0 0 1.137-.089l4-5.5z" clip-rule="evenodd"/>
+          </svg>
+          {% trans "Communiquer directement avec vous" %}
+        </div>
+      </div>
+    </div>
+
+    <!-- Message d'excuses -->
+    <div class="bg-amber-50 border border-amber-200 rounded-2xl p-4 mb-8">
+      <div class="flex items-center gap-3">
+        <div class="flex-shrink-0">
+          <svg class="w-6 h-6 text-amber-600" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z"/>
+          </svg>
+        </div>
+        <div class="text-left">
+          <p class="text-sm font-medium text-amber-800">
+            {% trans "L'équipe Gaboom s'excuse pour la gêne occasionnée." %}
+          </p>
+          <p class="text-sm text-amber-700 mt-1">
+            {% trans "Contactez-nous pour mettre à niveau votre abonnement et débloquer cette fonctionnalité." %}
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Boutons d'action -->
+    <div class="flex flex-col sm:flex-row gap-4 justify-center">
+      <a href="{% url 'public_site:agency_public_home' slug=agency.slug %}" 
+         class="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-violet-600 to-purple-600 text-white font-semibold rounded-xl hover:from-violet-700 hover:to-purple-700 transition-all shadow-lg hover:shadow-xl">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 12l8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25"/>
+        </svg>
+        {% trans "Retour à l'accueil" %}
+      </a>
+      
+      <a href="mailto:contact@gaboomdriveos.com?subject=Demande portail client - {{ agency.name }}" 
+         class="inline-flex items-center gap-2 px-6 py-3 bg-white border-2 border-violet-200 text-violet-700 font-semibold rounded-xl hover:bg-violet-50 transition-all">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 0 1-2.25 2.25h-15a2.25 2.25 0 0 1-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25m19.5 0v.243a2.25 2.25 0 0 1-1.07 1.916l-7.5 4.615a2.25 2.25 0 0 1-2.36 0L3.32 8.91a2.25 2.25 0 0 1-1.07-1.916V6.75"/>
+        </svg>
+        {% trans "Contacter le support" %}
+      </a>
+    </div>
+  </div>
+</div>
+
+<style>
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+}
+.animate-float {
+  animation: float 3s ease-in-out infinite;
+}
+</style>
+{% else %}
+<div class="min-h-screen ps-bg ps-body">
+  <!-- Client Portal Navigation -->
+  <nav class="border-b" style="border-color: color-mix(in srgb, var(--text) 10%, transparent);">
+    <div class="max-w-6xl mx-auto px-4">
+      <div class="flex items-center justify-between h-16">
+        <!-- Logo and agency info -->
+        <div class="flex items-center gap-3">
+          <a href="{% url 'public_site:agency_public_home' slug=agency.slug %}" class="flex items-center gap-3">
+            {% if ss.logo %}
+              <img src="{{ ss.logo.url }}" alt="{{ agency.name }}" class="h-9 w-9 rounded-xl object-cover" />
+            {% elif agency.public_logo_url %}
+              <img src="{{ agency.public_logo_url }}" alt="{{ agency.name }}" class="h-9 w-9 rounded-xl object-cover" />
+            {% else %}
+              <div class="h-9 w-9 rounded-xl ps-primary-bg text-white flex items-center justify-center font-bold text-sm">
+                {{ agency.name|first }}
+              </div>
+            {% endif %}
+            <div>
+              <div class="font-semibold text-sm">{{ agency.name }}</div>
+              <div class="text-[11px] opacity-50">{% trans "Espace client" %}</div>
+            </div>
+          </a>
+        </div>
+
+        <!-- Navigation links -->
+        <div class="hidden md:flex items-center gap-6 text-sm">
+          <a href="{% url 'public_site:client_dashboard' slug=agency.slug %}" 
+             class="font-medium ps-primary hover:opacity-80 transition">
+            {% trans "Tableau de bord" %}
+          </a>
+          
+          <!-- Réservations submenu -->
+          <div class="relative group">
+            <button class="font-medium opacity-70 hover:opacity-100 transition flex items-center gap-1 py-2">
+              {% trans "Réservations" %}
+              <svg class="w-3 h-3 transition-transform group-hover:rotate-180" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5"/>
+              </svg>
+            </button>
+            <div class="absolute top-full left-0 mt-1 w-48 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
+              <div class="bg-white rounded-lg shadow-lg border border-gray-200 py-2" style="background: var(--card-bg); border-color: color-mix(in srgb, var(--text) 10%, transparent);">
+                <a href="{% url 'public_site:client_bookings' slug=agency.slug %}" 
+                   class="block px-4 py-2 text-sm hover:bg-gray-50 transition" style="color: var(--text);">
+                  {% trans "Mes réservations" %}
+                </a>
+                <a href="{% url 'public_site:agency_catalog' slug=agency.slug %}" 
+                   class="block px-4 py-2 text-sm hover:bg-gray-50 transition" style="color: var(--text);">
+                  {% trans "Nouvelle réservation" %}
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <!-- Services submenu -->
+          <div class="relative group">
+            <button class="font-medium opacity-70 hover:opacity-100 transition flex items-center gap-1 py-2">
+              {% trans "Services" %}
+              <svg class="w-3 h-3 transition-transform group-hover:rotate-180" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5"/>
+              </svg>
+            </button>
+            <div class="absolute top-full left-0 mt-1 w-48 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
+              <div class="bg-white rounded-lg shadow-lg border border-gray-200 py-2" style="background: var(--card-bg); border-color: color-mix(in srgb, var(--text) 10%, transparent);">
+                {% if gps_enabled %}
+                <a href="{% url 'public_site:client_gps_tracking' slug=agency.slug %}" 
+                   class="block px-4 py-2 text-sm hover:bg-gray-50 transition flex items-center gap-2" style="color: var(--text);">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"/>
+                  </svg>
+                  {% trans "Conduite IA" %}
+                </a>
+                {% endif %}
+                <a href="{% url 'public_site:client_contracts' slug=agency.slug %}" 
+                   class="block px-4 py-2 text-sm hover:bg-gray-50 transition flex items-center gap-2" style="color: var(--text);">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z"/>
+                  </svg>
+                  {% trans "Contrats" %}
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <a href="{% url 'public_site:client_profile' slug=agency.slug %}" 
+             class="font-medium opacity-70 hover:opacity-100 transition">
+            {% trans "Profil" %}
+          </a>
+        </div>
+
+        <!-- User menu -->
+        <div class="flex items-center gap-3">
+          {% if unread_notifs %}
+          <span class="bg-red-500 text-white text-xs rounded-full px-2 py-1">{{ unread_notifs }}</span>
+          {% endif %}
+          <span class="text-sm font-medium">{{ client_account.full_name }}</span>
+          <a href="{% url 'public_site:client_logout' slug=agency.slug %}" 
+             class="text-xs opacity-60 hover:opacity-100 transition">
+            {% trans "Déconnexion" %}
+          </a>
+        </div>
+      </div>
+
+      <!-- Mobile menu -->
+      <div class="md:hidden border-t" style="border-color: color-mix(in srgb, var(--text) 8%, transparent);">
+        <div class="py-3 space-y-4">
+          <!-- Section principale -->
+          <div>
+            <div class="text-xs font-semibold opacity-50 mb-2 px-2">{% trans "PRINCIPAL" %}</div>
+            <div class="space-y-1">
+              <a href="{% url 'public_site:client_dashboard' slug=agency.slug %}" 
+                 class="block text-sm font-medium ps-primary py-1 px-2">
+                {% trans "Tableau de bord" %}
+              </a>
+              <a href="{% url 'public_site:client_profile' slug=agency.slug %}" 
+                 class="block text-sm opacity-70 hover:opacity-100 py-1 px-2">
+                {% trans "Profil" %}
+              </a>
+            </div>
+          </div>
+
+          <!-- Section réservations -->
+          <div>
+            <div class="text-xs font-semibold opacity-50 mb-2 px-2">{% trans "RÉSERVATIONS" %}</div>
+            <div class="space-y-1">
+              <a href="{% url 'public_site:client_bookings' slug=agency.slug %}" 
+                 class="block text-sm opacity-70 hover:opacity-100 py-1 px-2">
+                {% trans "Mes réservations" %}
+              </a>
+              <a href="{% url 'public_site:agency_catalog' slug=agency.slug %}" 
+                 class="block text-sm opacity-70 hover:opacity-100 py-1 px-2">
+                {% trans "Nouvelle réservation" %}
+              </a>
+            </div>
+          </div>
+
+          <!-- Section services -->
+          <div>
+            <div class="text-xs font-semibold opacity-50 mb-2 px-2">{% trans "SERVICES" %}</div>
+            <div class="space-y-1">
+              {% if gps_enabled %}
+              <a href="{% url 'public_site:client_gps_tracking' slug=agency.slug %}" 
+                 class="block text-sm opacity-70 hover:opacity-100 py-1 px-2">
+                {% trans "Conduite IA" %}
+              </a>
+              {% endif %}
+              <a href="{% url 'public_site:client_contracts' slug=agency.slug %}" 
+                 class="block text-sm opacity-70 hover:opacity-100 py-1 px-2">
+                {% trans "Contrats" %}
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Page content -->
+  <main class="max-w-6xl mx-auto px-4 py-6">
+    {% block portal_content %}
+    <!-- Le contenu normal sera ici -->
+    {% endblock portal_content %}
+  </main>
+</div>
+{% endif %}
+{% endblock %}

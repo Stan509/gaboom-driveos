@@ -1,0 +1,171 @@
+{% extends "superadmin/_layout.html" %}
+
+{% block page_title %}Overview{% endblock %}
+{% block page_subtitle %}Vue d'ensemble de la plateforme{% endblock %}
+
+{% block content %}
+<!-- KPI Cards -->
+<div class="grid grid-cols-2 lg:grid-cols-4 xl:grid-cols-8 gap-4 mb-8">
+  <div class="bg-white rounded-2xl border border-slate-200 p-4">
+    <div class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Total agences</div>
+    <div class="text-2xl font-extrabold text-slate-900">{{ kpi_total }}</div>
+  </div>
+  <div class="bg-white rounded-2xl border border-slate-200 p-4">
+    <div class="text-[10px] font-bold text-emerald-500 uppercase tracking-wider mb-1">Actives</div>
+    <div class="text-2xl font-extrabold text-emerald-600">{{ kpi_active }}</div>
+  </div>
+  <div class="bg-white rounded-2xl border border-slate-200 p-4">
+    <div class="text-[10px] font-bold text-blue-500 uppercase tracking-wider mb-1">Essai</div>
+    <div class="text-2xl font-extrabold text-blue-600">{{ kpi_trial }}</div>
+  </div>
+  <div class="bg-white rounded-2xl border border-slate-200 p-4">
+    <div class="text-[10px] font-bold text-red-500 uppercase tracking-wider mb-1">Suspendues</div>
+    <div class="text-2xl font-extrabold text-red-600">{{ kpi_suspended }}</div>
+  </div>
+  <div class="bg-white rounded-2xl border border-slate-200 p-4">
+    <div class="text-[10px] font-bold text-amber-500 uppercase tracking-wider mb-1">Preuves pending</div>
+    <div class="text-2xl font-extrabold text-amber-600">{{ kpi_pending }}</div>
+  </div>
+  <div class="bg-white rounded-2xl border border-slate-200 p-4">
+    <div class="text-[10px] font-bold text-orange-500 uppercase tracking-wider mb-1">Expirent &lt;48h</div>
+    <div class="text-2xl font-extrabold text-orange-600">{{ kpi_expiring }}</div>
+  </div>
+  <div class="bg-white rounded-2xl border border-slate-200 p-4">
+    <div class="text-[10px] font-bold text-blue-400 uppercase tracking-wider mb-1">PayPal actifs</div>
+    <div class="text-2xl font-extrabold text-blue-500">{{ kpi_paypal_active }}</div>
+  </div>
+  <div class="bg-white rounded-2xl border border-slate-200 p-4 {% if kpi_paypal_alerts > 0 %}border-red-300 bg-red-50{% endif %}">
+    <div class="text-[10px] font-bold {% if kpi_paypal_alerts > 0 %}text-red-500{% else %}text-slate-400{% endif %} uppercase tracking-wider mb-1">Alertes</div>
+    <div class="text-2xl font-extrabold {% if kpi_paypal_alerts > 0 %}text-red-600{% else %}text-slate-400{% endif %}">{{ kpi_paypal_alerts }}</div>
+  </div>
+</div>
+
+<!-- Sparkline chart: agencies created last 30 days -->
+<div class="bg-white rounded-2xl border border-slate-200 p-5 mb-8">
+  <div class="flex items-center justify-between mb-4">
+    <h2 class="text-sm font-bold text-slate-700">Inscriptions agences — 30 derniers jours</h2>
+    <span class="text-xs text-slate-400">{{ spark_data.0.date|date:"d/m" }} → {{ spark_data|last|dictsort:"date"|last }}</span>
+  </div>
+  <div class="flex items-end gap-[3px] h-20">
+    {% for s in spark_data %}
+    <div class="flex-1 rounded-t-sm transition-all duration-200 hover:opacity-80 relative group"
+         style="background:{% if s.count > 0 %}#4c6ef5{% else %}#e2e8f0{% endif %};height:{% widthratio s.count spark_max 100 %}%;min-height:2px;"
+         title="{{ s.date|date:'d/m/Y' }}: {{ s.count }}">
+      <div class="hidden group-hover:block absolute -top-8 left-1/2 -translate-x-1/2 bg-sa-900 text-white text-[10px] px-2 py-1 rounded whitespace-nowrap z-10">{{ s.date|date:"d/m" }}: {{ s.count }}</div>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+
+<!-- Urgent sections -->
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+  <!-- Expiring soon -->
+  <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden">
+    <div class="px-5 py-3 border-b border-slate-100 flex items-center justify-between">
+      <h3 class="text-sm font-bold text-slate-700">Expirent bientot (&lt;48h)</h3>
+      <span class="text-xs text-orange-500 font-semibold">{{ kpi_expiring }}</span>
+    </div>
+    {% if expiring_soon %}
+    <div class="divide-y divide-slate-50">
+      {% for acc in expiring_soon %}
+      <div class="px-5 py-3 flex items-center justify-between">
+        <div>
+          <a href="{% url 'superadmin:agency_detail' pk=acc.pk %}" class="text-sm font-semibold text-slate-800 hover:text-sa-500">{{ acc.agency.name }}</a>
+          <div class="text-xs text-slate-400">{{ acc.countdown_label }}</div>
+        </div>
+        <div class="flex items-center gap-1.5">
+          <form method="post" action="{% url 'superadmin:action_renew' pk=acc.pk %}" class="inline">{% csrf_token %}<input type="hidden" name="next" value="/saas/" /><button type="submit" class="px-2.5 py-1 rounded-lg bg-sa-500 text-white text-xs font-semibold hover:bg-sa-600 transition">+30j</button></form>
+          <form method="post" action="{% url 'superadmin:action_bonus' pk=acc.pk %}" class="inline">{% csrf_token %}<input type="hidden" name="next" value="/saas/" /><input type="hidden" name="days" value="7" /><button type="submit" class="px-2.5 py-1 rounded-lg bg-slate-100 text-slate-600 text-xs font-semibold hover:bg-slate-200 transition">+7j</button></form>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    {% else %}
+    <div class="px-5 py-8 text-center text-slate-400 text-sm">Aucune agence n'expire prochainement.</div>
+    {% endif %}
+  </div>
+
+  <!-- Pending proofs -->
+  <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden">
+    <div class="px-5 py-3 border-b border-slate-100 flex items-center justify-between">
+      <h3 class="text-sm font-bold text-slate-700">Preuves en attente</h3>
+      <a href="{% url 'superadmin:proofs' %}?status=pending" class="text-xs text-sa-500 font-semibold hover:underline">Voir tout</a>
+    </div>
+    {% if pending_proofs %}
+    <div class="divide-y divide-slate-50">
+      {% for p in pending_proofs %}
+      <div class="px-5 py-3 flex items-center justify-between gap-3">
+        <div class="flex items-center gap-3 min-w-0">
+          <a href="{{ p.image.url }}" target="_blank" class="shrink-0">
+            <img src="{{ p.image.url }}" alt="" class="w-10 h-10 rounded-lg object-cover border border-slate-200" />
+          </a>
+          <div class="min-w-0">
+            <a href="{% url 'superadmin:agency_detail' pk=p.access.pk %}" class="text-sm font-semibold text-slate-800 hover:text-sa-500 truncate block">{{ p.access.agency.name }}</a>
+            <div class="text-xs text-slate-400">{{ p.uploaded_at|date:"d/m/Y H:i" }} · {{ p.uploaded_by.email|default:"—" }}</div>
+          </div>
+        </div>
+        <form method="post" action="{% url 'superadmin:action_proof_approve' proof_pk=p.pk %}" class="inline">{% csrf_token %}<input type="hidden" name="next" value="/saas/" /><button type="submit" class="px-2.5 py-1 rounded-lg bg-emerald-100 text-emerald-700 text-xs font-semibold hover:bg-emerald-200 transition">Approuver</button></form>
+      </div>
+      {% endfor %}
+    </div>
+    {% else %}
+    <div class="px-5 py-8 text-center text-slate-400 text-sm">Aucune preuve en attente.</div>
+    {% endif %}
+  </div>
+</div>
+
+<!-- PayPal widgets row -->
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
+  <!-- PayPal cancelled / switched to manual -->
+  <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden">
+    <div class="px-5 py-3 border-b border-slate-100 flex items-center justify-between">
+      <h3 class="text-sm font-bold text-slate-700">Abonnements PayPal annules</h3>
+      <a href="{% url 'superadmin:agencies' %}?alerts=1" class="text-xs text-sa-500 font-semibold hover:underline">Voir tout</a>
+    </div>
+    {% if paypal_cancelled %}
+    <div class="divide-y divide-slate-50">
+      {% for acc in paypal_cancelled %}
+      <div class="px-5 py-3 flex items-center justify-between">
+        <div>
+          <a href="{% url 'superadmin:agency_detail' pk=acc.pk %}" class="text-sm font-semibold text-slate-800 hover:text-sa-500">{{ acc.agency.name }}</a>
+          <div class="text-xs text-slate-400">{{ acc.admin_alert_message|truncatechars:60 }}</div>
+        </div>
+        <span class="rounded-full bg-red-100 text-red-700 px-2 py-0.5 text-[10px] font-bold shrink-0">{{ acc.get_admin_alert_code_display|default:acc.admin_alert_code }}</span>
+      </div>
+      {% endfor %}
+    </div>
+    {% else %}
+    <div class="px-5 py-8 text-center text-slate-400 text-sm">Aucun abonnement annule.</div>
+    {% endif %}
+  </div>
+
+  <!-- Recent webhooks -->
+  <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden">
+    <div class="px-5 py-3 border-b border-slate-100 flex items-center justify-between">
+      <h3 class="text-sm font-bold text-slate-700">Webhooks recents</h3>
+      <a href="{% url 'superadmin:webhooks_log' %}" class="text-xs text-sa-500 font-semibold hover:underline">Voir tout</a>
+    </div>
+    {% if recent_webhooks %}
+    <div class="divide-y divide-slate-50">
+      {% for ev in recent_webhooks %}
+      <div class="px-5 py-2.5 flex items-center gap-3">
+        {% if 'COMPLETED' in ev.event_type or 'ACTIVATED' in ev.event_type %}
+          <span class="w-2 h-2 rounded-full bg-emerald-500 shrink-0"></span>
+        {% elif 'FAILED' in ev.event_type %}
+          <span class="w-2 h-2 rounded-full bg-red-500 shrink-0"></span>
+        {% elif 'CANCELLED' in ev.event_type or 'EXPIRED' in ev.event_type %}
+          <span class="w-2 h-2 rounded-full bg-amber-500 shrink-0"></span>
+        {% else %}
+          <span class="w-2 h-2 rounded-full bg-slate-400 shrink-0"></span>
+        {% endif %}
+        <span class="text-xs font-mono text-slate-600 truncate flex-1">{{ ev.event_type }}</span>
+        <span class="text-[11px] text-slate-400 shrink-0">{{ ev.created_at|date:"d/m H:i" }}</span>
+      </div>
+      {% endfor %}
+    </div>
+    {% else %}
+    <div class="px-5 py-8 text-center text-slate-400 text-sm">Aucun evenement webhook.</div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

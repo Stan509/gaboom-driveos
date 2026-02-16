@@ -1,0 +1,273 @@
+{% extends "client_portal/_base.html" %}
+{% load i18n %}
+
+{% block portal_content %}
+<div class="mb-6">
+  <a href="{% url 'public_site:client_contracts' slug=agency.slug %}" class="inline-flex items-center gap-1 text-xs font-medium opacity-50 hover:opacity-100 transition">
+    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5"/></svg>
+    Retour aux contrats
+  </a>
+</div>
+
+<!-- Header -->
+<div class="rounded-2xl border p-5 mb-6" style="border-color: color-mix(in srgb, var(--text) 10%, transparent); background: color-mix(in srgb, var(--bg) 100%, transparent);">
+  <div class="flex items-center gap-4 flex-wrap">
+    <div class="h-14 w-14 rounded-2xl ps-primary-bg text-white flex items-center justify-center shrink-0 text-lg font-bold">
+      #{{ contract.pk }}
+    </div>
+    <div class="flex-1 min-w-0">
+      <h1 class="text-lg font-bold" style="color: var(--text);">Contrat #{{ contract.pk }}</h1>
+      <div class="flex items-center gap-2 mt-1 flex-wrap">
+        {% if contract.status == "pending_signature" %}
+        <span class="inline-flex items-center gap-1 rounded-full bg-violet-100 text-violet-700 px-2.5 py-0.5 text-[11px] font-semibold"><span class="h-1.5 w-1.5 rounded-full bg-violet-500 animate-pulse"></span>En attente de signature</span>
+        {% elif contract.status == "active" %}
+        <span class="inline-flex items-center gap-1 rounded-full bg-emerald-100 text-emerald-700 px-2.5 py-0.5 text-[11px] font-semibold">Actif</span>
+        {% elif contract.status == "closed" %}
+        <span class="inline-flex items-center gap-1 rounded-full bg-slate-100 text-slate-600 px-2.5 py-0.5 text-[11px] font-semibold">Clôturé</span>
+        {% elif contract.status == "cancelled" %}
+        <span class="inline-flex items-center gap-1 rounded-full bg-red-100 text-red-600 px-2.5 py-0.5 text-[11px] font-semibold">Annulé</span>
+        {% elif contract.status == "pending_return" %}
+        <span class="inline-flex items-center gap-1 rounded-full bg-amber-100 text-amber-700 px-2.5 py-0.5 text-[11px] font-semibold">Retour en cours</span>
+        {% else %}
+        <span class="inline-flex items-center gap-1 rounded-full bg-blue-100 text-blue-700 px-2.5 py-0.5 text-[11px] font-semibold">Brouillon</span>
+        {% endif %}
+        {% if contract.is_signed %}
+        <span class="inline-flex items-center gap-1 rounded-full bg-emerald-100 text-emerald-700 px-2.5 py-0.5 text-[11px] font-semibold">Signé</span>
+        {% endif %}
+      </div>
+    </div>
+    <div class="text-right shrink-0">
+      <div class="text-2xl font-bold" style="color: var(--text);">{{ contract.price_per_day }} {{ contract.currency }}/j</div>
+      <div class="text-xs opacity-50">{{ contract.nb_days }} jour{{ contract.nb_days|pluralize }}</div>
+    </div>
+  </div>
+</div>
+
+<div class="grid lg:grid-cols-3 gap-6">
+  <!-- Main column -->
+  <div class="lg:col-span-2 space-y-6">
+
+    <!-- Contract details -->
+    <div class="rounded-2xl border p-5" style="border-color: color-mix(in srgb, var(--text) 10%, transparent);">
+      <h3 class="font-semibold text-sm mb-4" style="color: var(--text);">Détails du contrat</h3>
+      <dl class="grid sm:grid-cols-2 gap-x-6 gap-y-3 text-sm">
+        <div><dt class="text-xs uppercase tracking-wider opacity-40">Véhicule</dt><dd class="font-medium mt-0.5">{{ contract.vehicle }}</dd></div>
+        <div><dt class="text-xs uppercase tracking-wider opacity-40">Période</dt><dd class="font-medium mt-0.5">{{ contract.start_date|date:"d/m/Y" }} → {{ contract.end_date|date:"d/m/Y" }}</dd></div>
+        <div><dt class="text-xs uppercase tracking-wider opacity-40">Prix / jour</dt><dd class="font-medium mt-0.5">{{ contract.price_per_day }} {{ contract.currency }}</dd></div>
+        <div><dt class="text-xs uppercase tracking-wider opacity-40">Caution</dt><dd class="font-medium mt-0.5">{{ contract.deposit }} {{ contract.currency }}</dd></div>
+        {% if contract.pickup_datetime %}
+        <div><dt class="text-xs uppercase tracking-wider opacity-40">Remise véhicule</dt><dd class="font-medium mt-0.5">{{ contract.pickup_datetime|date:"d/m/Y H:i" }}</dd></div>
+        {% endif %}
+        {% if contract.return_datetime %}
+        <div><dt class="text-xs uppercase tracking-wider opacity-40">Retour prévu</dt><dd class="font-medium mt-0.5">{{ contract.return_datetime|date:"d/m/Y H:i" }}</dd></div>
+        {% endif %}
+        <div><dt class="text-xs uppercase tracking-wider opacity-40">Km inclus</dt><dd class="font-medium mt-0.5">{{ contract.km_included }} km</dd></div>
+        <div><dt class="text-xs uppercase tracking-wider opacity-40">Frais retard / jour</dt><dd class="font-medium mt-0.5">{{ contract.late_fee }} {{ contract.currency }}</dd></div>
+      </dl>
+    </div>
+
+    <!-- Contract clause -->
+    {% if contract.contract_clause or contract.penalty_clause %}
+    <div class="rounded-2xl border p-5" style="border-color: color-mix(in srgb, var(--text) 10%, transparent);">
+      <h3 class="font-semibold text-sm mb-4" style="color: var(--text);">Clauses du contrat</h3>
+      {% if contract.contract_clause %}
+      <div class="mb-4">
+        <h4 class="text-xs font-semibold uppercase tracking-wider opacity-50 mb-2">Clause générale</h4>
+        <p class="text-sm rounded-xl p-4 whitespace-pre-line" style="background: color-mix(in srgb, var(--text) 4%, transparent);">{{ contract.contract_clause }}</p>
+      </div>
+      {% endif %}
+      {% if contract.penalty_clause %}
+      <div>
+        <h4 class="text-xs font-semibold uppercase tracking-wider opacity-50 mb-2">Clause de pénalité</h4>
+        <p class="text-sm bg-amber-50 rounded-xl p-4 whitespace-pre-line border border-amber-100 text-amber-900">{{ contract.penalty_clause }}</p>
+      </div>
+      {% endif %}
+    </div>
+    {% endif %}
+
+    <!-- Signature section -->
+    <div class="rounded-2xl border p-5" style="border-color: color-mix(in srgb, var(--text) 10%, transparent);">
+      <h3 class="font-semibold text-sm mb-4" style="color: var(--text);">Signature</h3>
+
+      {% if contract.is_signed %}
+      <div class="flex items-center gap-3 bg-emerald-50 rounded-xl p-4 border border-emerald-200">
+        <svg class="w-6 h-6 text-emerald-600 shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5"/></svg>
+        <div>
+          <p class="text-sm font-semibold text-emerald-800">Contrat signé</p>
+          <p class="text-xs text-emerald-600">Signé le {{ contract.client_signed_at|date:"d/m/Y à H:i" }}</p>
+        </div>
+        {% if contract.client_signature %}
+        <img src="{{ contract.client_signature.url }}" alt="Signature" class="ml-auto h-12 border rounded-lg bg-white p-1" />
+        {% endif %}
+      </div>
+
+      {% elif contract.can_sign %}
+      <div class="bg-violet-50 rounded-xl p-4 border border-violet-200 mb-4">
+        <p class="text-sm text-violet-800 font-medium">Ce contrat est en attente de votre signature. Veuillez lire les clauses ci-dessus puis signer ci-dessous.</p>
+      </div>
+
+      <form method="post" action="{% url 'public_site:client_contract_sign' slug=agency.slug pk=contract.pk %}" id="signForm">
+        {% csrf_token %}
+        <input type="hidden" name="signature" id="signatureData" />
+
+        <div class="mb-4">
+          <label class="flex items-center gap-2 mb-2">
+            <input type="checkbox" id="acceptTerms" class="rounded border-slate-300 text-violet-600 focus:ring-violet-500" />
+            <span class="text-sm">J'ai lu et j'accepte les clauses du contrat</span>
+          </label>
+        </div>
+
+        <div class="mb-3">
+          <p class="text-xs font-medium opacity-50 mb-2">Dessinez votre signature :</p>
+          <div class="relative">
+            <canvas id="sigCanvas" width="500" height="160"
+              class="w-full rounded-xl border-2 border-dashed border-slate-300 cursor-crosshair bg-white"
+              style="touch-action: none; max-height: 160px;"></canvas>
+            <button type="button" id="clearSig"
+              class="absolute top-2 right-2 text-xs px-2 py-1 rounded-lg bg-slate-100 text-slate-500 hover:bg-slate-200 transition">
+              Effacer
+            </button>
+          </div>
+        </div>
+
+        <button type="submit" id="signBtn" disabled
+          class="w-full py-3 rounded-xl text-white font-semibold text-sm transition disabled:opacity-40 disabled:cursor-not-allowed ps-primary-bg hover:opacity-90">
+          Signer le contrat
+        </button>
+      </form>
+
+      {% else %}
+      <div class="flex items-center gap-3 rounded-xl p-4" style="background: color-mix(in srgb, var(--text) 4%, transparent);">
+        <svg class="w-6 h-6 opacity-30 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/></svg>
+        <p class="text-sm opacity-50">La signature n'est pas disponible pour ce contrat.</p>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+
+  <!-- Sidebar -->
+  <div class="space-y-4">
+    <div class="rounded-2xl border p-5" style="border-color: color-mix(in srgb, var(--text) 10%, transparent);">
+      <h3 class="font-semibold text-sm mb-3" style="color: var(--text);">Résumé financier</h3>
+      <dl class="space-y-3 text-sm">
+        <div class="flex justify-between">
+          <dt class="opacity-40">Total TTC</dt>
+          <dd class="font-bold text-lg">{{ contract.montant_ttc }} {{ contract.currency }}</dd>
+        </div>
+        <div class="flex justify-between">
+          <dt class="opacity-40">Payé</dt>
+          <dd class="font-bold text-emerald-600">{{ contract.amount_paid }} {{ contract.currency }}</dd>
+        </div>
+        <div class="flex justify-between">
+          <dt class="opacity-40">Reste dû</dt>
+          <dd class="font-bold {% if contract.amount_due > 0 %}text-red-600{% endif %}">{{ contract.amount_due }} {{ contract.currency }}</dd>
+        </div>
+      </dl>
+    </div>
+
+    <!-- Workflow -->
+    <div class="rounded-2xl border p-5" style="border-color: color-mix(in srgb, var(--text) 10%, transparent);">
+      <h3 class="font-semibold text-sm mb-3" style="color: var(--text);">Statut</h3>
+      <div class="space-y-3">
+        <div class="flex items-center gap-3">
+          <div class="w-2.5 h-2.5 rounded-full {% if contract.status != 'draft' %}bg-emerald-500{% else %}bg-blue-500 animate-pulse{% endif %} shrink-0"></div>
+          <span class="text-sm {% if contract.status == 'draft' %}font-semibold{% else %}opacity-50{% endif %}">Brouillon</span>
+        </div>
+        <div class="flex items-center gap-3">
+          <div class="w-2.5 h-2.5 rounded-full {% if contract.status == 'pending_signature' %}bg-violet-500 animate-pulse{% elif contract.is_signed or contract.status == 'active' or contract.status == 'pending_return' or contract.status == 'closed' %}bg-emerald-500{% else %}bg-slate-200{% endif %} shrink-0"></div>
+          <span class="text-sm {% if contract.status == 'pending_signature' %}font-semibold{% else %}opacity-50{% endif %}">Signature</span>
+        </div>
+        <div class="flex items-center gap-3">
+          <div class="w-2.5 h-2.5 rounded-full {% if contract.status == 'active' %}bg-emerald-500 animate-pulse{% elif contract.status == 'pending_return' or contract.status == 'closed' %}bg-emerald-500{% else %}bg-slate-200{% endif %} shrink-0"></div>
+          <span class="text-sm {% if contract.status == 'active' %}font-semibold{% else %}opacity-50{% endif %}">Actif</span>
+        </div>
+        <div class="flex items-center gap-3">
+          <div class="w-2.5 h-2.5 rounded-full {% if contract.status == 'pending_return' %}bg-amber-500 animate-pulse{% elif contract.status == 'closed' %}bg-emerald-500{% else %}bg-slate-200{% endif %} shrink-0"></div>
+          <span class="text-sm {% if contract.status == 'pending_return' %}font-semibold{% else %}opacity-50{% endif %}">Retour</span>
+        </div>
+        <div class="flex items-center gap-3">
+          <div class="w-2.5 h-2.5 rounded-full {% if contract.status == 'closed' %}bg-slate-500{% else %}bg-slate-200{% endif %} shrink-0"></div>
+          <span class="text-sm {% if contract.status == 'closed' %}font-semibold{% else %}opacity-50{% endif %}">Clôturé</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% if contract.can_sign %}
+<script>
+(function(){
+  const canvas = document.getElementById('sigCanvas');
+  const ctx = canvas.getContext('2d');
+  const clearBtn = document.getElementById('clearSig');
+  const signBtn = document.getElementById('signBtn');
+  const acceptBox = document.getElementById('acceptTerms');
+  const sigInput = document.getElementById('signatureData');
+  const form = document.getElementById('signForm');
+  let drawing = false;
+  let hasDrawn = false;
+
+  // Scale canvas for retina
+  const rect = canvas.getBoundingClientRect();
+  canvas.width = rect.width * 2;
+  canvas.height = rect.height * 2;
+  ctx.scale(2, 2);
+  ctx.lineWidth = 2;
+  ctx.lineCap = 'round';
+  ctx.lineJoin = 'round';
+  ctx.strokeStyle = '#1e293b';
+
+  function getPos(e) {
+    const r = canvas.getBoundingClientRect();
+    const t = e.touches ? e.touches[0] : e;
+    return { x: t.clientX - r.left, y: t.clientY - r.top };
+  }
+
+  function startDraw(e) {
+    e.preventDefault();
+    drawing = true;
+    const p = getPos(e);
+    ctx.beginPath();
+    ctx.moveTo(p.x, p.y);
+  }
+  function draw(e) {
+    if (!drawing) return;
+    e.preventDefault();
+    const p = getPos(e);
+    ctx.lineTo(p.x, p.y);
+    ctx.stroke();
+    hasDrawn = true;
+    updateBtn();
+  }
+  function endDraw(e) {
+    if (drawing) { e.preventDefault(); drawing = false; }
+  }
+
+  canvas.addEventListener('mousedown', startDraw);
+  canvas.addEventListener('mousemove', draw);
+  canvas.addEventListener('mouseup', endDraw);
+  canvas.addEventListener('mouseleave', endDraw);
+  canvas.addEventListener('touchstart', startDraw, { passive: false });
+  canvas.addEventListener('touchmove', draw, { passive: false });
+  canvas.addEventListener('touchend', endDraw, { passive: false });
+
+  clearBtn.addEventListener('click', function() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    hasDrawn = false;
+    updateBtn();
+  });
+
+  acceptBox.addEventListener('change', updateBtn);
+
+  function updateBtn() {
+    signBtn.disabled = !(hasDrawn && acceptBox.checked);
+  }
+
+  form.addEventListener('submit', function(e) {
+    if (!hasDrawn || !acceptBox.checked) { e.preventDefault(); return; }
+    sigInput.value = canvas.toDataURL('image/png');
+  });
+})();
+</script>
+{% endif %}
+{% endblock %}

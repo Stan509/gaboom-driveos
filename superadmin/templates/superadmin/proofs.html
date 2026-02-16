@@ -1,0 +1,85 @@
+{% extends "superadmin/_layout.html" %}
+
+{% block page_title %}Preuves de paiement{% endblock %}
+{% block page_subtitle %}Toutes les preuves soumises par les agences{% endblock %}
+
+{% block content %}
+<!-- Filter -->
+<div class="bg-white rounded-2xl border border-slate-200 p-4 mb-6">
+  <form method="get" class="flex flex-wrap items-end gap-3">
+    <div class="w-44">
+      <label class="block text-[11px] font-semibold text-slate-400 uppercase tracking-wider mb-1">Statut</label>
+      <select name="status" class="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm focus:border-sa-400 outline-none">
+        <option value="">Tous</option>
+        <option value="pending" {% if status_filter == 'pending' %}selected{% endif %}>En attente</option>
+        <option value="approved" {% if status_filter == 'approved' %}selected{% endif %}>Approuvees</option>
+        <option value="rejected" {% if status_filter == 'rejected' %}selected{% endif %}>Rejetees</option>
+      </select>
+    </div>
+    <button type="submit" class="px-5 py-2 rounded-xl bg-sa-500 text-white text-sm font-semibold hover:bg-sa-600 transition">Filtrer</button>
+  </form>
+</div>
+
+<!-- Proofs grid -->
+<div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+  {% for p in proofs %}
+  <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden">
+    <!-- Image preview -->
+    <a href="{{ p.image.url }}" target="_blank" class="block">
+      <img src="{{ p.image.url }}" alt="Preuve #{{ p.pk }}" class="w-full h-40 object-cover hover:opacity-90 transition" />
+    </a>
+    <div class="p-4">
+      <div class="flex items-center justify-between gap-2 mb-2">
+        <a href="{% url 'superadmin:agency_detail' pk=p.access.pk %}?tab=proofs" class="text-sm font-bold text-slate-800 hover:text-sa-500 truncate">{{ p.access.agency.name }}</a>
+        {% if p.status == 'pending' %}
+          <span class="shrink-0 inline-flex items-center gap-1 rounded-full bg-amber-100 text-amber-800 px-2 py-0.5 text-[11px] font-bold"><span class="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse"></span>Pending</span>
+        {% elif p.status == 'approved' %}
+          <span class="shrink-0 rounded-full bg-emerald-100 text-emerald-800 px-2 py-0.5 text-[11px] font-bold">Approuvee</span>
+        {% elif p.status == 'rejected' %}
+          <span class="shrink-0 rounded-full bg-red-100 text-red-800 px-2 py-0.5 text-[11px] font-bold">Rejetee</span>
+        {% endif %}
+      </div>
+      <div class="text-[11px] text-slate-500 mb-1">
+        Par {{ p.uploaded_by.email|default:"—" }} · {{ p.uploaded_at|date:"d/m/Y H:i" }}
+      </div>
+      {% if p.reviewed_by %}
+      <div class="text-[11px] text-slate-400 mb-1">
+        Revue par {{ p.reviewed_by.email }} · {{ p.reviewed_at|date:"d/m/Y H:i" }}
+      </div>
+      {% endif %}
+      {% if p.review_note %}
+      <p class="text-[11px] text-slate-600 bg-slate-50 rounded-lg px-3 py-1.5 mb-2">{{ p.review_note }}</p>
+      {% endif %}
+
+      {% if p.status == 'pending' %}
+      <div class="flex gap-2 mt-3">
+        <form method="post" action="{% url 'superadmin:action_proof_approve' proof_pk=p.pk %}" class="flex-1">{% csrf_token %}<input type="hidden" name="next" value="/saas/proofs/" />
+          <button type="submit" class="w-full py-2 rounded-xl bg-emerald-100 text-emerald-700 text-xs font-semibold hover:bg-emerald-200 transition">Approuver</button>
+        </form>
+        <button onclick="document.getElementById('rejectModal{{ p.pk }}').classList.remove('hidden')" class="flex-1 py-2 rounded-xl bg-red-50 text-red-600 text-xs font-semibold hover:bg-red-100 transition">Rejeter</button>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+
+  {% if p.status == 'pending' %}
+  <!-- Reject modal -->
+  <div id="rejectModal{{ p.pk }}" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur-sm">
+    <div class="bg-white rounded-2xl shadow-2xl max-w-md w-full mx-4 p-6">
+      <h3 class="text-lg font-bold text-slate-900 mb-2">Rejeter la preuve #{{ p.pk }} ?</h3>
+      <form method="post" action="{% url 'superadmin:action_proof_reject' proof_pk=p.pk %}">{% csrf_token %}<input type="hidden" name="next" value="/saas/proofs/" />
+        <label class="block text-sm text-slate-600 mb-1">Raison (visible par l'agence)</label>
+        <textarea name="review_note" rows="3" required class="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm focus:border-red-400 outline-none resize-none mb-4" placeholder="Preuve non conforme, illisible, etc."></textarea>
+        <div class="flex gap-3">
+          <button type="button" onclick="this.closest('[id^=rejectModal]').classList.add('hidden')" class="flex-1 py-2.5 rounded-xl border border-slate-200 text-sm font-semibold text-slate-600 hover:bg-slate-50 transition">Annuler</button>
+          <button type="submit" class="flex-1 py-2.5 rounded-xl bg-red-600 text-white text-sm font-semibold hover:bg-red-700 transition">Rejeter</button>
+        </div>
+      </form>
+    </div>
+  </div>
+  {% endif %}
+  {% empty %}
+  <div class="col-span-full text-center text-slate-400 py-12">Aucune preuve trouvee.</div>
+  {% endfor %}
+</div>
+{% endblock %}

@@ -1,0 +1,83 @@
+{% extends "superadmin/_layout.html" %}
+
+{% block page_title %}Audit Log{% endblock %}
+{% block page_subtitle %}Historique de toutes les actions superadmin{% endblock %}
+
+{% block content %}
+<!-- Filter -->
+<div class="bg-white rounded-2xl border border-slate-200 p-4 mb-6">
+  <form method="get" class="flex flex-wrap items-end gap-3">
+    <div class="w-52">
+      <label class="block text-[11px] font-semibold text-slate-400 uppercase tracking-wider mb-1">Action</label>
+      <select name="action" class="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm focus:border-sa-400 outline-none">
+        <option value="">Toutes</option>
+        {% for code, label in action_choices %}
+        <option value="{{ code }}" {% if action_filter == code %}selected{% endif %}>{{ label }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <button type="submit" class="px-5 py-2 rounded-xl bg-sa-500 text-white text-sm font-semibold hover:bg-sa-600 transition">Filtrer</button>
+  </form>
+</div>
+
+<!-- Log table -->
+<div class="bg-white rounded-2xl border border-slate-200 overflow-hidden">
+  <div class="hidden lg:block">
+    <table class="w-full text-sm">
+      <thead>
+        <tr class="border-b border-slate-100 text-left text-[10px] font-bold text-slate-400 uppercase tracking-wider">
+          <th class="px-5 py-3">Date</th>
+          <th class="px-5 py-3">Action</th>
+          <th class="px-5 py-3">Agence</th>
+          <th class="px-5 py-3">Par</th>
+          <th class="px-5 py-3">Note</th>
+        </tr>
+      </thead>
+      <tbody class="divide-y divide-slate-50">
+        {% for log in logs %}
+        <tr class="hover:bg-slate-50/50 transition">
+          <td class="px-5 py-3 text-xs text-slate-500 whitespace-nowrap">{{ log.created_at|date:"d/m/Y H:i" }}</td>
+          <td class="px-5 py-3">
+            <span class="inline-flex items-center rounded-full px-2.5 py-0.5 text-[11px] font-bold
+              {% if 'RENEW' in log.action or 'APPROVE' in log.action or 'BONUS' in log.action %}bg-emerald-100 text-emerald-800
+              {% elif 'SUSPEND' in log.action or 'REJECT' in log.action %}bg-red-100 text-red-800
+              {% else %}bg-slate-100 text-slate-700{% endif %}">{{ log.get_action_display }}</span>
+          </td>
+          <td class="px-5 py-3 text-sm">
+            {% if log.agency %}
+            <span class="font-medium text-slate-700">{{ log.agency.name }}</span>
+            {% else %}
+            <span class="text-slate-300">—</span>
+            {% endif %}
+          </td>
+          <td class="px-5 py-3 text-xs text-slate-500">{{ log.by_user.email|default:"—" }}</td>
+          <td class="px-5 py-3 text-xs text-slate-500 max-w-xs truncate">{{ log.note|default:"—" }}</td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="5" class="px-5 py-12 text-center text-slate-400">Aucun evenement.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Mobile cards -->
+  <div class="lg:hidden divide-y divide-slate-50">
+    {% for log in logs %}
+    <div class="p-4">
+      <div class="flex items-center justify-between gap-2 mb-1">
+        <span class="inline-flex items-center rounded-full px-2 py-0.5 text-[10px] font-bold
+          {% if 'RENEW' in log.action or 'APPROVE' in log.action or 'BONUS' in log.action %}bg-emerald-100 text-emerald-800
+          {% elif 'SUSPEND' in log.action or 'REJECT' in log.action %}bg-red-100 text-red-800
+          {% else %}bg-slate-100 text-slate-700{% endif %}">{{ log.get_action_display }}</span>
+        <span class="text-[11px] text-slate-400">{{ log.created_at|date:"d/m/Y H:i" }}</span>
+      </div>
+      <div class="text-sm text-slate-700">{% if log.agency %}{{ log.agency.name }}{% else %}—{% endif %}</div>
+      {% if log.note %}<p class="text-[11px] text-slate-500 mt-0.5 truncate">{{ log.note }}</p>{% endif %}
+      <div class="text-[10px] text-slate-400 mt-0.5">par {{ log.by_user.email|default:"—" }}</div>
+    </div>
+    {% empty %}
+    <div class="p-8 text-center text-slate-400 text-sm">Aucun evenement.</div>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}

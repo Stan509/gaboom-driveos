@@ -1,0 +1,470 @@
+{% extends "dashboard/_layout.html" %}
+{% load i18n %}
+
+{% block page_title %}{% if editing %}{% trans "Modifier campagne" %}{% else %}{% trans "Nouvelle campagne" %}{% endif %}{% endblock %}
+
+{% block page_actions %}
+<a href="{% url 'dashboard:campaign_list' %}" class="inline-flex items-center gap-1.5 text-sm transition font-medium" style="color:var(--g-text-muted)">
+  <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5"/></svg>
+  {% trans "Retour" %}
+</a>
+{% endblock %}
+
+{% block page_css %}
+<style>
+  .cp-input{width:100%;border-radius:14px;border:1px solid var(--g-card-border);padding:10px 16px;font-size:13px;outline:none;background:var(--g-surface);color:var(--g-text);transition:border .2s,box-shadow .2s}
+  .cp-input:focus{border-color:var(--g-accent);box-shadow:0 0 0 3px var(--g-accent-soft)}
+  .cp-label{display:block;font-size:11px;font-weight:600;margin-bottom:6px;color:var(--g-text-muted);text-transform:uppercase;letter-spacing:.5px}
+  .cp-card{background:var(--g-card-bg);border:1px solid var(--g-card-border);border-radius:var(--g-radius);box-shadow:var(--g-card-shadow);padding:24px;transition:box-shadow .2s}
+  .cp-card:hover{box-shadow:0 8px 30px rgba(0,0,0,.08)}
+  .cp-card-title{font-size:14px;font-weight:700;color:var(--g-text);display:flex;align-items:center;gap:8px;margin-bottom:16px}
+  .cp-card-title svg{width:18px;height:18px;color:var(--g-accent)}
+  .cp-chip{display:inline-flex;align-items:center;padding:4px 10px;border-radius:8px;font-size:11px;font-weight:600;background:var(--g-accent-soft);color:var(--g-accent);cursor:pointer;transition:transform .15s}
+  .cp-chip:hover{transform:scale(1.05)}
+  .ai-btn{display:inline-flex;align-items:center;gap:5px;padding:7px 14px;border-radius:10px;font-size:12px;font-weight:600;border:1px solid var(--g-card-border);background:var(--g-surface);color:var(--g-text);cursor:pointer;transition:all .2s}
+  .ai-btn:hover{border-color:var(--g-accent);color:var(--g-accent);transform:translateY(-1px);box-shadow:0 4px 12px var(--g-accent-soft)}
+  .ai-btn.primary{background:var(--g-accent);color:#fff;border-color:var(--g-accent)}
+  .ai-btn.primary:hover{box-shadow:0 4px 16px var(--g-accent-glow);transform:translateY(-1px)}
+  .ai-btn svg{width:14px;height:14px}
+  .toggle-sw{position:relative;width:40px;height:22px;border-radius:11px;background:var(--g-card-border);cursor:pointer;transition:background .2s;flex-shrink:0}
+  .toggle-sw::after{content:'';position:absolute;top:2px;left:2px;width:18px;height:18px;border-radius:50%;background:#fff;transition:transform .2s;box-shadow:0 1px 3px rgba(0,0,0,.2)}
+  .toggle-sw.on{background:var(--g-accent)}
+  .toggle-sw.on::after{transform:translateX(18px)}
+  .preview-box{background:var(--g-surface);border:1px solid var(--g-card-border);border-radius:14px;padding:16px;font-size:13px;line-height:1.6;color:var(--g-text);white-space:pre-wrap;min-height:120px;max-height:300px;overflow-y:auto}
+  .wa-preview{background:#E5DDD5;border-radius:14px;padding:16px;font-family:'Segoe UI',sans-serif}
+  .wa-bubble{background:#DCF8C6;border-radius:8px 8px 0 8px;padding:8px 12px;font-size:13px;line-height:1.5;max-width:85%;display:inline-block;box-shadow:0 1px 1px rgba(0,0,0,.1);color:#111}
+  .step-row{display:flex;align-items:flex-start;gap:12px;padding:12px;border:1px solid var(--g-card-border);border-radius:12px;background:var(--g-surface);transition:border-color .2s}
+  .step-row:hover{border-color:var(--g-accent)}
+  .step-badge{width:32px;height:32px;border-radius:50%;background:var(--g-accent-soft);color:var(--g-accent);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0}
+  @keyframes cpFadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+  .cp-fade{animation:cpFadeIn .3s ease both}
+  .section-hidden{display:none}
+</style>
+{% endblock %}
+
+{% block content %}
+<form method="post" id="campaignForm">
+{% csrf_token %}
+
+<div class="grid grid-cols-1 xl:grid-cols-3 gap-6">
+<!-- ═══════════════════ LEFT COLUMN (2/3) ═══════════════════ -->
+<div class="xl:col-span-2 space-y-6">
+
+  <!-- ── TITRE + CIBLE ── -->
+  <div class="cp-card cp-fade">
+    <div class="cp-card-title">
+      <svg fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931z"/></svg>
+      {% trans "Informations" %}
+    </div>
+    <div class="space-y-4">
+      <div>
+        <label class="cp-label">{% trans "Titre" %} <span style="color:var(--g-red)">*</span></label>
+        <input type="text" name="title" value="{{ campaign.title|default:'' }}" required maxlength="200" placeholder="{% trans 'Offre spéciale été' %}" class="cp-input" />
+      </div>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div>
+          <label class="cp-label">{% trans "Cible" %}</label>
+          <select name="target_type" class="cp-input">
+            {% for val, label in target_choices %}
+            <option value="{{ val }}" {% if campaign.target_type == val %}selected{% endif %}>{{ label }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div>
+          <label class="cp-label">{% trans "Planifier" %} <span style="opacity:.5">({% trans "optionnel" %})</span></label>
+          <input type="datetime-local" name="scheduled_at" value="{{ campaign.scheduled_at|date:'Y-m-d\TH:i' }}" class="cp-input" />
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── ASSISTANT IA ── -->
+  <div class="cp-card cp-fade" style="animation-delay:.05s">
+    <div class="cp-card-title">
+      <svg fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09zM18.259 8.715L18 9.75l-.259-1.035a3.375 3.375 0 00-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 002.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 002.455 2.456L21.75 6l-1.036.259a3.375 3.375 0 00-2.455 2.456z"/></svg>
+      {% trans "Assistant IA" %}
+      <span style="font-size:10px;font-weight:500;color:var(--g-text-dim);margin-left:auto">{% trans "Mode offline — templates intelligents" %}</span>
+    </div>
+
+    <!-- Brief inputs -->
+    <div class="grid grid-cols-2 sm:grid-cols-3 gap-3 mb-4">
+      <div>
+        <label class="cp-label">{% trans "Objectif" %}</label>
+        <select id="aiObjective" class="cp-input">
+          {% for val, label in ai_objectives %}<option value="{{ val }}">{{ label }}</option>{% endfor %}
+        </select>
+      </div>
+      <div>
+        <label class="cp-label">{% trans "Style" %}</label>
+        <select id="aiStyle" class="cp-input">
+          {% for val, label in ai_styles %}<option value="{{ val }}">{{ label }}</option>{% endfor %}
+        </select>
+      </div>
+      <div>
+        <label class="cp-label">{% trans "Canal" %}</label>
+        <select id="aiChannel" class="cp-input">
+          {% for val, label in ai_channels %}<option value="{{ val }}">{{ label }}</option>{% endfor %}
+        </select>
+      </div>
+      <div>
+        <label class="cp-label">{% trans "Offre" %}</label>
+        <input type="text" id="aiOffre" placeholder="{% trans 'ex: 10% de réduction' %}" class="cp-input" />
+      </div>
+      <div>
+        <label class="cp-label">{% trans "Véhicule" %} <span style="opacity:.5">({% trans "opt." %})</span></label>
+        <select id="aiVehicle" class="cp-input">
+          <option value="">— {% trans "Aucun" %} —</option>
+          {% for v in vehicles %}<option value="{{ v.make }} {{ v.model }}">{{ v.make }} {{ v.model }}</option>{% endfor %}
+        </select>
+      </div>
+      <div>
+        <label class="cp-label">{% trans "Lien CTA" %}</label>
+        <input type="text" id="aiCta" placeholder="https://..." class="cp-input" />
+      </div>
+    </div>
+
+    <!-- Variables chips -->
+    <div class="flex flex-wrap gap-2 mb-4">
+      <span style="font-size:11px;color:var(--g-text-dim);align-self:center">{% trans "Variables" %} :</span>
+      {% for v in ai_variables %}
+      <span class="cp-chip" onclick="insertVar('{{ v }}')">{{ v }}</span>
+      {% endfor %}
+    </div>
+
+    <!-- AI action buttons -->
+    <div class="flex flex-wrap gap-2 mb-4">
+      <button type="button" onclick="aiGenerate()" class="ai-btn primary">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12"/></svg>
+        {% trans "Générer" %}
+      </button>
+      <button type="button" onclick="aiRewrite('improve')" class="ai-btn">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182"/></svg>
+        {% trans "Améliorer" %}
+      </button>
+      <button type="button" onclick="aiRewrite('shorter')" class="ai-btn">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h10.5m-10.5 5.25h6.75"/></svg>
+        {% trans "Raccourcir" %}
+      </button>
+      <button type="button" onclick="aiRewrite('persuasive')" class="ai-btn">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.362 5.214A8.252 8.252 0 0112 21 8.25 8.25 0 016.038 7.048 8.287 8.287 0 009 9.6a8.983 8.983 0 013.361-6.867 8.21 8.21 0 003 2.48z"/></svg>
+        {% trans "Plus persuasif" %}
+      </button>
+      <button type="button" onclick="aiRewrite('luxury')" class="ai-btn">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M11.48 3.499a.562.562 0 011.04 0l2.125 5.111a.563.563 0 00.475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 00-.182.557l1.285 5.385a.562.562 0 01-.84.61l-4.725-2.885a.563.563 0 00-.586 0L6.982 20.54a.562.562 0 01-.84-.61l1.285-5.386a.562.562 0 00-.182-.557l-4.204-3.602a.563.563 0 01.321-.988l5.518-.442a.563.563 0 00.475-.345L11.48 3.5z"/></svg>
+        {% trans "Ton Luxe" %}
+      </button>
+      <div class="flex items-center gap-2 ml-2">
+        <span style="font-size:11px;color:var(--g-text-dim)">{% trans "Emojis" %}</span>
+        <div id="emojiToggle" class="toggle-sw on" onclick="toggleEmoji()"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── CONTENU ── -->
+  <div class="cp-card cp-fade" style="animation-delay:.1s">
+    <div class="cp-card-title">
+      <svg fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z"/></svg>
+      {% trans "Contenu du message" %}
+    </div>
+    <textarea name="content" id="contentArea" rows="10" required placeholder="{% trans 'Bonjour {nom},&#10;&#10;Profitez de notre offre...' %}"
+      class="cp-input resize-y" style="min-height:180px;line-height:1.6" oninput="updatePreview()">{{ campaign.content|default:'' }}</textarea>
+  </div>
+
+  <!-- ── CANAUX ── -->
+  <div class="cp-card cp-fade" style="animation-delay:.15s">
+    <div class="cp-card-title">
+      <svg fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M7.5 8.25h9m-9 3H12m-9.75 1.51c0 1.6 1.123 2.994 2.707 3.227 1.087.16 2.185.283 3.293.369V21l4.076-4.076a1.526 1.526 0 011.037-.443 48.282 48.282 0 005.68-.494c1.584-.233 2.707-1.626 2.707-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0012 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018z"/></svg>
+      {% trans "Canaux d'envoi" %}
+    </div>
+    <div class="space-y-4">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <svg class="w-5 h-5" style="color:var(--g-accent)" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75"/></svg>
+          <span style="font-size:13px;font-weight:600;color:var(--g-text)">{% trans "Email" %}</span>
+        </div>
+        <label><input type="checkbox" name="channel_email" checked class="hidden" id="chEmail"><div class="toggle-sw on" onclick="toggleCheck(this,'chEmail')"></div></label>
+      </div>
+
+      <div class="flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <svg class="w-5 h-5" style="color:#25D366" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.625.846 5.059 2.284 7.034L.789 23.492a.75.75 0 00.917.918l4.458-1.495A11.945 11.945 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22c-2.34 0-4.508-.768-6.258-2.065l-.438-.338-3.156 1.058 1.058-3.156-.338-.438A9.953 9.953 0 012 12C2 6.486 6.486 2 12 2s10 4.486 10 10-4.486 10-10 10z"/></svg>
+          <span style="font-size:13px;font-weight:600;color:var(--g-text)">{% trans "WhatsApp" %}</span>
+        </div>
+        <label><input type="checkbox" name="channel_whatsapp" class="hidden" id="chWhatsapp"><div class="toggle-sw" onclick="toggleCheck(this,'chWhatsapp');toggleWaOptions()"></div></label>
+      </div>
+
+      <!-- WhatsApp options (hidden by default) -->
+      <div id="waOptions" class="section-hidden" style="padding-left:32px">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-2">
+          <div>
+            <label class="cp-label">{% trans "Format WhatsApp" %}</label>
+            <select name="whatsapp_mode" class="cp-input">
+              <option value="standard">{% trans "Standard" %}</option>
+              <option value="cta_link">{% trans "Avec lien CTA" %}</option>
+            </select>
+          </div>
+          <div>
+            <label class="cp-label">{% trans "Cible WhatsApp" %}</label>
+            <select name="whatsapp_target" class="cp-input">
+              <option value="whatsapp_only">{% trans "Clients avec WhatsApp" %}</option>
+              <option value="all_phone">{% trans "Tous avec téléphone" %}</option>
+            </select>
+          </div>
+        </div>
+        <div class="mt-3 p-3 rounded-xl" style="background:var(--g-accent-soft);font-size:11px;color:var(--g-text-muted)">
+          <svg class="w-4 h-4 inline-block mr-1" style="color:var(--g-accent)" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z"/></svg>
+          {% trans "Les messages WhatsApp seront ajoutés en file d'envoi. Vous pourrez les envoyer manuellement via wa.me ou connecter un provider plus tard." %}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── AUTOMATISATION ── -->
+  <div class="cp-card cp-fade" style="animation-delay:.2s">
+    <div class="cp-card-title">
+      <svg fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z"/></svg>
+      {% trans "Automatisation" %}
+      <div class="ml-auto flex items-center gap-2">
+        <span style="font-size:11px;color:var(--g-text-dim)">{% trans "Activer" %}</span>
+        <label><input type="checkbox" name="auto_enabled" class="hidden" id="autoEnabled"><div class="toggle-sw" onclick="toggleCheck(this,'autoEnabled');toggleAutoSection()"></div></label>
+      </div>
+    </div>
+
+    <div id="autoSection" class="section-hidden space-y-4">
+      <!-- Mode -->
+      <div class="flex gap-3">
+        <label class="flex items-center gap-2 cursor-pointer">
+          <input type="radio" name="auto_mode" value="single" checked class="accent-violet-600" onchange="toggleSequence()">
+          <span style="font-size:13px;color:var(--g-text)">{% trans "Ponctuelle" %}</span>
+        </label>
+        <label class="flex items-center gap-2 cursor-pointer">
+          <input type="radio" name="auto_mode" value="sequence" class="accent-violet-600" onchange="toggleSequence()">
+          <span style="font-size:13px;color:var(--g-text)">{% trans "Séquence (drip)" %}</span>
+        </label>
+      </div>
+
+      <!-- Trigger -->
+      <div>
+        <label class="cp-label">{% trans "Déclencheur" %}</label>
+        <select name="auto_trigger" class="cp-input">
+          {% for val, label in trigger_choices %}
+          <option value="{{ val }}">{{ label }}</option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <!-- Stop conditions -->
+      <div>
+        <label class="cp-label">{% trans "Conditions d'arrêt" %}</label>
+        <div class="space-y-2">
+          <label class="flex items-center gap-2 cursor-pointer" style="font-size:13px;color:var(--g-text)">
+            <input type="checkbox" name="stop_conditions" value="reservation_created" class="accent-violet-600">
+            {% trans "Stop si réservation créée" %}
+          </label>
+          <label class="flex items-center gap-2 cursor-pointer" style="font-size:13px;color:var(--g-text)">
+            <input type="checkbox" name="stop_conditions" value="contract_signed" class="accent-violet-600">
+            {% trans "Stop si contrat signé" %}
+          </label>
+          <label class="flex items-center gap-2 cursor-pointer" style="font-size:13px;color:var(--g-text)">
+            <input type="checkbox" name="stop_conditions" value="client_replied" class="accent-violet-600">
+            {% trans "Stop si réponse client" %}
+          </label>
+        </div>
+      </div>
+
+      <!-- Sequence builder -->
+      <div id="sequenceBuilder" class="section-hidden">
+        <label class="cp-label">{% trans "Étapes de la séquence" %}</label>
+        <div id="stepsList" class="space-y-3"></div>
+        <button type="button" onclick="addStep()" class="ai-btn mt-3">
+          <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/></svg>
+          {% trans "Ajouter une étape" %}
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── SUBMIT ── -->
+  <button type="submit" class="ai-btn primary w-full justify-center py-3 text-sm" style="font-size:14px">
+    <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 12L3.269 3.126A59.768 59.768 0 0121.485 12 59.77 59.77 0 013.27 20.876L5.999 12zm0 0h7.5"/></svg>
+    {% if editing %}{% trans "Enregistrer les modifications" %}{% else %}{% trans "Créer la campagne" %}{% endif %}
+  </button>
+
+</div>
+
+<!-- ═══════════════════ RIGHT COLUMN — PREVIEW ═══════════════════ -->
+<div class="xl:col-span-1">
+  <div class="sticky top-6 space-y-4">
+    <!-- Email preview -->
+    <div class="cp-card cp-fade" style="animation-delay:.25s">
+      <div class="cp-card-title">
+        <svg fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+        {% trans "Aperçu Email" %}
+      </div>
+      <div id="emailPreview" class="preview-box">
+        <span style="color:var(--g-text-dim);font-style:italic">{% trans "Le contenu apparaîtra ici..." %}</span>
+      </div>
+    </div>
+
+    <!-- WhatsApp preview -->
+    <div id="waPreviewCard" class="cp-card cp-fade section-hidden" style="animation-delay:.3s">
+      <div class="cp-card-title">
+        <svg class="w-[18px] h-[18px]" style="color:#25D366" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/></svg>
+        {% trans "Aperçu WhatsApp" %}
+      </div>
+      <div class="wa-preview">
+        <div id="waBubble" class="wa-bubble">
+          <span style="color:#888;font-style:italic">{% trans "Message WhatsApp..." %}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Variables reference -->
+    <div class="cp-card cp-fade" style="animation-delay:.35s">
+      <div class="cp-card-title" style="margin-bottom:8px">
+        <svg fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17.25 6.75L22.5 12l-5.25 5.25m-10.5 0L1.5 12l5.25-5.25m7.5-3l-4.5 16.5"/></svg>
+        {% trans "Variables disponibles" %}
+      </div>
+      <div class="flex flex-wrap gap-1.5">
+        {% for v in ai_variables %}
+        <span class="cp-chip" onclick="insertVar('{{ v }}')">{{ v }}</span>
+        {% endfor %}
+      </div>
+      <p style="font-size:10px;color:var(--g-text-dim);margin-top:8px">{% trans "Cliquez pour insérer dans le contenu" %}</p>
+    </div>
+  </div>
+</div>
+
+</div>
+</form>
+
+<script>
+var _csrf = document.querySelector('[name=csrfmiddlewaretoken]').value;
+var _emojis = true;
+var _stepCount = 0;
+
+var _trans = {
+  contentPlaceholder: "{% trans 'Le contenu apparaîtra ici...' %}",
+  waPlaceholder: "{% trans 'Message WhatsApp...' %}",
+  stepLabel: "{% trans 'Jour' %}",
+  channelLabel: "{% trans 'Canal' %}",
+  timeLabel: "{% trans 'Heure' %}",
+  contentLabel: "{% trans 'Contenu' %}",
+  stepContentPlaceholder: "{% trans 'Contenu de l\'étape...' %}",
+  deleteLabel: "{% trans 'Supprimer' %}"
+};
+
+// ── Toggle helpers ──
+function toggleCheck(el, inputId) {
+  var cb = document.getElementById(inputId);
+  cb.checked = !cb.checked;
+  el.classList.toggle('on', cb.checked);
+}
+
+function toggleEmoji() {
+  _emojis = !_emojis;
+  document.getElementById('emojiToggle').classList.toggle('on', _emojis);
+}
+
+function toggleWaOptions() {
+  var on = document.getElementById('chWhatsapp').checked;
+  document.getElementById('waOptions').classList.toggle('section-hidden', !on);
+  document.getElementById('waPreviewCard').classList.toggle('section-hidden', !on);
+}
+
+function toggleAutoSection() {
+  var on = document.getElementById('autoEnabled').checked;
+  document.getElementById('autoSection').classList.toggle('section-hidden', !on);
+}
+
+function toggleSequence() {
+  var isSeq = document.querySelector('input[name="auto_mode"]:checked').value === 'sequence';
+  document.getElementById('sequenceBuilder').classList.toggle('section-hidden', !isSeq);
+  if (isSeq && _stepCount === 0) { addStep(); addStep(); addStep(); }
+}
+
+// ── Variable insertion ──
+function insertVar(v) {
+  var ta = document.getElementById('contentArea');
+  var start = ta.selectionStart, end = ta.selectionEnd;
+  ta.value = ta.value.substring(0, start) + v + ta.value.substring(end);
+  ta.selectionStart = ta.selectionEnd = start + v.length;
+  ta.focus();
+  updatePreview();
+}
+
+// ── Preview ──
+function updatePreview() {
+  var text = document.getElementById('contentArea').value || '';
+  var emailEl = document.getElementById('emailPreview');
+  var waEl = document.getElementById('waBubble');
+  if (text) {
+    var escaped = text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    emailEl.innerHTML = escaped;
+    waEl.innerHTML = escaped;
+  } else {
+    emailEl.innerHTML = '<span style="color:var(--g-text-dim);font-style:italic">' + _trans.contentPlaceholder + '</span>';
+    waEl.innerHTML = '<span style="color:#888;font-style:italic">' + _trans.waPlaceholder + '</span>';
+  }
+}
+
+// ── AI calls ──
+function _aiCall(body, cb) {
+  fetch('{% url "dashboard:api_ai_writer" %}', {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json', 'X-CSRFToken': _csrf},
+    body: JSON.stringify(body)
+  }).then(function(r){ return r.json(); }).then(function(d){
+    if (d.ok) cb(d.text);
+  }).catch(function(){});
+}
+
+function aiGenerate() {
+  _aiCall({
+    action: 'generate',
+    objective: document.getElementById('aiObjective').value,
+    style: document.getElementById('aiStyle').value,
+    channel: document.getElementById('aiChannel').value,
+    offre: document.getElementById('aiOffre').value,
+    voiture: document.getElementById('aiVehicle').value,
+    cta_link: document.getElementById('aiCta').value,
+    emojis: _emojis
+  }, function(text) {
+    document.getElementById('contentArea').value = text;
+    updatePreview();
+  });
+}
+
+function aiRewrite(mode) {
+  var text = document.getElementById('contentArea').value;
+  if (!text) return;
+  _aiCall({action: 'rewrite', mode: mode, text: text, emojis: _emojis}, function(result) {
+    document.getElementById('contentArea').value = result;
+    updatePreview();
+  });
+}
+
+// ── Sequence steps ──
+function addStep() {
+  var i = _stepCount++;
+  var days = [0, 2, 7, 14, 21, 30];
+  var day = days[i] !== undefined ? days[i] : (i * 3);
+  var html = '<div class="step-row cp-fade">' +
+    '<div class="step-badge">' + (i + 1) + '</div>' +
+    '<div class="flex-1 grid grid-cols-2 sm:grid-cols-4 gap-2">' +
+      '<div><label class="cp-label">' + _trans.stepLabel + '</label><input type="number" name="step_day" value="' + day + '" min="0" class="cp-input" style="padding:6px 10px"></div>' +
+      '<div><label class="cp-label">' + _trans.channelLabel + '</label><select name="step_channel" class="cp-input" style="padding:6px 10px"><option value="email">Email</option><option value="whatsapp">WhatsApp</option></select></div>' +
+      '<div><label class="cp-label">' + _trans.timeLabel + '</label><input type="time" name="step_time" value="09:00" class="cp-input" style="padding:6px 10px"></div>' +
+      '<div class="col-span-2 sm:col-span-4"><label class="cp-label">' + _trans.contentLabel + '</label><textarea name="step_content" rows="2" class="cp-input resize-y" placeholder="' + _trans.stepContentPlaceholder + '"></textarea></div>' +
+    '</div>' +
+    '<button type="button" onclick="this.parentElement.remove()" style="color:var(--g-red);padding:4px;cursor:pointer;background:none;border:none" title="' + _trans.deleteLabel + '">' +
+      '<svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>' +
+    '</button>' +
+  '</div>';
+  document.getElementById('stepsList').insertAdjacentHTML('beforeend', html);
+}
+
+// Init preview on load
+updatePreview();
+</script>
+{% endblock %}

@@ -1,0 +1,104 @@
+{% extends "dashboard/_layout.html" %}
+{% load i18n %}
+
+{% block page_title %}{% if editing %}{% trans "Modifier bannière" %}{% else %}{% trans "Nouvelle bannière" %}{% endif %}{% endblock %}
+
+{% block page_actions %}
+<a href="{% url 'dashboard:banner_list' %}" class="inline-flex items-center gap-1.5 text-sm text-slate-500 hover:text-slate-700 transition font-medium">
+  <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5"/></svg>
+  {% trans "Retour" %}
+</a>
+{% endblock %}
+
+{% block content %}
+<div class="max-w-2xl">
+  <form method="post" enctype="multipart/form-data" class="d-card p-6 space-y-5">
+    {% csrf_token %}
+    <div class="grid grid-cols-2 gap-4">
+      <div>
+        <label class="block text-xs font-medium mb-1.5">{% trans "Type" %}</label>
+        <select name="type" class="w-full rounded-xl border border-slate-200 px-4 py-2.5 text-sm focus:ring-2 focus:ring-violet-300 outline-none">
+          {% for val, label in type_choices %}
+          <option value="{{ val }}" {% if banner.type == val %}selected{% endif %}>{{ label }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div>
+        <label class="block text-xs font-medium mb-1.5">{% trans "Animation" %}</label>
+        <select name="animation_type" class="w-full rounded-xl border border-slate-200 px-4 py-2.5 text-sm focus:ring-2 focus:ring-violet-300 outline-none">
+          {% for val, label in animation_choices %}
+          <option value="{{ val }}" {% if banner.animation_type == val %}selected{% endif %}>{{ label }}</option>
+          {% endfor %}
+        </select>
+      </div>
+    </div>
+    <div>
+      <label class="block text-xs font-medium mb-1.5">{% trans "Titre" %}</label>
+      <input type="text" name="title" value="{{ banner.title|default:'' }}" maxlength="200" placeholder="{% trans "Offre spéciale été" %}"
+        class="w-full rounded-xl border border-slate-200 px-4 py-2.5 text-sm focus:ring-2 focus:ring-violet-300 outline-none" />
+    </div>
+    <div>
+      <label class="block text-xs font-medium mb-1.5">{% trans "Sous-titre" %}</label>
+      <input type="text" name="subtitle" value="{{ banner.subtitle|default:'' }}" maxlength="300"
+        class="w-full rounded-xl border border-slate-200 px-4 py-2.5 text-sm focus:ring-2 focus:ring-violet-300 outline-none" />
+    </div>
+    <div class="grid grid-cols-2 gap-4">
+      <div>
+        <label class="block text-xs font-medium mb-1.5">{% trans "Texte du bouton" %}</label>
+        <input type="text" name="button_text" value="{{ banner.button_text|default:'' }}" maxlength="60" placeholder="{% trans "Réserver" %}"
+          class="w-full rounded-xl border border-slate-200 px-4 py-2.5 text-sm focus:ring-2 focus:ring-violet-300 outline-none" />
+      </div>
+      <div>
+        <label class="block text-xs font-medium mb-1.5">{% trans "Lien du bouton" %}</label>
+        <input type="text" name="button_link" value="{{ banner.button_link|default:'' }}" maxlength="500" placeholder="/catalog/"
+          class="w-full rounded-xl border border-slate-200 px-4 py-2.5 text-sm focus:ring-2 focus:ring-violet-300 outline-none" />
+      </div>
+    </div>
+    <div>
+      <label class="block text-xs font-medium mb-1.5">{% trans "Image" %}</label>
+      {% if banner.image %}
+      <img src="{{ banner.image.url }}" alt="" class="w-32 h-20 rounded-xl object-cover mb-2" />
+      {% endif %}
+      <input type="file" name="image" accept="image/*"
+        class="w-full text-sm file:mr-3 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-sm file:font-semibold file:bg-violet-50 file:text-violet-700 hover:file:bg-violet-100" />
+    </div>
+    <div class="grid grid-cols-3 gap-4">
+      <div>
+        <label class="block text-xs font-medium mb-1.5">{% trans "Priorité" %}</label>
+        <input type="number" name="priority" min="0" value="{{ banner.priority|default:'0' }}"
+          class="w-full rounded-xl border border-slate-200 px-4 py-2.5 text-sm focus:ring-2 focus:ring-violet-300 outline-none" />
+      </div>
+      <div>
+        <label class="block text-xs font-medium mb-1.5">{% trans "Date début" %}</label>
+        <input type="date" name="start_date" value="{{ banner.start_date|date:'Y-m-d' }}"
+          class="w-full rounded-xl border border-slate-200 px-4 py-2.5 text-sm focus:ring-2 focus:ring-violet-300 outline-none" />
+      </div>
+      <div>
+        <label class="block text-xs font-medium mb-1.5">{% trans "Date fin" %}</label>
+        <input type="date" name="end_date" value="{{ banner.end_date|date:'Y-m-d' }}"
+          class="w-full rounded-xl border border-slate-200 px-4 py-2.5 text-sm focus:ring-2 focus:ring-violet-300 outline-none" />
+      </div>
+    </div>
+    <div class="grid grid-cols-2 gap-4">
+      <div>
+        <label class="block text-xs font-medium mb-1.5">{% trans "Appareil cible" %}</label>
+        <select name="target_device" class="w-full rounded-xl border border-slate-200 px-4 py-2.5 text-sm focus:ring-2 focus:ring-violet-300 outline-none">
+          {% for val, label in device_choices %}
+          <option value="{{ val }}" {% if banner.target_device == val %}selected{% endif %}>{{ label }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="flex items-end pb-1">
+        <label class="flex items-center gap-2 cursor-pointer">
+          <input type="checkbox" name="active" value="1" {% if banner.active or not editing %}checked{% endif %}
+            class="rounded border-slate-300 text-violet-600 focus:ring-violet-400 w-4 h-4" />
+          <span class="text-sm">{% trans "Actif" %}</span>
+        </label>
+      </div>
+    </div>
+    <button type="submit" class="d-btn w-full py-2.5 text-sm font-semibold">
+      {% if editing %}{% trans "Enregistrer" %}{% else %}{% trans "Créer la bannière" %}{% endif %}
+    </button>
+  </form>
+</div>
+{% endblock %}

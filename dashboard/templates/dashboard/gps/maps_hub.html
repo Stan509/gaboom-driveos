@@ -1,0 +1,742 @@
+{% extends "dashboard/_layout.html" %}
+{% load static i18n %}
+
+{% block extra_head %}
+{{ block.super }}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/maplibre-gl@4.1.2/dist/maplibre-gl.css" />
+<style>
+  #ml-map { height: calc(100vh - 200px); min-height: 450px; border-radius: var(--g-radius); overflow: hidden; }
+  .maps-fullbleed { margin: -1.25rem; margin-top:0; } @media(min-width:1024px){ .maps-fullbleed { margin: -2rem; margin-top:0; } }
+  /* ── Floating panels ── */
+  .map-panel { position:absolute; z-index:10; background:var(--g-surface); border:1px solid var(--g-surface-border); border-radius:16px; box-shadow:0 8px 32px rgba(0,0,0,.12); backdrop-filter:blur(12px); transition:transform .3s cubic-bezier(.4,0,.2,1),opacity .3s; }
+  .map-panel.collapsed { transform:translateX(-110%); opacity:0; pointer-events:none; }
+  .map-panel-r.collapsed { transform:translateX(110%); opacity:0; pointer-events:none; }
+  /* ── Vehicle list panel ── */
+  #panel-vehicles { top:16px; left:16px; width:320px; max-height:calc(100% - 32px); display:flex; flex-direction:column; }
+  /* ── AI panel ── */
+  #panel-ai { top:16px; right:16px; width:360px; max-height:calc(100% - 32px); display:flex; flex-direction:column; }
+  /* ── Toolbar ── */
+  #map-toolbar { position:absolute; top:16px; left:50%; transform:translateX(-50%); z-index:10; display:flex; gap:6px; background:var(--g-surface); border:1px solid var(--g-surface-border); border-radius:14px; padding:6px; box-shadow:0 4px 20px rgba(0,0,0,.08); }
+  .tb-btn { display:flex; align-items:center; gap:6px; padding:8px 14px; border-radius:10px; font-size:12px; font-weight:600; cursor:pointer; border:none; transition:all .15s; color:var(--g-text-muted); background:transparent; }
+  .tb-btn:hover { background:var(--g-surface-hover); color:var(--g-text); }
+  .tb-btn.active { background:var(--g-accent); color:#fff; }
+  .tb-btn svg { width:16px; height:16px; }
+  /* ── Vehicle card ── */
+  .v-card { padding:10px 14px; border-radius:12px; cursor:pointer; transition:all .15s; border:1px solid transparent; }
+  .v-card:hover { background:var(--g-surface-hover); }
+  .v-card.selected { background:var(--g-accent-soft); border-color:var(--g-accent); }
+  /* ── Risk meter ── */
+  .risk-bar { height:6px; border-radius:3px; background:var(--g-surface-hover); overflow:hidden; }
+  .risk-fill { height:100%; border-radius:3px; transition:width .6s cubic-bezier(.4,0,.2,1); }
+  /* ── Pulse marker ── */
+  @keyframes mapPulse { 0%,100%{box-shadow:0 0 0 0 rgba(108,43,255,.5)} 50%{box-shadow:0 0 0 12px rgba(108,43,255,0)} }
+  .map-marker-pulse { animation:mapPulse 2s infinite; }
+  /* ── Scrollbar ── */
+  .map-scroll::-webkit-scrollbar { width:4px; }
+  .map-scroll::-webkit-scrollbar-thumb { background:var(--g-surface-border); border-radius:4px; }
+  /* ── Insight badges ── */
+  .insight-danger { background:#fef2f2; color:#991b1b; border:1px solid #fecaca; }
+  .insight-warning { background:#fffbeb; color:#92400e; border:1px solid #fde68a; }
+  .insight-info { background:#eff6ff; color:#1e40af; border:1px solid #bfdbfe; }
+  /* ── Speed gauge ── */
+  .speed-ring { transition:stroke-dashoffset .8s cubic-bezier(.4,0,.2,1); }
+  /* ── Responsive ── */
+  @media(max-width:1024px){
+    #panel-vehicles { width:260px; }
+    #panel-ai { width:300px; }
+  }
+  @media(max-width:768px){
+    #panel-vehicles, #panel-ai { position:fixed; top:auto; bottom:0; left:0; right:0; width:100%; max-height:50vh; border-radius:20px 20px 0 0; }
+    #map-toolbar { top:auto; bottom:16px; }
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="relative maps-fullbleed" style="height:calc(100vh - 200px);min-height:450px;">
+
+  <!-- ═══════ MAP CONTAINER ═══════ -->
+  <div id="ml-map" class="w-full h-full"></div>
+
+  <!-- ═══════ TOP TOOLBAR ═══════ -->
+  <div id="map-toolbar">
+    <button class="tb-btn active" onclick="setMapStyle('streets')" id="tb-streets">
+      <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 6.75V15m6-6v8.25m.503 3.498 4.875-2.437c.381-.19.622-.58.622-1.006V4.82c0-.836-.88-1.38-1.628-1.006l-3.869 1.934c-.317.159-.69.159-1.006 0L9.503 3.252a1.125 1.125 0 0 0-1.006 0L3.622 5.689C3.24 5.88 3 6.27 3 6.695V19.18c0 .836.88 1.38 1.628 1.006l3.869-1.934c.317-.159.69-.159 1.006 0l4.994 2.497c.317.158.69.158 1.006 0Z"/></svg>
+      {% trans "Carte" %}
+    </button>
+    <button class="tb-btn" onclick="setMapStyle('satellite')" id="tb-satellite">
+      <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 21a9.004 9.004 0 0 0 8.716-6.747M12 21a9.004 9.004 0 0 1-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S14.485 3 12 3m0 18c-2.485 0-4.5-4.03-4.5-9S9.515 3 12 3m0 0a8.997 8.997 0 0 1 7.843 4.582M12 3a8.997 8.997 0 0 0-7.843 4.582m15.686 0A11.953 11.953 0 0 1 12 10.5c-2.998 0-5.74-1.1-7.843-2.918m15.686 0A8.959 8.959 0 0 1 21 12c0 .778-.099 1.533-.284 2.253m0 0A17.919 17.919 0 0 1 12 16.5a17.92 17.92 0 0 1-8.716-2.247m0 0A9.015 9.015 0 0 1 3 12c0-1.605.42-3.113 1.157-4.418"/></svg>
+      {% trans "Satellite" %}
+    </button>
+    <button class="tb-btn" onclick="setMapStyle('dark')" id="tb-dark">
+      <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21.752 15.002A9.72 9.72 0 0 1 18 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 0 0 3 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 0 0 9.002-5.998Z"/></svg>
+      {% trans "Nuit" %}
+    </button>
+    <div style="width:1px;background:var(--g-surface-border);margin:4px 2px;"></div>
+    <button class="tb-btn" onclick="toggleHeatmap()" id="tb-heatmap">
+      <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.362 5.214A8.252 8.252 0 0 1 12 21 8.25 8.25 0 0 1 6.038 7.047 8.287 8.287 0 0 0 9 9.601a8.983 8.983 0 0 1 3.361-6.867 8.21 8.21 0 0 0 3 2.48Z"/></svg>
+      {% trans "Heatmap" %}
+    </button>
+    <button class="tb-btn" onclick="toggleZones()" id="tb-zones">
+      <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 6.75V15m6-6v8.25m.503 3.498 4.875-2.437c.381-.19.622-.58.622-1.006V4.82c0-.836-.88-1.38-1.628-1.006l-3.869 1.934c-.317.159-.69.159-1.006 0L9.503 3.252a1.125 1.125 0 0 0-1.006 0L3.622 5.689C3.24 5.88 3 6.27 3 6.695V19.18c0 .836.88 1.38 1.628 1.006l3.869-1.934c.317-.159.69-.159 1.006 0l4.994 2.497c.317.158.69.158 1.006 0Z"/></svg>
+      {% trans "Zones" %}
+    </button>
+    <button class="tb-btn" onclick="toggleTrail()" id="tb-trail">
+      <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6A2.25 2.25 0 0 1 6 3.75h2.25A2.25 2.25 0 0 1 10.5 6v2.25a2.25 2.25 0 0 1-2.25 2.25H6a2.25 2.25 0 0 1-2.25-2.25V6ZM3.75 15.75A2.25 2.25 0 0 1 6 13.5h2.25a2.25 2.25 0 0 1 2.25 2.25V18a2.25 2.25 0 0 1-2.25 2.25H6A2.25 2.25 0 0 1 3.75 18v-2.25ZM13.5 6a2.25 2.25 0 0 1 2.25-2.25H18A2.25 2.25 0 0 1 20.25 6v2.25A2.25 2.25 0 0 1 18 10.5h-2.25a2.25 2.25 0 0 1-2.25-2.25V6ZM13.5 15.75a2.25 2.25 0 0 1 2.25-2.25H18a2.25 2.25 0 0 1 2.25 2.25V18A2.25 2.25 0 0 1 18 20.25h-2.25a2.25 2.25 0 0 1-2.25-2.25v-2.25Z"/></svg>
+      {% trans "Trajet" %}
+    </button>
+  </div>
+
+  <!-- ═══════ LEFT PANEL: VEHICLES ═══════ -->
+  <div id="panel-vehicles" class="map-panel">
+    <!-- Header -->
+    <div class="p-4 border-b" style="border-color:var(--g-surface-border)">
+      <div class="flex items-center justify-between mb-3">
+        <div class="flex items-center gap-2">
+          <div class="w-8 h-8 rounded-lg flex items-center justify-center" style="background:var(--g-accent-soft)">
+            <svg class="w-4 h-4" style="color:var(--g-accent)" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 18.75a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 0 1-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m3 0H21M3.375 14.25h17.25"/></svg>
+          </div>
+          <div>
+            <div class="text-sm font-bold" style="color:var(--g-text)">{% trans "Flotte" %}</div>
+            <div class="text-[10px]" style="color:var(--g-text-muted)">
+              {% blocktrans count count=vehicles_with_pos|length %}
+                {{ count }} véhicule
+              {% pluralize %}
+                {{ count }} véhicules
+              {% endblocktrans %}
+            </div>
+          </div>
+        </div>
+        <button onclick="togglePanel('vehicles')" class="w-7 h-7 rounded-lg flex items-center justify-center hover:bg-black/5" style="color:var(--g-text-muted)">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M18.75 19.5l-7.5-7.5 7.5-7.5m-6 15L5.25 12l7.5-7.5"/></svg>
+        </button>
+      </div>
+      <!-- Search -->
+      <div class="relative">
+        <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4" style="color:var(--g-text-muted)" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"/></svg>
+        <input type="text" id="vehicle-search" placeholder="{% trans 'Rechercher un véhicule...' %}" oninput="filterVehicles(this.value)"
+               class="w-full pl-9 pr-3 py-2 rounded-xl text-xs outline-none" style="background:var(--g-surface-hover);border:1px solid var(--g-surface-border);color:var(--g-text)">
+      </div>
+    </div>
+    <!-- Vehicle list -->
+    <div class="flex-1 overflow-y-auto map-scroll p-2 space-y-1" id="vehicle-list">
+      <!-- Populated by JS -->
+    </div>
+    <!-- Footer stats -->
+    <div class="p-3 border-t grid grid-cols-3 gap-2 text-center" style="border-color:var(--g-surface-border)">
+      <div>
+        <div class="text-lg font-bold" style="color:var(--g-text)">{{ vehicles_with_pos|length }}</div>
+        <div class="text-[9px] uppercase tracking-wider" style="color:var(--g-text-muted)">{% trans "En ligne" %}</div>
+      </div>
+      <div>
+        <div class="text-lg font-bold" style="color:var(--g-red)">{{ alerts_unresolved }}</div>
+        <div class="text-[9px] uppercase tracking-wider" style="color:var(--g-text-muted)">{% trans "Alertes" %}</div>
+      </div>
+      <div>
+        <div class="text-lg font-bold" style="color:var(--g-emerald)">{{ zones|length }}</div>
+        <div class="text-[9px] uppercase tracking-wider" style="color:var(--g-text-muted)">{% trans "Zones" %}</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════ RIGHT PANEL: AI ANALYSIS ═══════ -->
+  <div id="panel-ai" class="map-panel map-panel-r collapsed">
+    <div class="p-4 border-b" style="border-color:var(--g-surface-border)">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center gap-2">
+          <div class="w-8 h-8 rounded-lg flex items-center justify-center" style="background:linear-gradient(135deg,#6C2BFF20,#a855f720)">
+            <svg class="w-4 h-4" style="color:var(--g-accent)" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904 9 18.75l-.813-2.846a4.5 4.5 0 0 0-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 0 0 3.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 0 0 3.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 0 0-3.09 3.09ZM18.259 8.715 18 9.75l-.259-1.035a3.375 3.375 0 0 0-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 0 0 2.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 0 0 2.455 2.456L21.75 6l-1.036.259a3.375 3.375 0 0 0-2.455 2.456ZM16.894 20.567 16.5 21.75l-.394-1.183a2.25 2.25 0 0 0-1.423-1.423L13.5 18.75l1.183-.394a2.25 2.25 0 0 0 1.423-1.423l.394-1.183.394 1.183a2.25 2.25 0 0 0 1.423 1.423l1.183.394-1.183.394a2.25 2.25 0 0 0-1.423 1.423Z"/></svg>
+          </div>
+          <div>
+            <div class="text-sm font-bold" style="color:var(--g-text)">{% trans "Analyse IA" %}</div>
+            <div class="text-[10px]" style="color:var(--g-text-muted)" id="ai-vehicle-name">{% trans "Sélectionnez un véhicule" %}</div>
+          </div>
+        </div>
+        <button onclick="togglePanel('ai')" class="w-7 h-7 rounded-lg flex items-center justify-center hover:bg-black/5" style="color:var(--g-text-muted)">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12"/></svg>
+        </button>
+      </div>
+    </div>
+    <div class="flex-1 overflow-y-auto map-scroll p-4 space-y-4" id="ai-content">
+      <div class="text-center py-8" style="color:var(--g-text-muted)">
+        <svg class="w-10 h-10 mx-auto mb-3 opacity-30" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904 9 18.75l-.813-2.846a4.5 4.5 0 0 0-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 0 0 3.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 0 0 3.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 0 0-3.09 3.09Z"/></svg>
+        <p class="text-xs">
+          {% blocktrans %}
+            Cliquez sur un véhicule puis<br>sur <strong>Analyser</strong> pour lancer l'IA
+          {% endblocktrans %}
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════ TOGGLE BUTTONS (when panels collapsed) ═══════ -->
+  <button id="btn-show-vehicles" class="hidden map-panel" style="top:16px;left:16px;padding:10px;border-radius:12px;cursor:pointer;" onclick="togglePanel('vehicles')">
+    <svg class="w-5 h-5" style="color:var(--g-accent)" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 18.75a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 0 1-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m3 0H21M3.375 14.25h17.25"/></svg>
+  </button>
+
+  <!-- ═══════ LIVE INDICATOR ═══════ -->
+  <div class="map-panel" style="bottom:16px;left:16px;padding:8px 14px;border-radius:10px;display:flex;align-items:center;gap:8px;">
+    <div class="w-2 h-2 rounded-full" style="background:var(--g-emerald);box-shadow:0 0 6px rgba(16,185,129,.5);animation:mapPulse 2s infinite;"></div>
+    <span class="text-[11px] font-semibold" style="color:var(--g-text-muted)" id="live-status">{% trans "Temps réel" %} · <span id="live-timer">15s</span></span>
+  </div>
+
+  <!-- ═══════ ALERTS BADGE ═══════ -->
+  {% if alerts_unresolved > 0 %}
+  <a href="{% url 'dashboard:gps_alert_list' %}" class="map-panel" style="bottom:16px;right:16px;padding:8px 16px;border-radius:10px;display:flex;align-items:center;gap:8px;background:var(--g-red);border-color:var(--g-red);text-decoration:none;">
+    <svg class="w-4 h-4" style="color:#fff" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z"/></svg>
+    <span class="text-xs font-bold" style="color:#fff">
+      {% blocktrans count count=alerts_unresolved %}
+        {{ count }} alerte
+      {% pluralize %}
+        {{ count }} alertes
+      {% endblocktrans %}
+    </span>
+  </a>
+  {% endif %}
+
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/maplibre-gl@4.1.2/dist/maplibre-gl.js"></script>
+<script>
+(function(){
+  const mapEl = document.getElementById('ml-map');
+  if (!window.maplibregl || !mapEl) {
+    if (mapEl) {
+      mapEl.innerHTML = "<div style='height:100%;display:flex;align-items:center;justify-content:center;color:var(--g-text-muted);background:var(--g-bg)'>{% trans 'Carte indisponible — MapLibre non chargé' %}</div>";
+    }
+    return;
+  }
+  // ═══════ DATA ═══════
+  const V = {{ vehicles_json|safe }};
+  const Z = {{ zones_json|safe }};
+  const A = {{ alerts_json|safe }};
+
+  // ═══════ MAP STYLES ═══════
+  const STYLES = {
+    streets: 'https://basemaps.cartocdn.com/gl/positron-gl-style/style.json',
+    satellite: 'https://basemaps.cartocdn.com/gl/voyager-gl-style/style.json',
+    dark: 'https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json',
+  };
+  let currentStyle = 'streets';
+
+  // ═══════ INIT MAP ═══════
+  const defaultCenter = V.length > 0 ? [V[0].lng, V[0].lat] : [-7.59, 33.57];
+  const map = new maplibregl.Map({
+    container: 'ml-map',
+    style: STYLES.streets,
+    center: defaultCenter,
+    zoom: V.length > 0 ? 11 : 6,
+    pitch: 30,
+    bearing: -10,
+    antialias: true,
+    attributionControl: false,
+  });
+  map.on('error', function(){
+    mapEl.innerHTML = "<div style='height:100%;display:flex;align-items:center;justify-content:center;color:var(--g-text-muted);background:var(--g-bg)'>{% trans 'Carte indisponible — tuiles non chargées' %}</div>";
+  });
+  map.addControl(new maplibregl.NavigationControl({ showCompass: true, showZoom: true }), 'bottom-right');
+  map.addControl(new maplibregl.AttributionControl({ compact: true }), 'bottom-right');
+
+  // ═══════ STATE ═══════
+  let selectedVehicle = null;
+  let markers = {};
+  let zoneCircles = [];
+  let zonesVisible = true;
+  let heatmapVisible = false;
+  let trailVisible = false;
+  let trailLine = null;
+
+  // ═══════ VEHICLE MARKERS ═══════
+  function createMarkerEl(v) {
+    const el = document.createElement('div');
+    el.style.cssText = 'cursor:pointer;position:relative;';
+    const isMoving = v.speed > 5;
+    const color = v.status === 'rented' ? '#6C2BFF' : v.status === 'available' ? '#10b981' : '#f59e0b';
+    el.innerHTML = `
+      <div style="width:36px;height:36px;border-radius:50%;background:${color};border:3px solid #fff;box-shadow:0 2px 12px ${color}60;display:flex;align-items:center;justify-content:center;transition:transform .3s;" class="${isMoving ? 'map-marker-pulse' : ''}">
+        <svg width="16" height="16" fill="#fff" viewBox="0 0 24 24"><path d="M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.21.42-1.42 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99zM6.5 16c-.83 0-1.5-.67-1.5-1.5S5.67 13 6.5 13s1.5.67 1.5 1.5S7.33 16 6.5 16zm11 0c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zM5 11l1.5-4.5h11L19 11H5z"/></svg>
+      </div>
+      ${isMoving ? `<div style="position:absolute;top:-6px;right:-6px;background:#fff;border-radius:8px;padding:1px 5px;font-size:9px;font-weight:700;color:${color};box-shadow:0 1px 4px rgba(0,0,0,.15);white-space:nowrap;">${Math.round(v.speed)} km/h</div>` : ''}
+    `;
+    return el;
+  }
+
+  function addVehicleMarkers() {
+    V.forEach(v => {
+      const el = createMarkerEl(v);
+      el.addEventListener('click', () => selectVehicle(v.id));
+
+      const popup = new maplibregl.Popup({ offset: 25, closeButton: false, maxWidth: '260px' })
+        .setHTML(`
+          <div style="font-family:system-ui;padding:4px 0;">
+            <div style="font-weight:700;font-size:13px;margin-bottom:4px;">${v.label}</div>
+            <div style="font-size:11px;color:#666;display:grid;grid-template-columns:1fr 1fr;gap:4px;">
+              <span>{% trans "Vitesse" %}</span><span style="font-weight:600;text-align:right;">${v.speed} km/h</span>
+              <span>{% trans "Source" %}</span><span style="font-weight:600;text-align:right;">${v.source === 'phone' ? '{% trans "Smartphone" %}' : '{% trans "Boîtier GPS" %}'}</span>
+              ${v.client ? `<span>{% trans "Client" %}</span><span style="font-weight:600;text-align:right;">${v.client}</span>` : ''}
+              ${v.updated ? `<span>{% trans "MAJ" %}</span><span style="font-weight:600;text-align:right;">${timeAgo(v.updated)}</span>` : ''}
+            </div>
+            <div style="margin-top:8px;display:flex;gap:6px;">
+              <button onclick="analyzeVehicle(${v.id})" style="flex:1;padding:5px 0;border-radius:8px;border:none;background:#6C2BFF;color:#fff;font-size:10px;font-weight:700;cursor:pointer;">{% trans "Analyser IA" %}</button>
+              <button onclick="showTrailFor(${v.id})" style="flex:1;padding:5px 0;border-radius:8px;border:none;background:#f0f0f0;color:#333;font-size:10px;font-weight:700;cursor:pointer;">{% trans "Voir trajet" %}</button>
+            </div>
+          </div>
+        `);
+
+      const marker = new maplibregl.Marker({ element: el })
+        .setLngLat([v.lng, v.lat])
+        .setPopup(popup)
+        .addTo(map);
+
+      markers[v.id] = { marker, data: v };
+    });
+  }
+
+  // ═══════ GEOFENCE ZONES ═══════
+  function drawZones() {
+    if (!map.getSource('zones-source')) {
+      const features = Z.map(z => {
+        const steps = 64;
+        const coords = [];
+        for (let i = 0; i <= steps; i++) {
+          const angle = (i / steps) * 2 * Math.PI;
+          const dx = (z.radius / 1000) / 111.32 * Math.cos(angle);
+          const dy = (z.radius / 1000) / (111.32 * Math.cos(z.lat * Math.PI / 180)) * Math.sin(angle);
+          coords.push([z.lng + dy, z.lat + dx]);
+        }
+        return {
+          type: 'Feature',
+          properties: { name: z.name, type: z.type, color: z.color, id: z.id },
+          geometry: { type: 'Polygon', coordinates: [coords] }
+        };
+      });
+
+      map.addSource('zones-source', {
+        type: 'geojson',
+        data: { type: 'FeatureCollection', features: features }
+      });
+
+      map.addLayer({
+        id: 'zones-fill',
+        type: 'fill',
+        source: 'zones-source',
+        paint: {
+          'fill-color': ['get', 'color'],
+          'fill-opacity': 0.12,
+        }
+      });
+
+      map.addLayer({
+        id: 'zones-border',
+        type: 'line',
+        source: 'zones-source',
+        paint: {
+          'line-color': ['get', 'color'],
+          'line-width': 2,
+          'line-dasharray': [3, 2],
+          'line-opacity': 0.6,
+        }
+      });
+
+      map.addLayer({
+        id: 'zones-label',
+        type: 'symbol',
+        source: 'zones-source',
+        layout: {
+          'text-field': ['get', 'name'],
+          'text-size': 11,
+          'text-font': ['Open Sans Bold'],
+          'text-allow-overlap': false,
+        },
+        paint: {
+          'text-color': ['get', 'color'],
+          'text-halo-color': '#fff',
+          'text-halo-width': 1.5,
+        }
+      });
+    }
+  }
+
+  // ═══════ VEHICLE LIST (left panel) ═══════
+  function renderVehicleList(filter) {
+    const list = document.getElementById('vehicle-list');
+    const q = (filter || '').toLowerCase();
+    let html = '';
+    V.forEach(v => {
+      if (q && !v.label.toLowerCase().includes(q) && !(v.client || '').toLowerCase().includes(q)) return;
+      const isMoving = v.speed > 5;
+      const color = v.status === 'rented' ? 'var(--g-accent)' : v.status === 'available' ? 'var(--g-emerald)' : '#f59e0b';
+      const sel = selectedVehicle === v.id ? 'selected' : '';
+      html += `
+        <div class="v-card ${sel}" onclick="selectVehicle(${v.id})" id="vc-${v.id}">
+          <div class="flex items-center gap-3">
+            <div class="w-9 h-9 rounded-xl flex items-center justify-center shrink-0" style="background:${color}20;">
+              <svg class="w-4 h-4" style="color:${color}" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 18.75a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 0 1-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m3 0H21M3.375 14.25h17.25"/></svg>
+            </div>
+            <div class="flex-1 min-w-0">
+              <div class="text-xs font-bold truncate" style="color:var(--g-text)">${v.label}</div>
+              <div class="text-[10px] truncate" style="color:var(--g-text-muted)">${v.client || '{% trans "Pas de contrat" %}'}</div>
+            </div>
+            <div class="text-right shrink-0">
+              ${isMoving
+                ? `<div class="text-[11px] font-bold" style="color:${color}">${Math.round(v.speed)} km/h</div>`
+                : `<div class="text-[10px]" style="color:var(--g-text-muted)">{% trans "Arrêt" %}</div>`}
+              <div class="flex items-center gap-1 justify-end mt-0.5">
+                <div class="w-1.5 h-1.5 rounded-full" style="background:${isMoving ? 'var(--g-emerald)' : 'var(--g-text-muted)'};"></div>
+                <span class="text-[9px]" style="color:var(--g-text-muted)">${v.source === 'phone' ? '{% trans "Tel" %}' : '{% trans "GPS" %}'}</span>
+              </div>
+            </div>
+          </div>
+        </div>`;
+    });
+    if (!html) html = '<div class="text-center py-6 text-xs" style="color:var(--g-text-muted)">{% trans "Aucun véhicule trouvé" %}</div>';
+    list.innerHTML = html;
+  }
+
+  // ═══════ SELECT VEHICLE ═══════
+  window.selectVehicle = function(id) {
+    selectedVehicle = id;
+    renderVehicleList(document.getElementById('vehicle-search').value);
+    const m = markers[id];
+    if (m) {
+      map.flyTo({ center: [m.data.lng, m.data.lat], zoom: 15, pitch: 45, duration: 1200 });
+      m.marker.togglePopup();
+    }
+  };
+
+  // ═══════ AI ANALYSIS ═══════
+  window.analyzeVehicle = function(id) {
+    const panel = document.getElementById('panel-ai');
+    panel.classList.remove('collapsed');
+    const content = document.getElementById('ai-content');
+    const v = V.find(x => x.id === id);
+    document.getElementById('ai-vehicle-name').textContent = v ? v.label : '';
+
+    content.innerHTML = `
+      <div class="flex flex-col items-center py-6">
+        <div class="w-10 h-10 rounded-full flex items-center justify-center mb-3" style="background:linear-gradient(135deg,#6C2BFF20,#a855f720)">
+          <svg class="w-5 h-5 animate-spin" style="color:var(--g-accent)" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182"/></svg>
+        </div>
+        <div class="text-xs font-semibold" style="color:var(--g-text-muted)">{% trans "Analyse en cours..." %}</div>
+      </div>`;
+
+    fetch("{% url 'dashboard:api_maps_ai_analyze' %}?vehicle_id=" + id + "&hours=24")
+      .then(r => r.json())
+      .then(data => renderAiPanel(data, id))
+      .catch(() => { content.innerHTML = '<div class="text-center py-6 text-xs" style="color:var(--g-red)">{% trans "Erreur d\'analyse" %}</div>'; });
+  };
+
+  function renderAiPanel(data, vehicleId) {
+    const c = document.getElementById('ai-content');
+    const risk = data.risk_score || 0;
+    const riskColor = risk > 60 ? '#ef4444' : risk > 30 ? '#f59e0b' : '#10b981';
+    const riskLabel = risk > 60 ? '{% trans "Élevé" %}' : risk > 30 ? '{% trans "Modéré" %}' : '{% trans "Faible" %}';
+    const s = data.stats || {};
+
+    let insightsHtml = '';
+    (data.insights || []).forEach(i => {
+      insightsHtml += `<div class="rounded-xl px-3 py-2.5 text-[11px] font-medium insight-${i.type}">${i.text}</div>`;
+    });
+    if (!insightsHtml) insightsHtml = '<div class="text-[11px] text-center py-3" style="color:var(--g-text-muted)">{% trans "Aucune anomalie détectée" %}</div>';
+
+    c.innerHTML = `
+      <!-- Risk Score -->
+      <div class="text-center">
+        <div class="relative inline-block">
+          <svg width="100" height="100" viewBox="0 0 100 100">
+            <circle cx="50" cy="50" r="42" fill="none" stroke="var(--g-surface-hover)" stroke-width="8"/>
+            <circle cx="50" cy="50" r="42" fill="none" stroke="${riskColor}" stroke-width="8" stroke-linecap="round"
+                    stroke-dasharray="${2 * Math.PI * 42}" stroke-dashoffset="${2 * Math.PI * 42 * (1 - risk / 100)}"
+                    transform="rotate(-90 50 50)" class="speed-ring"/>
+          </svg>
+          <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;">
+            <div style="font-size:24px;font-weight:800;color:${riskColor}">${risk}</div>
+            <div style="font-size:9px;font-weight:600;color:var(--g-text-muted);text-transform:uppercase;letter-spacing:.5px">{% trans "Risque" %}</div>
+          </div>
+        </div>
+        <div class="text-xs font-bold mt-1" style="color:${riskColor}">${riskLabel}</div>
+      </div>
+
+      <!-- Stats grid -->
+      <div class="grid grid-cols-2 gap-2">
+        <div class="rounded-xl p-3 text-center" style="background:var(--g-surface-hover)">
+          <div class="text-base font-bold" style="color:var(--g-text)">${s.total_km || 0} km</div>
+          <div class="text-[9px] uppercase tracking-wider" style="color:var(--g-text-muted)">{% trans "Distance" %}</div>
+        </div>
+        <div class="rounded-xl p-3 text-center" style="background:var(--g-surface-hover)">
+          <div class="text-base font-bold" style="color:var(--g-text)">${s.max_speed || 0} km/h</div>
+          <div class="text-[9px] uppercase tracking-wider" style="color:var(--g-text-muted)">{% trans "Vitesse max" %}</div>
+        </div>
+        <div class="rounded-xl p-3 text-center" style="background:var(--g-surface-hover)">
+          <div class="text-base font-bold" style="color:var(--g-text)">${s.duration_h || 0}h</div>
+          <div class="text-[9px] uppercase tracking-wider" style="color:var(--g-text-muted)">{% trans "Durée" %}</div>
+        </div>
+        <div class="rounded-xl p-3 text-center" style="background:var(--g-surface-hover)">
+          <div class="text-base font-bold" style="color:var(--g-text)">${s.moving_pct || 0}%</div>
+          <div class="text-[9px] uppercase tracking-wider" style="color:var(--g-text-muted)">{% trans "En mouvement" %}</div>
+        </div>
+      </div>
+
+      <!-- Insights -->
+      <div>
+        <div class="text-[10px] font-bold uppercase tracking-wider mb-2" style="color:var(--g-text-muted)">
+          <span style="color:var(--g-accent)">IA</span> · {% trans "Observations" %}
+        </div>
+        <div class="space-y-2">${insightsHtml}</div>
+      </div>
+
+      <!-- Actions -->
+      <div class="space-y-2">
+        <button onclick="showTrailFor(${vehicleId})" class="w-full py-2.5 rounded-xl text-xs font-bold" style="background:var(--g-accent);color:#fff;border:none;cursor:pointer;">
+          {% trans "Voir le trajet des 24h" %}
+        </button>
+        <a href="/dashboard/gps/vehicles/${vehicleId}/config/" class="block w-full py-2.5 rounded-xl text-xs font-bold text-center" style="background:var(--g-surface-hover);color:var(--g-text);text-decoration:none;">
+          {% trans "Configuration GPS" %}
+        </a>
+      </div>
+    `;
+  }
+
+  // ═══════ TRAIL (route replay) ═══════
+  window.showTrailFor = function(id) {
+    const btn = document.getElementById('tb-trail');
+    fetch("{% url 'dashboard:api_gps_trail' pk=0 %}".replace('/0/', '/' + id + '/') + '?hours=24')
+      .then(r => r.json())
+      .then(data => {
+        if (!data.trail || data.trail.length < 2) return;
+        removeTrail();
+        trailVisible = true;
+        btn.classList.add('active');
+
+        const coords = data.trail.map(p => [p.lng, p.lat]);
+
+        if (map.getSource('trail-source')) {
+          map.getSource('trail-source').setData({
+            type: 'Feature',
+            geometry: { type: 'LineString', coordinates: coords }
+          });
+        } else {
+          map.addSource('trail-source', {
+            type: 'geojson',
+            data: { type: 'Feature', geometry: { type: 'LineString', coordinates: coords } }
+          });
+          map.addLayer({
+            id: 'trail-glow',
+            type: 'line',
+            source: 'trail-source',
+            paint: { 'line-color': '#6C2BFF', 'line-width': 6, 'line-opacity': 0.2, 'line-blur': 4 }
+          });
+          map.addLayer({
+            id: 'trail-line',
+            type: 'line',
+            source: 'trail-source',
+            paint: {
+              'line-color': '#6C2BFF',
+              'line-width': 3,
+              'line-opacity': 0.8,
+            }
+          });
+          map.addLayer({
+            id: 'trail-arrow',
+            type: 'symbol',
+            source: 'trail-source',
+            layout: {
+              'symbol-placement': 'line',
+              'symbol-spacing': 80,
+              'text-field': '▸',
+              'text-size': 16,
+              'text-keep-upright': false,
+              'text-rotation-alignment': 'map',
+            },
+            paint: { 'text-color': '#6C2BFF' }
+          });
+        }
+
+        // Fit to trail
+        const bounds = coords.reduce((b, c) => b.extend(c), new maplibregl.LngLatBounds(coords[0], coords[0]));
+        map.fitBounds(bounds, { padding: 80, duration: 1000 });
+      });
+  };
+
+  function removeTrail() {
+    ['trail-arrow', 'trail-line', 'trail-glow'].forEach(id => {
+      if (map.getLayer(id)) map.removeLayer(id);
+    });
+    if (map.getSource('trail-source')) map.removeSource('trail-source');
+    trailVisible = false;
+    document.getElementById('tb-trail').classList.remove('active');
+  }
+
+  // ═══════ HEATMAP ═══════
+  window.toggleHeatmap = function() {
+    const btn = document.getElementById('tb-heatmap');
+    if (heatmapVisible) {
+      if (map.getLayer('heatmap-layer')) map.removeLayer('heatmap-layer');
+      if (map.getSource('heatmap-source')) map.removeSource('heatmap-source');
+      heatmapVisible = false;
+      btn.classList.remove('active');
+      return;
+    }
+
+    btn.classList.add('active');
+    fetch("{% url 'dashboard:api_maps_heatmap' %}?hours=48")
+      .then(r => r.json())
+      .then(data => {
+        if (!data.points.length) { btn.classList.remove('active'); return; }
+        heatmapVisible = true;
+
+        const features = data.points.map(p => ({
+          type: 'Feature',
+          properties: { weight: Math.min(p[2] / 120, 1) || 0.3 },
+          geometry: { type: 'Point', coordinates: [p[1], p[0]] }
+        }));
+
+        if (map.getSource('heatmap-source')) {
+          map.getSource('heatmap-source').setData({ type: 'FeatureCollection', features });
+        } else {
+          map.addSource('heatmap-source', {
+            type: 'geojson',
+            data: { type: 'FeatureCollection', features }
+          });
+          map.addLayer({
+            id: 'heatmap-layer',
+            type: 'heatmap',
+            source: 'heatmap-source',
+            paint: {
+              'heatmap-weight': ['get', 'weight'],
+              'heatmap-intensity': 1.5,
+              'heatmap-radius': 25,
+              'heatmap-color': [
+                'interpolate', ['linear'], ['heatmap-density'],
+                0, 'rgba(108,43,255,0)',
+                0.2, 'rgba(108,43,255,0.3)',
+                0.4, 'rgba(168,85,247,0.5)',
+                0.6, 'rgba(245,158,11,0.6)',
+                0.8, 'rgba(239,68,68,0.7)',
+                1, 'rgba(239,68,68,0.9)',
+              ],
+              'heatmap-opacity': 0.7,
+            }
+          }, 'zones-fill');
+        }
+      });
+  };
+
+  // ═══════ TOGGLE ZONES ═══════
+  window.toggleZones = function() {
+    const btn = document.getElementById('tb-zones');
+    zonesVisible = !zonesVisible;
+    btn.classList.toggle('active', zonesVisible);
+    ['zones-fill', 'zones-border', 'zones-label'].forEach(id => {
+      if (map.getLayer(id)) map.setLayoutProperty(id, 'visibility', zonesVisible ? 'visible' : 'none');
+    });
+  };
+
+  // ═══════ TOGGLE TRAIL ═══════
+  window.toggleTrail = function() {
+    if (trailVisible) {
+      removeTrail();
+    } else if (selectedVehicle) {
+      showTrailFor(selectedVehicle);
+    }
+  };
+
+  // ═══════ MAP STYLE ═══════
+  window.setMapStyle = function(style) {
+    document.querySelectorAll('#map-toolbar .tb-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById('tb-' + style).classList.add('active');
+    if (style === currentStyle) return;
+    currentStyle = style;
+
+    const center = map.getCenter();
+    const zoom = map.getZoom();
+    const pitch = map.getPitch();
+    const bearing = map.getBearing();
+
+    map.setStyle(STYLES[style]);
+    map.once('styledata', () => {
+      map.jumpTo({ center, zoom, pitch, bearing });
+      drawZones();
+      // Re-add heatmap if visible
+      if (heatmapVisible) { heatmapVisible = false; toggleHeatmap(); }
+    });
+  };
+
+  // ═══════ PANELS ═══════
+  window.togglePanel = function(name) {
+    const panel = document.getElementById('panel-' + name);
+    panel.classList.toggle('collapsed');
+    if (name === 'vehicles') {
+      document.getElementById('btn-show-vehicles').classList.toggle('hidden', !panel.classList.contains('collapsed'));
+    }
+  };
+
+  window.filterVehicles = function(q) { renderVehicleList(q); };
+
+  // ═══════ AUTO REFRESH ═══════
+  let countdown = 15;
+  const timerEl = document.getElementById('live-timer');
+
+  async function refreshPositions() {
+    try {
+      const resp = await fetch("{% url 'dashboard:api_gps_positions' %}");
+      const data = await resp.json();
+      data.vehicles.forEach(sv => {
+        // Merge server data into local data (keep client/source from initial load)
+        const idx = V.findIndex(x => x.id === sv.id);
+        if (idx >= 0) {
+          V[idx].lat = sv.lat; V[idx].lng = sv.lng;
+          V[idx].speed = sv.speed; V[idx].updated = sv.updated;
+          V[idx].status = sv.status;
+        }
+        if (markers[sv.id]) {
+          const merged = idx >= 0 ? V[idx] : sv;
+          markers[sv.id].data = merged;
+          markers[sv.id].marker.setLngLat([sv.lng, sv.lat]);
+          // Rebuild marker element
+          const oldEl = markers[sv.id].marker.getElement();
+          const newEl = createMarkerEl(merged);
+          newEl.addEventListener('click', () => selectVehicle(sv.id));
+          oldEl.innerHTML = newEl.innerHTML;
+        }
+      });
+      renderVehicleList(document.getElementById('vehicle-search').value);
+    } catch(e) { console.error('Refresh error', e); }
+    countdown = 15;
+  }
+
+  setInterval(() => {
+    countdown--;
+    if (timerEl) timerEl.textContent = countdown + 's';
+    if (countdown <= 0) refreshPositions();
+  }, 1000);
+
+  // ═══════ UTILS ═══════
+  function timeAgo(iso) {
+    if (!iso) return '—';
+    const diff = (Date.now() - new Date(iso).getTime()) / 1000;
+    if (diff < 60) return Math.round(diff) + 's';
+    if (diff < 3600) return Math.round(diff / 60) + 'min';
+    if (diff < 86400) return Math.round(diff / 3600) + 'h';
+    return Math.round(diff / 86400) + 'j';
+  }
+
+  // ═══════ INIT ═══════
+  map.on('load', () => {
+    addVehicleMarkers();
+    drawZones();
+    document.getElementById('tb-zones').classList.add('active');
+    renderVehicleList();
+
+    // Fit bounds to all vehicles
+    if (V.length > 1) {
+      const bounds = V.reduce((b, v) => b.extend([v.lng, v.lat]), new maplibregl.LngLatBounds([V[0].lng, V[0].lat], [V[0].lng, V[0].lat]));
+      map.fitBounds(bounds, { padding: 80, duration: 1500 });
+    }
+  });
+
+})();
+</script>
+{% endblock %}

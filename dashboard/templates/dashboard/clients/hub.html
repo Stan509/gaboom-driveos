@@ -1,0 +1,552 @@
+{% extends "dashboard/_layout.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "Clients" %} — Dashboard{% endblock %}
+{% block page_title %}{% trans "Clients" %}{% endblock %}
+{% block page_subtitle %}{% trans "Gestion de vos clients" %}{% endblock %}
+
+{% block page_css %}
+<style>
+  @keyframes cardIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+  .card-in{animation:cardIn .3s ease-out both}
+  .row-selected{background:rgba(109,40,217,.04);border-left:3px solid #6D28D9}
+  .drop-highlight{border-color:#6D28D9!important;background:rgba(109,40,217,.04)}
+  @keyframes slideIn{from{transform:translateX(100%)}to{transform:translateX(0)}}
+  @keyframes slideOut{from{transform:translateX(0)}to{transform:translateX(100%)}}
+  .drawer-open{animation:slideIn .25s ease-out both}
+  .drawer-close{animation:slideOut .2s ease-in both}
+  .kpi-mini{animation:cardIn .35s ease-out both}
+</style>
+{% endblock %}
+
+{% block page_actions %}
+{% if can_edit %}
+<a href="{% url 'dashboard:client_hub' %}" class="rounded-xl bg-gaboomViolet text-white px-4 py-2.5 text-sm font-medium hover:opacity-95 transition inline-flex items-center gap-1.5">
+  <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/></svg>
+  {% trans "Nouveau client" %}
+</a>
+<button onclick="openDrawer()" class="lg:hidden rounded-xl border border-slate-200 text-slate-600 px-3 py-2.5 text-sm font-medium hover:bg-slate-50 transition inline-flex items-center gap-1.5">
+  <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125"/></svg>
+</button>
+{% endif %}
+{% endblock %}
+
+{% block content %}
+<!-- ═══════ KPI ROW ═══════ -->
+<div class="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-5">
+  <div class="kpi-mini rounded-xl bg-white border border-slate-200 shadow-sm px-4 py-3 flex items-center gap-3" style="animation-delay:0ms">
+    <div class="h-9 w-9 rounded-xl bg-violet-50 flex items-center justify-center shrink-0">
+      <svg class="w-4.5 h-4.5 text-gaboomViolet" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19.128a9.38 9.38 0 0 0 2.625.372 9.337 9.337 0 0 0 4.121-.952 4.125 4.125 0 0 0-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 0 1 8.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0 1 11.964-3.07M12 6.375a3.375 3.375 0 1 1-6.75 0 3.375 3.375 0 0 1 6.75 0Zm8.25 2.25a2.625 2.625 0 1 1-5.25 0 2.625 2.625 0 0 1 5.25 0Z"/></svg>
+    </div>
+    <div>
+      <div class="text-lg font-bold text-slate-800">{{ kpi.total }}</div>
+      <div class="text-[11px] text-slate-400 font-medium">{% trans "Total clients" %}</div>
+    </div>
+  </div>
+  <div class="kpi-mini rounded-xl bg-white border border-slate-200 shadow-sm px-4 py-3 flex items-center gap-3" style="animation-delay:60ms">
+    <div class="h-9 w-9 rounded-xl bg-emerald-50 flex items-center justify-center shrink-0">
+      <svg class="w-4.5 h-4.5 text-emerald-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/></svg>
+    </div>
+    <div>
+      <div class="text-lg font-bold text-emerald-700">{{ kpi.valid }}</div>
+      <div class="text-[11px] text-slate-400 font-medium">{% trans "Permis valide" %}</div>
+    </div>
+  </div>
+  <div class="kpi-mini rounded-xl bg-white border border-slate-200 shadow-sm px-4 py-3 flex items-center gap-3" style="animation-delay:120ms">
+    <div class="h-9 w-9 rounded-xl bg-red-50 flex items-center justify-center shrink-0">
+      <svg class="w-4.5 h-4.5 text-red-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m9-.75a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 3.75h.008v.008H12v-.008Z"/></svg>
+    </div>
+    <div>
+      <div class="text-lg font-bold text-red-700">{{ kpi.expired }}</div>
+      <div class="text-[11px] text-slate-400 font-medium">{% trans "Permis expiré" %}</div>
+    </div>
+  </div>
+  <div class="kpi-mini rounded-xl bg-white border border-slate-200 shadow-sm px-4 py-3 flex items-center gap-3" style="animation-delay:180ms">
+    <div class="h-9 w-9 rounded-xl bg-slate-100 flex items-center justify-center shrink-0">
+      <svg class="w-4.5 h-4.5 text-slate-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 0 0 5.636 5.636m12.728 12.728A9 9 0 0 1 5.636 5.636m12.728 12.728L5.636 5.636"/></svg>
+    </div>
+    <div>
+      <div class="text-lg font-bold text-slate-600">{{ kpi.missing }}</div>
+      <div class="text-[11px] text-slate-400 font-medium">{% trans "Permis manquant" %}</div>
+    </div>
+  </div>
+</div>
+
+<div class="grid lg:grid-cols-12 gap-5">
+
+<!-- ═══════ LEFT: LIST ═══════ -->
+<div class="lg:col-span-7">
+  <div class="card-in rounded-2xl bg-white border border-slate-200 shadow-sm overflow-hidden">
+
+    <!-- Toolbar -->
+    <div class="p-4 border-b border-slate-100">
+      <form method="get" class="flex flex-wrap items-center gap-2">
+        <div class="relative flex-1 min-w-[180px]">
+          <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"/></svg>
+          <input type="text" name="q" value="{{ q }}" placeholder="{% trans "Nom, email, tél…" %}" class="w-full rounded-xl border border-slate-200 pl-9 pr-3 py-2 text-sm focus:border-violet-400 focus:ring-1 focus:ring-violet-400 outline-none">
+        </div>
+        <select name="status" onchange="this.form.submit()" class="rounded-xl border border-slate-200 px-3 py-2 text-sm focus:border-violet-400 focus:ring-1 focus:ring-violet-400 outline-none">
+          <option value="">{% trans "Statut : tous" %}</option>
+          <option value="active" {% if status_filter == "active" %}selected{% endif %}>{% trans "Actif" %}</option>
+          <option value="vip" {% if status_filter == "vip" %}selected{% endif %}>{% trans "VIP" %}</option>
+          <option value="blacklisted" {% if status_filter == "blacklisted" %}selected{% endif %}>{% trans "Blacklisté" %}</option>
+        </select>
+        <select name="license" onchange="this.form.submit()" class="rounded-xl border border-slate-200 px-3 py-2 text-sm focus:border-violet-400 focus:ring-1 focus:ring-violet-400 outline-none">
+          <option value="">{% trans "Permis : tous" %}</option>
+          <option value="valid" {% if license_filter == "valid" %}selected{% endif %}>{% trans "Valide" %}</option>
+          <option value="expired" {% if license_filter == "expired" %}selected{% endif %}>{% trans "Expiré" %}</option>
+          <option value="missing" {% if license_filter == "missing" %}selected{% endif %}>{% trans "Manquant" %}</option>
+        </select>
+        <select name="sort" onchange="this.form.submit()" class="rounded-xl border border-slate-200 px-3 py-2 text-sm focus:border-violet-400 focus:ring-1 focus:ring-violet-400 outline-none">
+          <option value="name" {% if sort_by == "name" %}selected{% endif %}>{% trans "Tri : Nom" %}</option>
+          <option value="date" {% if sort_by == "date" %}selected{% endif %}>{% trans "Tri : Création" %}</option>
+          <option value="expiry" {% if sort_by == "expiry" %}selected{% endif %}>{% trans "Tri : Expiration permis" %}</option>
+        </select>
+        <button type="submit" class="rounded-xl bg-slate-100 text-slate-600 px-3 py-2 text-sm font-medium hover:bg-slate-200 transition">{% trans "Filtrer" %}</button>
+      </form>
+    </div>
+
+    {% if clients %}
+    <!-- Desktop Table -->
+    <div class="hidden md:block overflow-x-auto">
+      <table class="w-full text-sm">
+        <thead>
+          <tr class="border-b border-slate-100 text-left text-[11px] font-semibold text-slate-400 uppercase tracking-wider">
+            <th class="px-4 py-3">{% trans "Client" %}</th>
+            <th class="px-4 py-3">{% trans "Contact" %}</th>
+            <th class="px-4 py-3">{% trans "Permis" %}</th>
+            <th class="px-4 py-3">{% trans "Statut" %}</th>
+            <th class="px-4 py-3 text-right">{% trans "Actions" %}</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-slate-50">
+          {% for c in clients %}
+          <tr class="group hover:bg-slate-50/50 transition cursor-pointer {% if editing.pk == c.pk %}row-selected{% endif %}"
+              onclick="window.location.href='?edit={{ c.pk }}&q={{ q }}&status={{ status_filter }}&license={{ license_filter }}&sort={{ sort_by }}&page={{ page_num }}'">
+            <td class="px-4 py-3">
+              <div class="flex items-center gap-3">
+                <div class="h-8 w-8 rounded-full bg-slate-100 flex items-center justify-center text-[11px] font-bold text-slate-500 uppercase">
+                  {{ c.full_name|slice:":2" }}
+                </div>
+                <div>
+                  <div class="font-semibold text-slate-700">{{ c.full_name }}</div>
+                  <div class="text-[10px] text-slate-400">ID: #{{ c.pk }}</div>
+                </div>
+              </div>
+            </td>
+            <td class="px-4 py-3">
+              <div class="text-xs text-slate-600">{{ c.email }}</div>
+              <div class="text-[10px] text-slate-400">{{ c.phone }}</div>
+            </td>
+            <td class="px-4 py-3">
+              {% if c.driving_license_expiry %}
+                <div class="text-xs {% if c.license_status == 'expired' %}text-red-600 font-semibold{% elif c.license_status == 'warning' %}text-amber-600{% else %}text-slate-600{% endif %}">
+                  {{ c.driving_license_expiry|date:"d/m/Y" }}
+                </div>
+                <div class="text-[10px] opacity-60">
+                  {% if c.days_left > 0 %}
+                    {{ c.days_left }} {% trans "jours" %}
+                  {% elif c.days_left == 0 %}
+                    {% trans "Expire aujourd'hui" %}
+                  {% else %}
+                    {% trans "Expiré" %}
+                  {% endif %}
+                </div>
+              {% else %}
+                <span class="text-[10px] text-slate-400 italic">{% trans "Non renseigné" %}</span>
+              {% endif %}
+            </td>
+            <td class="px-4 py-3">
+              {% if c.status == "active" %}
+              <span class="inline-flex items-center gap-1 rounded-full bg-emerald-50 text-emerald-700 px-2 py-0.5 text-[10px] font-semibold">{% trans "Actif" %}</span>
+              {% elif c.status == "vip" %}
+              <span class="inline-flex items-center gap-1 rounded-full bg-violet-50 text-gaboomViolet px-2 py-0.5 text-[10px] font-semibold">VIP</span>
+              {% elif c.status == "blacklisted" %}
+              <span class="inline-flex items-center gap-1 rounded-full bg-red-50 text-red-700 px-2 py-0.5 text-[10px] font-semibold">{% trans "Blacklisté" %}</span>
+              {% endif %}
+            </td>
+            <td class="px-4 py-3 text-right">
+              <div class="flex items-center justify-end gap-1 opacity-0 group-hover:opacity-100 transition">
+                <a href="{% url 'dashboard:client_detail' c.pk %}" class="p-1.5 hover:bg-white rounded-lg text-slate-400 hover:text-gaboomViolet transition" title="{% trans "Voir fiche" %}">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"/></svg>
+                </a>
+              </div>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Mobile Cards -->
+    <div class="md:hidden divide-y divide-slate-100">
+      {% for c in clients %}
+      <div class="px-4 py-3 hover:bg-slate-50/60 transition {% if editing and editing.pk == c.pk %}row-selected{% endif %}">
+        <div class="flex items-center gap-3">
+          <div class="h-10 w-10 rounded-full bg-gradient-to-br from-violet-100 to-violet-50 flex items-center justify-center shrink-0 text-sm font-bold text-gaboomViolet">
+            {{ c.full_name|make_list|first|upper }}
+          </div>
+          <div class="flex-1 min-w-0">
+            <div class="font-medium text-slate-800 text-sm truncate">{{ c.full_name }}</div>
+            <div class="text-xs text-slate-400">{{ c.phone|default:"" }} {{ c.email|default:"" }}</div>
+          </div>
+          <div class="flex items-center gap-1.5 shrink-0">
+            {% if c.license_status == "expired" %}
+            <span class="inline-flex items-center gap-1 rounded-full bg-red-100 text-red-700 px-2 py-0.5 text-[10px] font-semibold">{% trans "Expiré" %}</span>
+            {% elif c.license_status == "valid" %}
+            <span class="inline-flex items-center gap-1 rounded-full bg-emerald-100 text-emerald-700 px-2 py-0.5 text-[10px] font-semibold">{% trans "Valide" %}</span>
+            {% else %}
+            <span class="inline-flex items-center gap-1 rounded-full bg-slate-100 text-slate-500 px-2 py-0.5 text-[10px] font-semibold">{% trans "Manquant" %}</span>
+            {% endif %}
+            {% if c.id_document %}
+            <span class="inline-flex items-center rounded-full bg-blue-50 text-blue-600 px-1.5 py-0.5 text-[10px] font-semibold">ID</span>
+            {% endif %}
+          </div>
+        </div>
+        <div class="flex items-center gap-2 mt-2 ml-13">
+          <a href="{% url 'dashboard:client_detail' c.pk %}" class="rounded-lg border border-slate-200 px-3 py-1 text-[11px] font-medium text-slate-600 hover:bg-slate-50 transition">{% trans "Voir" %}</a>
+          {% if can_edit %}
+          <a href="?edit={{ c.pk }}&q={{ q }}&status={{ status_filter }}&license={{ license_filter }}&sort={{ sort_by }}" onclick="openDrawer()" class="rounded-lg bg-gaboomViolet text-white px-3 py-1 text-[11px] font-medium hover:opacity-95 transition">{% trans "Modifier" %}</a>
+          {% endif %}
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+
+    {% else %}
+    <!-- Empty State -->
+    <div class="text-center py-16 px-6">
+      <div class="mx-auto w-16 h-16 rounded-2xl bg-violet-50 flex items-center justify-center mb-4">
+        <svg class="w-8 h-8 text-gaboomViolet" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19.128a9.38 9.38 0 0 0 2.625.372 9.337 9.337 0 0 0 4.121-.952 4.125 4.125 0 0 0-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 0 1 8.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0 1 11.964-3.07M12 6.375a3.375 3.375 0 1 1-6.75 0 3.375 3.375 0 0 1 6.75 0Zm8.25 2.25a2.625 2.625 0 1 1-5.25 0 2.625 2.625 0 0 1 5.25 0Z"/></svg>
+      </div>
+      <h3 class="font-semibold text-slate-800">{% trans "Aucun client" %}</h3>
+      <p class="text-sm text-slate-400 mt-1">{% trans "Ajoutez votre premier client via le formulaire ci-contre." %}</p>
+      {% if can_edit %}
+      <a href="{% url 'dashboard:client_hub' %}" class="inline-flex items-center gap-1.5 mt-4 rounded-xl bg-gaboomViolet text-white px-4 py-2 text-sm font-medium hover:opacity-95 transition">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/></svg>
+        {% trans "Ajouter un client" %}
+      </a>
+      {% endif %}
+    </div>
+    {% endif %}
+  </div>
+</div>
+
+<!-- ═══════ RIGHT: FORM PANEL ═══════ -->
+{% if can_edit %}
+<!-- Desktop panel -->
+<div class="hidden lg:block lg:col-span-5">
+  <div class="card-in rounded-2xl bg-white border border-slate-200 shadow-sm lg:sticky lg:top-24" style="animation-delay:100ms">
+    <!-- Form header -->
+    <div class="px-5 py-4 border-b border-slate-100 flex items-center justify-between">
+      <div>
+        <h3 class="font-semibold text-sm text-slate-800">{% if editing %}{% trans "Modifier le client" %}{% else %}{% trans "Nouveau client" %}{% endif %}</h3>
+        {% if editing %}
+        <p class="text-xs text-slate-400 mt-0.5">{{ editing.full_name }}</p>
+        {% endif %}
+      </div>
+      <div class="flex items-center gap-2">
+        {% if editing %}
+        <a href="{% url 'dashboard:client_detail' editing.pk %}" class="text-xs text-slate-500 hover:text-gaboomViolet font-medium transition">{% trans "Voir fiche" %}</a>
+        <span class="text-slate-200">|</span>
+        <a href="{% url 'dashboard:client_hub' %}?q={{ q }}&status={{ status_filter }}&license={{ license_filter }}&sort={{ sort_by }}" class="text-xs text-gaboomViolet hover:underline font-medium">+ {% trans "Nouveau" %}</a>
+        {% endif %}
+      </div>
+    </div>
+
+    <form method="post" enctype="multipart/form-data" class="p-5 space-y-4">
+      {% csrf_token %}
+      {% if editing %}<input type="hidden" name="client_id" value="{{ editing.pk }}">{% endif %}
+
+      {% if form.non_field_errors %}
+      <div class="rounded-xl bg-red-50 border border-red-200 text-red-700 px-4 py-2.5 text-sm">
+        {% for error in form.non_field_errors %}<p>{{ error }}</p>{% endfor %}
+      </div>
+      {% endif %}
+
+      <!-- Section: Identité -->
+      <div class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">{% trans "Identité" %}</div>
+      <div>
+        <label class="block text-xs font-medium text-slate-600 mb-1">{{ form.full_name.label }}</label>
+        {{ form.full_name }}
+        {% if form.full_name.errors %}<p class="mt-0.5 text-[11px] text-red-600">{{ form.full_name.errors.0 }}</p>{% endif %}
+      </div>
+      <div class="grid grid-cols-2 gap-3">
+        <div>
+          <label class="block text-xs font-medium text-slate-600 mb-1">{{ form.email.label }}</label>
+          {{ form.email }}
+          {% if form.email.errors %}<p class="mt-0.5 text-[11px] text-red-600">{{ form.email.errors.0 }}</p>{% endif %}
+        </div>
+        <div>
+          <label class="block text-xs font-medium text-slate-600 mb-1">{{ form.phone.label }}</label>
+          {{ form.phone }}
+          {% if form.phone.errors %}<p class="mt-0.5 text-[11px] text-red-600">{{ form.phone.errors.0 }}</p>{% endif %}
+        </div>
+      </div>
+      <div class="grid grid-cols-2 gap-3">
+        <div>
+          <label class="block text-xs font-medium text-slate-600 mb-1">{{ form.whatsapp.label }}</label>
+          {{ form.whatsapp }}
+        </div>
+        <div>
+          <label class="block text-xs font-medium text-slate-600 mb-1">{{ form.status.label }}</label>
+          {{ form.status }}
+        </div>
+      </div>
+      <div>
+        <label class="block text-xs font-medium text-slate-600 mb-1">{{ form.address.label }}</label>
+        {{ form.address }}
+      </div>
+
+      <!-- Section: Permis -->
+      <div class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider pt-2 flex items-center gap-2">
+        {% trans "Permis de conduire" %}
+        {% if editing %}
+          {% if editing.license_status == "expired" %}
+          <span class="inline-flex items-center gap-1 rounded-full bg-red-100 text-red-700 px-2 py-0.5 text-[10px] font-semibold">{% trans "Expiré" %}</span>
+          {% elif editing.license_status == "valid" %}
+          <span class="inline-flex items-center gap-1 rounded-full bg-emerald-100 text-emerald-700 px-2 py-0.5 text-[10px] font-semibold">{% trans "Valide" %}</span>
+          {% else %}
+          <span class="inline-flex items-center gap-1 rounded-full bg-slate-100 text-slate-500 px-2 py-0.5 text-[10px] font-semibold">{% trans "Manquant" %}</span>
+          {% endif %}
+        {% endif %}
+      </div>
+      <div class="grid grid-cols-2 gap-3">
+        <div>
+          <label class="block text-xs font-medium text-slate-600 mb-1">{{ form.driving_license_number.label }}</label>
+          {{ form.driving_license_number }}
+          {% if form.driving_license_number.errors %}<p class="mt-0.5 text-[11px] text-red-600">{{ form.driving_license_number.errors.0 }}</p>{% endif %}
+        </div>
+        <div>
+          <label class="block text-xs font-medium text-slate-600 mb-1">{{ form.driving_license_expiry.label }}</label>
+          {{ form.driving_license_expiry }}
+          {% if form.driving_license_expiry.errors %}<p class="mt-0.5 text-[11px] text-red-600">{{ form.driving_license_expiry.errors.0 }}</p>{% endif %}
+        </div>
+      </div>
+
+      <!-- Section: Document -->
+      <div class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider pt-2">{% trans "Pièce d'identité" %}</div>
+      {% if editing and editing.id_document %}
+      <div class="flex items-center gap-3 mb-1">
+        <img src="{{ editing.id_document.url }}" alt="ID" class="h-14 w-20 rounded-lg object-cover border border-slate-200">
+        <div>
+          <span class="text-xs text-slate-400">{% trans "Document actuel" %}</span>
+          <a href="{{ editing.id_document.url }}" target="_blank" class="block text-xs text-gaboomViolet hover:underline mt-0.5">{% trans "Ouvrir" %}</a>
+        </div>
+      </div>
+      {% endif %}
+      <div id="dropZone" class="relative rounded-xl border-2 border-dashed border-slate-200 p-4 text-center hover:border-violet-300 transition cursor-pointer">
+        <input type="file" name="id_document" accept="image/png,image/jpeg,image/webp" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer" id="docInput">
+        <div id="dropPlaceholder">
+          <svg class="w-7 h-7 mx-auto text-slate-300 mb-1" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="m2.25 15.75 5.159-5.159a2.25 2.25 0 0 1 3.182 0l5.159 5.159m-1.5-1.5 1.409-1.409a2.25 2.25 0 0 1 3.182 0l2.909 2.909M3.75 21h16.5A2.25 2.25 0 0 0 22.5 18.75V5.25A2.25 2.25 0 0 0 20.25 3H3.75A2.25 2.25 0 0 0 1.5 5.25v13.5A2.25 2.25 0 0 0 3.75 21Z"/></svg>
+          <p class="text-xs text-slate-400">{% trans "Glissez ou cliquez — PNG, JPG, WebP (max 5 Mo)" %}</p>
+        </div>
+        <img id="docPreview" class="hidden mx-auto rounded-lg max-h-28 object-contain" alt="{% trans "Aperçu" %}">
+      </div>
+      {% if form.id_document.errors %}<p class="mt-0.5 text-[11px] text-red-600">{{ form.id_document.errors.0 }}</p>{% endif %}
+
+      <!-- Section: Notes -->
+      <div class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider pt-2">{% trans "Notes & tags" %}</div>
+      <div>
+        <label class="block text-xs font-medium text-slate-600 mb-1">{{ form.tags.label }}</label>
+        {{ form.tags }}
+      </div>
+      <div>
+        <label class="block text-xs font-medium text-slate-600 mb-1">{{ form.notes.label }}</label>
+        {{ form.notes }}
+      </div>
+
+      <!-- Section: Relance -->
+      <div class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider pt-2">{% trans "Relance" %}</div>
+      <div class="grid grid-cols-2 gap-3">
+        <div>
+          <label class="block text-xs font-medium text-slate-600 mb-1">{{ form.follow_up_at.label }}</label>
+          {{ form.follow_up_at }}
+        </div>
+        <div>
+          <label class="block text-xs font-medium text-slate-600 mb-1">{{ form.follow_up_note.label }}</label>
+          {{ form.follow_up_note }}
+        </div>
+      </div>
+
+      <!-- Buttons -->
+      <div class="flex items-center gap-2 pt-3">
+        <button type="submit" class="flex-1 rounded-xl bg-gaboomViolet text-white px-4 py-2.5 text-sm font-medium hover:opacity-95 transition">
+          {% if editing %}{% trans "Enregistrer" %}{% else %}{% trans "Ajouter" %}{% endif %}
+        </button>
+        {% if editing %}
+        <a href="{% url 'dashboard:client_hub' %}?q={{ q }}&status={{ status_filter }}&license={{ license_filter }}&sort={{ sort_by }}" class="rounded-xl border border-slate-200 px-4 py-2.5 text-sm font-medium text-slate-600 hover:bg-slate-50 transition">{% trans "Annuler" %}</a>
+        {% endif %}
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Mobile Drawer -->
+<div id="mobileDrawerOverlay" class="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 hidden lg:hidden" onclick="closeDrawer()"></div>
+<div id="mobileDrawer" class="fixed top-0 right-0 bottom-0 w-full max-w-md bg-white shadow-2xl z-50 hidden lg:hidden overflow-y-auto">
+  <div class="sticky top-0 bg-white/95 backdrop-blur border-b border-slate-200 px-5 py-4 flex items-center justify-between z-10">
+    <h3 class="font-semibold text-sm text-slate-800">{% if editing %}{% trans "Modifier le client" %}{% else %}{% trans "Nouveau client" %}{% endif %}</h3>
+    <button onclick="closeDrawer()" class="rounded-lg p-1.5 hover:bg-slate-100 text-slate-400 transition">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12"/></svg>
+    </button>
+  </div>
+
+  <form method="post" enctype="multipart/form-data" class="p-5 space-y-4">
+    {% csrf_token %}
+    {% if editing %}<input type="hidden" name="client_id" value="{{ editing.pk }}">{% endif %}
+
+    {% if form.non_field_errors %}
+    <div class="rounded-xl bg-red-50 border border-red-200 text-red-700 px-4 py-2.5 text-sm">
+      {% for error in form.non_field_errors %}<p>{{ error }}</p>{% endfor %}
+    </div>
+    {% endif %}
+
+    <div class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">{% trans "Identité" %}</div>
+    <div>
+      <label class="block text-xs font-medium text-slate-600 mb-1">{{ form.full_name.label }}</label>
+      {{ form.full_name }}
+    </div>
+    <div class="grid grid-cols-2 gap-3">
+      <div>
+        <label class="block text-xs font-medium text-slate-600 mb-1">{{ form.email.label }}</label>
+        {{ form.email }}
+      </div>
+      <div>
+        <label class="block text-xs font-medium text-slate-600 mb-1">{{ form.phone.label }}</label>
+        {{ form.phone }}
+      </div>
+    </div>
+    <div class="grid grid-cols-2 gap-3">
+      <div>
+        <label class="block text-xs font-medium text-slate-600 mb-1">{{ form.whatsapp.label }}</label>
+        {{ form.whatsapp }}
+      </div>
+      <div>
+        <label class="block text-xs font-medium text-slate-600 mb-1">{{ form.status.label }}</label>
+        {{ form.status }}
+      </div>
+    </div>
+    <div>
+      <label class="block text-xs font-medium text-slate-600 mb-1">{{ form.address.label }}</label>
+      {{ form.address }}
+    </div>
+
+    <div class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider pt-2">{% trans "Permis de conduire" %}</div>
+    <div class="grid grid-cols-2 gap-3">
+      <div>
+        <label class="block text-xs font-medium text-slate-600 mb-1">{{ form.driving_license_number.label }}</label>
+        {{ form.driving_license_number }}
+      </div>
+      <div>
+        <label class="block text-xs font-medium text-slate-600 mb-1">{{ form.driving_license_expiry.label }}</label>
+        {{ form.driving_license_expiry }}
+      </div>
+    </div>
+
+    <div class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider pt-2">{% trans "Pièce d'identité" %}</div>
+    {% if editing and editing.id_document %}
+    <div class="flex items-center gap-3 mb-1">
+      <img src="{{ editing.id_document.url }}" alt="ID" class="h-14 w-20 rounded-lg object-cover border border-slate-200">
+      <span class="text-xs text-slate-400">{% trans "Document actuel" %}</span>
+    </div>
+    {% endif %}
+    <div id="dropZoneMobile" class="relative rounded-xl border-2 border-dashed border-slate-200 p-4 text-center hover:border-violet-300 transition cursor-pointer">
+      <input type="file" name="id_document" accept="image/png,image/jpeg,image/webp" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer" id="docInputMobile">
+      <div id="dropPlaceholderMobile">
+        <svg class="w-7 h-7 mx-auto text-slate-300 mb-1" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="m2.25 15.75 5.159-5.159a2.25 2.25 0 0 1 3.182 0l5.159 5.159m-1.5-1.5 1.409-1.409a2.25 2.25 0 0 1 3.182 0l2.909 2.909M3.75 21h16.5A2.25 2.25 0 0 0 22.5 18.75V5.25A2.25 2.25 0 0 0 20.25 3H3.75A2.25 2.25 0 0 0 1.5 5.25v13.5A2.25 2.25 0 0 0 3.75 21Z"/></svg>
+        <p class="text-xs text-slate-400">{% trans "Glissez ou cliquez — max 5 Mo" %}</p>
+      </div>
+      <img id="docPreviewMobile" class="hidden mx-auto rounded-lg max-h-28 object-contain" alt="{% trans "Aperçu" %}">
+    </div>
+
+    <div class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider pt-2">{% trans "Notes & tags" %}</div>
+    <div>
+      <label class="block text-xs font-medium text-slate-600 mb-1">{{ form.tags.label }}</label>
+      {{ form.tags }}
+    </div>
+    <div>
+      <label class="block text-xs font-medium text-slate-600 mb-1">{{ form.notes.label }}</label>
+      {{ form.notes }}
+    </div>
+
+    <div class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider pt-2">{% trans "Relance" %}</div>
+    <div class="grid grid-cols-2 gap-3">
+      <div>
+        <label class="block text-xs font-medium text-slate-600 mb-1">{{ form.follow_up_at.label }}</label>
+        {{ form.follow_up_at }}
+      </div>
+      <div>
+        <label class="block text-xs font-medium text-slate-600 mb-1">{{ form.follow_up_note.label }}</label>
+        {{ form.follow_up_note }}
+      </div>
+    </div>
+
+    <div class="flex items-center gap-2 pt-3">
+      <button type="submit" class="flex-1 rounded-xl bg-gaboomViolet text-white px-4 py-2.5 text-sm font-medium hover:opacity-95 transition">
+        {% if editing %}{% trans "Enregistrer" %}{% else %}{% trans "Ajouter" %}{% endif %}
+      </button>
+      <button type="button" onclick="closeDrawer()" class="rounded-xl border border-slate-200 px-4 py-2.5 text-sm font-medium text-slate-600 hover:bg-slate-50 transition">{% trans "Annuler" %}</button>
+    </div>
+  </form>
+</div>
+{% endif %}
+
+</div>
+
+<!-- ═══════ JS ═══════ -->
+<script>
+// ── Image preview (desktop + mobile) ──
+function setupPreview(inputId, previewId, placeholderId, zoneId){
+  var input = document.getElementById(inputId);
+  var preview = document.getElementById(previewId);
+  var placeholder = document.getElementById(placeholderId);
+  var zone = document.getElementById(zoneId);
+  if(!input) return;
+  input.addEventListener('change', function(){
+    if(this.files && this.files[0]){
+      var reader = new FileReader();
+      reader.onload = function(e){
+        preview.src = e.target.result;
+        preview.classList.remove('hidden');
+        placeholder.classList.add('hidden');
+      };
+      reader.readAsDataURL(this.files[0]);
+    }
+  });
+  if(zone){
+    zone.addEventListener('dragover', function(e){ e.preventDefault(); zone.classList.add('drop-highlight'); });
+    zone.addEventListener('dragleave', function(){ zone.classList.remove('drop-highlight'); });
+    zone.addEventListener('drop', function(e){
+      e.preventDefault(); zone.classList.remove('drop-highlight');
+      if(e.dataTransfer.files.length){ input.files = e.dataTransfer.files; input.dispatchEvent(new Event('change')); }
+    });
+  }
+}
+setupPreview('docInput','docPreview','dropPlaceholder','dropZone');
+setupPreview('docInputMobile','docPreviewMobile','dropPlaceholderMobile','dropZoneMobile');
+
+// ── Mobile drawer ──
+function openDrawer(){
+  var o = document.getElementById('mobileDrawerOverlay');
+  var d = document.getElementById('mobileDrawer');
+  if(!o||!d) return;
+  o.classList.remove('hidden');
+  d.classList.remove('hidden','drawer-close');
+  d.classList.add('drawer-open');
+}
+function closeDrawer(){
+  var o = document.getElementById('mobileDrawerOverlay');
+  var d = document.getElementById('mobileDrawer');
+  if(!o||!d) return;
+  d.classList.remove('drawer-open');
+  d.classList.add('drawer-close');
+  setTimeout(function(){ o.classList.add('hidden'); d.classList.add('hidden'); }, 200);
+}
+
+// Auto-open drawer on mobile if editing
+{% if editing %}
+if(window.innerWidth < 1024){ openDrawer(); }
+{% endif %}
+</script>
+{% endblock %}

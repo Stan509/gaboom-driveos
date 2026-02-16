@@ -1,0 +1,58 @@
+{% load static i18n %}<!doctype html>
+{% get_current_language as LANGUAGE_CODE %}
+<html lang="{{ LANGUAGE_CODE }}" class="scroll-smooth">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#6D28D9" />
+    <meta name="description" content="{% trans 'Gaboom DriveOS — Le cockpit tout-en-un pour piloter une agence de location.' %}" />
+
+    <link rel="icon" type="image/png" sizes="32x32" href="{% static 'brand/favicon-32.png' %}" />
+    <link rel="icon" type="image/png" sizes="16x16" href="{% static 'brand/favicon-16.png' %}" />
+    <link rel="icon" type="image/svg+xml" href="{% static 'brand/favicon.svg' %}" />
+    <link rel="apple-touch-icon" sizes="180x180" href="{% static 'brand/apple-touch-icon.png' %}" />
+    <link rel="manifest" href="{% static 'manifest.json' %}" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="DriveOS" />
+    <meta name="msapplication-TileColor" content="#6D28D9" />
+    <meta name="msapplication-TileImage" content="{% static 'brand/icon-192.png' %}" />
+
+    <title>{% block title %}{% trans "Gaboom DriveOS" %}{% endblock %}</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: { sans: ["Inter", "system-ui", "sans-serif"] },
+            colors: {
+              gaboomViolet: "#6D28D9",
+              gaboomYellow: "#FACC15",
+            },
+          },
+        },
+      };
+    </script>
+
+    <style>
+      body { font-family: "Inter", system-ui, sans-serif; }
+      .glow-violet { box-shadow: 0 0 40px rgba(109,40,217,.12); }
+    </style>
+    {% block extra_head %}{% endblock %}
+  </head>
+  <body class="min-h-screen bg-white text-slate-900 antialiased">
+    {% block body %}{% endblock %}
+    <script>
+      if('serviceWorker' in navigator){
+        window.addEventListener('load',()=>{
+          navigator.serviceWorker.register('/static/sw.js',{scope:'/'}).catch(()=>{});
+        });
+      }
+    </script>
+  </body>
+</html>

@@ -1,0 +1,1081 @@
+{% extends "dashboard/_layout.html" %}
+{% load i18n humanize %}
+
+{% block title %}{% trans "Contrat et Paiement" %} — Dashboard{% endblock %}
+{% block page_title %}{% trans "Contrat et Paiement" %}{% endblock %}
+{% block page_subtitle %}{% trans "Gestion des contrats et paiements" %}{% endblock %}
+
+{% block page_css %}
+<style>
+  @keyframes cardIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+  .card-in{animation:cardIn .3s ease-out both}
+  .row-selected{background:rgba(109,40,217,.04);border-left:3px solid #6D28D9}
+  @keyframes slideIn{from{transform:translateX(100%)}to{transform:translateX(0)}}
+  @keyframes slideOut{from{transform:translateX(0)}to{transform:translateX(100%)}}
+  .drawer-open{animation:slideIn .25s ease-out both}
+  .drawer-close{animation:slideOut .2s ease-in both}
+  .kpi-mini{animation:cardIn .35s ease-out both}
+  @keyframes fadeIn{from{opacity:0}to{opacity:1}}
+  .modal-fade{animation:fadeIn .15s ease-out both}
+  .kpi-mini:hover{transform:translateY(-1px);box-shadow:0 4px 12px rgba(0,0,0,.06)}
+  .kpi-mini{transition:transform .15s,box-shadow .15s}
+</style>
+{% endblock %}
+
+{% block page_actions %}
+{% if can_edit %}
+<a href="{% url 'dashboard:contract_hub' %}" class="rounded-xl bg-gaboomViolet text-white px-4 py-2.5 text-sm font-medium hover:opacity-95 transition inline-flex items-center gap-1.5">
+  <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/></svg>
+  {% trans "Nouveau contrat" %}
+</a>
+<button onclick="openDrawer()" class="lg:hidden rounded-xl border border-slate-200 text-slate-600 px-3 py-2.5 text-sm font-medium hover:bg-slate-50 transition inline-flex items-center gap-1.5">
+  <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125"/></svg>
+</button>
+{% endif %}
+{% endblock %}
+
+{% block content %}
+<!-- ═══════ KPI ROW ═══════ -->
+<div class="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-5">
+  <div class="kpi-mini rounded-xl bg-white border border-slate-200 shadow-sm px-4 py-3 flex items-center gap-3" style="animation-delay:0ms">
+    <div class="h-9 w-9 rounded-xl bg-emerald-50 flex items-center justify-center shrink-0">
+      <svg class="w-4.5 h-4.5 text-emerald-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/></svg>
+    </div>
+    <div>
+      <div class="text-lg font-bold text-emerald-700">{{ kpi.active }}</div>
+      <div class="text-[11px] text-slate-400 font-medium">{% trans "Actifs" %}</div>
+    </div>
+  </div>
+  <div class="kpi-mini rounded-xl bg-white border border-slate-200 shadow-sm px-4 py-3 flex items-center gap-3" style="animation-delay:60ms">
+    <div class="h-9 w-9 rounded-xl bg-red-50 flex items-center justify-center shrink-0">
+      <svg class="w-4.5 h-4.5 text-red-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v12m-3-2.818.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/></svg>
+    </div>
+    <div>
+      <div class="text-lg font-bold text-red-700">{{ kpi.to_collect }}</div>
+      <div class="text-[11px] text-slate-400 font-medium">{% trans "À encaisser" %}</div>
+    </div>
+  </div>
+  <div class="kpi-mini rounded-xl bg-white border border-slate-200 shadow-sm px-4 py-3 flex items-center gap-3" style="animation-delay:120ms">
+    <div class="h-9 w-9 rounded-xl bg-blue-50 flex items-center justify-center shrink-0">
+      <svg class="w-4.5 h-4.5 text-blue-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5"/></svg>
+    </div>
+    <div>
+      <div class="text-lg font-bold text-blue-700">{{ kpi.today }}</div>
+      <div class="text-[11px] text-slate-400 font-medium">{% trans "Aujourd'hui" %}</div>
+    </div>
+  </div>
+  <div class="kpi-mini rounded-xl bg-white border border-slate-200 shadow-sm px-4 py-3 flex items-center gap-3" style="animation-delay:180ms">
+    <div class="h-9 w-9 rounded-xl bg-slate-100 flex items-center justify-center shrink-0">
+      <svg class="w-4.5 h-4.5 text-slate-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/></svg>
+    </div>
+    <div>
+      <div class="text-lg font-bold text-slate-600">{{ kpi.closed_30d }}</div>
+      <div class="text-[11px] text-slate-400 font-medium">{% trans "Terminés (30j)" %}</div>
+    </div>
+  </div>
+</div>
+
+<div class="lg:col-span-8 {% if tab != 'payments' %}hidden{% endif %}">
+  <div class="flex items-center justify-between mb-4">
+    <div class="text-sm font-semibold text-slate-800">{% trans "Historique des paiements" %}</div>
+    <a href="{% url 'dashboard:payment_export' %}?period={{ payment_filters.period }}&q={{ payment_filters.q }}&method={{ payment_filters.method }}&status={{ payment_filters.status }}&sort={{ payment_filters.sort }}&from={{ payment_filters.date_from }}&to={{ payment_filters.date_to }}" class="rounded-xl border border-slate-200 text-slate-600 px-4 py-2.5 text-sm font-medium hover:bg-slate-50 transition inline-flex items-center gap-1.5">
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3"/></svg>
+      {% trans "Export CSV" %}
+    </a>
+  </div>
+
+  <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-5">
+    <div class="kpi-mini rounded-xl bg-white border border-slate-200 shadow-sm px-4 py-3 flex items-center gap-3">
+      <div class="h-9 w-9 rounded-xl bg-emerald-50 flex items-center justify-center shrink-0">
+        <svg class="w-4.5 h-4.5 text-emerald-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v12m-3-2.818.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/></svg>
+      </div>
+      <div>
+        <div class="text-lg font-bold text-emerald-700">{{ payment_kpi.total_collected|intcomma }}</div>
+        <div class="text-[11px] text-slate-400 font-medium">{% trans "Total encaissé" %}</div>
+      </div>
+    </div>
+    <div class="kpi-mini rounded-xl bg-white border border-slate-200 shadow-sm px-4 py-3 flex items-center gap-3">
+      <div class="h-9 w-9 rounded-xl bg-blue-50 flex items-center justify-center shrink-0">
+        <svg class="w-4.5 h-4.5 text-blue-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5"/></svg>
+      </div>
+      <div>
+        <div class="text-lg font-bold text-blue-700">{{ payment_kpi.today_collected|intcomma }}</div>
+        <div class="text-[11px] text-slate-400 font-medium">{% trans "Aujourd'hui" %}</div>
+      </div>
+    </div>
+    <div class="kpi-mini rounded-xl bg-white border border-slate-200 shadow-sm px-4 py-3 flex items-center gap-3">
+      <div class="h-9 w-9 rounded-xl bg-violet-50 flex items-center justify-center shrink-0">
+        <svg class="w-4.5 h-4.5 text-gaboomViolet" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 18.75a60.07 60.07 0 0 1 15.797 2.101c.727.198 1.453-.342 1.453-1.096V18.75M3.75 4.5v.75A.75.75 0 0 1 3 6h-.75m0 0v-.375c0-.621.504-1.125 1.125-1.125H20.25M2.25 6v9m18-10.5v.75c0 .414.336.75.75.75h.75m-1.5-1.5h.375c.621 0 1.125.504 1.125 1.125v9.75c0 .621-.504 1.125-1.125 1.125h-.375m1.5-1.5H21a.75.75 0 0 0-.75.75v.75m0 0H3.75m0 0h-.375a1.125 1.125 0 0 1-1.125-1.125V15m1.5 1.5v-.75A.75.75 0 0 0 3 15h-.75M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Zm3 0h.008v.008H18V10.5Zm-12 0h.008v.008H6V10.5Z"/></svg>
+      </div>
+      <div>
+        <div class="text-lg font-bold text-gaboomViolet">{{ payment_kpi.count }}</div>
+        <div class="text-[11px] text-slate-400 font-medium">{% trans "Paiements" %}</div>
+      </div>
+    </div>
+    <div class="kpi-mini rounded-xl bg-white border border-slate-200 shadow-sm px-4 py-3 flex items-center gap-3">
+      <div class="h-9 w-9 rounded-xl bg-amber-50 flex items-center justify-center shrink-0">
+        <svg class="w-4.5 h-4.5 text-amber-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 0 1 3 19.875v-6.75ZM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 0 1-1.125-1.125V8.625ZM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 0 1-1.125-1.125V4.125Z"/></svg>
+      </div>
+      <div>
+        <div class="text-lg font-bold text-amber-700 truncate">{{ payment_kpi.dominant_method }}</div>
+        <div class="text-[11px] text-slate-400 font-medium">{% trans "Méthode principale" %}</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card-in rounded-2xl bg-white border border-slate-200 shadow-sm overflow-hidden mb-5">
+    <form method="get" class="p-4 flex flex-wrap items-center gap-2">
+      <input type="hidden" name="tab" value="payments">
+      <div class="relative flex-1 min-w-[180px]">
+        <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"/></svg>
+        <input type="text" name="p_q" value="{{ payment_filters.q }}" placeholder="{% trans 'Client, véhicule, immat, réf…' %}" class="w-full rounded-xl border border-slate-200 pl-9 pr-3 py-2 text-sm focus:border-violet-400 focus:ring-1 focus:ring-violet-400 outline-none">
+      </div>
+      <select name="p_period" id="paymentPeriodSelect" onchange="toggleCustomDatesPayments();this.form.submit()" class="rounded-xl border border-slate-200 px-3 py-2 text-sm focus:border-violet-400 focus:ring-1 focus:ring-violet-400 outline-none">
+        <option value="30d" {% if payment_filters.period == "30d" %}selected{% endif %}>{% trans "30 derniers jours" %}</option>
+        <option value="today" {% if payment_filters.period == "today" %}selected{% endif %}>{% trans "Aujourd'hui" %}</option>
+        <option value="7d" {% if payment_filters.period == "7d" %}selected{% endif %}>{% trans "7 derniers jours" %}</option>
+        <option value="all" {% if payment_filters.period == "all" %}selected{% endif %}>{% trans "Tout" %}</option>
+        <option value="custom" {% if payment_filters.period == "custom" %}selected{% endif %}>{% trans "Personnalisé" %}</option>
+      </select>
+      <div id="paymentCustomDates" class="{% if payment_filters.period != 'custom' %}hidden{% endif %} flex items-center gap-1.5">
+        <input type="date" name="p_from" value="{{ payment_filters.date_from }}" class="rounded-xl border border-slate-200 px-2.5 py-2 text-sm focus:border-violet-400 focus:ring-1 focus:ring-violet-400 outline-none">
+        <span class="text-slate-300 text-xs">→</span>
+        <input type="date" name="p_to" value="{{ payment_filters.date_to }}" class="rounded-xl border border-slate-200 px-2.5 py-2 text-sm focus:border-violet-400 focus:ring-1 focus:ring-violet-400 outline-none">
+      </div>
+      <select name="p_method" onchange="this.form.submit()" class="rounded-xl border border-slate-200 px-3 py-2 text-sm focus:border-violet-400 focus:ring-1 focus:ring-violet-400 outline-none">
+        <option value="">{% trans "Méthode : toutes" %}</option>
+        <option value="cash" {% if payment_filters.method == "cash" %}selected{% endif %}>{% trans "Espèces" %}</option>
+        <option value="card_terminal" {% if payment_filters.method == "card_terminal" %}selected{% endif %}>{% trans "Terminal CB" %}</option>
+        <option value="bank_transfer" {% if payment_filters.method == "bank_transfer" %}selected{% endif %}>{% trans "Virement" %}</option>
+      </select>
+      <select name="p_status" onchange="this.form.submit()" class="rounded-xl border border-slate-200 px-3 py-2 text-sm focus:border-violet-400 focus:ring-1 focus:ring-violet-400 outline-none">
+        <option value="">{% trans "Statut : tous" %}</option>
+        <option value="succeeded" {% if payment_filters.status == "succeeded" %}selected{% endif %}>{% trans "Réussi" %}</option>
+        <option value="refunded" {% if payment_filters.status == "refunded" %}selected{% endif %}>{% trans "Remboursé" %}</option>
+        <option value="failed" {% if payment_filters.status == "failed" %}selected{% endif %}>{% trans "Échoué" %}</option>
+      </select>
+      <select name="p_sort" onchange="this.form.submit()" class="rounded-xl border border-slate-200 px-3 py-2 text-sm focus:border-violet-400 focus:ring-1 focus:ring-violet-400 outline-none">
+        <option value="date" {% if payment_filters.sort == "date" %}selected{% endif %}>{% trans "Tri : Date" %}</option>
+        <option value="amount" {% if payment_filters.sort == "amount" %}selected{% endif %}>{% trans "Tri : Montant" %}</option>
+        <option value="client" {% if payment_filters.sort == "client" %}selected{% endif %}>{% trans "Tri : Client" %}</option>
+      </select>
+      <button type="submit" class="rounded-xl bg-slate-100 text-slate-600 px-3 py-2 text-sm font-medium hover:bg-slate-200 transition">{% trans "Filtrer" %}</button>
+      <a href="{% url 'dashboard:contract_hub' %}?tab=payments" class="rounded-xl border border-slate-200 text-slate-400 px-3 py-2 text-sm font-medium hover:bg-slate-50 transition" title="{% trans 'Réinitialiser' %}">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182"/></svg>
+      </a>
+    </form>
+  </div>
+
+  <div class="card-in rounded-2xl bg-white border border-slate-200 shadow-sm overflow-hidden">
+    {% if payment_entries %}
+    <div class="hidden md:block overflow-x-auto">
+      <table class="w-full text-sm">
+        <thead>
+          <tr class="border-b border-slate-100 text-left text-[11px] font-semibold text-slate-400 uppercase tracking-wider">
+            <th class="px-4 py-3">{% trans "Date" %}</th>
+            <th class="px-4 py-3">{% trans "Montant" %}</th>
+            <th class="px-4 py-3">{% trans "Méthode" %}</th>
+            <th class="px-4 py-3">{% trans "Statut" %}</th>
+            <th class="px-4 py-3">{% trans "Client" %}</th>
+            <th class="px-4 py-3">{% trans "Véhicule" %}</th>
+            <th class="px-4 py-3">{% trans "Contrat" %}</th>
+            <th class="px-4 py-3 text-right">{% trans "Actions" %}</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-slate-50">
+          {% for p in payment_entries %}
+          <tr class="hover:bg-slate-50/60 transition cursor-pointer" onclick="openPayDetail({{ p.pk }})">
+            <td class="px-4 py-3 text-xs text-slate-500">{{ p.created_at|date:"d/m/Y" }}<br><span class="text-[10px] text-slate-400">{{ p.created_at|date:"H:i" }}</span></td>
+            <td class="px-4 py-3">
+              <span class="font-bold text-slate-800">{{ p.amount|intcomma }}</span>
+              <span class="text-[10px] text-slate-400 ml-0.5">{{ p.currency }}</span>
+            </td>
+            <td class="px-4 py-3">
+              {% if p.method == "cash" %}
+              <span class="inline-flex items-center gap-1 rounded-full bg-green-50 text-green-700 px-2 py-0.5 text-[10px] font-semibold">
+                <svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 18.75a60.07 60.07 0 0 1 15.797 2.101c.727.198 1.453-.342 1.453-1.096V18.75M3.75 4.5v.75A.75.75 0 0 1 3 6h-.75m0 0v-.375c0-.621.504-1.125 1.125-1.125H20.25M2.25 6v9m18-10.5v.75c0 .414.336.75.75.75h.75m-1.5-1.5h.375c.621 0 1.125.504 1.125 1.125v9.75c0 .621-.504 1.125-1.125 1.125h-.375m1.5-1.5H21a.75.75 0 0 0-.75.75v.75m0 0H3.75m0 0h-.375a1.125 1.125 0 0 1-1.125-1.125V15m1.5 1.5v-.75A.75.75 0 0 0 3 15h-.75M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"/></svg>
+                {% trans "Espèces" %}
+              </span>
+              {% elif p.method == "card_terminal" %}
+              <span class="inline-flex items-center gap-1 rounded-full bg-blue-50 text-blue-700 px-2 py-0.5 text-[10px] font-semibold">
+                <svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 8.25h19.5M2.25 9h19.5m-16.5 5.25h6m-6 2.25h3m-3.75 3h15a2.25 2.25 0 0 0 2.25-2.25V6.75A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25v10.5A2.25 2.25 0 0 0 4.5 19.5Z"/></svg>
+                {% trans "Terminal CB" %}
+              </span>
+              {% else %}
+              <span class="inline-flex items-center gap-1 rounded-full bg-purple-50 text-purple-700 px-2 py-0.5 text-[10px] font-semibold">
+                <svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M7.5 21 3 16.5m0 0L7.5 12M3 16.5h13.5m0-13.5L21 7.5m0 0L16.5 12M21 7.5H7.5"/></svg>
+                {% trans "Virement" %}
+              </span>
+              {% endif %}
+            </td>
+            <td class="px-4 py-3">
+              {% if p.status == "succeeded" %}
+              <span class="inline-flex items-center gap-1 rounded-full bg-emerald-100 text-emerald-700 px-2.5 py-0.5 text-[11px] font-semibold"><span class="h-1.5 w-1.5 rounded-full bg-emerald-500"></span>{% trans "Réussi" %}</span>
+              {% elif p.status == "refunded" %}
+              <span class="inline-flex items-center gap-1 rounded-full bg-slate-100 text-slate-600 px-2.5 py-0.5 text-[11px] font-semibold"><span class="h-1.5 w-1.5 rounded-full bg-slate-400"></span>{% trans "Remboursé" %}</span>
+              {% else %}
+              <span class="inline-flex items-center gap-1 rounded-full bg-red-100 text-red-600 px-2.5 py-0.5 text-[11px] font-semibold"><span class="h-1.5 w-1.5 rounded-full bg-red-400"></span>{% trans "Échoué" %}</span>
+              {% endif %}
+            </td>
+            <td class="px-4 py-3">
+              <div class="text-xs font-medium text-slate-800">{{ p.contract.client.full_name }}</div>
+              {% if p.contract.client.phone %}<div class="text-[10px] text-slate-400">{{ p.contract.client.phone }}</div>{% endif %}
+            </td>
+            <td class="px-4 py-3">
+              <div class="text-xs text-slate-600">{{ p.contract.vehicle.make }} {{ p.contract.vehicle.model }}</div>
+              <div class="text-[10px] text-slate-400">{{ p.contract.vehicle.plate_number }}</div>
+            </td>
+            <td class="px-4 py-3" onclick="event.stopPropagation()">
+              <a href="{% url 'dashboard:contract_detail' p.contract.pk %}" class="text-gaboomViolet hover:underline font-medium text-xs">#{{ p.contract.pk }}</a>
+              <div class="text-[10px] text-slate-400">{{ p.contract.start_date|date:"d/m" }} → {{ p.contract.end_date|date:"d/m" }}</div>
+            </td>
+            <td class="px-4 py-3 text-right" onclick="event.stopPropagation()">
+              <button onclick="openPayDetail({{ p.pk }})" class="rounded-lg p-1.5 hover:bg-slate-100 text-slate-400 hover:text-slate-600 transition" title="Détails">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"/></svg>
+              </button>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+    <div class="md:hidden divide-y divide-slate-100">
+      {% for p in payment_entries %}
+      <div class="px-4 py-3 hover:bg-slate-50/60 transition cursor-pointer" onclick="openPayDetail({{ p.pk }})">
+        <div class="flex items-center justify-between mb-1.5">
+          <div class="flex items-center gap-2">
+            <span class="font-bold text-slate-800">{{ p.amount|intcomma }} {{ p.currency }}</span>
+            {% if p.status == "succeeded" %}
+            <span class="inline-flex items-center gap-1 rounded-full bg-emerald-100 text-emerald-700 px-2 py-0.5 text-[10px] font-semibold">{% trans "Réussi" %}</span>
+            {% elif p.status == "refunded" %}
+            <span class="inline-flex items-center gap-1 rounded-full bg-slate-100 text-slate-600 px-2 py-0.5 text-[10px] font-semibold">{% trans "Remboursé" %}</span>
+            {% else %}
+            <span class="inline-flex items-center gap-1 rounded-full bg-red-100 text-red-600 px-2 py-0.5 text-[10px] font-semibold">{% trans "Échoué" %}</span>
+            {% endif %}
+          </div>
+          <span class="text-[10px] text-slate-400">{{ p.created_at|date:"d/m/Y H:i" }}</span>
+        </div>
+        <div class="text-xs text-slate-600">{{ p.contract.client.full_name }} — {{ p.contract.vehicle }}</div>
+        <div class="flex items-center gap-2 mt-1.5">
+          {% if p.method == "cash" %}
+          <span class="inline-flex items-center gap-1 rounded-full bg-green-50 text-green-700 px-2 py-0.5 text-[10px] font-semibold">{% trans "Espèces" %}</span>
+          {% elif p.method == "card_terminal" %}
+          <span class="inline-flex items-center gap-1 rounded-full bg-blue-50 text-blue-700 px-2 py-0.5 text-[10px] font-semibold">{% trans "Terminal CB" %}</span>
+          {% else %}
+          <span class="inline-flex items-center gap-1 rounded-full bg-purple-50 text-purple-700 px-2 py-0.5 text-[10px] font-semibold">{% trans "Virement" %}</span>
+          {% endif %}
+          {% if p.reference %}<span class="text-[10px] text-slate-400">{% trans "Réf:" %} {{ p.reference }}</span>{% endif %}
+          <button onclick="event.stopPropagation();openPayDetail({{ p.pk }})" class="ml-auto rounded-lg border border-slate-200 px-2.5 py-1 text-[10px] font-medium text-slate-600 hover:bg-slate-50 transition">{% trans "Détails" %}</button>
+          <a href="{% url 'dashboard:contract_detail' p.contract.pk %}" class="text-gaboomViolet text-[10px] font-medium hover:underline" onclick="event.stopPropagation()">{% trans "Contrat" %} #{{ p.contract.pk }}</a>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+
+    {% if payment_total_pages > 1 %}
+    <div class="px-4 py-3 border-t border-slate-100 flex items-center justify-between">
+      <div class="text-xs text-slate-400">{{ payment_total_count }} {% trans "paiement" %}{{ payment_total_count|pluralize }} — {% trans "Page" %} {{ payment_page_num }}/{{ payment_total_pages }}</div>
+      <div class="flex items-center gap-1">
+        {% if payment_has_prev %}
+        <a href="?tab=payments&p_page={{ payment_page_num|add:'-1' }}&p_period={{ payment_filters.period }}&p_q={{ payment_filters.q }}&p_method={{ payment_filters.method }}&p_status={{ payment_filters.status }}&p_sort={{ payment_filters.sort }}&p_from={{ payment_filters.date_from }}&p_to={{ payment_filters.date_to }}" class="rounded-lg border border-slate-200 px-3 py-1.5 text-xs font-medium text-slate-600 hover:bg-slate-50 transition">← {% trans "Préc." %}</a>
+        {% endif %}
+        {% if payment_has_next %}
+        <a href="?tab=payments&p_page={{ payment_page_num|add:'1' }}&p_period={{ payment_filters.period }}&p_q={{ payment_filters.q }}&p_method={{ payment_filters.method }}&p_status={{ payment_filters.status }}&p_sort={{ payment_filters.sort }}&p_from={{ payment_filters.date_from }}&p_to={{ payment_filters.date_to }}" class="rounded-lg border border-slate-200 px-3 py-1.5 text-xs font-medium text-slate-600 hover:bg-slate-50 transition">{% trans "Suiv." %} →</a>
+        {% endif %}
+      </div>
+    </div>
+    {% endif %}
+
+    {% else %}
+    <div class="text-center py-16 px-6">
+      <div class="mx-auto w-16 h-16 rounded-2xl bg-violet-50 flex items-center justify-center mb-4">
+        <svg class="w-8 h-8 text-gaboomViolet" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 18.75a60.07 60.07 0 0 1 15.797 2.101c.727.198 1.453-.342 1.453-1.096V18.75M3.75 4.5v.75A.75.75 0 0 1 3 6h-.75m0 0v-.375c0-.621.504-1.125 1.125-1.125H20.25M2.25 6v9m18-10.5v.75c0 .414.336.75.75.75h.75m-1.5-1.5h.375c.621 0 1.125.504 1.125 1.125v9.75c0 .621-.504 1.125-1.125 1.125h-.375m1.5-1.5H21a.75.75 0 0 0-.75.75v.75m0 0H3.75m0 0h-.375a1.125 1.125 0 0 1-1.125-1.125V15m1.5 1.5v-.75A.75.75 0 0 0 3 15h-.75M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"/></svg>
+      </div>
+      <h3 class="font-semibold text-slate-800">{% trans "Aucun paiement" %}</h3>
+      <p class="text-sm text-slate-400 mt-1">{% trans "Les paiements apparaîtront ici une fois enregistrés sur les contrats." %}</p>
+      <a href="{% url 'dashboard:contract_hub' %}?tab=contracts" class="inline-flex items-center gap-1.5 mt-4 rounded-xl bg-gaboomViolet text-white px-4 py-2.5 text-sm font-medium hover:opacity-95 transition">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/></svg>
+        {% trans "Créer un contrat" %}
+      </a>
+    </div>
+    {% endif %}
+  </div>
+</div>
+
+<div class="flex flex-wrap items-center gap-2 mb-4">
+  <a href="?tab=contracts&q={{ q }}&status={{ status_filter }}&pay={{ pay_filter }}&sort={{ sort_by }}" class="rounded-xl px-4 py-2 text-sm font-medium border {% if tab == 'contracts' %}bg-slate-900 text-white border-slate-900{% else %}bg-white text-slate-600 border-slate-200 hover:bg-slate-50{% endif %} transition">{% trans "Contrat et Paiement" %}</a>
+  <a href="?tab=payments&p_period={{ payment_filters.period }}&p_q={{ payment_filters.q }}&p_method={{ payment_filters.method }}&p_status={{ payment_filters.status }}&p_sort={{ payment_filters.sort }}&p_from={{ payment_filters.date_from }}&p_to={{ payment_filters.date_to }}" class="rounded-xl px-4 py-2 text-sm font-medium border {% if tab == 'payments' %}bg-slate-900 text-white border-slate-900{% else %}bg-white text-slate-600 border-slate-200 hover:bg-slate-50{% endif %} transition">{% trans "Paiements" %}</a>
+</div>
+
+<div class="grid lg:grid-cols-12 gap-5">
+
+<!-- ═══════ LEFT: LIST ═══════ -->
+<div class="lg:col-span-8 {% if tab == 'payments' %}hidden{% endif %}">
+  <div class="card-in rounded-2xl bg-white border border-slate-200 shadow-sm overflow-hidden">
+
+    <!-- Toolbar -->
+    <div class="p-4 border-b border-slate-100">
+      <form method="get" class="flex flex-wrap items-center gap-2">
+        <input type="hidden" name="tab" value="contracts">
+        <div class="relative flex-1 min-w-[180px]">
+          <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"/></svg>
+          <input type="text" name="q" value="{{ q }}" placeholder="{% trans 'Client, véhicule, immat…' %}" class="w-full rounded-xl border border-slate-200 pl-9 pr-3 py-2 text-sm focus:border-violet-400 focus:ring-1 focus:ring-violet-400 outline-none">
+        </div>
+        <select name="status" onchange="this.form.submit()" class="rounded-xl border border-slate-200 px-3 py-2 text-sm focus:border-violet-400 focus:ring-1 focus:ring-violet-400 outline-none">
+          <option value="">{% trans "Statut : tous" %}</option>
+          <option value="draft" {% if status_filter == "draft" %}selected{% endif %}>{% trans "Brouillon" %}</option>
+          <option value="active" {% if status_filter == "active" %}selected{% endif %}>{% trans "Actif" %}</option>
+          <option value="closed" {% if status_filter == "closed" %}selected{% endif %}>{% trans "Clôturé" %}</option>
+          <option value="cancelled" {% if status_filter == "cancelled" %}selected{% endif %}>{% trans "Annulé" %}</option>
+        </select>
+        <select name="pay" onchange="this.form.submit()" class="rounded-xl border border-slate-200 px-3 py-2 text-sm focus:border-violet-400 focus:ring-1 focus:ring-violet-400 outline-none">
+          <option value="">{% trans "Paiement : tous" %}</option>
+          <option value="unpaid" {% if pay_filter == "unpaid" %}selected{% endif %}>{% trans "Impayé" %}</option>
+          <option value="partial" {% if pay_filter == "partial" %}selected{% endif %}>{% trans "Partiel" %}</option>
+          <option value="paid" {% if pay_filter == "paid" %}selected{% endif %}>{% trans "Payé" %}</option>
+        </select>
+        <select name="sort" onchange="this.form.submit()" class="rounded-xl border border-slate-200 px-3 py-2 text-sm focus:border-violet-400 focus:ring-1 focus:ring-violet-400 outline-none">
+          <option value="date" {% if sort_by == "date" %}selected{% endif %}>{% trans "Tri : Création" %}</option>
+          <option value="start" {% if sort_by == "start" %}selected{% endif %}>{% trans "Tri : Date début" %}</option>
+          <option value="amount" {% if sort_by == "amount" %}selected{% endif %}>{% trans "Tri : Montant" %}</option>
+          <option value="due" {% if sort_by == "due" %}selected{% endif %}>{% trans "Tri : Reste dû" %}</option>
+        </select>
+        <button type="submit" class="rounded-xl bg-slate-100 text-slate-600 px-3 py-2 text-sm font-medium hover:bg-slate-200 transition">{% trans "Filtrer" %}</button>
+      </form>
+    </div>
+
+    {% if entries %}
+    <!-- Desktop Table -->
+    <div class="hidden md:block overflow-x-auto">
+      <table class="w-full text-sm">
+        <thead>
+          <tr class="border-b border-slate-100 text-left text-[11px] font-semibold text-slate-400 uppercase tracking-wider">
+            <th class="px-4 py-3">#</th>
+            <th class="px-4 py-3">{% trans "Client" %}</th>
+            <th class="px-4 py-3">{% trans "Véhicule" %}</th>
+            <th class="px-4 py-3">{% trans "Période" %}</th>
+            <th class="px-4 py-3">{% trans "Total" %}</th>
+            <th class="px-4 py-3">{% trans "Payé / Reste" %}</th>
+            <th class="px-4 py-3">{% trans "Statut" %}</th>
+            <th class="px-4 py-3 text-right">{% trans "Actions" %}</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-slate-50">
+          {% for e in entries %}
+          {% if e.type == "contract" %}
+          {% with c=e.contract %}
+          <tr class="hover:bg-slate-50/60 transition cursor-pointer {% if editing and editing.pk == c.pk %}row-selected{% endif %} {% if c.is_overdue %}bg-red-50/30{% endif %}"
+              onclick="window.location='?edit={{ c.pk }}&q={{ q }}&status={{ status_filter }}&pay={{ pay_filter }}&sort={{ sort_by }}'">
+            <td class="px-4 py-3">
+              <div class="flex items-center gap-2">
+                <span class="font-bold text-slate-700">#{{ c.pk }}</span>
+                {% if c.is_overdue %}
+                <span class="inline-flex items-center gap-1 rounded-full bg-red-100 text-red-700 px-1.5 py-0.5 text-[9px] font-semibold animate-pulse">{% trans "EN RETARD" %}</span>
+                {% endif %}
+              </div>
+            </td>
+            <td class="px-4 py-3">
+              <div class="font-medium text-slate-800 text-xs">{{ c.client.full_name }}</div>
+            </td>
+            <td class="px-4 py-3">
+              <div class="text-xs text-slate-600">{{ c.vehicle.make }} {{ c.vehicle.model }}</div>
+              <div class="text-[10px] text-slate-400">{{ c.vehicle.plate_number }}</div>
+            </td>
+            <td class="px-4 py-3">
+              <div class="text-xs text-slate-600">{{ c.start_date|date:"d/m" }} → {{ c.end_date|date:"d/m" }}</div>
+              <div class="text-[10px] text-slate-400">{{ c.nb_days }}j</div>
+            </td>
+            <td class="px-4 py-3 font-medium text-xs">{{ c.montant_ttc }} {{ c.currency }}</td>
+            <td class="px-4 py-3">
+              <div class="text-xs">
+                <span class="text-emerald-600 font-medium">{{ c.amount_paid }}</span>
+                <span class="text-slate-300 mx-0.5">/</span>
+                <span class="{% if c.amount_due > 0 %}text-red-600 font-semibold{% else %}text-slate-400{% endif %}">{{ c.amount_due }}</span>
+              </div>
+              {% if c.montant_ttc > 0 %}
+              <div class="mt-1 h-1.5 rounded-full bg-slate-100 overflow-hidden w-16">
+                <div class="h-full rounded-full {% if c.payment_status == 'paid' %}bg-emerald-500{% elif c.payment_status == 'partial' %}bg-amber-400{% else %}bg-red-400{% endif %}" style="width:{% widthratio c.amount_paid c.montant_ttc 100 %}%"></div>
+              </div>
+              {% endif %}
+            </td>
+            <td class="px-4 py-3">
+              {% if c.status == "active" %}
+              <span class="inline-flex items-center gap-1 rounded-full bg-emerald-100 text-emerald-700 px-2.5 py-0.5 text-[11px] font-semibold"><span class="h-1.5 w-1.5 rounded-full bg-emerald-500"></span>{% trans "Actif" %}</span>
+              {% elif c.status == "closed" %}
+              <span class="inline-flex items-center gap-1 rounded-full bg-slate-100 text-slate-600 px-2.5 py-0.5 text-[11px] font-semibold"><span class="h-1.5 w-1.5 rounded-full bg-slate-400"></span>{% trans "Clôturé" %}</span>
+              {% elif c.status == "cancelled" %}
+              <span class="inline-flex items-center gap-1 rounded-full bg-red-100 text-red-600 px-2.5 py-0.5 text-[11px] font-semibold"><span class="h-1.5 w-1.5 rounded-full bg-red-400"></span>{% trans "Annulé" %}</span>
+              {% else %}
+              <span class="inline-flex items-center gap-1 rounded-full bg-blue-100 text-blue-700 px-2.5 py-0.5 text-[11px] font-semibold"><span class="h-1.5 w-1.5 rounded-full bg-blue-500"></span>{% trans "Brouillon" %}</span>
+              {% endif %}
+              {% if c.payment_status == "paid" %}
+              <div class="text-[10px] text-emerald-600 font-medium mt-0.5">{% trans "Payé" %}</div>
+              {% elif c.payment_status == "partial" %}
+              <div class="text-[10px] text-amber-600 font-medium mt-0.5">{% trans "Partiel" %}</div>
+              {% else %}
+              <div class="text-[10px] text-red-600 font-medium mt-0.5">{% trans "Impayé" %}</div>
+              {% endif %}
+            </td>
+            <td class="px-4 py-3 text-right" onclick="event.stopPropagation()">
+              <div class="flex items-center justify-end gap-1">
+                <a href="{% url 'dashboard:contract_detail' c.pk %}" class="rounded-lg p-1.5 hover:bg-slate-100 text-slate-400 hover:text-slate-600 transition" title="{% trans 'Voir' %}">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"/></svg>
+                </a>
+                {% if can_edit %}
+                <a href="?edit={{ c.pk }}&q={{ q }}&status={{ status_filter }}&pay={{ pay_filter }}&sort={{ sort_by }}" class="rounded-lg p-1.5 hover:bg-violet-50 text-slate-400 hover:text-gaboomViolet transition" title="{% trans 'Modifier' %}">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125"/></svg>
+                </a>
+                {% if c.status == "active" or c.status == "draft" %}
+                <button onclick="openPayModal({{ c.pk }})" class="rounded-lg p-1.5 hover:bg-emerald-50 text-slate-400 hover:text-emerald-600 transition" title="{% trans 'Paiement' %}">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v12m-3-2.818.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/></svg>
+                </button>
+                {% endif %}
+                {% endif %}
+              </div>
+            </td>
+          </tr>
+          {% endwith %}
+          {% else %}
+          {% with p=e.payment %}
+          <tr class="bg-slate-50/40">
+            <td class="px-4 py-3">
+              <div class="font-semibold text-slate-600 text-xs">PAY-{{ p.pk }}</div>
+            </td>
+            <td class="px-4 py-3 text-xs text-slate-400">—</td>
+            <td class="px-4 py-3 text-xs text-slate-400">—</td>
+            <td class="px-4 py-3">
+              <div class="text-xs text-slate-600">{{ p.created_at|date:"d/m/Y" }}</div>
+              <div class="text-[10px] text-slate-400">{{ p.created_at|date:"H:i" }}</div>
+            </td>
+            <td class="px-4 py-3 font-medium text-xs">{{ p.amount }} {{ p.currency }}</td>
+            <td class="px-4 py-3 text-xs text-slate-400">—</td>
+            <td class="px-4 py-3 text-xs text-slate-400">—</td>
+            <td class="px-4 py-3 text-right">
+              <a href="{% url 'dashboard:contract_detail' p.contract.pk %}" class="text-xs text-gaboomViolet hover:underline">{% trans "Contrat" %} #{{ p.contract.pk }}</a>
+            </td>
+          </tr>
+          {% endwith %}
+          {% endif %}
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Mobile Cards -->
+    <div class="md:hidden divide-y divide-slate-100">
+      {% for e in entries %}
+      {% if e.type == "contract" %}
+      {% with c=e.contract %}
+      <div class="px-4 py-3 hover:bg-slate-50/60 transition {% if editing and editing.pk == c.pk %}row-selected{% endif %}">
+        <div class="flex items-center justify-between mb-1.5">
+          <div class="flex items-center gap-2">
+            <span class="font-bold text-slate-700 text-sm">#{{ c.pk }}</span>
+            {% if c.status == "active" %}
+            <span class="inline-flex items-center gap-1 rounded-full bg-emerald-100 text-emerald-700 px-2 py-0.5 text-[10px] font-semibold">{% trans "Actif" %}</span>
+            {% elif c.status == "closed" %}
+            <span class="inline-flex items-center gap-1 rounded-full bg-slate-100 text-slate-600 px-2 py-0.5 text-[10px] font-semibold">{% trans "Clôturé" %}</span>
+            {% elif c.status == "cancelled" %}
+            <span class="inline-flex items-center gap-1 rounded-full bg-red-100 text-red-600 px-2 py-0.5 text-[10px] font-semibold">{% trans "Annulé" %}</span>
+            {% else %}
+            <span class="inline-flex items-center gap-1 rounded-full bg-blue-100 text-blue-700 px-2 py-0.5 text-[10px] font-semibold">{% trans "Brouillon" %}</span>
+            {% endif %}
+            {% if c.is_overdue %}
+            <span class="inline-flex items-center rounded-full bg-red-100 text-red-700 px-1.5 py-0.5 text-[9px] font-semibold animate-pulse">{% trans "RETARD" %}</span>
+            {% endif %}
+          </div>
+          <div class="text-xs font-medium text-slate-700">{{ c.montant_ttc }} {{ c.currency }}</div>
+        </div>
+        <div class="text-xs text-slate-600">{{ c.client.full_name }} — {{ c.vehicle }}</div>
+        <div class="text-[10px] text-slate-400 mt-0.5">{{ c.start_date|date:"d/m/Y" }} → {{ c.end_date|date:"d/m/Y" }} ({{ c.nb_days }}j)</div>
+        <div class="flex items-center gap-2 mt-2">
+          <div class="flex-1 h-1.5 rounded-full bg-slate-100 overflow-hidden">
+            {% if c.montant_ttc > 0 %}
+            <div class="h-full rounded-full {% if c.payment_status == 'paid' %}bg-emerald-500{% elif c.payment_status == 'partial' %}bg-amber-400{% else %}bg-red-400{% endif %}" style="width:{% widthratio c.amount_paid c.montant_ttc 100 %}%"></div>
+            {% endif %}
+          </div>
+          <span class="text-[10px] {% if c.payment_status == 'paid' %}text-emerald-600{% elif c.payment_status == 'partial' %}text-amber-600{% else %}text-red-600{% endif %} font-medium">{{ c.get_payment_status_display }}</span>
+        </div>
+        <div class="flex items-center gap-2 mt-2">
+          <a href="{% url 'dashboard:contract_detail' c.pk %}" class="rounded-lg border border-slate-200 px-3 py-1 text-[11px] font-medium text-slate-600 hover:bg-slate-50 transition">Voir</a>
+          {% if can_edit %}
+          <a href="?edit={{ c.pk }}&q={{ q }}&status={{ status_filter }}&pay={{ pay_filter }}&sort={{ sort_by }}" onclick="openDrawer()" class="rounded-lg bg-gaboomViolet text-white px-3 py-1 text-[11px] font-medium hover:opacity-95 transition">Modifier</a>
+          {% endif %}
+        </div>
+      </div>
+      {% endwith %}
+      {% else %}
+      {% with p=e.payment %}
+      <div class="px-4 py-3 bg-slate-50/60">
+        <div class="flex items-center justify-between mb-1.5">
+          <div class="text-xs font-semibold text-slate-600">PAY-{{ p.pk }}</div>
+          <div class="text-xs font-medium text-slate-700">{{ p.amount }} {{ p.currency }}</div>
+        </div>
+        <div class="text-[10px] text-slate-400">{{ p.created_at|date:"d/m/Y à H:i" }}</div>
+        <div class="flex items-center gap-2 mt-2">
+          <a href="{% url 'dashboard:contract_detail' p.contract.pk %}" class="rounded-lg border border-slate-200 px-3 py-1 text-[11px] font-medium text-slate-600 hover:bg-slate-50 transition">Contrat #{{ p.contract.pk }}</a>
+        </div>
+      </div>
+      {% endwith %}
+      {% endif %}
+      {% endfor %}
+    </div>
+
+    {% else %}
+    <!-- Empty State -->
+    <div class="text-center py-16 px-6">
+      <div class="mx-auto w-16 h-16 rounded-2xl bg-violet-50 flex items-center justify-center mb-4">
+        <svg class="w-8 h-8 text-gaboomViolet" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z"/></svg>
+      </div>
+      <h3 class="font-semibold text-slate-800">Aucun contrat ou paiement</h3>
+      <p class="text-sm text-slate-400 mt-1">Créez votre premier contrat via le formulaire ci-contre.</p>
+    </div>
+    {% endif %}
+  </div>
+</div>
+
+<!-- ═══════ RIGHT: FORM PANEL ═══════ -->
+{% if can_edit %}
+<!-- Desktop panel -->
+<div class="hidden lg:block lg:col-span-4 {% if tab == 'payments' %}hidden{% endif %}">
+  <div class="card-in rounded-2xl bg-white border border-slate-200 shadow-sm lg:sticky lg:top-24" style="animation-delay:100ms">
+    <!-- Form header -->
+    <div class="px-5 py-4 border-b border-slate-100 flex items-center justify-between">
+      <div>
+        <h3 class="font-semibold text-sm text-slate-800">{% if editing %}Modifier #{{ editing.pk }}{% else %}Nouveau contrat{% endif %}</h3>
+        {% if editing %}
+        <p class="text-xs text-slate-400 mt-0.5">{{ editing.client.full_name }} — {{ editing.vehicle }}</p>
+        {% endif %}
+      </div>
+      <div class="flex items-center gap-2">
+        {% if editing %}
+        <a href="{% url 'dashboard:contract_detail' editing.pk %}" class="text-xs text-slate-500 hover:text-gaboomViolet font-medium transition">Voir fiche</a>
+        <span class="text-slate-200">|</span>
+        <a href="{% url 'dashboard:contract_hub' %}?q={{ q }}&status={{ status_filter }}&pay={{ pay_filter }}&sort={{ sort_by }}" class="text-xs text-gaboomViolet hover:underline font-medium">+ Nouveau</a>
+        {% endif %}
+      </div>
+    </div>
+
+    <form method="post" class="p-5 space-y-3 max-h-[calc(100vh-200px)] overflow-y-auto">
+      {% csrf_token %}
+      {% if editing %}<input type="hidden" name="contract_id" value="{{ editing.pk }}">{% endif %}
+
+      {% if form.non_field_errors %}
+      <div class="rounded-xl bg-red-50 border border-red-200 text-red-700 px-4 py-2.5 text-sm">
+        {% for error in form.non_field_errors %}<p>{{ error }}</p>{% endfor %}
+      </div>
+      {% endif %}
+
+      <!-- Section: Sélection -->
+      <div class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">Sélection</div>
+      <div>
+        <label class="block text-xs font-medium text-slate-600 mb-1">{{ form.client.label }}</label>
+        {{ form.client }}
+        {% if form.client.errors %}<p class="mt-0.5 text-[11px] text-red-600">{{ form.client.errors.0 }}</p>{% endif %}
+      </div>
+      <div>
+        <label class="block text-xs font-medium text-slate-600 mb-1">{{ form.vehicle.label }}</label>
+        {{ form.vehicle }}
+        {% if form.vehicle.errors %}<p class="mt-0.5 text-[11px] text-red-600">{{ form.vehicle.errors.0 }}</p>{% endif %}
+      </div>
+
+      <!-- Section: Dates -->
+      <div class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider pt-2">Dates</div>
+      <div class="grid grid-cols-2 gap-3">
+        <div>
+          <label class="block text-xs font-medium text-slate-600 mb-1">{{ form.start_date.label }}</label>
+          {{ form.start_date }}
+          {% if form.start_date.errors %}<p class="mt-0.5 text-[11px] text-red-600">{{ form.start_date.errors.0 }}</p>{% endif %}
+        </div>
+        <div>
+          <label class="block text-xs font-medium text-slate-600 mb-1">{{ form.end_date.label }}</label>
+          {{ form.end_date }}
+          {% if form.end_date.errors %}<p class="mt-0.5 text-[11px] text-red-600">{{ form.end_date.errors.0 }}</p>{% endif %}
+        </div>
+      </div>
+      <div id="durationHint" class="text-xs text-slate-400 hidden">
+        <span id="durationDays"></span> jour(s)
+      </div>
+
+      <!-- Section: Tarification -->
+      <div class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider pt-2">Tarification</div>
+      <div class="grid grid-cols-2 gap-3">
+        <div>
+          <label class="block text-xs font-medium text-slate-600 mb-1">{{ form.price_per_day.label }}</label>
+          {{ form.price_per_day }}
+          {% if form.price_per_day.errors %}<p class="mt-0.5 text-[11px] text-red-600">{{ form.price_per_day.errors.0 }}</p>{% endif %}
+        </div>
+        <div>
+          <label class="block text-xs font-medium text-slate-600 mb-1">{{ form.deposit.label }}</label>
+          {{ form.deposit }}
+        </div>
+      </div>
+      <div class="grid grid-cols-2 gap-3">
+        <div>
+          <label class="block text-xs font-medium text-slate-600 mb-1">{{ form.km_included.label }}</label>
+          {{ form.km_included }}
+        </div>
+        <div>
+          <label class="block text-xs font-medium text-slate-600 mb-1">{{ form.km_price.label }}</label>
+          {{ form.km_price }}
+        </div>
+      </div>
+      <div class="grid grid-cols-2 gap-3">
+        <div>
+          <label class="block text-xs font-medium text-slate-600 mb-1">{{ form.fuel_fee.label }}</label>
+          {{ form.fuel_fee }}
+        </div>
+        <div>
+          <label class="block text-xs font-medium text-slate-600 mb-1">{{ form.late_fee.label }}</label>
+          {{ form.late_fee }}
+        </div>
+      </div>
+
+      <div class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider pt-2">Départ véhicule</div>
+      <div class="grid grid-cols-2 gap-3">
+        <div>
+          <label class="block text-xs font-medium text-slate-600 mb-1">{{ form.km_depart.label }}</label>
+          {{ form.km_depart }}
+        </div>
+        <div>
+          <label class="block text-xs font-medium text-slate-600 mb-1">{{ form.fuel_depart.label }}</label>
+          {{ form.fuel_depart }}
+        </div>
+      </div>
+
+      {% if not editing %}
+      <div class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider pt-2">Paiement initial</div>
+      {% if pay_form.non_field_errors %}
+      <div class="rounded-xl bg-red-50 border border-red-200 text-red-700 px-4 py-2.5 text-sm">
+        {% for error in pay_form.non_field_errors %}<p>{{ error }}</p>{% endfor %}
+      </div>
+      {% endif %}
+      <div class="grid grid-cols-2 gap-3">
+        <div>
+          <label class="block text-xs font-medium text-slate-600 mb-1">{{ pay_form.amount.label }}</label>
+          {{ pay_form.amount }}
+          {% if pay_form.amount.errors %}<p class="mt-0.5 text-[11px] text-red-600">{{ pay_form.amount.errors.0 }}</p>{% endif %}
+        </div>
+        <div>
+          <label class="block text-xs font-medium text-slate-600 mb-1">{{ pay_form.method.label }}</label>
+          {{ pay_form.method }}
+          {% if pay_form.method.errors %}<p class="mt-0.5 text-[11px] text-red-600">{{ pay_form.method.errors.0 }}</p>{% endif %}
+        </div>
+      </div>
+      <div>
+        <label class="block text-xs font-medium text-slate-600 mb-1">{{ pay_form.reference.label }}</label>
+        {{ pay_form.reference }}
+        {% if pay_form.reference.errors %}<p class="mt-0.5 text-[11px] text-red-600">{{ pay_form.reference.errors.0 }}</p>{% endif %}
+      </div>
+      <div>
+        <label class="block text-xs font-medium text-slate-600 mb-1">{{ pay_form.note.label }}</label>
+        {{ pay_form.note }}
+        {% if pay_form.note.errors %}<p class="mt-0.5 text-[11px] text-red-600">{{ pay_form.note.errors.0 }}</p>{% endif %}
+      </div>
+      {% endif %}
+
+      <div class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider pt-2">Statut & notes</div>
+      <div>
+        <label class="block text-xs font-medium text-slate-600 mb-1">{{ form.status.label }}</label>
+        {{ form.status }}
+      </div>
+      <div>
+        <label class="block text-xs font-medium text-slate-600 mb-1">{{ form.notes.label }}</label>
+        {{ form.notes }}
+      </div>
+
+      <!-- Résumé calculé -->
+      <div id="priceSummary" class="rounded-xl bg-violet-50/50 border border-violet-100 p-3 space-y-1 text-xs hidden">
+        <div class="flex justify-between"><span class="text-slate-500">Base</span><span id="calcBase" class="font-medium text-slate-700">—</span></div>
+        <div class="flex justify-between border-t border-violet-100 pt-1"><span class="font-semibold text-slate-700">Total estimé</span><span id="calcTotal" class="font-bold text-gaboomViolet">—</span></div>
+      </div>
+
+      <!-- Buttons -->
+      <div class="flex items-center gap-2 pt-3">
+        <button type="submit" class="flex-1 rounded-xl bg-gaboomViolet text-white px-4 py-2.5 text-sm font-medium hover:opacity-95 transition">
+          {% if editing %}Enregistrer{% else %}Créer{% endif %}
+        </button>
+        {% if editing %}
+        <a href="{% url 'dashboard:contract_hub' %}?q={{ q }}&status={{ status_filter }}&pay={{ pay_filter }}&sort={{ sort_by }}" class="rounded-xl border border-slate-200 px-4 py-2.5 text-sm font-medium text-slate-600 hover:bg-slate-50 transition">Annuler</a>
+        {% endif %}
+      </div>
+
+      {% if editing %}
+      <div class="flex items-center gap-2 pt-1">
+        {% if editing.status == "active" %}
+        <a href="{% url 'dashboard:contract_close' editing.pk %}" class="flex-1 text-center rounded-xl border border-amber-200 px-3 py-2 text-xs font-medium text-amber-700 hover:bg-amber-50 transition">Clôturer</a>
+        {% endif %}
+        {% if editing.status == "draft" or editing.status == "active" %}
+        <form method="post" action="{% url 'dashboard:contract_cancel' editing.pk %}" class="flex-1">
+          {% csrf_token %}
+          <button type="submit" onclick="return confirm('Annuler ce contrat ?')" class="w-full rounded-xl border border-red-200 px-3 py-2 text-xs font-medium text-red-600 hover:bg-red-50 transition">Annuler contrat</button>
+        </form>
+        {% endif %}
+        <button type="button" onclick="openPayModal({{ editing.pk }})" class="flex-1 rounded-xl border border-emerald-200 px-3 py-2 text-xs font-medium text-emerald-700 hover:bg-emerald-50 transition">+ Paiement</button>
+      </div>
+      {% endif %}
+
+      <!-- PDF placeholder -->
+      <div class="pt-2">
+        <button type="button" disabled class="w-full rounded-xl border border-slate-200 px-3 py-2 text-xs font-medium text-slate-400 cursor-not-allowed flex items-center justify-center gap-1.5">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m.75 12 3 3m0 0 3-3m-3 3v-6m-1.5-9H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z"/></svg>
+          Générer PDF (bientôt)
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Mobile Drawer -->
+<div id="mobileDrawerOverlay" class="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 hidden lg:hidden" onclick="closeDrawer()"></div>
+<div id="mobileDrawer" class="fixed top-0 right-0 bottom-0 w-full max-w-md bg-white shadow-2xl z-50 hidden lg:hidden overflow-y-auto">
+  <div class="sticky top-0 bg-white/95 backdrop-blur border-b border-slate-200 px-5 py-4 flex items-center justify-between z-10">
+    <h3 class="font-semibold text-sm text-slate-800">{% if editing %}Modifier #{{ editing.pk }}{% else %}Nouveau contrat{% endif %}</h3>
+    <button onclick="closeDrawer()" class="rounded-lg p-1.5 hover:bg-slate-100 text-slate-400 transition">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12"/></svg>
+    </button>
+  </div>
+
+  <form method="post" class="p-5 space-y-3">
+    {% csrf_token %}
+    {% if editing %}<input type="hidden" name="contract_id" value="{{ editing.pk }}">{% endif %}
+
+    {% if form.non_field_errors %}
+    <div class="rounded-xl bg-red-50 border border-red-200 text-red-700 px-4 py-2.5 text-sm">
+      {% for error in form.non_field_errors %}<p>{{ error }}</p>{% endfor %}
+    </div>
+    {% endif %}
+
+    <div class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">Sélection</div>
+    <div>
+      <label class="block text-xs font-medium text-slate-600 mb-1">{{ form.client.label }}</label>
+      {{ form.client }}
+    </div>
+    <div>
+      <label class="block text-xs font-medium text-slate-600 mb-1">{{ form.vehicle.label }}</label>
+      {{ form.vehicle }}
+    </div>
+
+    <div class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider pt-2">Dates</div>
+    <div class="grid grid-cols-2 gap-3">
+      <div>
+        <label class="block text-xs font-medium text-slate-600 mb-1">{{ form.start_date.label }}</label>
+        {{ form.start_date }}
+      </div>
+      <div>
+        <label class="block text-xs font-medium text-slate-600 mb-1">{{ form.end_date.label }}</label>
+        {{ form.end_date }}
+      </div>
+    </div>
+
+    <div class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider pt-2">Tarification</div>
+    <div class="grid grid-cols-2 gap-3">
+      <div>
+        <label class="block text-xs font-medium text-slate-600 mb-1">{{ form.price_per_day.label }}</label>
+        {{ form.price_per_day }}
+      </div>
+      <div>
+        <label class="block text-xs font-medium text-slate-600 mb-1">{{ form.deposit.label }}</label>
+        {{ form.deposit }}
+      </div>
+    </div>
+    <div class="grid grid-cols-2 gap-3">
+      <div>
+        <label class="block text-xs font-medium text-slate-600 mb-1">{{ form.km_included.label }}</label>
+        {{ form.km_included }}
+      </div>
+      <div>
+        <label class="block text-xs font-medium text-slate-600 mb-1">{{ form.km_price.label }}</label>
+        {{ form.km_price }}
+      </div>
+    </div>
+    <div class="grid grid-cols-2 gap-3">
+      <div>
+        <label class="block text-xs font-medium text-slate-600 mb-1">{{ form.fuel_fee.label }}</label>
+        {{ form.fuel_fee }}
+      </div>
+      <div>
+        <label class="block text-xs font-medium text-slate-600 mb-1">{{ form.late_fee.label }}</label>
+        {{ form.late_fee }}
+      </div>
+    </div>
+
+    <div class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider pt-2">Départ véhicule</div>
+    <div class="grid grid-cols-2 gap-3">
+      <div>
+        <label class="block text-xs font-medium text-slate-600 mb-1">{{ form.km_depart.label }}</label>
+        {{ form.km_depart }}
+      </div>
+      <div>
+        <label class="block text-xs font-medium text-slate-600 mb-1">{{ form.fuel_depart.label }}</label>
+        {{ form.fuel_depart }}
+      </div>
+    </div>
+
+    {% if not editing %}
+    <div class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider pt-2">Paiement initial</div>
+    {% if pay_form.non_field_errors %}
+    <div class="rounded-xl bg-red-50 border border-red-200 text-red-700 px-4 py-2.5 text-sm">
+      {% for error in pay_form.non_field_errors %}<p>{{ error }}</p>{% endfor %}
+    </div>
+    {% endif %}
+    <div class="grid grid-cols-2 gap-3">
+      <div>
+        <label class="block text-xs font-medium text-slate-600 mb-1">{{ pay_form.amount.label }}</label>
+        {{ pay_form.amount }}
+        {% if pay_form.amount.errors %}<p class="mt-0.5 text-[11px] text-red-600">{{ pay_form.amount.errors.0 }}</p>{% endif %}
+      </div>
+      <div>
+        <label class="block text-xs font-medium text-slate-600 mb-1">{{ pay_form.method.label }}</label>
+        {{ pay_form.method }}
+        {% if pay_form.method.errors %}<p class="mt-0.5 text-[11px] text-red-600">{{ pay_form.method.errors.0 }}</p>{% endif %}
+      </div>
+    </div>
+    <div>
+      <label class="block text-xs font-medium text-slate-600 mb-1">{{ pay_form.reference.label }}</label>
+      {{ pay_form.reference }}
+      {% if pay_form.reference.errors %}<p class="mt-0.5 text-[11px] text-red-600">{{ pay_form.reference.errors.0 }}</p>{% endif %}
+    </div>
+    <div>
+      <label class="block text-xs font-medium text-slate-600 mb-1">{{ pay_form.note.label }}</label>
+      {{ pay_form.note }}
+      {% if pay_form.note.errors %}<p class="mt-0.5 text-[11px] text-red-600">{{ pay_form.note.errors.0 }}</p>{% endif %}
+    </div>
+    {% endif %}
+
+    <div class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider pt-2">Statut & notes</div>
+    <div>
+      <label class="block text-xs font-medium text-slate-600 mb-1">{{ form.status.label }}</label>
+      {{ form.status }}
+    </div>
+    <div>
+      <label class="block text-xs font-medium text-slate-600 mb-1">{{ form.notes.label }}</label>
+      {{ form.notes }}
+    </div>
+
+    <div class="flex items-center gap-2 pt-3">
+      <button type="submit" class="flex-1 rounded-xl bg-gaboomViolet text-white px-4 py-2.5 text-sm font-medium hover:opacity-95 transition">
+        {% if editing %}Enregistrer{% else %}Créer{% endif %}
+      </button>
+      <button type="button" onclick="closeDrawer()" class="rounded-xl border border-slate-200 px-4 py-2.5 text-sm font-medium text-slate-600 hover:bg-slate-50 transition">Annuler</button>
+    </div>
+  </form>
+</div>
+{% endif %}
+
+</div>
+
+{% for p in payment_entries %}
+<div id="payData-{{ p.pk }}" class="hidden"
+  data-amount="{{ p.amount|intcomma }}"
+  data-currency="{{ p.currency }}"
+  data-date="{{ p.created_at|date:'d/m/Y à H:i' }}"
+  data-method="{{ p.get_method_display }}"
+  data-method-raw="{{ p.method }}"
+  data-status="{{ p.get_status_display }}"
+  data-status-raw="{{ p.status }}"
+  data-reference="{{ p.reference|default:'-' }}"
+  data-note="{{ p.note|default:'' }}"
+  data-client="{{ p.contract.client.full_name }}"
+  data-client-phone="{{ p.contract.client.phone|default:'' }}"
+  data-vehicle="{{ p.contract.vehicle.make }} {{ p.contract.vehicle.model }}"
+  data-plate="{{ p.contract.vehicle.plate_number }}"
+  data-contract-id="{{ p.contract.pk }}"
+  data-contract-period="{{ p.contract.start_date|date:'d/m/Y' }} → {{ p.contract.end_date|date:'d/m/Y' }}"
+  data-created-by="{% if p.created_by %}{{ p.created_by.get_full_name|default:p.created_by.email }}{% else %}-{% endif %}"
+></div>
+{% endfor %}
+
+<div id="payDetailModal" class="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4" role="dialog" aria-modal="true" aria-label="Détails du paiement">
+  <div class="modal-fade bg-white rounded-2xl shadow-2xl w-full max-w-md border border-slate-200">
+    <div class="px-5 py-4 border-b border-slate-100 flex items-center justify-between">
+      <h3 class="font-semibold text-sm text-slate-800">Détails du paiement</h3>
+      <button onclick="closePayDetail()" class="rounded-lg p-1.5 hover:bg-slate-100 text-slate-400 transition" aria-label="Fermer">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <div class="p-5 space-y-4">
+      <div class="flex items-center justify-between">
+        <div>
+          <div class="text-2xl font-bold text-slate-800"><span id="mdAmount"></span> <span id="mdCurrency" class="text-sm text-slate-400"></span></div>
+          <div class="text-xs text-slate-400 mt-0.5"><span id="mdDate"></span></div>
+        </div>
+        <div id="mdStatusBadge"></div>
+      </div>
+      <dl class="grid grid-cols-2 gap-3 text-sm">
+        <div>
+          <dt class="text-slate-400 text-[11px] uppercase tracking-wider">Méthode</dt>
+          <dd class="font-medium mt-0.5" id="mdMethodBadge"></dd>
+        </div>
+        <div>
+          <dt class="text-slate-400 text-[11px] uppercase tracking-wider">Référence</dt>
+          <dd class="font-medium mt-0.5" id="mdRef"></dd>
+        </div>
+        <div>
+          <dt class="text-slate-400 text-[11px] uppercase tracking-wider">Client</dt>
+          <dd class="font-medium mt-0.5" id="mdClient"></dd>
+          <dd class="text-[10px] text-slate-400" id="mdClientPhone"></dd>
+        </div>
+        <div>
+          <dt class="text-slate-400 text-[11px] uppercase tracking-wider">Véhicule</dt>
+          <dd class="font-medium mt-0.5" id="mdVehicle"></dd>
+          <dd class="text-[10px] text-slate-400" id="mdPlate"></dd>
+        </div>
+        <div>
+          <dt class="text-slate-400 text-[11px] uppercase tracking-wider">Contrat</dt>
+          <dd class="font-medium mt-0.5">#<span id="mdContractId"></span></dd>
+          <dd class="text-[10px] text-slate-400" id="mdContractPeriod"></dd>
+        </div>
+        <div>
+          <dt class="text-slate-400 text-[11px] uppercase tracking-wider">Créé par</dt>
+          <dd class="font-medium mt-0.5" id="mdCreatedBy"></dd>
+        </div>
+      </dl>
+      <div id="mdNoteWrap" class="hidden">
+        <dt class="text-slate-400 text-[11px] uppercase tracking-wider">Note</dt>
+        <dd class="font-medium mt-0.5 text-sm text-slate-600 whitespace-pre-line" id="mdNote"></dd>
+      </div>
+    </div>
+    <div class="px-5 py-3 border-t border-slate-100 flex items-center gap-2">
+      <a id="mdContractLink" href="#" class="flex-1 text-center rounded-xl bg-gaboomViolet text-white px-4 py-2.5 text-sm font-medium hover:opacity-95 transition">Ouvrir le contrat</a>
+      <button type="button" disabled class="rounded-xl border border-slate-200 px-4 py-2.5 text-sm font-medium text-slate-400 cursor-not-allowed" title="Bientôt disponible">Rembourser</button>
+      <button onclick="closePayDetail()" class="rounded-xl border border-slate-200 px-4 py-2.5 text-sm font-medium text-slate-600 hover:bg-slate-50 transition">Fermer</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════ PAYMENT MODAL ═══════ -->
+{% if can_edit %}
+<div id="payModal" class="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+  <div class="modal-fade bg-white rounded-2xl shadow-2xl w-full max-w-sm border border-slate-200">
+    <div class="px-5 py-4 border-b border-slate-100 flex items-center justify-between">
+      <h3 class="font-semibold text-sm text-slate-800">Ajouter un paiement</h3>
+      <button onclick="closePayModal()" class="rounded-lg p-1.5 hover:bg-slate-100 text-slate-400 transition">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <form id="payForm" method="post" action="" class="p-5 space-y-4">
+      {% csrf_token %}
+      <input type="hidden" name="next" id="payNext" value="">
+      <div>
+        <label class="block text-xs font-medium text-slate-600 mb-1">{{ pay_form.amount.label }}</label>
+        {{ pay_form.amount }}
+      </div>
+      <div>
+        <label class="block text-xs font-medium text-slate-600 mb-1">{{ pay_form.method.label }}</label>
+        {{ pay_form.method }}
+      </div>
+      <div>
+        <label class="block text-xs font-medium text-slate-600 mb-1">{{ pay_form.reference.label }}</label>
+        {{ pay_form.reference }}
+      </div>
+      <div class="flex items-center gap-2 pt-2">
+        <button type="submit" class="flex-1 rounded-xl bg-emerald-600 text-white px-4 py-2.5 text-sm font-medium hover:bg-emerald-700 transition">Enregistrer</button>
+        <button type="button" onclick="closePayModal()" class="rounded-xl border border-slate-200 px-4 py-2.5 text-sm font-medium text-slate-600 hover:bg-slate-50 transition">Annuler</button>
+      </div>
+    </form>
+  </div>
+</div>
+{% endif %}
+
+<!-- ═══════ JS ═══════ -->
+<script>
+// ── Mobile drawer ──
+function openDrawer(){
+  var o=document.getElementById('mobileDrawerOverlay'),d=document.getElementById('mobileDrawer');
+  if(!o||!d)return;o.classList.remove('hidden');d.classList.remove('hidden','drawer-close');d.classList.add('drawer-open');
+}
+function closeDrawer(){
+  var o=document.getElementById('mobileDrawerOverlay'),d=document.getElementById('mobileDrawer');
+  if(!o||!d)return;d.classList.remove('drawer-open');d.classList.add('drawer-close');
+  setTimeout(function(){o.classList.add('hidden');d.classList.add('hidden');},200);
+}
+
+// ── Payment modal ──
+function openPayModal(contractPk){
+  var m=document.getElementById('payModal');if(!m)return;
+  document.getElementById('payForm').action='/dashboard/contracts/'+contractPk+'/pay/';
+  document.getElementById('payNext').value=window.location.href;
+  m.classList.remove('hidden');
+}
+function closePayModal(){
+  var m=document.getElementById('payModal');if(m)m.classList.add('hidden');
+}
+
+function toggleCustomDatesPayments(){
+  var sel=document.getElementById('paymentPeriodSelect');
+  var cd=document.getElementById('paymentCustomDates');
+  if(sel&&cd){cd.classList.toggle('hidden',sel.value!=='custom');}
+}
+
+function openPayDetail(pk){
+  var d=document.getElementById('payData-'+pk);
+  if(!d)return;
+  document.getElementById('mdAmount').textContent=d.dataset.amount;
+  document.getElementById('mdCurrency').textContent=d.dataset.currency;
+  document.getElementById('mdDate').textContent=d.dataset.date;
+  document.getElementById('mdRef').textContent=d.dataset.reference;
+  document.getElementById('mdClient').textContent=d.dataset.client;
+  document.getElementById('mdClientPhone').textContent=d.dataset.clientPhone;
+  document.getElementById('mdVehicle').textContent=d.dataset.vehicle;
+  document.getElementById('mdPlate').textContent=d.dataset.plate;
+  document.getElementById('mdContractId').textContent=d.dataset.contractId;
+  document.getElementById('mdContractPeriod').textContent=d.dataset.contractPeriod;
+  document.getElementById('mdCreatedBy').textContent=d.dataset.createdBy;
+  document.getElementById('mdContractLink').href='/dashboard/contracts/'+d.dataset.contractId+'/';
+  var sb=document.getElementById('mdStatusBadge');
+  var sr=d.dataset.statusRaw;
+  if(sr==='succeeded')sb.innerHTML='<span class="inline-flex items-center gap-1 rounded-full bg-emerald-100 text-emerald-700 px-2.5 py-0.5 text-[11px] font-semibold"><span class="h-1.5 w-1.5 rounded-full bg-emerald-500"></span>'+d.dataset.status+'</span>';
+  else if(sr==='refunded')sb.innerHTML='<span class="inline-flex items-center gap-1 rounded-full bg-slate-100 text-slate-600 px-2.5 py-0.5 text-[11px] font-semibold"><span class="h-1.5 w-1.5 rounded-full bg-slate-400"></span>'+d.dataset.status+'</span>';
+  else sb.innerHTML='<span class="inline-flex items-center gap-1 rounded-full bg-red-100 text-red-600 px-2.5 py-0.5 text-[11px] font-semibold"><span class="h-1.5 w-1.5 rounded-full bg-red-400"></span>'+d.dataset.status+'</span>';
+  var mb=document.getElementById('mdMethodBadge');
+  var mr=d.dataset.methodRaw;
+  if(mr==='cash')mb.innerHTML='<span class="inline-flex items-center gap-1 rounded-full bg-green-50 text-green-700 px-2 py-0.5 text-[10px] font-semibold">'+d.dataset.method+'</span>';
+  else if(mr==='card_terminal')mb.innerHTML='<span class="inline-flex items-center gap-1 rounded-full bg-blue-50 text-blue-700 px-2 py-0.5 text-[10px] font-semibold">'+d.dataset.method+'</span>';
+  else mb.innerHTML='<span class="inline-flex items-center gap-1 rounded-full bg-purple-50 text-purple-700 px-2 py-0.5 text-[10px] font-semibold">'+d.dataset.method+'</span>';
+  var note=d.dataset.note;
+  var nw=document.getElementById('mdNoteWrap');
+  if(note){nw.classList.remove('hidden');document.getElementById('mdNote').textContent=note;}
+  else{nw.classList.add('hidden');}
+  document.getElementById('payDetailModal').classList.remove('hidden');
+}
+
+function closePayDetail(){
+  var m=document.getElementById('payDetailModal');
+  if(m)m.classList.add('hidden');
+}
+
+// ── Price calculator ──
+function calcPrice(){
+  var s=document.querySelector('[name="start_date"]'),e=document.querySelector('[name="end_date"]'),p=document.querySelector('[name="price_per_day"]');
+  if(!s||!e||!p)return;
+  var sd=new Date(s.value),ed=new Date(e.value);
+  if(isNaN(sd)||isNaN(ed)||ed<=sd)return;
+  var days=Math.max(Math.ceil((ed-sd)/(1000*60*60*24)),1);
+  var ppd=parseFloat(p.value)||0;
+  var total=days*ppd;
+  document.getElementById('durationHint').classList.remove('hidden');
+  document.getElementById('durationDays').textContent=days;
+  document.getElementById('priceSummary').classList.remove('hidden');
+  document.getElementById('calcBase').textContent=days+' × '+ppd.toFixed(2)+' = '+total.toFixed(2);
+  document.getElementById('calcTotal').textContent=total.toFixed(2);
+}
+document.querySelectorAll('[name="start_date"],[name="end_date"],[name="price_per_day"]').forEach(function(el){
+  el.addEventListener('change',calcPrice);el.addEventListener('input',calcPrice);
+});
+calcPrice();
+toggleCustomDatesPayments();
+var pdm=document.getElementById('payDetailModal');
+if(pdm){
+  pdm.addEventListener('click',function(e){if(e.target===pdm)closePayDetail();});
+}
+document.addEventListener('keydown',function(e){
+  if(e.key==='Escape'){closePayDetail();closePayModal();}
+});
+
+// Auto-open drawer on mobile if editing
+{% if editing %}
+if(window.innerWidth<1024){openDrawer();}
+{% endif %}
+</script>
+{% endblock %}

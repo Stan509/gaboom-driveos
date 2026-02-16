@@ -1,0 +1,199 @@
+{% extends "dashboard/_layout.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "Équipe" %} — Dashboard{% endblock %}
+{% block page_title %}{% trans "Équipe" %}{% endblock %}
+{% block page_subtitle %}{% trans "Gérez les membres de votre agence" %}{% endblock %}
+
+{% block page_css %}
+<style>
+  .tm-row{transition:background .12s}
+  .tm-row:hover{background:#f8fafc}
+  .tm-row.editing{background:rgba(109,40,217,.04);border-left:3px solid #6D28D9}
+  .panel-slide{animation:panelIn .2s ease-out}
+  @keyframes panelIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
+
+<!-- ════════════════ LEFT: LIST (col-span-8) ════════════════ -->
+<div class="lg:col-span-8 space-y-4">
+
+  <!-- Filters -->
+  <form method="get" class="flex flex-wrap items-center gap-2.5">
+    <div class="flex-1 min-w-[180px]">
+      <input type="text" name="q" value="{{ q }}" placeholder="{% trans "Rechercher nom ou email…" %}"
+             class="w-full rounded-xl border border-slate-200 px-3.5 py-2 text-sm focus:outline-none focus:border-gaboomViolet focus:ring-2 focus:ring-violet-100 transition" />
+    </div>
+    <select name="role" class="rounded-xl border border-slate-200 px-3 py-2 text-sm focus:outline-none focus:border-gaboomViolet transition">
+      <option value="">{% trans "Tous rôles" %}</option>
+      {% for val, label in role_choices %}
+      <option value="{{ val }}" {% if role_filter == val %}selected{% endif %}>{{ label }}</option>
+      {% endfor %}
+    </select>
+    <select name="status" class="rounded-xl border border-slate-200 px-3 py-2 text-sm focus:outline-none focus:border-gaboomViolet transition">
+      <option value="">{% trans "Tous statuts" %}</option>
+      <option value="active" {% if status_filter == "active" %}selected{% endif %}>{% trans "Actif" %}</option>
+      <option value="inactive" {% if status_filter == "inactive" %}selected{% endif %}>{% trans "Désactivé" %}</option>
+    </select>
+    <button type="submit" class="rounded-xl border border-slate-200 bg-white px-3.5 py-2 text-sm font-medium text-slate-600 hover:bg-slate-50 transition">{% trans "Filtrer" %}</button>
+    {% if q or role_filter or status_filter %}
+    <a href="{% url 'dashboard:team' %}" class="text-xs text-slate-400 hover:text-gaboomViolet transition">{% trans "Réinitialiser" %}</a>
+    {% endif %}
+  </form>
+
+  <!-- Table -->
+  {% if members %}
+  <div class="rounded-2xl border border-slate-200 bg-white shadow-sm overflow-hidden">
+    <table class="w-full text-sm">
+      <thead>
+        <tr class="border-b border-slate-200 bg-slate-50/60 text-left text-[11px] font-semibold text-slate-400 uppercase tracking-wider">
+          <th class="px-4 py-2.5">{% trans "Membre" %}</th>
+          <th class="px-4 py-2.5 hidden sm:table-cell">{% trans "Rôle" %}</th>
+          <th class="px-4 py-2.5 hidden md:table-cell">{% trans "Statut" %}</th>
+          {% if can_edit %}<th class="px-4 py-2.5 text-right">{% trans "Actions" %}</th>{% endif %}
+        </tr>
+      </thead>
+      <tbody class="divide-y divide-slate-100">
+        {% for m in members %}
+        <tr class="tm-row {% if editing_member.pk == m.pk %}editing{% endif %}">
+          <td class="px-4 py-2.5">
+            <div class="flex items-center gap-2.5">
+              <div class="h-8 w-8 rounded-full flex items-center justify-center text-xs font-semibold shrink-0
+                {% if m.role == 'agency_owner' %}bg-violet-100 text-gaboomViolet
+                {% else %}bg-slate-100 text-slate-600{% endif %}">
+                {{ m.full_name|default:m.email|truncatechars:1|upper }}
+              </div>
+              <div class="min-w-0">
+                <div class="text-[13px] font-medium text-slate-900 truncate">{{ m.full_name|default:"—" }}</div>
+                <div class="text-[11px] text-slate-400 truncate">{{ m.email }}</div>
+              </div>
+            </div>
+          </td>
+          <td class="px-4 py-2.5 hidden sm:table-cell">
+            <span class="inline-flex rounded-full bg-slate-100 text-slate-600 px-2 py-0.5 text-[10px] font-semibold border border-slate-200">
+              {{ m.get_role_display }}
+            </span>
+          </td>
+          <td class="px-4 py-2.5 hidden md:table-cell">
+            {% if m.is_active %}
+              <span class="inline-flex items-center gap-1 text-[10px] font-semibold text-emerald-700">
+                <span class="h-1.5 w-1.5 rounded-full bg-emerald-500"></span>{% trans "Actif" %}
+              </span>
+            {% else %}
+              <span class="inline-flex items-center gap-1 text-[10px] font-semibold text-slate-400">
+                <span class="h-1.5 w-1.5 rounded-full bg-slate-300"></span>{% trans "Désactivé" %}
+              </span>
+            {% endif %}
+          </td>
+          {% if can_edit %}
+          <td class="px-4 py-2.5 text-right">
+            <div class="flex items-center justify-end gap-0.5">
+              {% if "team.edit" in user_perms %}
+              <a href="{% url 'dashboard:team_edit' m.pk %}" class="rounded-lg p-1.5 text-slate-400 hover:text-gaboomViolet hover:bg-violet-50 transition" title="{% trans "Modifier" %}">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Z"/></svg>
+              </a>
+              {% endif %}
+              {% if "team.deactivate" in user_perms %}
+              <form method="post" action="{% url 'dashboard:team_toggle_active' m.pk %}" class="inline">
+                {% csrf_token %}
+                <button type="submit" class="rounded-lg p-1.5 text-slate-400 hover:text-amber-600 hover:bg-amber-50 transition" title="{% if m.is_active %}{% trans "Désactiver" %}{% else %}{% trans "Activer" %}{% endif %}">
+                  {% if m.is_active %}
+                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 0 0 5.636 5.636m12.728 12.728A9 9 0 0 1 5.636 5.636m12.728 12.728L5.636 5.636"/></svg>
+                  {% else %}
+                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5"/></svg>
+                  {% endif %}
+                </button>
+              </form>
+              {% endif %}
+              {% if "team.delete" in user_perms %}
+              <a href="{% url 'dashboard:team_delete' m.pk %}" class="rounded-lg p-1.5 text-slate-400 hover:text-red-600 hover:bg-red-50 transition" title="{% trans "Supprimer" %}">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0"/></svg>
+              </a>
+              {% endif %}
+            </div>
+          </td>
+          {% endif %}
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% else %}
+  <div class="rounded-2xl border border-slate-200 bg-white p-8 text-center shadow-sm">
+    <svg class="w-10 h-10 mx-auto text-slate-300 mb-2" fill="none" stroke="currentColor" stroke-width="1" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M18 18.72a9.094 9.094 0 0 0 3.741-.479 3 3 0 0 0-4.682-2.72m.94 3.198.001.031c0 .225-.012.447-.037.666A11.944 11.944 0 0 1 12 21c-2.17 0-4.207-.576-5.963-1.584A6.062 6.062 0 0 1 6 18.719m12 0a5.971 5.971 0 0 0-.941-3.197m0 0A5.995 5.995 0 0 0 12 12.75a5.995 5.995 0 0 0-5.058 2.772m0 0a3 3 0 0 0-4.681 2.72 8.986 8.986 0 0 0 3.74.477m.94-3.197a5.971 5.971 0 0 0-.94 3.197M15 6.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Zm6 3a2.25 2.25 0 1 1-4.5 0 2.25 2.25 0 0 1 4.5 0Zm-13.5 0a2.25 2.25 0 1 1-4.5 0 2.25 2.25 0 0 1 4.5 0Z"/></svg>
+    <p class="text-sm text-slate-500">{% trans "Aucun membre trouvé." %}</p>
+  </div>
+  {% endif %}
+</div>
+
+<!-- ════════════════ RIGHT: FORM PANEL (col-span-4, sticky) ════════════════ -->
+{% if form %}
+<div class="lg:col-span-4">
+  <div class="lg:sticky lg:top-[88px] panel-slide">
+    <div class="rounded-2xl border border-slate-200 bg-white shadow-sm overflow-hidden">
+      <!-- Panel header -->
+      <div class="flex items-center justify-between px-5 py-3.5 border-b border-slate-100 bg-slate-50/60">
+        <div class="flex items-center gap-2">
+          <div class="h-7 w-7 rounded-lg flex items-center justify-center
+            {% if panel_mode == 'edit' %}bg-blue-50 text-blue-600{% else %}bg-violet-50 text-gaboomViolet{% endif %}">
+            {% if panel_mode == "edit" %}
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Z"/></svg>
+            {% else %}
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/></svg>
+            {% endif %}
+          </div>
+          <h3 class="text-sm font-semibold text-slate-800">{{ panel_title }}</h3>
+        </div>
+        {% if panel_mode == "edit" %}
+        <a href="{% url 'dashboard:team' %}" class="text-xs text-slate-400 hover:text-slate-600 transition">Annuler</a>
+        {% endif %}
+      </div>
+
+      <!-- Panel form -->
+      <form method="post"
+            action="{% if panel_mode == 'edit' %}{% url 'dashboard:team_edit' editing_member.pk %}{% else %}{% url 'dashboard:team_create' %}{% endif %}"
+            class="p-5 space-y-4">
+        {% csrf_token %}
+
+        {% if form.non_field_errors %}
+        <div class="rounded-xl bg-red-50 border border-red-200 text-red-700 text-xs px-3 py-2">
+          {% for error in form.non_field_errors %}{{ error }}{% endfor %}
+        </div>
+        {% endif %}
+
+        {% for field in form %}
+        <div>
+          <label class="block text-[11px] font-semibold text-slate-400 uppercase tracking-wider mb-1">{{ field.label }}</label>
+          {{ field }}
+          {% if field.errors %}
+          <p class="mt-1 text-[11px] text-red-500">{% for e in field.errors %}{{ e }}{% endfor %}</p>
+          {% endif %}
+        </div>
+        {% endfor %}
+
+        {% if panel_mode != "edit" %}
+        <div class="rounded-xl bg-amber-50/80 border border-amber-200 px-3 py-2.5">
+          <div class="flex items-start gap-2">
+            <svg class="w-3.5 h-3.5 text-amber-600 mt-0.5 shrink-0" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m9-.75a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 3.75h.008v.008H12v-.008Z"/></svg>
+            <p class="text-[11px] text-amber-800">Un mot de passe temporaire sera généré et affiché une seule fois.</p>
+          </div>
+        </div>
+        {% endif %}
+
+        <button type="submit"
+                class="w-full inline-flex items-center justify-center gap-1.5 rounded-xl bg-gaboomViolet text-white px-4 py-2.5 text-sm font-semibold shadow-lg shadow-violet-200/50 hover:shadow-xl hover:bg-violet-700 transition-all">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5"/></svg>
+          {% if panel_mode == "edit" %}{% trans "Enregistrer" %}{% else %}{% trans "Créer le membre" %}{% endif %}
+        </button>
+      </form>
+    </div>
+  </div>
+</div>
+{% endif %}
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,1287 @@
+{% extends "client_portal/_base.html" %}
+{% load i18n %}
+
+{% block extra_head %}
+{{ block.super }}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/maplibre-gl@4.1.2/dist/maplibre-gl.css" />
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<script defer src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<style>
+  @keyframes gpsPulse { 0%,100%{box-shadow:0 0 0 0 rgba(16,185,129,.4)} 50%{box-shadow:0 0 0 12px rgba(16,185,129,0)} }
+  .gps-pulse { animation: gpsPulse 2s ease-in-out infinite; }
+  @keyframes gpsRing { 0%{transform:scale(.8);opacity:1} 100%{transform:scale(2.5);opacity:0} }
+  .gps-ring { animation: gpsRing 2s ease-out infinite; }
+  #drive-map { width: 100%; height: 100%; position:absolute; inset:0; z-index:2; }
+  #drive-map.pick-mode { cursor: crosshair; }
+  #map-static { position:absolute; inset:0; z-index:1; }
+  /* Speed gauge */
+  .speed-ring { transition: stroke-dashoffset .6s cubic-bezier(.4,0,.2,1); }
+  /* Floating HUD on map */
+  .map-hud { position:absolute; z-index:5; background:rgba(255,255,255,.92); backdrop-filter:blur(12px); border-radius:16px; box-shadow:0 4px 20px rgba(0,0,0,.1); }
+  @media(prefers-color-scheme:dark){ .map-hud { background:rgba(30,30,30,.92); } }
+  /* AI tip card */
+  .ai-tip { border-radius:14px; padding:12px 16px; font-size:12px; line-height:1.5; transition:all .3s; }
+  .ai-tip-good { background:rgba(16,185,129,.08); border:1px solid rgba(16,185,129,.2); color:#065f46; }
+  .ai-tip-warn { background:rgba(245,158,11,.08); border:1px solid rgba(245,158,11,.2); color:#92400e; }
+  .ai-tip-danger { background:rgba(239,68,68,.08); border:1px solid rgba(239,68,68,.2); color:#991b1b; }
+  .ai-tip-info { background:rgba(59,130,246,.08); border:1px solid rgba(59,130,246,.2); color:#1e40af; }
+  /* Score circle */
+  .score-circle { filter: drop-shadow(0 2px 8px rgba(0,0,0,.1)); }
+  /* Trail gradient */
+  @keyframes trailPulse { 0%,100%{opacity:.6} 50%{opacity:1} }
+  .maplibregl-ctrl-top-left { margin:12px; margin-top:76px; z-index:6; }
+  .maplibregl-ctrl-top-left .maplibregl-ctrl { margin:0 0 8px 0; }
+  .leaflet-top.leaflet-left { top:64px; }
+  .map-wrap { position:relative; height:55vh; min-height:340px; border-radius:20px; overflow:hidden; }
+  .hud-center { display:flex; gap:6px; align-items:center; min-width:260px; }
+  .hud-left, .hud-right { display:flex; gap:2px; }
+  .hud-results { display:flex; flex-direction:column; gap:6px; min-width:260px; max-width:380px; }
+  @media(max-width: 900px){
+    .map-wrap { height:60vh; min-height:360px; }
+    .map-hud { border-radius:14px; }
+    .hud-center { min-width:0; flex-wrap:wrap; }
+    .hud-center input { min-width:160px; flex:1 1 160px; }
+    .hud-center button, .hud-center select { flex:0 0 auto; }
+    .hud-right, .hud-left { flex-wrap:wrap; }
+  }
+  @media(max-width: 640px){
+    .map-wrap { height:68vh; min-height:380px; }
+    .map-hud { padding:6px 8px; }
+    .hud-center { gap:4px; }
+    .hud-results { min-width:200px; }
+    #map-debug { top:48px; font-size:9px; }
+  }
+</style>
+{% endblock %}
+
+{% block portal_content %}
+<div class="space-y-5">
+
+  {% if show_driving_map %}
+
+    {% if needs_consent %}
+    <!-- ═══════ STEP 1: GPS CONSENT REQUIRED (phone mode only) ═══════ -->
+    <div class="rounded-2xl border-2 p-6" style="border-color: color-mix(in srgb, var(--primary) 30%, transparent); background: color-mix(in srgb, var(--primary) 4%, transparent);">
+      <div class="flex items-start gap-4">
+        <div class="w-12 h-12 rounded-xl flex items-center justify-center shrink-0" style="background: color-mix(in srgb, var(--primary) 15%, transparent);">
+          <svg class="w-6 h-6" style="color:var(--primary)" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75m-3-7.036A11.959 11.959 0 0 1 3.598 6 11.99 11.99 0 0 0 3 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285Z"/></svg>
+        </div>
+        <div class="flex-1">
+          <h3 class="font-bold text-base mb-2">Consentement de géolocalisation requis</h3>
+          <p class="text-sm opacity-70 mb-3">
+            Pour activer votre assistant de conduite IA et la carte interactive, veuillez accepter le partage de position.
+            Votre position sera utilisée pour vous aider à mieux conduire et sera partagée avec l'agence.
+          </p>
+          <div class="rounded-xl p-4 mb-4 text-sm" style="background: color-mix(in srgb, var(--text) 4%, transparent); border: 1px solid color-mix(in srgb, var(--text) 8%, transparent);">
+            <h4 class="font-semibold mb-2 text-xs uppercase tracking-wider opacity-60">Ce que vous obtenez</h4>
+            <ul class="space-y-1.5 text-sm opacity-80">
+              <li class="flex items-start gap-2">
+                <svg class="w-4 h-4 shrink-0 mt-0.5 opacity-50" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5"/></svg>
+                Carte interactive en temps réel avec votre position
+              </li>
+              <li class="flex items-start gap-2">
+                <svg class="w-4 h-4 shrink-0 mt-0.5 opacity-50" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5"/></svg>
+                Score de conduite IA et conseils personnalisés
+              </li>
+              <li class="flex items-start gap-2">
+                <svg class="w-4 h-4 shrink-0 mt-0.5 opacity-50" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5"/></svg>
+                Alertes de vitesse et suivi de votre trajet
+              </li>
+            </ul>
+          </div>
+          {% if contract.gps_clause %}
+          <div class="rounded-xl p-4 mb-4 text-sm whitespace-pre-line" style="background: color-mix(in srgb, var(--text) 4%, transparent); border: 1px solid color-mix(in srgb, var(--text) 8%, transparent);">
+            <h4 class="font-semibold mb-2 text-xs uppercase tracking-wider opacity-60">Clause GPS du contrat</h4>
+            {{ contract.gps_clause }}
+          </div>
+          {% endif %}
+          <form method="post" action="{% url 'public_site:client_gps_consent' slug=agency.slug %}">
+            {% csrf_token %}
+            <div class="flex items-start gap-3 mb-4">
+              <input type="checkbox" id="consent-check" class="rounded border-slate-300 mt-0.5" onchange="document.getElementById('consent-btn').disabled = !this.checked">
+              <label for="consent-check" class="text-sm font-medium">J'accepte le partage de ma position GPS avec l'agence pendant la durée de mon contrat de location</label>
+            </div>
+            <button type="submit" id="consent-btn" disabled class="rounded-xl px-6 py-2.5 text-sm font-semibold text-white ps-primary-bg disabled:opacity-40 disabled:cursor-not-allowed transition">
+              Activer la Conduite IA
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    {% elif not has_contract %}
+    <!-- ═══════ DEMO MODE - NO CONTRACT ═══════ -->
+    <div class="rounded-2xl border-2 p-6" style="border-color: color-mix(in srgb, var(--primary) 30%, transparent); background: color-mix(in srgb, var(--primary) 4%, transparent);">
+      <div class="flex items-start gap-4">
+        <div class="w-12 h-12 rounded-xl flex items-center justify-center shrink-0" style="background: color-mix(in srgb, var(--primary) 15%, transparent);">
+          <svg class="w-6 h-6" style="color:var(--primary)" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904 9 18.75l-.813-2.846a4.5 4.5 0 0 0-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 0 0 3.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 0 0 3.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 0 0-3.09 3.09Z"/></svg>
+        </div>
+        <div class="flex-1">
+          <h3 class="font-bold text-base mb-2">🚗 Mode Démonstration - Conduite IA</h3>
+          <p class="text-sm opacity-70 mb-3">
+            Découvrez notre assistant de conduite IA en mode démo ! Testez les fonctionnalités de navigation et d'analyse de conduite.
+          </p>
+          <div class="rounded-xl p-4 mb-4 text-sm" style="background: color-mix(in srgb, var(--text) 4%, transparent); border: 1px solid color-mix(in srgb, var(--text) 8%, transparent);">
+            <h4 class="font-semibold mb-2 text-xs uppercase tracking-wider opacity-60">Fonctionnalités disponibles</h4>
+            <ul class="space-y-1.5 text-sm opacity-80">
+              <li class="flex items-start gap-2">
+                <svg class="w-4 h-4 shrink-0 mt-0.5 opacity-50" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5"/></svg>
+                Carte interactive avec suivi GPS local
+              </li>
+              <li class="flex items-start gap-2">
+                <svg class="w-4 h-4 shrink-0 mt-0.5 opacity-50" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5"/></svg>
+                Score de conduite IA en temps réel
+              </li>
+              <li class="flex items-start gap-2">
+                <svg class="w-4 h-4 shrink-0 mt-0.5 opacity-50" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5"/></svg>
+                Alertes de vitesse et conseils personnalisés
+              </li>
+              <li class="flex items-start gap-2">
+                <svg class="w-4 h-4 shrink-0 mt-0.5 opacity-50" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5"/></svg>
+                Mode local uniquement (pas de partage avec l'agence)
+              </li>
+            </ul>
+          </div>
+          <div class="rounded-xl p-4 mb-4 text-sm bg-amber-50 border border-amber-200">
+            <h4 class="font-semibold mb-2 text-xs uppercase tracking-wider opacity-60 text-amber-800">💡 Pour débloquer toutes les fonctionnalités</h4>
+            <p class="text-amber-700 text-sm">
+              Réservez un véhicule chez {{ agency.name }} pour accéder au suivi partagé avec l'agence et bénéficier d'un accompagnement complet.
+            </p>
+            <div class="mt-3">
+              <a href="{% url 'public_site:agency_catalog' slug=agency.slug %}" class="inline-flex items-center gap-2 px-4 py-2 bg-amber-600 text-white text-sm font-semibold rounded-lg hover:bg-amber-700 transition">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"/></svg>
+                Voir les véhicules disponibles
+              </a>
+            </div>
+          </div>
+          <button onclick="startDemoMode()" class="rounded-xl px-6 py-2.5 text-sm font-semibold text-white ps-primary-bg transition hover:opacity-90">
+            🚀 Lancer la démo
+          </button>
+        </div>
+      </div>
+    </div>
+
+    {% else %}
+    <!-- ═══════ PREMIUM DRIVING MAP + AI COACHING ═══════ -->
+
+    <!-- Permission / HTTPS banners -->
+    <div id="perm-denied-banner" class="hidden rounded-2xl border-2 border-red-300 bg-red-50 p-5">
+      <div class="flex items-start gap-3">
+        <svg class="w-6 h-6 text-red-500 shrink-0 mt-0.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z"/></svg>
+        <div>
+          <h3 class="font-bold text-sm text-red-800">Accès à la position refusé</h3>
+          <p class="text-sm text-red-700 mt-1">Votre navigateur a bloqué l'accès au GPS.</p>
+          <ol class="text-sm text-red-700 mt-2 space-y-1 list-decimal list-inside">
+            <li>Cliquez sur l'icône de cadenas dans la barre d'adresse</li>
+            <li>Autorisez l'accès à la « Position »</li>
+            <li>Rechargez cette page</li>
+          </ol>
+        </div>
+      </div>
+    </div>
+    <div id="https-banner" class="hidden rounded-2xl border-2 border-amber-300 bg-amber-50 p-5">
+      <div class="flex items-start gap-3">
+        <svg class="w-6 h-6 text-amber-500 shrink-0 mt-0.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 1 0-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 0 0 2.25-2.25v-6.75a2.25 2.25 0 0 0-2.25-2.25H6.75a2.25 2.25 0 0 0-2.25 2.25v6.75a2.25 2.25 0 0 0 2.25 2.25Z"/></svg>
+        <div>
+          <h3 class="font-bold text-sm text-amber-800">Connexion sécurisée requise</h3>
+          <p class="text-sm text-amber-700 mt-1">Le GPS nécessite HTTPS. Contactez votre agence.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Vehicle info bar -->
+    <div class="rounded-2xl border p-3 flex items-center gap-3" style="border-color: color-mix(in srgb, var(--text) 10%, transparent);">
+      <div class="w-9 h-9 rounded-xl flex items-center justify-center shrink-0" style="background: color-mix(in srgb, var(--primary) 12%, transparent);">
+        {% if has_contract %}
+          <svg class="w-4 h-4" style="color:var(--primary)" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.21.42-1.42 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99zM6.5 16c-.83 0-1.5-.67-1.5-1.5S5.67 13 6.5 13s1.5.67 1.5 1.5S7.33 16 6.5 16zm11 0c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zM5 11l1.5-4.5h11L19 11H5z" fill="currentColor"/></svg>
+        {% else %}
+          <svg class="w-4 h-4" style="color:var(--primary)" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904 9 18.75l-.813-2.846a4.5 4.5 0 0 0-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 0 0 3.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 0 0 3.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 0 0-3.09 3.09Z"/></svg>
+        {% endif %}
+      </div>
+      <div class="flex-1 min-w-0">
+        {% if has_contract %}
+          <div class="font-semibold text-sm truncate">{{ contract.vehicle }}</div>
+          <div class="text-[10px] opacity-40">Contrat #{{ contract.pk }}</div>
+        {% else %}
+          <div class="font-semibold text-sm truncate">Mode Démonstration</div>
+          <div class="text-[10px] opacity-40">Conduite IA - Test gratuit</div>
+        {% endif %}
+      </div>
+      <div class="flex items-center gap-1.5 shrink-0">
+        <div class="w-2 h-2 rounded-full gps-pulse" id="status-dot" style="background:#10b981;"></div>
+        <span class="text-[10px] font-semibold" id="status-label" style="color:#10b981;">Connexion...</span>
+      </div>
+    </div>
+
+    <!-- ═══════ MAP ═══════ -->
+    <div class="map-wrap">
+      <!-- MapLibre container (must be empty for MapLibre to render) -->
+      <div id="drive-map" style="position:absolute;inset:0;width:100%;height:100%;"></div>
+      <div id="map-static">
+        <iframe title="map" src="https://www.openstreetmap.org/export/embed.html?bbox=-8.0,33.3,-7.1,33.8&layer=mapnik" style="border:0;width:100%;height:100%;"></iframe>
+      </div>
+      <div id="map-debug" class="map-hud" style="top:60px;left:12px;padding:6px 10px;font-size:10px;opacity:.7;">Init carte…</div>
+
+      <!-- Speed HUD (bottom-left on map) -->
+      <div class="map-hud hud-speed" style="bottom:16px;left:16px;padding:12px;width:100px;text-align:center;">
+        <svg class="score-circle mx-auto" width="72" height="72" viewBox="0 0 72 72">
+          <circle cx="36" cy="36" r="30" fill="none" stroke="rgba(0,0,0,.06)" stroke-width="6"/>
+          <circle cx="36" cy="36" r="30" fill="none" stroke="#10b981" stroke-width="6" stroke-linecap="round"
+                  id="speed-arc" class="speed-ring"
+                  stroke-dasharray="188.5" stroke-dashoffset="188.5"
+                  transform="rotate(-90 36 36)"/>
+        </svg>
+        <div style="position:absolute;top:12px;left:0;right:0;height:72px;display:flex;flex-direction:column;align-items:center;justify-content:center;">
+          <div style="font-size:22px;font-weight:800;line-height:1;" id="hud-speed">0</div>
+          <div style="font-size:8px;font-weight:600;opacity:.4;text-transform:uppercase;letter-spacing:.5px;">km/h</div>
+        </div>
+      </div>
+
+      <!-- Driving score HUD (bottom-right on map) -->
+      <div class="map-hud hud-score" style="bottom:16px;right:16px;padding:12px;width:100px;text-align:center;">
+        <svg class="score-circle mx-auto" width="72" height="72" viewBox="0 0 72 72">
+          <circle cx="36" cy="36" r="30" fill="none" stroke="rgba(0,0,0,.06)" stroke-width="6"/>
+          <circle cx="36" cy="36" r="30" fill="none" stroke="var(--primary, #6C2BFF)" stroke-width="6" stroke-linecap="round"
+                  id="score-arc" class="speed-ring"
+                  stroke-dasharray="188.5" stroke-dashoffset="37.7"
+                  transform="rotate(-90 36 36)"/>
+        </svg>
+        <div style="position:absolute;top:12px;left:0;right:0;height:72px;display:flex;flex-direction:column;align-items:center;justify-content:center;">
+          <div style="font-size:22px;font-weight:800;line-height:1;" id="hud-score">80</div>
+          <div style="font-size:8px;font-weight:600;opacity:.4;text-transform:uppercase;letter-spacing:.5px;">Score</div>
+        </div>
+      </div>
+
+      <div class="map-hud hud-left" style="top:12px;left:12px;padding:4px;">
+        <button onclick="toggleRoute()" id="ms-route" class="px-3 py-1.5 rounded-xl text-[10px] font-bold" style="background:#111827;color:#fff;">Itinéraire</button>
+        <button onclick="toggleTraffic()" id="ms-traffic" class="px-3 py-1.5 rounded-xl text-[10px] font-bold opacity-50 hover:opacity-80">Trafic</button>
+        <button onclick="toggleFollow()" id="ms-follow" class="px-3 py-1.5 rounded-xl text-[10px] font-bold opacity-50 hover:opacity-80">Suivre</button>
+        <button onclick="togglePickMode()" id="ms-pick" class="px-3 py-1.5 rounded-xl text-[10px] font-bold opacity-50 hover:opacity-80">Pointeur</button>
+      </div>
+      <div class="map-hud hud-center" style="top:12px;left:50%;transform:translateX(-50%);padding:6px 8px;">
+        <input id="dest-input" type="text" placeholder="Destination exacte (immeuble, adresse...)" class="flex-1 rounded-lg border border-slate-200 px-2.5 py-1.5 text-[11px] outline-none" onkeydown="if(event.key==='Enter'){event.preventDefault();searchDestination();}" />
+        <button onclick="searchDestination()" id="dest-btn" class="px-3 py-1.5 rounded-lg text-[10px] font-bold" style="background:var(--primary,#6C2BFF);color:#fff;">Go</button>
+        <button onclick="confirmDestination()" id="dest-validate" class="px-3 py-1.5 rounded-lg text-[10px] font-bold" style="background:#111827;color:#fff;display:none;">Valider</button>
+        <button onclick="cancelDestination()" id="dest-cancel" class="px-3 py-1.5 rounded-lg text-[10px] font-bold" style="opacity:.6;display:none;">Annuler</button>
+        <button onclick="toggleSim()" id="sim-btn" class="px-3 py-1.5 rounded-lg text-[10px] font-bold opacity-60 hover:opacity-90">Sim</button>
+        <select id="sim-speed" class="rounded-lg border border-slate-200 px-2 py-1.5 text-[10px]">
+          <option value="1">x1</option>
+          <option value="2">x2</option>
+          <option value="4">x4</option>
+        </select>
+      </div>
+      <div class="map-hud hud-results" id="dest-results-wrap" style="top:48px;left:50%;transform:translateX(-50%);padding:6px 8px;display:none;">
+        <div id="dest-results" class="space-y-1 text-[11px]"></div>
+      </div>
+      <div class="map-hud hud-right" style="top:12px;right:12px;padding:4px;">
+        <button onclick="setStyle('streets')" id="ms-streets" class="px-3 py-1.5 rounded-xl text-[10px] font-bold" style="background:var(--primary,#6C2BFF);color:#fff;">Carte</button>
+        <button onclick="setStyle('dark')" id="ms-dark" class="px-3 py-1.5 rounded-xl text-[10px] font-bold opacity-50 hover:opacity-80">Nuit</button>
+        <button onclick="setStyle('satellite')" id="ms-satellite" class="px-3 py-1.5 rounded-xl text-[10px] font-bold opacity-50 hover:opacity-80">Satellite</button>
+        <button onclick="toggle3D()" id="ms-3d" class="px-3 py-1.5 rounded-xl text-[10px] font-bold opacity-50 hover:opacity-80">3D</button>
+      </div>
+    </div>
+
+    <!-- ═══════ AI COACHING TIPS ═══════ -->
+    <div>
+      <div class="flex items-center gap-2 mb-3">
+        <svg class="w-4 h-4" style="color:var(--primary)" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904 9 18.75l-.813-2.846a4.5 4.5 0 0 0-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 0 0 3.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 0 0 3.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 0 0-3.09 3.09Z"/></svg>
+        <span class="text-xs font-bold uppercase tracking-wider opacity-60">Assistant de conduite IA</span>
+      </div>
+      {% if local_only_mode %}
+      <div class="ai-tip ai-tip-info" style="margin-bottom:8px;">
+        Mode local actif : la carte et l’IA fonctionnent même sans suivi GPS activé par l’agence.
+      </div>
+      {% endif %}
+      <div class="space-y-2" id="ai-tips">
+        <div class="ai-tip ai-tip-info">
+          <strong>Bienvenue !</strong> Conduisez et l'IA analysera votre style en temps réel. Gardez cette page ouverte.
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <div class="flex items-center gap-2 mb-3">
+        <svg class="w-4 h-4" style="color:var(--primary)" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 20.25L3.75 17.25V6.75L9 3.75l6 3 5.25-3v10.5L15 17.25 9 20.25Z"/></svg>
+        <span class="text-xs font-bold uppercase tracking-wider opacity-60">Itinéraire</span>
+      </div>
+      <div class="rounded-xl p-3 text-[11px]" style="background: color-mix(in srgb, var(--text) 3%, transparent);">
+        <div class="flex items-center gap-2 mb-2">
+          <div class="font-semibold" id="route-summary">Aucun itinéraire</div>
+          <div class="text-[10px] opacity-50" id="route-meta"></div>
+          <button type="button" onclick="toggleVoice()" id="route-voice" class="ml-auto px-2.5 py-1 rounded-lg text-[10px] font-bold" style="background:#111827;color:#fff;">Voix</button>
+        </div>
+        <div class="text-[10px] opacity-50 mb-2" id="route-forecast">Aucune prévision</div>
+        <div id="route-steps" class="space-y-1"></div>
+      </div>
+    </div>
+
+    <!-- ═══════ SESSION STATS ═══════ -->
+    <div class="grid grid-cols-4 gap-2">
+      <div class="rounded-xl p-3 text-center" style="background: color-mix(in srgb, var(--text) 3%, transparent);">
+        <div class="text-lg font-bold tabular-nums" id="stat-distance">0</div>
+        <div class="text-[9px] opacity-40 uppercase tracking-wider">km</div>
+      </div>
+      <div class="rounded-xl p-3 text-center" style="background: color-mix(in srgb, var(--text) 3%, transparent);">
+        <div class="text-lg font-bold tabular-nums" id="stat-maxspeed">0</div>
+        <div class="text-[9px] opacity-40 uppercase tracking-wider">Max km/h</div>
+      </div>
+      <div class="rounded-xl p-3 text-center" style="background: color-mix(in srgb, var(--text) 3%, transparent);">
+        <div class="text-lg font-bold tabular-nums" id="stat-duration">0:00</div>
+        <div class="text-[9px] opacity-40 uppercase tracking-wider">Durée</div>
+      </div>
+      <div class="rounded-xl p-3 text-center" style="background: color-mix(in srgb, var(--text) 3%, transparent);">
+        <div class="text-lg font-bold tabular-nums" id="stat-signals">0</div>
+        <div class="text-[9px] opacity-40 uppercase tracking-wider">Signaux</div>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-3 gap-2">
+      <div class="rounded-xl p-3 text-center" style="background: color-mix(in srgb, var(--primary) 10%, transparent);">
+        <div class="text-lg font-bold tabular-nums" id="stat-safety">80</div>
+        <div class="text-[9px] opacity-40 uppercase tracking-wider">Sécurité</div>
+      </div>
+      <div class="rounded-xl p-3 text-center" style="background: color-mix(in srgb, #10b981 10%, transparent);">
+        <div class="text-lg font-bold tabular-nums" id="stat-eco">80</div>
+        <div class="text-[9px] opacity-40 uppercase tracking-wider">Éco</div>
+      </div>
+      <div class="rounded-xl p-3 text-center" style="background: color-mix(in srgb, #f59e0b 10%, transparent);">
+        <div class="text-lg font-bold tabular-nums" id="stat-comfort">80</div>
+        <div class="text-[9px] opacity-40 uppercase tracking-wider">Confort</div>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="text-center text-[11px] opacity-30">
+      {% if share_with_agency %}Position partagée avec l'agence · {% endif %}Gardez cette page ouverte pour l'assistant de conduite
+    </div>
+
+    {% endif %}
+
+  {% else %}
+  <div class="rounded-2xl border p-12 text-center" style="border-color: color-mix(in srgb, var(--text) 10%, transparent);">
+    <svg class="w-16 h-16 mx-auto mb-4 opacity-20" fill="none" stroke="currentColor" stroke-width="1" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"/><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z"/></svg>
+    {% if not contract %}
+    <h2 class="text-lg font-bold mb-2">Aucun contrat actif</h2>
+    <p class="text-sm opacity-50">L'assistant de conduite IA est disponible uniquement avec un contrat de location actif.</p>
+    {% else %}
+    <h2 class="text-lg font-bold mb-2">Conduite IA non disponible</h2>
+    <p class="text-sm opacity-50">Aucun véhicule n'est associé à votre contrat actuel.</p>
+    {% endif %}
+  </div>
+  {% endif %}
+
+</div>
+{% if show_driving_map and not needs_consent %}
+<script src="https://cdn.jsdelivr.net/npm/maplibre-gl@4.1.2/dist/maplibre-gl.js"></script>
+<script>
+(function(){
+  function showMapError(msg) {
+    var el = document.getElementById('drive-map');
+    if (!el) return;
+    var dbg = document.getElementById('map-debug');
+    if (dbg) dbg.textContent = 'Erreur carte: ' + msg;
+    el.innerHTML = '<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:#f8fafc;color:#0f172a;font-size:12px;text-align:center;padding:24px;border:1px dashed #cbd5e1;">Carte indisponible<br/><span style="opacity:.6;">' + msg + '</span></div>';
+  }
+  window.addEventListener('error', function(e){
+    if (e && e.message) showMapError(e.message);
+  });
+  // ═══════ CHECKS ═══════
+  var gpsAvailable = true;
+  var dbg = document.getElementById('map-debug');
+  if (dbg) dbg.textContent = 'JS chargé';
+  if (!window.isSecureContext) {
+    document.getElementById('https-banner').classList.remove('hidden');
+    document.getElementById('status-label').textContent = 'HTTPS requis';
+    document.getElementById('status-dot').style.background = '#ef4444';
+    gpsAvailable = false;
+  }
+  if (!navigator.geolocation) {
+    document.getElementById('status-label').textContent = 'GPS non supporté';
+    document.getElementById('status-dot').style.background = '#ef4444';
+    gpsAvailable = false;
+  }
+  if (navigator.permissions && navigator.permissions.query) {
+    navigator.permissions.query({ name: 'geolocation' }).then(function(r) {
+      if (r.state === 'denied') { showPermDenied(); }
+      r.onchange = function() {
+        if (r.state === 'denied') showPermDenied();
+        else { document.getElementById('perm-denied-banner').classList.add('hidden'); startSharing(); }
+      };
+    }).catch(function(){});
+  }
+  function showPermDenied() {
+    document.getElementById('perm-denied-banner').classList.remove('hidden');
+    document.getElementById('status-label').textContent = 'Bloqué';
+    document.getElementById('status-dot').style.background = '#ef4444';
+    gpsAvailable = false;
+    stopSharing();
+  }
+
+  var fallbackShown = false;
+  function showFallbackMap() {
+    if (fallbackShown) return;
+    fallbackShown = true;
+    var el = document.getElementById('drive-map');
+    if (!el) return;
+    el.innerHTML = '<iframe title="map" src="https://www.openstreetmap.org/export/embed.html?bbox=-8.0,33.3,-7.1,33.8&layer=mapnik" style="border:0;width:100%;height:100%;"></iframe>';
+  }
+
+  var mapMode = 'maplibre';
+  var map = null;
+  var leafletMap = null;
+  var leafletMarker = null;
+  var leafletRoute = null;
+  var leafletTrail = null;
+  var leafletDest = null;
+
+  function initLeafletMap() {
+    var el = document.getElementById('drive-map');
+    if (!el || !window.L) { showMapError('Leaflet indisponible'); return; }
+    leafletMap = L.map('drive-map', { zoomControl: true, attributionControl: false }).setView([33.57, -7.59], 14);
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
+      maxZoom: 20,
+      subdomains: 'abcd',
+      attribution: '&copy; OpenStreetMap &copy; CARTO'
+    }).addTo(leafletMap);
+    var ms = document.getElementById('map-static');
+    if (ms) ms.style.display = 'none';
+    var dbg = document.getElementById('map-debug');
+    if (dbg) dbg.textContent = 'Leaflet OK';
+    leafletMap.on('click', function(e){
+      if (!pickMode) return;
+      setPendingDestination(e.latlng.lng, e.latlng.lat, 'Destination');
+    });
+    fetchServerTrail();
+  }
+
+  if (!window.maplibregl || (maplibregl.supported && !maplibregl.supported())) {
+    mapMode = 'leaflet';
+    showMapError('MapLibre indisponible');
+    initLeafletMap();
+  }
+
+  function rasterStyle(tileUrl, attribution) {
+    return {
+      version: 8,
+      sources: {
+        'raster-tiles': {
+          type: 'raster',
+          tiles: [tileUrl],
+          tileSize: 256,
+          attribution: attribution || '',
+        }
+      },
+      layers: [
+        { id: 'raster-tiles', type: 'raster', source: 'raster-tiles', minzoom: 0, maxzoom: 19 }
+      ]
+    };
+  }
+
+  var STYLES = {
+    streets: 'https://basemaps.cartocdn.com/gl/voyager-gl-style/style.json',
+    dark: 'https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json',
+    satellite: rasterStyle('https://services.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', '&copy; Esri'),
+    fallback: rasterStyle('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', '&copy; OpenStreetMap &copy; CARTO'),
+  };
+  var currentStyle = 'streets';
+  if (mapMode === 'maplibre') {
+  map = new maplibregl.Map({
+    container: 'drive-map',
+    style: STYLES.streets,
+    center: [-7.59, 33.57],
+    zoom: 14,
+    pitch: 40,
+    maxZoom: 21,
+    maxPitch: 70,
+    antialias: true,
+    attributionControl: false,
+  });
+  map.addControl(new maplibregl.NavigationControl({ showCompass: true, showZoom: true }), 'top-left');
+  map.on('error', function() {
+    showMapError('Erreur de chargement du style');
+    showFallbackMap();
+  });
+  setTimeout(function(){
+    if (!map.isStyleLoaded()) {
+      showFallbackMap();
+    }
+  }, 3000);
+  setTimeout(function(){
+    var hasCanvas = document.querySelector('#drive-map canvas');
+    if (!hasCanvas) showFallbackMap();
+  }, 4000);
+  }
+
+  var userMarkerEl = null;
+  var userMarker = null;
+  var headingEl = null;
+  if (mapMode === 'maplibre') {
+    userMarkerEl = document.createElement('div');
+    userMarkerEl.innerHTML = '<div style="width:20px;height:20px;border-radius:50%;background:var(--primary,#6C2BFF);border:3px solid #fff;box-shadow:0 0 0 4px rgba(108,43,255,.25),0 2px 8px rgba(0,0,0,.2);" class="gps-pulse"></div>';
+    userMarker = new maplibregl.Marker({ element: userMarkerEl }).setLngLat([-7.59, 33.57]).addTo(map);
+
+    headingEl = document.createElement('div');
+    headingEl.style.cssText = 'width:0;height:0;border-left:8px solid transparent;border-right:8px solid transparent;border-bottom:16px solid var(--primary,#6C2BFF);filter:drop-shadow(0 1px 3px rgba(0,0,0,.3));transition:transform .3s;position:absolute;top:-20px;left:50%;margin-left:-8px;';
+    userMarkerEl.style.position = 'relative';
+    userMarkerEl.appendChild(headingEl);
+  }
+
+  // Style toggle
+  window.setStyle = function(s) {
+    if (mapMode !== 'maplibre' || !map) return;
+    if (s === currentStyle) return;
+    currentStyle = s;
+    document.getElementById('ms-streets').style.cssText = s === 'streets' ? 'background:var(--primary,#6C2BFF);color:#fff;' : 'opacity:.5;';
+    document.getElementById('ms-dark').style.cssText = s === 'dark' ? 'background:var(--primary,#6C2BFF);color:#fff;' : 'opacity:.5;';
+    document.getElementById('ms-satellite').style.cssText = s === 'satellite' ? 'background:var(--primary,#6C2BFF);color:#fff;' : 'opacity:.5;';
+    var c = map.getCenter(), z = map.getZoom(), p = map.getPitch(), b = map.getBearing();
+    map.setStyle(STYLES[s] || STYLES.fallback);
+    map.once('styledata', function() {
+      map.jumpTo({ center: c, zoom: z, pitch: p, bearing: b });
+      if (trailCoords.length > 1) drawTrail();
+      if (routeCoords.length > 1) setRouteLine(routeCoords);
+      if (threeDEnabled) apply3D();
+    });
+  };
+
+  // ═══════ DRIVING STATE ═══════
+  var signalCount = 0;
+  var maxSpeed = 0;
+  var totalDistance = 0;
+  var startTime = Date.now();
+  var lastLat = null, lastLng = null;
+  var trailCoords = [];
+  var trailPoints = [];
+  var drivingScore = 80;
+  var safetyScore = 80;
+  var ecoScore = 80;
+  var comfortScore = 80;
+  var speedViolations = 0;
+  var smoothDriving = 0;
+  var lastSpeed = 0;
+  var lastHeading = null;
+  var lastTime = null;
+  var harshAccel = 0;
+  var harshBrake = 0;
+  var harshTurn = 0;
+  var idleSeconds = 0;
+  var watchId = null;
+  var fallbackTimer = null;
+  var lastSendTime = 0;
+  var SEND_INTERVAL = 15000;
+  var firstFix = false;
+
+  // ═══════ HAVERSINE ═══════
+  function haversine(lat1, lng1, lat2, lng2) {
+    var R = 6371;
+    var dLat = (lat2 - lat1) * Math.PI / 180;
+    var dLng = (lng2 - lng1) * Math.PI / 180;
+    var a = Math.sin(dLat/2)*Math.sin(dLat/2) + Math.cos(lat1*Math.PI/180)*Math.cos(lat2*Math.PI/180)*Math.sin(dLng/2)*Math.sin(dLng/2);
+    return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+  }
+
+  // ═══════ UI UPDATES ═══════
+  var hudSpeed = document.getElementById('hud-speed');
+  var hudScore = document.getElementById('hud-score');
+  var speedArc = document.getElementById('speed-arc');
+  var scoreArc = document.getElementById('score-arc');
+  var statDist = document.getElementById('stat-distance');
+  var statMax = document.getElementById('stat-maxspeed');
+  var statDur = document.getElementById('stat-duration');
+  var statSig = document.getElementById('stat-signals');
+  var statSafety = document.getElementById('stat-safety');
+  var statEco = document.getElementById('stat-eco');
+  var statComfort = document.getElementById('stat-comfort');
+  var statusDot = document.getElementById('status-dot');
+  var statusLabel = document.getElementById('status-label');
+  var tipsEl = document.getElementById('ai-tips');
+  var CIRCUMFERENCE = 188.5;
+
+  function updateSpeedGauge(speed) {
+    var s = Math.min(speed, 160);
+    hudSpeed.textContent = Math.round(speed);
+    var pct = s / 160;
+    speedArc.setAttribute('stroke-dashoffset', CIRCUMFERENCE * (1 - pct));
+    // Color: green < 60, yellow 60-100, red > 100
+    var color = speed > 100 ? '#ef4444' : speed > 60 ? '#f59e0b' : '#10b981';
+    speedArc.setAttribute('stroke', color);
+  }
+
+  function updateScoreGauge() {
+    hudScore.textContent = Math.round(drivingScore);
+    var pct = drivingScore / 100;
+    scoreArc.setAttribute('stroke-dashoffset', CIRCUMFERENCE * (1 - pct));
+    var color = drivingScore >= 70 ? 'var(--primary, #6C2BFF)' : drivingScore >= 40 ? '#f59e0b' : '#ef4444';
+    scoreArc.setAttribute('stroke', color);
+  }
+
+  function updateSubScores() {
+    statSafety.textContent = Math.round(safetyScore);
+    statEco.textContent = Math.round(ecoScore);
+    statComfort.textContent = Math.round(comfortScore);
+  }
+
+  function updateDuration() {
+    var s = Math.floor((Date.now() - startTime) / 1000);
+    var m = Math.floor(s / 60);
+    var sec = s % 60;
+    statDur.textContent = m + ':' + (sec < 10 ? '0' : '') + sec;
+  }
+  setInterval(updateDuration, 1000);
+
+  // ═══════ AI COACHING ═══════
+  var lastTipTime = 0;
+  var tipHistory = [];
+
+  function addTip(type, text) {
+    var now = Date.now();
+    // Avoid duplicate tips within 30s
+    var key = type + text.substring(0, 20);
+    if (tipHistory.includes(key) && now - lastTipTime < 30000) return;
+    tipHistory.push(key);
+    if (tipHistory.length > 10) tipHistory.shift();
+    lastTipTime = now;
+
+    var div = document.createElement('div');
+    div.className = 'ai-tip ai-tip-' + type;
+    div.innerHTML = text;
+    tipsEl.insertBefore(div, tipsEl.firstChild);
+    // Keep max 5 tips
+    while (tipsEl.children.length > 5) tipsEl.removeChild(tipsEl.lastChild);
+  }
+
+  function analyzeSpeed(speed) {
+    if (speed > 120) {
+      addTip('danger', '<strong>Vitesse dangereuse !</strong> Vous roulez à ' + Math.round(speed) + ' km/h. Ralentissez immédiatement.');
+      drivingScore = Math.max(drivingScore - 5, 0);
+      safetyScore = Math.max(safetyScore - 6, 0);
+      ecoScore = Math.max(ecoScore - 4, 0);
+      speedViolations++;
+    } else if (speed > 100) {
+      addTip('warn', '<strong>Vitesse élevée</strong> — ' + Math.round(speed) + ' km/h. Restez prudent sur cette route.');
+      drivingScore = Math.max(drivingScore - 2, 0);
+      safetyScore = Math.max(safetyScore - 3, 0);
+      ecoScore = Math.max(ecoScore - 2, 0);
+      speedViolations++;
+    } else if (speed > 80 && speed <= 100) {
+      // Mild warning only once
+      if (speedViolations === 0) {
+        addTip('info', 'Vous roulez à ' + Math.round(speed) + ' km/h. Adaptez votre vitesse aux conditions.');
+      }
+    } else if (speed > 5 && speed <= 60) {
+      smoothDriving++;
+      if (smoothDriving % 20 === 0) {
+        drivingScore = Math.min(drivingScore + 1, 100);
+        addTip('good', '<strong>Bonne conduite !</strong> Vous maintenez une vitesse sûre et régulière.');
+      }
+    }
+
+    // Harsh acceleration/braking detection
+    var speedDiff = Math.abs(speed - lastSpeed);
+    if (speedDiff > 30 && lastSpeed > 0) {
+      addTip('warn', '<strong>Conduite brusque détectée</strong> — Variation de ' + Math.round(speedDiff) + ' km/h. Conduisez plus en douceur.');
+      drivingScore = Math.max(drivingScore - 3, 0);
+      comfortScore = Math.max(comfortScore - 4, 0);
+    }
+
+    lastSpeed = speed;
+    updateScoreGauge();
+    updateSubScores();
+  }
+
+  // ═══════ TRAIL ═══════
+  var routeVisible = true;
+  var trafficVisible = false;
+  var destMarker = null;
+  var routeCoords = [];
+  var lastRoute = null;
+  var threeDEnabled = false;
+  var voiceEnabled = false;
+  var voiceSupported = 'speechSynthesis' in window;
+  var simEnabled = false;
+  var simTimer = null;
+  var simIndex = 0;
+  var followMode = false;
+  var navAutoMode = true;
+  var routeManeuvers = [];
+  var nextManeuverIndex = 0;
+  var lastVoiceTime = 0;
+  var drivingSeconds = 0;
+  var lastBreakSuggestion = 0;
+  var pickMode = false;
+  var pendingDest = null;
+  var pendingMarker = null;
+  if (!voiceSupported) {
+    var vb = document.getElementById('route-voice');
+    if (vb) vb.style.cssText = 'opacity:.4;';
+  }
+
+  function setLayerVisibility(id, visible) {
+    if (mapMode !== 'maplibre' || !map) return;
+    if (map.getLayer(id)) {
+      map.setLayoutProperty(id, 'visibility', visible ? 'visible' : 'none');
+    }
+  }
+
+  function updatePickUI() {
+    var btn = document.getElementById('dest-btn');
+    var pick = document.getElementById('ms-pick');
+    var v = document.getElementById('dest-validate');
+    var c = document.getElementById('dest-cancel');
+    if (pick) {
+      pick.style.cssText = pickMode ? 'background:#111827;color:#fff;' : 'opacity:.5;';
+    }
+    var dm = document.getElementById('drive-map');
+    if (dm) dm.classList.toggle('pick-mode', pickMode);
+    if (v) v.style.display = pendingDest ? 'inline-flex' : 'none';
+    if (c) c.style.display = pendingDest ? 'inline-flex' : 'none';
+  }
+
+  function clearPendingMarker() {
+    if (mapMode === 'leaflet') {
+      if (pendingMarker && leafletMap) leafletMap.removeLayer(pendingMarker);
+    } else if (pendingMarker) {
+      pendingMarker.remove();
+    }
+    pendingMarker = null;
+  }
+
+  function setPendingDestination(lng, lat, label) {
+    pendingDest = { lng: lng, lat: lat, label: label || 'Destination' };
+    clearPendingMarker();
+    if (mapMode === 'leaflet') {
+      if (leafletMap) {
+        pendingMarker = L.marker([lat, lng]).addTo(leafletMap);
+        leafletMap.setView([lat, lng], Math.max(leafletMap.getZoom(), 16));
+      }
+    } else if (map) {
+      var el = document.createElement('div');
+      el.style.cssText = 'width:14px;height:14px;border-radius:50%;background:#0ea5e9;border:2px solid #fff;box-shadow:0 0 6px rgba(0,0,0,.3)';
+      pendingMarker = new maplibregl.Marker({ element: el }).setLngLat([lng, lat]).addTo(map);
+      map.easeTo({ center: [lng, lat], zoom: Math.max(map.getZoom(), 16), duration: 500 });
+    }
+    var input = document.getElementById('dest-input');
+    if (input && label) input.value = label;
+    updatePickUI();
+  }
+
+  window.togglePickMode = function() {
+    pickMode = !pickMode;
+    updatePickUI();
+  };
+
+  window.cancelDestination = function() {
+    pendingDest = null;
+    pickMode = false;
+    clearPendingMarker();
+    updatePickUI();
+  };
+
+  window.confirmDestination = function() {
+    if (!pendingDest) return;
+    var d = pendingDest;
+    pendingDest = null;
+    pickMode = false;
+    clearPendingMarker();
+    updatePickUI();
+    routeTo(d.lng, d.lat, d.label);
+  };
+
+  window.toggleRoute = function() {
+    routeVisible = !routeVisible;
+    document.getElementById('ms-route').style.cssText = routeVisible ? 'background:#111827;color:#fff;' : 'opacity:.5;';
+    if (mapMode === 'leaflet') {
+      drawTrail();
+      setRouteLine(routeCoords);
+      return;
+    }
+    setLayerVisibility('trail-glow', routeVisible);
+    setLayerVisibility('trail-line', routeVisible);
+    setLayerVisibility('nav-route-casing', routeVisible);
+    setLayerVisibility('nav-route-line', routeVisible);
+  };
+
+  window.toggleTraffic = function() {
+    trafficVisible = !trafficVisible;
+    document.getElementById('ms-traffic').style.cssText = trafficVisible ? 'background:#f59e0b;color:#fff;' : 'opacity:.5;';
+    if (mapMode === 'leaflet') return;
+    setLayerVisibility('trail-traffic', trafficVisible);
+  };
+
+  function drawTrail() {
+    if (mapMode === 'leaflet') {
+      if (!leafletMap) return;
+      if (leafletTrail) leafletMap.removeLayer(leafletTrail);
+      if (routeVisible && trailCoords.length > 1) {
+        var latlngs = trailCoords.map(function(c){ return [c[1], c[0]]; });
+        leafletTrail = L.polyline(latlngs, { color: '#6C2BFF', weight: 3, opacity: 0.7 }).addTo(leafletMap);
+      }
+      return;
+    }
+    var lineData = { type: 'Feature', geometry: { type: 'LineString', coordinates: trailCoords } };
+    var pointFeatures = trailPoints.map(function(p){
+      return { type: 'Feature', geometry: { type: 'Point', coordinates: [p.lng, p.lat] }, properties: { speed: p.speed || 0 } };
+    });
+    var pointsData = { type: 'FeatureCollection', features: pointFeatures };
+    if (map.getSource('trail-line')) {
+      map.getSource('trail-line').setData(lineData);
+    } else {
+      map.addSource('trail-line', { type: 'geojson', data: lineData });
+      map.addLayer({ id: 'trail-glow', type: 'line', source: 'trail-line', paint: { 'line-color': '#6C2BFF', 'line-width': 6, 'line-opacity': 0.15, 'line-blur': 4 } });
+      map.addLayer({ id: 'trail-line', type: 'line', source: 'trail-line', paint: { 'line-color': '#6C2BFF', 'line-width': 3, 'line-opacity': 0.7 } });
+    }
+    if (map.getSource('trail-points')) {
+      map.getSource('trail-points').setData(pointsData);
+    } else {
+      map.addSource('trail-points', { type: 'geojson', data: pointsData });
+      map.addLayer({
+        id: 'trail-traffic',
+        type: 'circle',
+        source: 'trail-points',
+        paint: {
+          'circle-radius': ['interpolate', ['linear'], ['zoom'], 10, 2, 14, 4, 17, 6],
+          'circle-color': [
+            'interpolate', ['linear'], ['get', 'speed'],
+            0, '#9ca3af',
+            20, '#10b981',
+            50, '#f59e0b',
+            90, '#ef4444'
+          ],
+          'circle-opacity': 0.85
+        }
+      });
+    }
+    setLayerVisibility('trail-glow', routeVisible);
+    setLayerVisibility('trail-line', routeVisible);
+    setLayerVisibility('trail-traffic', trafficVisible);
+  }
+
+  function ensureTerrain() {
+    if (mapMode !== 'maplibre' || !map) return;
+    if (!map.getSource('terrain')) {
+      map.addSource('terrain', {
+        type: 'raster-dem',
+        tiles: ['https://demotiles.maplibre.org/terrain-rgb/{z}/{x}/{y}.png'],
+        tileSize: 256,
+        maxzoom: 14
+      });
+    }
+    if (!map.getLayer('hillshade')) {
+      map.addLayer({
+        id: 'hillshade',
+        type: 'hillshade',
+        source: 'terrain',
+        paint: { 'hillshade-exaggeration': 0.6 }
+      });
+    }
+  }
+
+  function apply3D() {
+    if (mapMode !== 'maplibre' || !map) return;
+    if (!threeDEnabled) {
+      if (map.getLayer('hillshade')) map.removeLayer('hillshade');
+      if (map.getSource('terrain')) map.removeSource('terrain');
+      map.setTerrain(null);
+      return;
+    }
+    ensureTerrain();
+    map.setTerrain({ source: 'terrain', exaggeration: 1.6 });
+    map.easeTo({ pitch: 70, bearing: 20, duration: 800 });
+  }
+
+  window.toggle3D = function() {
+    threeDEnabled = !threeDEnabled;
+    document.getElementById('ms-3d').style.cssText = threeDEnabled ? 'background:#111827;color:#fff;' : 'opacity:.5;';
+    apply3D();
+  };
+
+  function setRouteLine(coords) {
+    routeCoords = coords;
+    if (mapMode === 'leaflet') {
+      if (!leafletMap) return;
+      if (leafletRoute) leafletMap.removeLayer(leafletRoute);
+      if (routeVisible && coords && coords.length > 1) {
+        var latlngs = coords.map(function(c){ return [c[1], c[0]]; });
+        leafletRoute = L.polyline(latlngs, { color: '#2563eb', weight: 4, opacity: 0.9 }).addTo(leafletMap);
+      }
+      return;
+    }
+    if (map.getSource('nav-route')) {
+      map.getSource('nav-route').setData({
+        type: 'Feature',
+        geometry: { type: 'LineString', coordinates: coords }
+      });
+    } else {
+      map.addSource('nav-route', {
+        type: 'geojson',
+        data: { type: 'Feature', geometry: { type: 'LineString', coordinates: coords } }
+      });
+      map.addLayer({
+        id: 'nav-route-casing',
+        type: 'line',
+        source: 'nav-route',
+        paint: { 'line-color': '#111827', 'line-width': 7, 'line-opacity': 0.15 }
+      });
+      map.addLayer({
+        id: 'nav-route-line',
+        type: 'line',
+        source: 'nav-route',
+        paint: { 'line-color': '#2563eb', 'line-width': 4, 'line-opacity': 0.9 }
+      });
+    }
+    setLayerVisibility('nav-route-casing', routeVisible);
+    setLayerVisibility('nav-route-line', routeVisible);
+  }
+
+  function updateRouteUI(route) {
+    var summary = document.getElementById('route-summary');
+    var meta = document.getElementById('route-meta');
+    var steps = document.getElementById('route-steps');
+    if (!route) {
+      summary.textContent = 'Aucun itinéraire';
+      meta.textContent = '';
+      document.getElementById('route-forecast').textContent = 'Aucune prévision';
+      steps.innerHTML = '';
+      return;
+    }
+    summary.textContent = route.name || 'Itinéraire';
+    meta.textContent = route.distance_km + ' km · ' + route.duration_min + ' min';
+    document.getElementById('route-forecast').textContent = 'Prévision : arrivée dans ~' + route.duration_min + ' min à vitesse actuelle.';
+    steps.innerHTML = '';
+    route.steps.slice(0, 12).forEach(function(s){
+      var div = document.createElement('div');
+      div.textContent = '• ' + s.text + ' (' + s.dist + ')';
+      steps.appendChild(div);
+    });
+  }
+
+  function fitRoute(coords) {
+    if (!coords || coords.length < 2) return;
+    if (mapMode === 'leaflet') {
+      if (!leafletMap) return;
+      var latlngs = coords.map(function(c){ return [c[1], c[0]]; });
+      leafletMap.fitBounds(L.latLngBounds(latlngs), { padding: [40, 40] });
+      return;
+    }
+    var bounds = coords.reduce(function(b, c){
+      return b.extend(c);
+    }, new maplibregl.LngLatBounds(coords[0], coords[0]));
+    map.fitBounds(bounds, { padding: 60, duration: 900 });
+  }
+
+  function setDestinationMarker(lng, lat) {
+    if (mapMode === 'leaflet') {
+      if (!leafletMap) return;
+      if (leafletDest) leafletMap.removeLayer(leafletDest);
+      leafletDest = L.marker([lat, lng]).addTo(leafletMap);
+      return;
+    }
+    if (destMarker) destMarker.remove();
+    var el = document.createElement('div');
+    el.style.cssText = 'width:16px;height:16px;border-radius:50%;background:#ef4444;border:2px solid #fff;box-shadow:0 0 6px rgba(0,0,0,.3)';
+    destMarker = new maplibregl.Marker({ element: el }).setLngLat([lng, lat]).addTo(map);
+  }
+
+  window.searchDestination = function() {
+    var q = document.getElementById('dest-input').value.trim();
+    if (!q) return;
+    pickMode = false;
+    updatePickUI();
+    fetch('https://nominatim.openstreetmap.org/search?format=json&limit=5&q=' + encodeURIComponent(q))
+      .then(function(r){ return r.json(); })
+      .then(function(list){
+        var wrap = document.getElementById('dest-results-wrap');
+        var box = document.getElementById('dest-results');
+        box.innerHTML = '';
+        if (!list || !list.length) {
+          wrap.style.display = 'none';
+          return;
+        }
+        list.forEach(function(item){
+          var btn = document.createElement('button');
+          btn.type = 'button';
+          btn.className = 'w-full text-left px-2 py-1 rounded-lg hover:bg-slate-100';
+          btn.textContent = item.display_name;
+          btn.onclick = function(){
+            wrap.style.display = 'none';
+            setPendingDestination(parseFloat(item.lon), parseFloat(item.lat), item.display_name);
+          };
+          box.appendChild(btn);
+        });
+        wrap.style.display = 'flex';
+      })
+      .catch(function(){});
+  };
+
+  function routeTo(lng, lat, label) {
+    if (lastLat === null || lastLng === null) {
+      updateRouteUI(null);
+      return;
+    }
+    if (simEnabled) stopSimulation();
+    if (followMode) {
+      if (mapMode === 'leaflet' && leafletMap) {
+        leafletMap.setView([lastLat, lastLng], Math.max(leafletMap.getZoom(), 16));
+      } else if (map) {
+        map.easeTo({ center: [lastLng, lastLat], duration: 400, zoom: Math.max(map.getZoom(), 16), pitch: Math.max(map.getPitch(), 60) });
+      }
+    }
+    setDestinationMarker(lng, lat);
+    var url = 'https://router.project-osrm.org/route/v1/driving/' + lastLng + ',' + lastLat + ';' + lng + ',' + lat + '?overview=full&geometries=geojson&steps=true&alternatives=true';
+    fetch(url)
+      .then(function(r){ return r.json(); })
+      .then(function(data){
+        if (!data || data.code !== 'Ok' || !data.routes || !data.routes.length) {
+          updateRouteUI(null);
+          return;
+        }
+        var r = data.routes[0];
+        setRouteLine(r.geometry.coordinates);
+        fitRoute(r.geometry.coordinates);
+        var steps = [];
+        routeManeuvers = [];
+        nextManeuverIndex = 0;
+        data.routes[0].legs[0].steps.forEach(function(s){
+          var text = formatInstruction(s);
+          var dist = formatDistance(s.distance || 0);
+          steps.push({ text: text, dist: dist });
+          if (s.maneuver && s.maneuver.location) {
+            routeManeuvers.push({
+              lng: s.maneuver.location[0],
+              lat: s.maneuver.location[1],
+              text: text,
+              dist: dist
+            });
+          }
+        });
+        lastRoute = {
+          name: label || 'Itinéraire',
+          distance_km: Math.round(r.distance / 100) / 10,
+          duration_min: Math.round(r.duration / 60),
+          steps: steps
+        };
+        updateRouteUI(lastRoute);
+        if (voiceSupported && !voiceEnabled) {
+          voiceEnabled = true;
+          var btn = document.getElementById('route-voice');
+          if (btn) btn.style.cssText = 'background:#111827;color:#fff;';
+        }
+        if (voiceEnabled) speakRoute(lastRoute);
+      })
+      .catch(function(){
+        updateRouteUI(null);
+      });
+  }
+
+  function startSimulation() {
+    if (!routeCoords || routeCoords.length < 2) return;
+    simEnabled = true;
+    simIndex = 0;
+    if (simTimer) clearInterval(simTimer);
+    followMode = true;
+    document.getElementById('ms-follow').style.cssText = 'background:#111827;color:#fff;';
+    if (voiceSupported && !voiceEnabled) {
+      voiceEnabled = true;
+      var vb = document.getElementById('route-voice');
+      if (vb) vb.style.cssText = 'background:#111827;color:#fff;';
+    }
+    if (lastRoute && voiceEnabled) speakRoute(lastRoute);
+    simTimer = setInterval(function(){
+      if (!simEnabled) return;
+      if (simIndex >= routeCoords.length) {
+        stopSimulation();
+        return;
+      }
+      var c = routeCoords[simIndex];
+      if (mapMode === 'leaflet') {
+        if (leafletMap) {
+          if (!leafletMarker) leafletMarker = L.marker([c[1], c[0]]).addTo(leafletMap);
+          else leafletMarker.setLatLng([c[1], c[0]]);
+          leafletMap.setView([c[1], c[0]], Math.max(leafletMap.getZoom(), 16));
+        }
+      } else if (userMarker) {
+        userMarker.setLngLat(c);
+        applyNavCamera(c[1], c[0], map.getBearing(), 20);
+      }
+      maybeSpeakManeuver(c[1], c[0], 20);
+      simIndex += 1;
+    }, Math.max(120, 300 / getSimSpeed()));
+  }
+
+  function stopSimulation() {
+    simEnabled = false;
+    if (simTimer) clearInterval(simTimer);
+    simTimer = null;
+  }
+
+  window.toggleSim = function() {
+    if (!routeCoords || routeCoords.length < 2) return;
+    var btn = document.getElementById('sim-btn');
+    if (!simEnabled) {
+      btn.style.cssText = 'background:#111827;color:#fff;';
+      startSimulation();
+    } else {
+      btn.style.cssText = 'opacity:.6;';
+      stopSimulation();
+    }
+  };
+
+  function getSimSpeed() {
+    var el = document.getElementById('sim-speed');
+    var v = el ? parseFloat(el.value || '1') : 1;
+    return isNaN(v) ? 1 : v;
+  }
+
+  window.toggleFollow = function() {
+    followMode = !followMode;
+    document.getElementById('ms-follow').style.cssText = followMode ? 'background:#111827;color:#fff;' : 'opacity:.5;';
+    if (followMode && lastLat !== null && lastLng !== null) {
+      if (mapMode === 'leaflet' && leafletMap) {
+        leafletMap.setView([lastLat, lastLng], Math.max(leafletMap.getZoom(), 16));
+      } else if (map) {
+        map.easeTo({ center: [lastLng, lastLat], zoom: Math.max(map.getZoom(), 16), pitch: Math.max(map.getPitch(), 60), duration: 400 });
+      }
+    }
+  };
+
+  function applyNavCamera(lat, lng, heading, speed) {
+    if (!navAutoMode || speed < 8) return;
+    if (mapMode === 'leaflet') {
+      if (leafletMap) {
+        leafletMap.setView([lat, lng], Math.max(leafletMap.getZoom(), 16.5));
+      }
+      return;
+    }
+    var bearing = heading !== null && !isNaN(heading) ? heading : map.getBearing();
+    map.easeTo({
+      center: [lng, lat],
+      zoom: Math.max(map.getZoom(), 16.5),
+      pitch: Math.max(map.getPitch(), 65),
+      bearing: bearing,
+      duration: 700,
+      easing: function(t){ return t; }
+    });
+  }
+
+  function formatDistance(m) {
+    if (m >= 1000) return (Math.round(m / 100) / 10) + ' km';
+    return Math.round(m) + ' m';
+  }
+
+  function formatInstruction(step) {
+    var man = step.maneuver || {};
+    var type = man.type || '';
+    var mod = man.modifier || '';
+    var name = step.name || '';
+    var modMap = {
+      'left': 'à gauche',
+      'right': 'à droite',
+      'slight left': 'légèrement à gauche',
+      'slight right': 'légèrement à droite',
+      'sharp left': 'brusquement à gauche',
+      'sharp right': 'brusquement à droite',
+      'uturn': 'faites demi-tour'
+    };
+    var base = '';
+    if (type === 'depart') base = 'Démarrez';
+    else if (type === 'arrive') base = 'Vous êtes arrivé';
+    else if (type === 'roundabout') base = 'Rond-point ' + (man.exit ? 'sortie ' + man.exit : '');
+    else if (type === 'turn') base = 'Tournez ' + (modMap[mod] || mod);
+    else if (type === 'merge') base = 'Insérez-vous';
+    else if (type === 'fork') base = 'Bifurquez ' + (modMap[mod] || mod);
+    else if (type === 'end of road') base = 'Au bout, tournez ' + (modMap[mod] || mod);
+    else base = 'Continuez';
+    if (name) base += ' sur ' + name;
+    return base.trim();
+  }
+
+  function speak(text) {
+    if (!voiceSupported) return;
+    var u = new SpeechSynthesisUtterance(text);
+    u.lang = 'fr-FR';
+    u.rate = 1;
+    window.speechSynthesis.speak(u);
+  }
+
+  function speakRoute(route) {
+    if (!voiceSupported || !route || !route.steps) return;
+    window.speechSynthesis.cancel();
+    speak('Itinéraire vers ' + route.name + '. ' + route.distance_km + ' kilomètres, ' + route.duration_min + ' minutes.');
+    route.steps.slice(0, 10).forEach(function(s, idx){
+      speak('Étape ' + (idx + 1) + '. ' + s.text + '. Distance ' + s.dist + '.');
+    });
+  }
+
+  function maybeSpeakManeuver(lat, lng, speed) {
+    if (!voiceEnabled || !voiceSupported || !routeManeuvers.length || speed < 5) return;
+    var now = Date.now();
+    if (now - lastVoiceTime < 8000) return;
+    var m = routeManeuvers[nextManeuverIndex];
+    if (!m) return;
+    var d = distance(lat, lng, m.lat, m.lng);
+    if (d > m.dist) return;
+    if (d < 30) {
+      speak(m.instruction);
+      nextManeuverIndex++;
+      lastVoiceTime = now;
+    }
+  }
+
+  // Demo mode function
+  function startDemoMode() {
+    // Hide the demo banner and show the map
+    var demoBanner = document.querySelector('[class*="border-2 p-6"]:has(h3)');
+    if (demoBanner && demoBanner.textContent.includes('Mode Démonstration')) {
+      demoBanner.style.display = 'none';
+    }
+    
+    // Show the map section
+    var mapSection = document.querySelector('.map-wrap');
+    if (mapSection) {
+      mapSection.style.display = 'block';
+    }
+    
+    // Start GPS simulation
+    if (typeof startGps === 'function') {
+      startGps();
+    } else {
+      // Fallback: manually trigger GPS
+      if (navigator.geolocation) {
+        navigator.geolocation.watchPosition(
+          function(position) {
+            // Simulate position update
+            var evt = {
+              coords: {
+                latitude: position.coords.latitude,
+                longitude: position.coords.longitude,
+                speed: position.coords.speed || 0,
+                heading: position.coords.heading || null
+              },
+              timestamp: position.timestamp
+            };
+            if (typeof handlePosition === 'function') {
+              handlePosition(evt);
+            }
+          },
+          function(error) {
+            console.log('Demo mode GPS error:', error);
+          },
+          { enableHighAccuracy: true, maximumAge: 0, timeout: 5000 }
+        );
+      }
+    }
+    
+    // Update status to show demo mode
+    var statusLabel = document.getElementById('status-label');
+    var statusDot = document.getElementById('status-dot');
+    if (statusLabel) {
+      statusLabel.textContent = 'Mode démo';
+      statusLabel.style.color = '#f59e0b';
+    }
+    if (statusDot) {
+      statusDot.style.background = '#f59e0b';
+    }
+  }
+</script>
+{% endif %}
+{% endblock %}

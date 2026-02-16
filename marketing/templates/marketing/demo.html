@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Démo — Gaboom DriveOS{% endblock %}
+
+{% block body %}
+  <nav class="bg-white border-b border-slate-100">
+    <div class="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
+      <a href="/" class="flex items-center gap-2.5">
+        <img src="{% static 'brand/logo.png' %}" alt="Gaboom DriveOS" class="h-9" />
+      </a>
+      <a href="/signup/" class="rounded-full bg-gaboomViolet text-white px-5 py-2 text-sm font-semibold shadow-md shadow-violet-200 hover:shadow-lg transition-all">
+        Créer mon agence
+      </a>
+    </div>
+  </nav>
+
+  <div class="min-h-[80vh] flex items-center justify-center px-4">
+    <div class="w-full max-w-lg text-center">
+      <div class="mx-auto h-20 w-20 rounded-3xl bg-gradient-to-br from-violet-100 to-amber-100 flex items-center justify-center">
+        <svg class="w-10 h-10 text-gaboomViolet" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5.25 5.653c0-.856.917-1.398 1.667-.986l11.54 6.347a1.125 1.125 0 0 1 0 1.972l-11.54 6.347a1.125 1.125 0 0 1-1.667-.986V5.653Z"/></svg>
+      </div>
+      <h1 class="mt-8 text-3xl font-bold">Démo interactive</h1>
+      <p class="mt-3 text-slate-500 text-lg">Bientôt disponible. En attendant, crée ton agence gratuitement et explore le dashboard en conditions réelles.</p>
+      <div class="mt-8 flex flex-col sm:flex-row gap-3 justify-center">
+        <a href="/signup/" class="rounded-full bg-gaboomViolet text-white px-7 py-3.5 font-semibold shadow-lg shadow-violet-200 hover:shadow-xl transition-all">
+          Créer mon agence
+        </a>
+        <a href="/" class="rounded-full bg-white border border-slate-200 px-7 py-3.5 font-semibold text-slate-700 shadow-sm hover:shadow-md transition-all">
+          Retour à l'accueil
+        </a>
+      </div>
+      <p class="mt-4 text-sm text-slate-400">Gratuit · Sans engagement · 30 secondes</p>
+    </div>
+  </div>
+{% endblock %}

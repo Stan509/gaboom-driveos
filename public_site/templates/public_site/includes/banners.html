@@ -1,0 +1,120 @@
+{% load i18n %}
+{% for banner in banners %}
+{% if banner.is_active_now %}
+
+{% if banner.type == 'hero' %}
+<!-- Hero Banner -->
+<div class="relative overflow-hidden rounded-2xl mb-6 {% if banner.animation_type == 'fade' %}animate-fade-in{% elif banner.animation_type == 'slide' %}animate-slide-in{% elif banner.animation_type == 'zoom' %}animate-zoom-in{% endif %}"
+  {% if banner.target_device == 'mobile' %}style="display:none" data-device="mobile"{% elif banner.target_device == 'desktop' %}style="display:none" data-device="desktop"{% endif %}>
+  {% if banner.image %}
+  <img src="{{ banner.image.url }}" alt="{{ banner.title }}" class="w-full h-48 sm:h-64 object-cover" />
+  <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+  {% else %}
+  <div class="w-full h-48 sm:h-64" style="background: linear-gradient(135deg, var(--primary), var(--secondary, var(--primary)));"></div>
+  {% endif %}
+  <div class="absolute bottom-0 left-0 right-0 p-6 text-white">
+    {% if banner.title %}<h2 class="text-xl sm:text-2xl font-bold mb-1">{{ banner.title }}</h2>{% endif %}
+    {% if banner.subtitle %}<p class="text-sm opacity-80">{{ banner.subtitle }}</p>{% endif %}
+    {% if banner.button_text and banner.button_link %}
+    <a href="{{ banner.button_link }}" class="inline-block mt-3 px-5 py-2 rounded-xl text-sm font-semibold bg-white text-black hover:bg-white/90 transition">{{ banner.button_text }}</a>
+    {% endif %}
+  </div>
+</div>
+
+{% elif banner.type == 'inline' %}
+<!-- Inline Banner -->
+<div class="rounded-2xl border p-5 mb-4 flex flex-col sm:flex-row items-center gap-4 {% if banner.animation_type == 'fade' %}animate-fade-in{% elif banner.animation_type == 'slide' %}animate-slide-in{% endif %}"
+  style="border-color: color-mix(in srgb, var(--text) 10%, transparent);"
+  {% if banner.target_device == 'mobile' %}data-device="mobile"{% elif banner.target_device == 'desktop' %}data-device="desktop"{% endif %}>
+  {% if banner.image %}
+  <img src="{{ banner.image.url }}" alt="" class="w-20 h-14 rounded-xl object-cover shrink-0" />
+  {% endif %}
+  <div class="flex-1 min-w-0 text-center sm:text-left">
+    {% if banner.title %}<div class="font-bold text-sm">{{ banner.title }}</div>{% endif %}
+    {% if banner.subtitle %}<div class="text-xs opacity-60 mt-0.5">{{ banner.subtitle }}</div>{% endif %}
+  </div>
+  {% if banner.button_text and banner.button_link %}
+  <a href="{{ banner.button_link }}" class="ps-btn px-4 py-2 text-xs font-semibold shrink-0">{{ banner.button_text }}</a>
+  {% endif %}
+</div>
+
+{% elif banner.type == 'popup' %}
+<!-- Popup Banner (shown once per session) -->
+<div id="popup-banner-{{ banner.pk }}" class="fixed inset-0 z-[100] flex items-center justify-center p-4 hidden"
+  {% if banner.target_device == 'mobile' %}data-device="mobile"{% elif banner.target_device == 'desktop' %}data-device="desktop"{% endif %}>
+  <div class="absolute inset-0 bg-black/40 backdrop-blur-sm" onclick="this.parentElement.classList.add('hidden')"></div>
+  <div class="relative rounded-2xl overflow-hidden max-w-md w-full shadow-2xl {% if banner.animation_type == 'zoom' %}animate-zoom-in{% else %}animate-fade-in{% endif %}" style="background: var(--card-bg, #fff);">
+    {% if banner.image %}
+    <img src="{{ banner.image.url }}" alt="" class="w-full h-40 object-cover" />
+    {% endif %}
+    <div class="p-6">
+      <button onclick="this.closest('[id^=popup-banner]').classList.add('hidden')" class="absolute top-3 right-3 w-8 h-8 rounded-full bg-black/20 text-white flex items-center justify-center hover:bg-black/40 transition text-sm">&times;</button>
+      {% if banner.title %}<h3 class="font-bold text-lg mb-1">{{ banner.title }}</h3>{% endif %}
+      {% if banner.subtitle %}<p class="text-sm opacity-60 mb-4">{{ banner.subtitle }}</p>{% endif %}
+      {% if banner.button_text and banner.button_link %}
+      <a href="{{ banner.button_link }}" class="ps-btn w-full py-2.5 text-sm font-semibold text-center block">{{ banner.button_text }}</a>
+      {% endif %}
+    </div>
+  </div>
+</div>
+<script>
+(function(){
+  var k='popup_seen_{{ banner.pk }}';
+  if(!sessionStorage.getItem(k)){
+    document.getElementById('popup-banner-{{ banner.pk }}').classList.remove('hidden');
+    sessionStorage.setItem(k,'1');
+  }
+})();
+</script>
+
+{% elif banner.type == 'countdown' %}
+<!-- Countdown Banner -->
+{% if banner.end_date %}
+<div class="rounded-2xl border p-4 mb-4 text-center {% if banner.animation_type == 'fade' %}animate-fade-in{% endif %}"
+  style="border-color: color-mix(in srgb, var(--text) 10%, transparent);"
+  {% if banner.target_device == 'mobile' %}data-device="mobile"{% elif banner.target_device == 'desktop' %}data-device="desktop"{% endif %}>
+  {% if banner.title %}<div class="font-bold text-sm mb-1">{{ banner.title }}</div>{% endif %}
+  <div class="text-xs opacity-50 mb-2" id="countdown-{{ banner.pk }}"></div>
+  {% if banner.button_text and banner.button_link %}
+  <a href="{{ banner.button_link }}" class="ps-btn px-5 py-2 text-xs font-semibold inline-block">{{ banner.button_text }}</a>
+  {% endif %}
+</div>
+<script>
+(function(){
+  var end=new Date('{{ banner.end_date|date:"Y-m-d" }}T23:59:59');
+  var el=document.getElementById('countdown-{{ banner.pk }}');
+  function upd(){
+    var now=new Date(),d=end-now;
+    if(d<=0){el.textContent='{% trans "Offre expirée" %}';return}
+    var days=Math.floor(d/864e5),hrs=Math.floor(d%864e5/36e5),mins=Math.floor(d%36e5/6e4);
+    el.textContent=days+'j '+hrs+'h '+mins+'{% trans "min restants" %}';
+    setTimeout(upd,60000);
+  }
+  upd();
+})();
+</script>
+{% endif %}
+
+{% endif %}
+{% endif %}
+{% endfor %}
+
+<style>
+@keyframes psFadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+@keyframes psSlideIn{from{opacity:0;transform:translateX(-20px)}to{opacity:1;transform:translateX(0)}}
+@keyframes psZoomIn{from{opacity:0;transform:scale(.95)}to{opacity:1;transform:scale(1)}}
+.animate-fade-in{animation:psFadeIn .4s ease both}
+.animate-slide-in{animation:psSlideIn .4s ease both}
+.animate-zoom-in{animation:psZoomIn .3s ease both}
+</style>
+
+<script>
+(function(){
+  var w=window.innerWidth;
+  document.querySelectorAll('[data-device]').forEach(function(el){
+    var d=el.getAttribute('data-device');
+    if((d==='mobile'&&w>=768)||(d==='desktop'&&w<768)){el.remove()}
+    else{el.style.display=''}
+  });
+})();
+</script>

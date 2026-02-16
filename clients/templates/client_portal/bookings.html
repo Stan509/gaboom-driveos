@@ -1,0 +1,119 @@
+{% extends "client_portal/_base.html" %}
+{% load i18n %}
+
+{% block portal_content %}
+<div class="space-y-6">
+  <div class="flex items-center justify-between">
+    <h1 class="text-xl font-bold">{% trans "Mes réservations" %}</h1>
+    <a href="{% url 'public_site:agency_catalog' slug=agency.slug %}" class="ps-btn text-xs !py-2 !px-4">{% trans "Nouvelle réservation" %}</a>
+  </div>
+
+  <!-- Filters -->
+  <div class="flex items-center gap-2 text-xs">
+    <a href="{% url 'public_site:client_bookings' slug=agency.slug %}"
+       class="px-3 py-1.5 rounded-lg transition {% if not status_filter %}ps-primary-bg text-white{% else %}opacity-60 hover:opacity-100 border{% endif %}"
+       {% if status_filter %}style="border-color: color-mix(in srgb, var(--text) 15%, transparent);"{% endif %}>
+      {% trans "Toutes" %}
+    </a>
+    {% for val, label in status_choices %}
+    <a href="{% url 'public_site:client_bookings' slug=agency.slug %}?status={{ val }}"
+       class="px-3 py-1.5 rounded-lg transition {% if status_filter == val %}ps-primary-bg text-white{% else %}opacity-60 hover:opacity-100 border{% endif %}"
+       {% if status_filter != val %}style="border-color: color-mix(in srgb, var(--text) 15%, transparent);"{% endif %}>
+      {{ label }}
+    </a>
+    {% endfor %}
+  </div>
+
+  {% if reservations %}
+  <div class="space-y-3">
+    {% for r in reservations %}
+    <div class="ps-card rounded-2xl border p-5 flex flex-col sm:flex-row sm:items-center gap-4 transition hover:shadow-md"
+         style="border-color: color-mix(in srgb, var(--text) 10%, transparent); animation: fadeIn 0.3s ease {{ forloop.counter0|floatformat:0 }}00ms both;">
+      <div class="flex-1 min-w-0">
+        <div class="font-semibold text-sm">{{ r.vehicle }}</div>
+        <div class="text-xs opacity-50 mt-0.5">{% trans "Du" %} {{ r.start_date|date:"d/m/Y" }} {% trans "au" %} {{ r.end_date|date:"d/m/Y" }} · {{ r.duration_days }} {% trans "jour" %}{{ r.duration_days|pluralize }}</div>
+
+        {% if r.negotiation_status != 'none' %}
+        <!-- Negotiation details -->
+        <div class="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-[11px]">
+          {% if r.daily_price_official %}<span class="opacity-50">{% trans "Prix" %} : <strong>{{ r.daily_price_official }}/j</strong></span>{% endif %}
+          {% if r.daily_price_offer %}<span class="text-orange-600">{% trans "Offre" %} : <strong>{{ r.daily_price_offer }}/j</strong></span>{% endif %}
+          {% if r.daily_price_counter %}<span class="text-blue-600">{% trans "Contre-offre" %} : <strong>{{ r.daily_price_counter }}/j</strong></span>{% endif %}
+          {% if r.daily_price_accepted %}<span class="text-emerald-600">{% trans "Accepté" %} : <strong>{{ r.daily_price_accepted }}/j</strong></span>{% endif %}
+        </div>
+        {% if r.daily_price_accepted and r.duration_days %}
+        <div class="text-xs font-semibold text-emerald-700 mt-1">{% trans "Total" %} : {{ r.estimated_total }} ({{ r.duration_days }}j)</div>
+        {% endif %}
+        {% if r.agency_message %}
+        <div class="text-xs mt-1.5 px-2.5 py-1.5 rounded-lg bg-blue-50 text-blue-700">
+          <strong>{% trans "Agence" %} :</strong> {{ r.agency_message }}
+        </div>
+        {% endif %}
+
+        {% if r.negotiation_status == 'countered' %}
+        <div class="mt-3 flex items-center gap-2">
+          <form method="post" action="{% url 'public_site:client_accept_counter' slug=agency.slug pk=r.pk %}">
+            {% csrf_token %}
+            <button type="submit" class="px-4 py-2 rounded-xl bg-emerald-600 text-white text-xs font-semibold hover:bg-emerald-700 transition">
+              {% trans "Accepter" %} ({{ r.daily_price_counter }}/j)
+            </button>
+          </form>
+          <form method="post" action="{% url 'public_site:client_refuse_counter' slug=agency.slug pk=r.pk %}">
+            {% csrf_token %}
+            <button type="submit" class="px-4 py-2 rounded-xl border border-red-200 text-red-600 text-xs font-semibold hover:bg-red-50 transition">
+              {% trans "Refuser" %}
+            </button>
+          </form>
+        </div>
+        {% endif %}
+        {% endif %}
+
+        {% if r.decision_message %}
+        <div class="text-xs mt-1.5 px-2.5 py-1.5 rounded-lg
+          {% if r.status == 'rejected' %}bg-red-50 text-red-700
+          {% elif r.status == 'confirmed' %}bg-emerald-50 text-emerald-700
+          {% else %}bg-slate-50 text-slate-600{% endif %}">
+          {{ r.decision_message }}
+        </div>
+        {% endif %}
+        {% if r.status == 'rejected' %}
+        <a href="{% url 'public_site:agency_catalog' slug=agency.slug %}" class="text-xs ps-primary font-semibold hover:underline mt-1 inline-block">
+          {% trans "Choisir un autre véhicule" %} →
+        </a>
+        {% endif %}
+      </div>
+      <div class="shrink-0 flex flex-col items-end gap-1.5">
+        <span class="text-xs font-semibold px-3 py-1.5 rounded-full
+          {% if r.status == 'confirmed' %}bg-emerald-100 text-emerald-700
+          {% elif r.status == 'pending' %}bg-amber-100 text-amber-700
+          {% elif r.status == 'rejected' %}bg-red-100 text-red-700
+          {% else %}bg-slate-100 text-slate-600{% endif %}">
+          {{ r.get_status_display }}
+        </span>
+        {% if r.negotiation_status != 'none' %}
+        <span class="text-[10px] font-semibold px-2 py-0.5 rounded-full
+          {% if r.negotiation_status == 'pending_offer' %}bg-amber-50 text-amber-600
+          {% elif r.negotiation_status == 'countered' %}bg-blue-50 text-blue-600
+          {% elif r.negotiation_status == 'accepted' %}bg-emerald-50 text-emerald-600
+          {% elif r.negotiation_status == 'refused' %}bg-red-50 text-red-600
+          {% endif %}">{{ r.get_negotiation_status_display }}</span>
+        {% endif %}
+        <span class="text-[11px] opacity-40">{{ r.created_at|date:"d/m H:i" }}</span>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  {% else %}
+  <div class="ps-card rounded-2xl border p-12 text-center" style="border-color: color-mix(in srgb, var(--text) 10%, transparent);">
+    <div class="text-4xl mb-3">🚗</div>
+    <div class="font-semibold">{% trans "Aucune réservation" %}</div>
+    <p class="text-sm opacity-50 mt-1">{% trans "Parcourez notre catalogue pour réserver un véhicule." %}</p>
+    <a href="{% url 'public_site:agency_catalog' slug=agency.slug %}" class="ps-btn text-xs !py-2 !px-4 mt-4 inline-block">{% trans "Voir le catalogue" %}</a>
+  </div>
+  {% endif %}
+</div>
+
+<style>
+@keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+</style>
+{% endblock %}

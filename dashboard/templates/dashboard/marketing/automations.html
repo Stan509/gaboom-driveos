@@ -1,0 +1,186 @@
+{% extends "dashboard/_layout.html" %}
+{% load i18n %}
+{% block title %}{% trans "Automatisations — Marketing Engine" %}{% endblock %}
+{% block page_title %}{% trans "Automatisations" %}{% endblock %}
+{% block page_subtitle %}{% trans "Règles automatiques — déclenchez des actions marketing intelligentes" %}{% endblock %}
+
+{% block page_actions %}
+<button type="button" onclick="document.getElementById('ruleModal').style.display='flex'" class="rounded-xl bg-gaboomViolet text-white px-4 py-2.5 text-sm font-medium hover:opacity-95 transition inline-flex items-center gap-1.5">
+  <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/></svg>
+  {% trans "Nouvelle règle" %}
+</button>
+{% endblock %}
+
+{% block page_css %}
+<style>
+@keyframes cardIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+@keyframes modalIn{from{opacity:0;transform:scale(.95)}to{opacity:1;transform:scale(1)}}
+.mkt-card{animation:cardIn .3s ease-out both;border-radius:16px;border:1px solid var(--g-card-border,rgba(255,255,255,.06));background:var(--g-card,rgba(255,255,255,.03));padding:1.25rem;transition:box-shadow .2s,transform .15s}
+.mkt-card:hover{box-shadow:0 0 24px rgba(109,40,217,.08);transform:translateY(-1px)}
+.rule-grid{display:grid;gap:1rem}
+.rule-header{display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap}
+.rule-title{font-size:.9rem;font-weight:700}
+.rule-meta{display:flex;align-items:center;gap:1rem;flex-wrap:wrap;margin-top:.5rem}
+.rule-tag{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:600}
+.tag-trigger{background:rgba(59,130,246,.1);color:#60A5FA}
+.tag-channel{background:rgba(16,185,129,.1);color:#34D399}
+.tag-delay{background:rgba(250,204,21,.1);color:#FACC15}
+.tag-template{background:rgba(168,85,247,.1);color:#C084FC}
+.tag-dryrun{background:rgba(239,68,68,.1);color:#F87171}
+.toggle-wrap{display:flex;align-items:center;gap:8px;cursor:pointer}
+.toggle-track{width:40px;height:22px;border-radius:11px;background:rgba(148,163,184,.2);position:relative;transition:background .2s;flex-shrink:0}
+.toggle-track.on{background:rgba(16,185,129,.5)}
+.toggle-dot{width:18px;height:18px;border-radius:50%;background:#fff;position:absolute;top:2px;left:2px;transition:transform .2s;box-shadow:0 1px 3px rgba(0,0,0,.2)}
+.toggle-track.on .toggle-dot{transform:translateX(18px)}
+.rule-stats{display:flex;gap:1.5rem;margin-top:.6rem}
+.rule-stat{font-size:.75rem}
+.rule-stat b{font-weight:700}
+.act-btn{padding:5px 12px;border-radius:10px;font-size:12px;font-weight:600;transition:all .15s;border:1px solid transparent;cursor:pointer}
+.act-btn:hover{transform:scale(1.03)}
+.act-del{background:rgba(239,68,68,.08);color:#F87171;border-color:rgba(239,68,68,.12)}
+/* Modal */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);backdrop-filter:blur(4px);z-index:999;display:none;align-items:center;justify-content:center;padding:1rem}
+.modal-box{background:var(--g-bg,#0f0f14);border:1px solid var(--g-card-border,rgba(255,255,255,.08));border-radius:20px;padding:2rem;max-width:560px;width:100%;animation:modalIn .2s ease-out;max-height:90vh;overflow-y:auto}
+.modal-box h2{font-size:1.1rem;font-weight:700;margin-bottom:1.25rem}
+.f-label{display:block;font-size:.75rem;font-weight:600;margin-bottom:6px;opacity:.7}
+.f-input,.f-select,.f-textarea{width:100%;border-radius:12px;border:1px solid var(--g-card-border,rgba(255,255,255,.08));background:var(--g-card,rgba(255,255,255,.02));padding:10px 14px;font-size:.85rem;color:var(--g-text);transition:border-color .2s;outline:none}
+.f-input:focus,.f-select:focus{border-color:rgba(109,40,217,.5);box-shadow:0 0 0 3px rgba(109,40,217,.1)}
+.f-row{display:grid;grid-template-columns:1fr 1fr;gap:.75rem}
+@media(max-width:640px){.f-row{grid-template-columns:1fr}}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="rule-grid">
+  {% if rules %}
+  {% for r in rules %}
+  <div class="mkt-card" style="animation-delay:{{ forloop.counter0 }}00ms">
+    <div class="rule-header">
+      <div class="flex-1">
+        <div class="rule-title" style="color:var(--g-text)">{{ r.name }}</div>
+        <div class="rule-meta">
+          <span class="rule-tag tag-trigger">
+            <svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="m3.75 13.5 10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75Z"/></svg>
+            {{ r.get_trigger_display }}
+          </span>
+          <span class="rule-tag tag-channel">{{ r.get_channel_display }}</span>
+          {% if r.delay_hours %}
+          <span class="rule-tag tag-delay">⏱ {% blocktrans with delay=r.delay_hours %}{{ delay }}h délai{% endblocktrans %}</span>
+          {% endif %}
+          {% if r.template %}
+          <span class="rule-tag tag-template">📄 {{ r.template.name|truncatechars:20 }}</span>
+          {% endif %}
+          {% if r.dry_run %}
+          <span class="rule-tag tag-dryrun">🧪 {% trans "Dry-run" %}</span>
+          {% endif %}
+        </div>
+        <div class="rule-stats" style="color:var(--g-text-dim)">
+          <div class="rule-stat"><b style="color:var(--g-text)">{{ r.fires_count }}</b> {% trans "déclenchements" %}</div>
+          <div class="rule-stat"><b style="color:var(--g-text)">{{ r.sends_count }}</b> {% trans "envois" %}</div>
+          <div class="rule-stat">{% blocktrans with date=r.created_at|date:"d/m/Y" %}Créée le {{ date }}{% endblocktrans %}</div>
+        </div>
+      </div>
+      <div class="flex items-center gap-3">
+        <form method="post" action="{% url 'dashboard:mkt_automation_toggle' r.pk %}">
+          {% csrf_token %}
+          <label class="toggle-wrap">
+            <input type="hidden" name="enabled" value="{% if r.enabled %}0{% else %}1{% endif %}">
+            <button type="submit" class="toggle-track {% if r.enabled %}on{% endif %}" style="border:none;cursor:pointer">
+              <div class="toggle-dot"></div>
+            </button>
+            <span class="text-xs font-semibold" style="color:{% if r.enabled %}#34D399{% else %}var(--g-text-dim){% endif %}">{% if r.enabled %}{% trans "Actif" %}{% else %}{% trans "Inactif" %}{% endif %}</span>
+          </label>
+        </form>
+        <form method="post" action="{% url 'dashboard:mkt_automation_delete' r.pk %}" onsubmit="return confirm('{% trans "Supprimer cette règle ?" %}')">
+          {% csrf_token %}
+          <button type="submit" class="act-btn act-del">
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0"/></svg>
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+  {% else %}
+  <div class="mkt-card text-center py-12">
+    <svg class="w-12 h-12 mx-auto mb-3" style="color:var(--g-text-dim)" fill="none" stroke="currentColor" stroke-width="1" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182"/></svg>
+    <p class="text-sm font-medium" style="color:var(--g-text-muted)">{% trans "Aucune automatisation configurée" %}</p>
+    <p class="text-xs mt-1" style="color:var(--g-text-dim)">{% trans "Créez des règles pour automatiser vos envois marketing" %}</p>
+  </div>
+  {% endif %}
+</div>
+
+<!-- ═══════════ CREATE RULE MODAL ═══════════ -->
+<div class="modal-overlay" id="ruleModal" onclick="if(event.target===this)this.style.display='none'">
+  <div class="modal-box">
+    <h2 style="color:var(--g-text)">
+      <span class="inline-flex items-center gap-2">
+        <svg class="w-5 h-5" style="color:#A78BFA" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182"/></svg>
+        {% trans "Nouvelle règle d'automatisation" %}
+      </span>
+    </h2>
+    <form method="post" action="{% url 'dashboard:mkt_automation_create' %}">
+      {% csrf_token %}
+      <div class="space-y-3">
+        <div>
+          <label class="f-label" style="color:var(--g-text-muted)">{% trans "Nom de la règle" %}</label>
+          <input type="text" name="name" class="f-input" required placeholder="{% trans "Ex: Bienvenue nouveau client" %}">
+        </div>
+        <div class="f-row">
+          <div>
+            <label class="f-label" style="color:var(--g-text-muted)">{% trans "Déclencheur" %}</label>
+            <select name="trigger" class="f-select">
+              {% for val, label in trigger_choices %}
+              <option value="{{ val }}">{{ label }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div>
+            <label class="f-label" style="color:var(--g-text-muted)">{% trans "Canal" %}</label>
+            <select name="channel" class="f-select">
+              {% for val, label in channel_choices %}
+              <option value="{{ val }}">{{ label }}</option>
+              {% endfor %}
+            </select>
+          </div>
+        </div>
+        <div class="f-row">
+          <div>
+            <label class="f-label" style="color:var(--g-text-muted)">{% trans "Délai (heures)" %}</label>
+            <input type="number" name="delay_hours" class="f-input" value="0" min="0" step="1">
+          </div>
+          <div>
+            <label class="f-label" style="color:var(--g-text-muted)">{% trans "Template" %}</label>
+            <select name="template" class="f-select">
+              <option value="">— {% trans "Aucun" %} —</option>
+              {% for t in templates %}
+              <option value="{{ t.pk }}">{{ t.name }}</option>
+              {% endfor %}
+            </select>
+          </div>
+        </div>
+        <div>
+          <label class="f-label" style="color:var(--g-text-muted)">{% trans "Message personnalisé (optionnel)" %}</label>
+          <textarea name="message_body" class="f-input" rows="3" placeholder="{% trans "Laissez vide pour utiliser le template sélectionné" %}"></textarea>
+        </div>
+        <div class="flex items-center gap-4">
+          <label class="toggle-wrap">
+            <input type="checkbox" name="enabled" class="hidden" checked onchange="this.nextElementSibling.classList.toggle('on',this.checked)">
+            <div class="toggle-track on"><div class="toggle-dot"></div></div>
+            <span class="text-sm" style="color:var(--g-text)">{% trans "Activer" %}</span>
+          </label>
+          <label class="toggle-wrap">
+            <input type="checkbox" name="dry_run" class="hidden" onchange="this.nextElementSibling.classList.toggle('on',this.checked)">
+            <div class="toggle-track"><div class="toggle-dot"></div></div>
+            <span class="text-sm" style="color:var(--g-text)">{% trans "Dry-run (test)" %}</span>
+          </label>
+        </div>
+        <div class="flex items-center gap-3 pt-2">
+          <button type="submit" class="rounded-xl bg-gaboomViolet text-white px-5 py-2.5 text-sm font-semibold hover:opacity-95 transition">{% trans "Créer la règle" %}</button>
+          <button type="button" onclick="document.getElementById('ruleModal').style.display='none'" class="text-sm font-medium hover:underline" style="color:var(--g-text-muted)">{% trans "Annuler" %}</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}

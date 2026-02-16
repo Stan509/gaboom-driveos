@@ -1,0 +1,242 @@
+{% extends "dashboard/_layout.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "Mon compte" %} — Dashboard{% endblock %}
+{% block page_title %}{% trans "Mon compte" %}{% endblock %}
+{% block page_subtitle %}{% trans "Gérez votre profil et les informations de votre agence" %}{% endblock %}
+
+{% block page_css %}
+<style>
+  @keyframes cardIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+  .ac-card{animation:cardIn .25s ease-out both;transition:box-shadow .2s,transform .18s}
+  .ac-card:hover{box-shadow:0 6px 20px rgba(0,0,0,.05);transform:translateY(-1px)}
+  .ac-card:nth-child(1){animation-delay:0ms}
+  .ac-card:nth-child(2){animation-delay:50ms}
+  .ac-card:nth-child(3){animation-delay:100ms}
+  .ac-card:nth-child(4){animation-delay:150ms}
+</style>
+{% endblock %}
+
+{% block page_actions %}
+  {% if not is_readonly %}
+  <button type="submit" form="accountForm" class="hidden sm:inline-flex rounded-xl bg-gaboomViolet text-white px-5 py-2.5 text-sm font-medium hover:opacity-95 transition items-center gap-2">
+    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/></svg>
+    {% trans "Enregistrer" %}
+  </button>
+  {% endif %}
+{% endblock %}
+
+{% block content %}
+<form method="post" enctype="multipart/form-data" id="accountForm">
+  {% csrf_token %}
+
+  {% if user_form.non_field_errors or agency_form.non_field_errors %}
+  <div class="mb-4 rounded-xl bg-red-50 border border-red-200 text-red-700 px-4 py-2.5 text-sm">
+    {% for error in user_form.non_field_errors %}<p>{{ error }}</p>{% endfor %}
+    {% for error in agency_form.non_field_errors %}<p>{{ error }}</p>{% endfor %}
+  </div>
+  {% endif %}
+
+  <div class="grid lg:grid-cols-2 gap-5">
+
+    <!-- ═══════ CARD 1 — Profil utilisateur ═══════ -->
+    <div class="ac-card rounded-2xl bg-white border border-slate-200 shadow-sm overflow-hidden flex flex-col">
+      <div class="px-5 py-3 border-b border-slate-100 flex items-center gap-2.5">
+        <div class="h-8 w-8 rounded-lg bg-violet-100 text-gaboomViolet flex items-center justify-center shrink-0">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z"/></svg>
+        </div>
+        <div>
+          <h3 class="font-semibold text-[13px] text-slate-800">{% trans "Profil utilisateur" %}</h3>
+          <p class="text-[11px] text-slate-400">{% trans "Vos informations personnelles" %}</p>
+        </div>
+      </div>
+      <div class="p-5 space-y-3 flex-1">
+        {% for field in user_form %}
+        <div>
+          <label for="{{ field.id_for_label }}" class="block text-[13px] font-medium text-slate-700 mb-1">{{ field.label }}</label>
+          {{ field }}
+          {% if field.errors %}<p class="mt-0.5 text-xs text-red-600">{{ field.errors.0 }}</p>{% endif %}
+        </div>
+        {% endfor %}
+
+        <div class="pt-3 border-t border-slate-100">
+          <p class="text-[10px] font-semibold text-slate-400 uppercase tracking-wider mb-2">{% trans "Compte" %}</p>
+          <dl class="space-y-2 text-[13px]">
+            <div class="flex items-center justify-between">
+              <dt class="text-slate-400">{% trans "Email" %}</dt>
+              <dd class="font-medium text-slate-700 flex items-center gap-1.5">
+                {{ request.user.email }}
+                {% if request.user.email_verified %}
+                  <span class="inline-flex rounded-full bg-emerald-50 text-emerald-700 px-1.5 py-px text-[9px] font-semibold border border-emerald-200">{% trans "Vérifié" %}</span>
+                {% else %}
+                  <span class="inline-flex rounded-full bg-amber-50 text-amber-700 px-1.5 py-px text-[9px] font-semibold border border-amber-200">{% trans "Non vérifié" %}</span>
+                {% endif %}
+              </dd>
+            </div>
+            <div class="flex items-center justify-between">
+              <dt class="text-slate-400">{% trans "Rôle" %}</dt>
+              <dd class="flex items-center gap-1.5">
+                <span class="inline-flex rounded-full bg-slate-100 text-slate-600 px-2 py-px text-[10px] font-medium border border-slate-200">
+                  {{ request.user.get_role_display }}
+                </span>
+              </dd>
+            </div>
+            <div class="flex items-center justify-between">
+              <dt class="text-slate-400">{% trans "Agence" %}</dt>
+              <dd class="font-medium text-slate-700">{% if request.user.agency %}{{ request.user.agency.name }}{% else %}—{% endif %}</dd>
+            </div>
+          </dl>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══════ CARD 2 — Identité agence ═══════ -->
+    <div class="ac-card rounded-2xl bg-white border border-slate-200 shadow-sm overflow-hidden flex flex-col">
+      <div class="px-5 py-3 border-b border-slate-100 flex items-center gap-2.5">
+        <div class="h-8 w-8 rounded-lg bg-amber-100 text-amber-600 flex items-center justify-center shrink-0">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 21h16.5M4.5 3h15M5.25 3v18m13.5-18v18M9 6.75h1.5m-1.5 3h1.5m-1.5 3h1.5m3-6H15m-1.5 3H15m-1.5 3H15M9 21v-3.375c0-.621.504-1.125 1.125-1.125h3.75c.621 0 1.125.504 1.125 1.125V21"/></svg>
+        </div>
+        <div>
+          <h3 class="font-semibold text-[13px] text-slate-800">{% trans "Identité agence" %}</h3>
+          <p class="text-[11px] text-slate-400">{% trans "Nom, slogan et logo" %}</p>
+        </div>
+      </div>
+      <div class="p-5 space-y-3 flex-1">
+        <div>
+          <label class="block text-[13px] font-medium text-slate-700 mb-1.5">{% trans "Logo" %}</label>
+          <div class="flex items-center gap-3">
+            {% if agency.logo %}
+              <img src="{{ agency.logo.url }}" alt="Logo" class="h-14 w-14 rounded-xl object-cover border border-slate-200 shadow-sm" />
+            {% else %}
+              <div class="h-14 w-14 rounded-xl bg-slate-100 border-2 border-dashed border-slate-300 flex items-center justify-center shrink-0">
+                <svg class="w-5 h-5 text-slate-300" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="m2.25 15.75 5.159-5.159a2.25 2.25 0 0 1 3.182 0l5.159 5.159m-1.5-1.5 1.409-1.409a2.25 2.25 0 0 1 3.182 0l2.909 2.909M3.75 21h16.5a2.25 2.25 0 0 0 2.25-2.25V5.25a2.25 2.25 0 0 0-2.25-2.25H3.75a2.25 2.25 0 0 0-2.25 2.25v13.5A2.25 2.25 0 0 0 3.75 21Z"/></svg>
+              </div>
+            {% endif %}
+            <div class="flex-1 min-w-0">
+              {% if not is_readonly %}
+              {{ agency_form.logo }}
+              <p class="mt-0.5 text-[10px] text-slate-400">{% trans "PNG, JPG ou WebP — max 5 Mo" %}</p>
+              {% endif %}
+              {% if agency_form.logo.errors %}<p class="mt-0.5 text-xs text-red-600">{{ agency_form.logo.errors.0 }}</p>{% endif %}
+            </div>
+          </div>
+        </div>
+        <div>
+          <label for="{{ agency_form.name.id_for_label }}" class="block text-[13px] font-medium text-slate-700 mb-1">{{ agency_form.name.label }}</label>
+          {{ agency_form.name }}
+          {% if agency_form.name.errors %}<p class="mt-0.5 text-xs text-red-600">{{ agency_form.name.errors.0 }}</p>{% endif %}
+        </div>
+        <div>
+          <label for="{{ agency_form.slogan.id_for_label }}" class="block text-[13px] font-medium text-slate-700 mb-1">{{ agency_form.slogan.label }}</label>
+          {{ agency_form.slogan }}
+          {% if agency_form.slogan.errors %}<p class="mt-0.5 text-xs text-red-600">{{ agency_form.slogan.errors.0 }}</p>{% endif %}
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══════ CARD 3 — Contact & adresse ═══════ -->
+    <div class="ac-card rounded-2xl bg-white border border-slate-200 shadow-sm overflow-hidden flex flex-col">
+      <div class="px-5 py-3 border-b border-slate-100 flex items-center gap-2.5">
+        <div class="h-8 w-8 rounded-lg bg-emerald-100 text-emerald-600 flex items-center justify-center shrink-0">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"/><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z"/></svg>
+        </div>
+        <div>
+          <h3 class="font-semibold text-[13px] text-slate-800">{% trans "Contact & adresse" %}</h3>
+          <p class="text-[11px] text-slate-400">{% trans "Coordonnées de l'agence" %}</p>
+        </div>
+      </div>
+      <div class="p-5 space-y-3 flex-1">
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label for="{{ agency_form.contact_email.id_for_label }}" class="block text-[13px] font-medium text-slate-700 mb-1">{{ agency_form.contact_email.label }}</label>
+            {{ agency_form.contact_email }}
+            {% if agency_form.contact_email.errors %}<p class="mt-0.5 text-xs text-red-600">{{ agency_form.contact_email.errors.0 }}</p>{% endif %}
+          </div>
+          <div>
+            <label for="{{ agency_form.phone.id_for_label }}" class="block text-[13px] font-medium text-slate-700 mb-1">{{ agency_form.phone.label }}</label>
+            {{ agency_form.phone }}
+            {% if agency_form.phone.errors %}<p class="mt-0.5 text-xs text-red-600">{{ agency_form.phone.errors.0 }}</p>{% endif %}
+          </div>
+          <div>
+            <label for="{{ agency_form.whatsapp.id_for_label }}" class="block text-[13px] font-medium text-slate-700 mb-1">{{ agency_form.whatsapp.label }}</label>
+            {{ agency_form.whatsapp }}
+            {% if agency_form.whatsapp.errors %}<p class="mt-0.5 text-xs text-red-600">{{ agency_form.whatsapp.errors.0 }}</p>{% endif %}
+          </div>
+          <div>
+            <label for="{{ agency_form.website_url.id_for_label }}" class="block text-[13px] font-medium text-slate-700 mb-1">{{ agency_form.website_url.label }}</label>
+            {{ agency_form.website_url }}
+            {% if agency_form.website_url.errors %}<p class="mt-0.5 text-xs text-red-600">{{ agency_form.website_url.errors.0 }}</p>{% endif %}
+          </div>
+        </div>
+        <div class="pt-2 border-t border-slate-100 space-y-2.5">
+          <div>
+            <label for="{{ agency_form.address_line1.id_for_label }}" class="block text-[13px] font-medium text-slate-700 mb-1">{{ agency_form.address_line1.label }}</label>
+            {{ agency_form.address_line1 }}
+          </div>
+          <div>
+            <label for="{{ agency_form.address_line2.id_for_label }}" class="block text-[13px] font-medium text-slate-700 mb-1">{{ agency_form.address_line2.label }}</label>
+            {{ agency_form.address_line2 }}
+          </div>
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label for="{{ agency_form.city.id_for_label }}" class="block text-[13px] font-medium text-slate-700 mb-1">{{ agency_form.city.label }}</label>
+              {{ agency_form.city }}
+            </div>
+            <div>
+              <label for="{{ agency_form.country.id_for_label }}" class="block text-[13px] font-medium text-slate-700 mb-1">{{ agency_form.country.label }}</label>
+              {{ agency_form.country }}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══════ CARD 4 — Documents & facturation ═══════ -->
+    <div class="ac-card rounded-2xl bg-white border border-slate-200 shadow-sm overflow-hidden flex flex-col">
+      <div class="px-5 py-3 border-b border-slate-100 flex items-center gap-2.5">
+        <div class="h-8 w-8 rounded-lg bg-blue-100 text-blue-600 flex items-center justify-center shrink-0">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z"/></svg>
+        </div>
+        <div>
+          <h3 class="font-semibold text-[13px] text-slate-800">{% trans "Documents & facturation" %}</h3>
+          <p class="text-[11px] text-slate-400">{% trans "Infos légales pour contrats et factures" %}</p>
+        </div>
+      </div>
+      <div class="p-5 space-y-3 flex-1">
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label for="{{ agency_form.legal_name.id_for_label }}" class="block text-[13px] font-medium text-slate-700 mb-1">{{ agency_form.legal_name.label }}</label>
+            {{ agency_form.legal_name }}
+            {% if agency_form.legal_name.errors %}<p class="mt-0.5 text-xs text-red-600">{{ agency_form.legal_name.errors.0 }}</p>{% endif %}
+          </div>
+          <div>
+            <label for="{{ agency_form.tax_id.id_for_label }}" class="block text-[13px] font-medium text-slate-700 mb-1">{{ agency_form.tax_id.label }}</label>
+            {{ agency_form.tax_id }}
+            {% if agency_form.tax_id.errors %}<p class="mt-0.5 text-xs text-red-600">{{ agency_form.tax_id.errors.0 }}</p>{% endif %}
+          </div>
+        </div>
+        <div>
+          <label for="{{ agency_form.currency.id_for_label }}" class="block text-[13px] font-medium text-slate-700 mb-1">{{ agency_form.currency.label }}</label>
+          {{ agency_form.currency }}
+        </div>
+        <div>
+          <label for="{{ agency_form.invoice_footer.id_for_label }}" class="block text-[13px] font-medium text-slate-700 mb-1">{{ agency_form.invoice_footer.label }}</label>
+          {{ agency_form.invoice_footer }}
+          <p class="mt-0.5 text-[10px] text-slate-400">{% trans "Affiché en bas des factures et devis" %}</p>
+          {% if agency_form.invoice_footer.errors %}<p class="mt-0.5 text-xs text-red-600">{{ agency_form.invoice_footer.errors.0 }}</p>{% endif %}
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  {% if not is_readonly %}
+  <div class="sm:hidden fixed bottom-0 inset-x-0 p-3 bg-white/90 backdrop-blur border-t border-slate-200 z-40">
+    <button type="submit" class="w-full rounded-xl bg-gaboomViolet text-white py-2.5 font-medium hover:opacity-95 transition text-sm flex items-center justify-center gap-2">
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/></svg>
+      {% trans "Enregistrer" %}
+    </button>
+  </div>
+  {% endif %}
+</form>
+{% endblock %}

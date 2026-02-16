@@ -1,0 +1,414 @@
+{% extends "dashboard/_layout.html" %}
+{% load humanize i18n %}
+
+{% block title %}{% trans "Tableau de bord" %} — Gaboom DriveOS{% endblock %}
+{% block page_title %}{% trans "Tableau de bord" %}{% endblock %}
+{% block page_subtitle %}{% trans "Vue d'ensemble de votre agence" %}{% endblock %}
+
+{% block page_css %}
+<style>
+  /* ── KPI entrance ───────────────────────────────────────── */
+  @keyframes kpiIn{from{opacity:0;transform:translateY(14px) scale(.96)}to{opacity:1;transform:translateY(0) scale(1)}}
+  .kpi-card{animation:kpiIn .4s cubic-bezier(.22,1,.36,1) both}
+  .kpi-card:nth-child(1){animation-delay:0ms}
+  .kpi-card:nth-child(2){animation-delay:70ms}
+  .kpi-card:nth-child(3){animation-delay:140ms}
+  .kpi-card:nth-child(4){animation-delay:210ms}
+
+  /* ── Section entrance ───────────────────────────────────── */
+  @keyframes sectionIn{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
+  .section-in{animation:sectionIn .45s cubic-bezier(.22,1,.36,1) both}
+
+  /* ── Revenue line draw ──────────────────────────────────── */
+  @keyframes lineGrow{from{stroke-dashoffset:2000}to{stroke-dashoffset:0}}
+  .rev-line{stroke-dasharray:2000;animation:lineGrow 1s ease-out both;animation-delay:.3s}
+  @keyframes areaFade{from{opacity:0}to{opacity:1}}
+  .rev-area{animation:areaFade .8s ease both;animation-delay:.6s}
+
+  /* ── Donut draw ─────────────────────────────────────────── */
+  @keyframes donutDraw{from{stroke-dashoffset:100}to{stroke-dashoffset:0}}
+  .donut-seg{animation:donutDraw .8s ease both}
+
+  /* ── Tooltip dot ────────────────────────────────────────── */
+  .tooltip-dot{cursor:pointer;transition:r .15s,filter .15s}
+  .tooltip-dot:hover{r:6;filter:drop-shadow(0 0 6px var(--g-accent-glow))}
+
+  /* ── Chart tooltip ──────────────────────────────────────── */
+  .g-tooltip{
+    position:absolute;pointer-events:none;z-index:10;
+    background:rgba(20,20,30,.92);color:#fff;font-size:11px;font-weight:600;
+    padding:6px 12px;border-radius:10px;border:1px solid var(--g-surface-border);
+    backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+    box-shadow:0 4px 20px rgba(0,0,0,.4);
+  }
+
+  /* ── Range toggle ───────────────────────────────────────── */
+  .range-btn{
+    padding:4px 12px;border-radius:10px;font-size:11px;font-weight:600;
+    transition:all .15s;color:var(--g-text-dim);
+  }
+  .range-btn:hover{color:var(--g-text-muted);background:rgba(255,255,255,.04)}
+  .range-btn.active{background:var(--g-accent);color:#fff;box-shadow:0 0 12px var(--g-accent-glow)}
+
+  /* ── Mobile sticky action ───────────────────────────────── */
+  @media(max-width:1023px){
+    .mobile-sticky-action{
+      position:fixed;bottom:16px;right:16px;z-index:50;
+      box-shadow:0 4px 24px rgba(108,43,255,.4);
+    }
+  }
+</style>
+{% endblock %}
+
+{% block page_actions %}
+  {% if "vehicles.create" in user_perms %}
+  <a href="{% url 'dashboard:vehicle_create' %}" class="g-btn hidden lg:inline-flex">
+    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/></svg>
+    {% trans "Véhicule" %}
+  </a>
+  <a href="{% url 'dashboard:vehicle_create' %}" class="g-btn lg:hidden mobile-sticky-action rounded-full !p-3">
+    <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/></svg>
+  </a>
+  {% endif %}
+{% endblock %}
+
+{% block content %}
+
+<!-- ═══════ KPI CARDS ═══════ -->
+<div class="grid grid-cols-2 lg:grid-cols-4 gap-3 lg:gap-4 mb-6 lg:mb-8">
+  <!-- Véhicules -->
+  <div class="kpi-card g-card p-5 flex items-center gap-3.5">
+    <div class="g-icon g-icon-violet">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 18.75a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 0 1-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m3 0H21M3.375 14.25h17.25M3.375 14.25V6.375c0-.621.504-1.125 1.125-1.125h9.75"/></svg>
+    </div>
+    <div>
+      <div class="text-2xl font-bold leading-none" style="color:var(--g-text)">{{ vehicles_count }}</div>
+      <div class="text-[11px] font-semibold uppercase tracking-wider mt-0.5" style="color:var(--g-violet)">{% trans "Véhicules" %}</div>
+    </div>
+  </div>
+  <!-- Clients -->
+  <div class="kpi-card g-card p-5 flex items-center gap-3.5">
+    <div class="g-icon g-icon-blue">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19.128a9.38 9.38 0 0 0 2.625.372 9.337 9.337 0 0 0 4.121-.952 4.125 4.125 0 0 0-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 0 1 8.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0 1 11.964-3.07M12 6.375a3.375 3.375 0 1 1-6.75 0 3.375 3.375 0 0 1 6.75 0Zm8.25 2.25a2.625 2.625 0 1 1-5.25 0 2.625 2.625 0 0 1 5.25 0Z"/></svg>
+    </div>
+    <div>
+      <div class="text-2xl font-bold leading-none" style="color:var(--g-text)">{{ clients_count }}</div>
+      <div class="text-[11px] font-semibold uppercase tracking-wider mt-0.5" style="color:var(--g-blue)">{% trans "Clients" %}</div>
+      {% if clients_new %}<div class="text-[10px] mt-0.5" style="color:var(--g-blue);opacity:.7">+{{ clients_new }} {% trans "ce mois" %}</div>{% endif %}
+    </div>
+  </div>
+  <!-- Contrats actifs -->
+  <div class="kpi-card g-card p-5 flex items-center gap-3.5">
+    <div class="g-icon g-icon-emerald">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z"/></svg>
+    </div>
+    <div>
+      <div class="text-2xl font-bold leading-none" style="color:var(--g-text)">{{ active_contracts_count }}</div>
+      <div class="text-[11px] font-semibold uppercase tracking-wider mt-0.5" style="color:var(--g-emerald)">{% trans "Contrats actifs" %}</div>
+      {% if contracts_new %}<div class="text-[10px] mt-0.5" style="color:var(--g-emerald);opacity:.7">+{{ contracts_new }} {% trans "ce mois" %}</div>{% endif %}
+    </div>
+  </div>
+  <!-- Équipe -->
+  <div class="kpi-card g-card p-5 flex items-center gap-3.5">
+    <div class="g-icon g-icon-amber">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M18 18.72a9.094 9.094 0 0 0 3.741-.479 3 3 0 0 0-4.682-2.72m.94 3.198.001.031c0 .225-.012.447-.037.666A11.944 11.944 0 0 1 12 21c-2.17 0-4.207-.576-5.963-1.584A6.062 6.062 0 0 1 6 18.719m12 0a5.971 5.971 0 0 0-.941-3.197m0 0A5.995 5.995 0 0 0 12 12.75a5.995 5.995 0 0 0-5.058 2.772m0 0a3 3 0 0 0-4.681 2.72 8.986 8.986 0 0 0 3.74.477m.94-3.197a5.971 5.971 0 0 0-.94 3.197M15 6.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Zm6 3a2.25 2.25 0 1 1-4.5 0 2.25 2.25 0 0 1 4.5 0Zm-13.5 0a2.25 2.25 0 1 1-4.5 0 2.25 2.25 0 0 1 4.5 0Z"/></svg>
+    </div>
+    <div>
+      <div class="text-2xl font-bold leading-none" style="color:var(--g-text)">{{ team_count }}</div>
+      <div class="text-[11px] font-semibold uppercase tracking-wider mt-0.5" style="color:var(--g-amber)">{% trans "Équipe" %}</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════ CHARTS + SIDEBAR ═══════ -->
+<div class="grid lg:grid-cols-3 gap-4 lg:gap-5 mb-6 lg:mb-8">
+
+  <!-- LEFT: Charts (2/3) -->
+  <div class="lg:col-span-2 space-y-4 lg:space-y-5">
+
+    <!-- Revenue Chart -->
+    <div class="section-in g-card p-5" style="animation-delay:280ms">
+      <div class="flex items-center justify-between mb-4">
+        <div>
+          <h3 class="font-semibold text-sm flex items-center gap-2" style="color:var(--g-text)">
+            <div class="g-icon g-icon-violet !w-7 !h-7 !rounded-lg">
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 18.75a60.07 60.07 0 0 1 15.797 2.101c.727.198 1.453-.342 1.453-1.096V18.75M3.75 4.5v.75A.75.75 0 0 1 3 6h-.75m0 0v-.375c0-.621.504-1.125 1.125-1.125H20.25M2.25 6v9m18-10.5v.75c0 .414.336.75.75.75h.75m-1.5-1.5h.375c.621 0 1.125.504 1.125 1.125v9.75c0 .621-.504 1.125-1.125 1.125h-.375m1.5-1.5H21a.75.75 0 0 0-.75.75v.75m0 0H3.75m0 0h-.375a1.125 1.125 0 0 1-1.125-1.125V15m1.5 1.5v-.75A.75.75 0 0 0 3 15h-.75M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Zm3 0h.008v.008H18V10.5Zm-12 0h.008v.008H6V10.5Z"/></svg>
+            </div>
+            {% trans "Revenus encaissés" %}
+          </h3>
+          <p class="text-xs mt-0.5" style="color:var(--g-text-dim)">{% trans "Total :" %} <span class="font-semibold" style="color:var(--g-text-muted)">{{ revenue_total|floatformat:0|intcomma }} {% trans "€" %}</span></p>
+        </div>
+        <div class="flex items-center gap-1">
+          <a href="?range=7" class="range-btn {% if range_days == 7 %}active{% endif %}">{% trans "7j" %}</a>
+          <a href="?range=30" class="range-btn {% if range_days == 30 %}active{% endif %}">{% trans "30j" %}</a>
+          <a href="?range=90" class="range-btn {% if range_days == 90 %}active{% endif %}">{% trans "90j" %}</a>
+        </div>
+      </div>
+      <div class="relative" style="height:220px" id="revenueChartWrap">
+        <svg id="revenueChart" width="100%" height="100%" preserveAspectRatio="none"></svg>
+        <div id="revTooltip" class="g-tooltip hidden"></div>
+      </div>
+    </div>
+
+    <!-- Contracts Bar Chart -->
+    <div class="section-in g-card p-5" style="animation-delay:360ms">
+      <h3 class="font-semibold text-sm mb-4 flex items-center gap-2" style="color:var(--g-text)">
+        <div class="g-icon g-icon-emerald !w-7 !h-7 !rounded-lg">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 0 1 3 19.875v-6.75ZM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 0 1-1.125-1.125V8.625ZM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 0 1-1.125-1.125V4.125Z"/></svg>
+        </div>
+        {% trans "Répartition contrats" %}
+      </h3>
+      <div id="contractsBarWrap" style="height:130px">
+        <svg id="contractsBar" width="100%" height="100%"></svg>
+      </div>
+    </div>
+  </div>
+
+  <!-- RIGHT: Fleet + Alerts (1/3) -->
+  <div class="space-y-4 lg:space-y-5">
+
+    <!-- Fleet Status Donut -->
+    <div class="section-in g-card p-5" style="animation-delay:320ms">
+      <h3 class="font-semibold text-sm mb-4 flex items-center gap-2" style="color:var(--g-text)">
+        <div class="g-icon g-icon-blue !w-7 !h-7 !rounded-lg">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12c0 1.268-.63 2.39-1.593 3.068a3.745 3.745 0 0 1-1.043 3.296 3.745 3.745 0 0 1-3.296 1.043A3.745 3.745 0 0 1 12 21c-1.268 0-2.39-.63-3.068-1.593a3.746 3.746 0 0 1-3.296-1.043 3.745 3.745 0 0 1-1.043-3.296A3.745 3.745 0 0 1 3 12c0-1.268.63-2.39 1.593-3.068a3.745 3.745 0 0 1 1.043-3.296 3.746 3.746 0 0 1 3.296-1.043A3.746 3.746 0 0 1 12 3c1.268 0 2.39.63 3.068 1.593a3.746 3.746 0 0 1 3.296 1.043 3.746 3.746 0 0 1 1.043 3.296A3.745 3.745 0 0 1 21 12Z"/></svg>
+        </div>
+        {% trans "Flotte" %}
+      </h3>
+      <div class="flex items-center gap-5">
+        <div class="shrink-0 relative">
+          <svg id="fleetDonut" width="110" height="110" viewBox="0 0 36 36"></svg>
+        </div>
+        <div class="space-y-2 text-xs flex-1">
+          <div class="flex items-center gap-2"><span class="h-2.5 w-2.5 rounded-full shrink-0" style="background:var(--g-emerald)"></span><span style="color:var(--g-text-muted)">{% trans "Disponible" %}</span><span class="ml-auto font-bold" style="color:var(--g-text)">{{ fleet.available }}</span></div>
+          <div class="flex items-center gap-2"><span class="h-2.5 w-2.5 rounded-full shrink-0" style="background:var(--g-blue)"></span><span style="color:var(--g-text-muted)">{% trans "Loué" %}</span><span class="ml-auto font-bold" style="color:var(--g-text)">{{ fleet.rented }}</span></div>
+          <div class="flex items-center gap-2"><span class="h-2.5 w-2.5 rounded-full shrink-0" style="background:var(--g-amber)"></span><span style="color:var(--g-text-muted)">{% trans "Maintenance" %}</span><span class="ml-auto font-bold" style="color:var(--g-text)">{{ fleet.maintenance }}</span></div>
+          <div class="flex items-center gap-2"><span class="h-2.5 w-2.5 rounded-full shrink-0" style="background:var(--g-red)"></span><span style="color:var(--g-text-muted)">{% trans "Bloqué" %}</span><span class="ml-auto font-bold" style="color:var(--g-text)">{{ fleet.blocked }}</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Alerts & Actions -->
+    <div class="section-in g-card p-5" style="animation-delay:400ms">
+      <h3 class="font-semibold text-sm mb-3 flex items-center gap-2" style="color:var(--g-text)">
+        <div class="g-icon g-icon-red !w-7 !h-7 !rounded-lg">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z"/></svg>
+        </div>
+        {% trans "Alertes" %}
+      </h3>
+      <div class="space-y-1 max-h-[280px] overflow-y-auto">
+        {% for a in maint_alerts %}
+        <a href="{% url 'dashboard:maintenance_list' %}" class="flex items-center gap-2 rounded-lg px-2.5 py-2 hover:bg-white/5 transition text-xs">
+          <span class="h-2 w-2 rounded-full shrink-0 {% if a.status == 'blocked' %}animate-pulse{% endif %}" style="background:{% if a.status == 'blocked' %}var(--g-red){% else %}var(--g-amber){% endif %}"></span>
+          <span class="truncate flex-1" style="color:var(--g-text-muted)">{{ a.label }} <span class="font-mono" style="color:var(--g-text-dim)">{{ a.plate }}</span></span>
+          <span class="text-[10px] font-semibold uppercase shrink-0" style="color:{% if a.status == 'blocked' %}var(--g-red){% else %}var(--g-amber){% endif %}">{{ a.status }}</span>
+        </a>
+        {% endfor %}
+        {% for a in license_alerts %}
+        <a href="{% url 'dashboard:client_detail' a.pk %}" class="flex items-center gap-2 rounded-lg px-2.5 py-2 hover:bg-white/5 transition text-xs">
+          <span class="h-2 w-2 rounded-full shrink-0" style="background:var(--g-red)"></span>
+          <span class="truncate flex-1" style="color:var(--g-text-muted)">{{ a.label }}</span>
+          <span class="text-[10px] font-semibold uppercase shrink-0" style="color:var(--g-red)">{% trans "Permis expiré" %}</span>
+        </a>
+        {% endfor %}
+        {% for c in payment_alerts %}
+        <a href="{% url 'dashboard:contract_detail' c.pk %}" class="flex items-center gap-2 rounded-lg px-2.5 py-2 hover:bg-white/5 transition text-xs">
+          <span class="h-2 w-2 rounded-full shrink-0" style="background:var(--g-amber)"></span>
+          <span class="truncate flex-1" style="color:var(--g-text-muted)">{{ c.client.full_name }} — #{{ c.pk }}</span>
+          <span class="text-[10px] font-semibold uppercase shrink-0" style="color:var(--g-amber)">{{ c.get_payment_status_display }}</span>
+        </a>
+        {% endfor %}
+        {% if not maint_alerts and not license_alerts and not payment_alerts %}
+        <div class="text-center py-8">
+          <svg class="w-10 h-10 mx-auto mb-2 g-check-pop" style="color:var(--g-emerald)" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/></svg>
+          <p class="text-xs font-medium" style="color:var(--g-text-muted)">{% trans "Aucune alerte" %}</p>
+          <p class="text-[10px] mt-0.5" style="color:var(--g-text-dim)">{% trans "Tout est en ordre" %}</p>
+        </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════ RECENT ACTIVITY ═══════ -->
+<div class="section-in g-card p-5" style="animation-delay:460ms">
+  <h3 class="font-semibold text-sm mb-4 flex items-center gap-2" style="color:var(--g-text)">
+    <div class="g-icon g-icon-violet !w-7 !h-7 !rounded-lg">
+      <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/></svg>
+    </div>
+    {% trans "Activité récente" %}
+  </h3>
+  {% if activity %}
+  <div class="relative pl-5 space-y-4" style="border-left:2px solid var(--g-surface-border)">
+    {% for a in activity %}
+    <div class="relative">
+      <div class="absolute -left-[1.4rem] top-0.5 h-3 w-3 rounded-full border-2
+        {% if a.type == 'payment' %}bg-emerald-500
+        {% elif a.type == 'contract' %}bg-blue-500
+        {% elif a.type == 'maintenance' %}bg-amber-500
+        {% else %}bg-violet-500{% endif %}" style="border-color:var(--g-bg)"></div>
+      <a href="{{ a.url }}" class="block hover:bg-white/5 rounded-lg px-2 py-1 -mx-2 transition">
+        <div class="text-sm" style="color:var(--g-text-muted)">{{ a.text }}</div>
+        <div class="text-[11px] mt-0.5" style="color:var(--g-text-dim)">{% blocktrans with time=a.date|timesince %}il y a {{ time }}{% endblocktrans %}</div>
+      </a>
+    </div>
+    {% endfor %}
+  </div>
+  {% else %}
+  <div class="text-center py-10">
+    <svg class="w-12 h-12 mx-auto mb-3" style="color:var(--g-text-dim);opacity:.3" fill="none" stroke="currentColor" stroke-width="1" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/></svg>
+    <h4 class="font-semibold text-sm" style="color:var(--g-text)">{% trans "Aucune activité" %}</h4>
+    <p class="text-xs mt-1" style="color:var(--g-text-dim)">{% trans "Commencez par ajouter un véhicule ou un client." %}</p>
+    <div class="flex items-center justify-center gap-2 mt-4">
+      {% if "vehicles.create" in user_perms %}
+      <a href="{% url 'dashboard:vehicle_create' %}" class="g-btn text-xs !py-2 !px-4">+ {% trans "Véhicule" %}</a>
+      {% endif %}
+      {% if "clients.create" in user_perms %}
+      <a href="{% url 'dashboard:client_create' %}" class="g-btn-outline text-xs !py-2 !px-4">+ {% trans "Client" %}</a>
+      {% endif %}
+    </div>
+  </div>
+  {% endif %}
+</div>
+
+<!-- ═══════ CHARTS JS ═══════ -->
+<script>
+(function(){
+  var ACCENT='#8B5CF6',ACCENT_GLOW='rgba(139,92,246,.4)';
+
+  // ── Revenue Line Chart ──────────────────────────────────────
+  var revData = {{ chart_revenue_json|safe }};
+  var labels = revData.labels, values = revData.values;
+  var svg = document.getElementById('revenueChart');
+  var wrap = document.getElementById('revenueChartWrap');
+  var tip = document.getElementById('revTooltip');
+  if(!svg || !values.length) return;
+
+  function drawRevenue(){
+    var W = wrap.clientWidth, H = wrap.clientHeight;
+    var padL=44, padR=12, padT=12, padB=28;
+    var cW = W-padL-padR, cH = H-padT-padB;
+    var maxV = Math.max.apply(null, values) || 1;
+    var n = values.length;
+
+    var pts = [];
+    for(var i=0;i<n;i++){
+      var x = padL + (n>1 ? i/(n-1)*cW : cW/2);
+      var y = padT + cH - (values[i]/maxV)*cH;
+      pts.push({x:x, y:y, v:values[i], l:labels[i]});
+    }
+
+    var pathD = 'M'+pts.map(function(p){return p.x+','+p.y}).join(' L');
+    var areaD = pathD + ' L'+pts[pts.length-1].x+','+(padT+cH)+' L'+pts[0].x+','+(padT+cH)+' Z';
+
+    var yLabels = '';
+    for(var j=0;j<=4;j++){
+      var yy = padT + cH - (j/4)*cH;
+      var val = Math.round(maxV*j/4);
+      yLabels += '<text x="'+(padL-8)+'" y="'+(yy+3)+'" text-anchor="end" fill="rgba(255,255,255,.25)" font-size="9">'+val.toLocaleString()+'</text>';
+      yLabels += '<line x1="'+padL+'" y1="'+yy+'" x2="'+(W-padR)+'" y2="'+yy+'" stroke="rgba(255,255,255,.04)" stroke-width="1"/>';
+    }
+
+    var xLabels = '';
+    var step = Math.max(1, Math.floor(n/6));
+    for(var k=0;k<n;k+=step){
+      xLabels += '<text x="'+pts[k].x+'" y="'+(H-6)+'" text-anchor="middle" fill="rgba(255,255,255,.25)" font-size="9">'+labels[k]+'</text>';
+    }
+
+    var dots = '';
+    for(var d=0;d<pts.length;d++){
+      dots += '<circle class="tooltip-dot" cx="'+pts[d].x+'" cy="'+pts[d].y+'" r="4" fill="'+ACCENT+'" stroke="#0f0f0f" stroke-width="2.5" data-i="'+d+'"/>';
+    }
+
+    svg.innerHTML =
+      '<defs>'+
+        '<linearGradient id="revGrad" x1="0" y1="0" x2="0" y2="1">'+
+          '<stop offset="0%" stop-color="'+ACCENT+'" stop-opacity=".25"/>'+
+          '<stop offset="100%" stop-color="'+ACCENT+'" stop-opacity="0"/>'+
+        '</linearGradient>'+
+        '<filter id="glowDot"><feGaussianBlur stdDeviation="2" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>'+
+      '</defs>' +
+      yLabels + xLabels +
+      '<path class="rev-area" d="'+areaD+'" fill="url(#revGrad)"/>' +
+      '<path class="rev-line" d="'+pathD+'" fill="none" stroke="'+ACCENT+'" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" filter="url(#glowDot)"/>' +
+      dots;
+
+    svg.querySelectorAll('.tooltip-dot').forEach(function(dot){
+      dot.addEventListener('mouseenter', function(){
+        var i = +this.getAttribute('data-i');
+        tip.textContent = pts[i].l + ' : ' + pts[i].v.toLocaleString() + ' €';
+        tip.style.left = pts[i].x + 'px';
+        tip.style.top = (pts[i].y - 36) + 'px';
+        tip.style.transform = 'translateX(-50%)';
+        tip.classList.remove('hidden');
+      });
+      dot.addEventListener('mouseleave', function(){ tip.classList.add('hidden'); });
+    });
+  }
+  drawRevenue();
+  window.addEventListener('resize', function(){ drawRevenue(); });
+
+  // ── Contracts Bar Chart ─────────────────────────────────────
+  var cData = {{ chart_contracts_json|safe }};
+  var barSvg = document.getElementById('contractsBar');
+  var barWrap = document.getElementById('contractsBarWrap');
+  if(!barSvg) return;
+
+  function drawBars(){
+    var W = barWrap.clientWidth, H = barWrap.clientHeight;
+    var colors = [ACCENT,'rgba(255,255,255,.2)','#10b981'];
+    var maxV = Math.max.apply(null, cData.values) || 1;
+    var n = cData.values.length;
+    var gap = 28, barW = Math.min(64, (W - gap*(n+1))/n);
+    var padT = 22, padB = 26;
+    var chartH = H - padT - padB;
+    var html = '<defs>';
+    colors.forEach(function(c,idx){
+      html += '<linearGradient id="barG'+idx+'" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="'+c+'" stop-opacity=".9"/><stop offset="100%" stop-color="'+c+'" stop-opacity=".5"/></linearGradient>';
+    });
+    html += '</defs>';
+
+    for(var i=0;i<n;i++){
+      var x = gap + i*(barW+gap);
+      var h = (cData.values[i]/maxV)*chartH;
+      if(h < 3 && cData.values[i] > 0) h = 5;
+      var y = padT + chartH - h;
+      html += '<rect x="'+x+'" y="'+y+'" width="'+barW+'" height="'+h+'" rx="8" fill="url(#barG'+i+')"/>';
+      html += '<text x="'+(x+barW/2)+'" y="'+(y-7)+'" text-anchor="middle" fill="rgba(255,255,255,.8)" font-size="12" font-weight="700">'+cData.values[i]+'</text>';
+      html += '<text x="'+(x+barW/2)+'" y="'+(H-6)+'" text-anchor="middle" fill="rgba(255,255,255,.25)" font-size="10">'+cData.labels[i]+'</text>';
+    }
+    barSvg.innerHTML = html;
+  }
+  drawBars();
+  window.addEventListener('resize', function(){ drawBars(); });
+
+  // ── Fleet Donut ─────────────────────────────────────────────
+  var donutSvg = document.getElementById('fleetDonut');
+  if(!donutSvg) return;
+  var fleet = [
+    {v:{{ fleet.available }}, c:'#10b981'},
+    {v:{{ fleet.rented }},    c:'#3b82f6'},
+    {v:{{ fleet.maintenance }},c:'#f59e0b'},
+    {v:{{ fleet.blocked }},   c:'#ef4444'}
+  ];
+  var total = {{ fleet_total }} || 1;
+  var R = 15.9155, circumference = 2 * Math.PI * R;
+  var offset = 0;
+  var donutHtml = '<defs><filter id="donutGlow"><feGaussianBlur stdDeviation="1" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>';
+
+  for(var i=0;i<fleet.length;i++){
+    var pct = fleet[i].v / total;
+    var dash = pct * circumference;
+    if(dash > 0){
+      donutHtml += '<circle class="donut-seg" cx="18" cy="18" r="'+R+'" fill="none" stroke="'+fleet[i].c+'" stroke-width="4.5" stroke-dasharray="'+dash+' '+(circumference-dash)+'" stroke-dashoffset="-'+offset+'" stroke-linecap="round" filter="url(#donutGlow)" style="animation-delay:'+(i*150)+'ms"/>';
+    }
+    offset += dash;
+  }
+  if(total <= 0 || (fleet[0].v+fleet[1].v+fleet[2].v+fleet[3].v) === 0){
+    donutHtml = '<circle cx="18" cy="18" r="'+R+'" fill="none" stroke="rgba(255,255,255,.08)" stroke-width="4.5"/>';
+  }
+  donutHtml += '<text x="18" y="20" text-anchor="middle" fill="#F0F0F0" font-size="9" font-weight="800">'+total+'</text>';
+  donutSvg.innerHTML = donutHtml;
+})();
+</script>
+{% endblock %}

@@ -1,0 +1,52 @@
+{% extends "dashboard/_layout.html" %}
+{% load i18n %}
+
+{% block page_title %}{% trans "Promotions" %}{% endblock %}
+{% block page_subtitle %}{% trans "Gérez vos codes promo" %}{% endblock %}
+
+{% block page_actions %}
+<a href="{% url 'dashboard:promo_create' %}" class="d-btn px-4 py-2 text-sm font-semibold inline-flex items-center gap-1.5">
+  <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/></svg>
+  {% trans "Nouveau code" %}
+</a>
+{% endblock %}
+
+{% block content %}
+{% if promos %}
+<div class="grid gap-3">
+  {% for p in promos %}
+  <div class="d-card p-5 flex flex-col sm:flex-row sm:items-center gap-4 d-fade-in" style="animation-delay:{{ forloop.counter0 }}50ms">
+    <div class="flex-1 min-w-0">
+      <div class="flex items-center gap-2">
+        <span class="font-mono font-bold text-sm tracking-wider">{{ p.code }}</span>
+        {% if p.is_valid %}
+        <span class="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-700">{% trans "Actif" %}</span>
+        {% else %}
+        <span class="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-red-100 text-red-700">{% trans "Expiré" %}</span>
+        {% endif %}
+      </div>
+      <div class="text-xs opacity-50 mt-1">
+        {% if p.type == 'percent' %}-{{ p.value }}%{% else %}-{{ p.value }} {% trans "fixe" %}{% endif %}
+        {% if p.valid_until %} · {% trans "Expire le" %} {{ p.valid_until|date:"d/m/Y" }}{% endif %}
+        {% if p.max_usage %} · {{ p.usage_count }}/{{ p.max_usage }} {% trans "utilisations" %}{% endif %}
+      </div>
+    </div>
+    <div class="flex items-center gap-2 shrink-0">
+      <a href="{% url 'dashboard:promo_edit' pk=p.pk %}" class="px-3 py-1.5 rounded-lg border border-slate-200 text-xs font-medium hover:bg-slate-50 transition">{% trans "Modifier" %}</a>
+      <form method="post" action="{% url 'dashboard:promo_delete' pk=p.pk %}" onsubmit="return confirm('{% trans "Supprimer ce code promo ?" %}')">
+        {% csrf_token %}
+        <button type="submit" class="px-3 py-1.5 rounded-lg text-red-500 text-xs font-medium hover:bg-red-50 transition">{% trans "Supprimer" %}</button>
+      </form>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+{% else %}
+<div class="d-card p-12 text-center">
+  <div class="text-4xl mb-3">🏷️</div>
+  <div class="font-semibold">{% trans "Aucun code promo" %}</div>
+  <p class="text-sm opacity-50 mt-1">{% trans "Créez votre premier code promo pour attirer plus de clients." %}</p>
+  <a href="{% url 'dashboard:promo_create' %}" class="d-btn px-5 py-2 text-sm font-semibold mt-4 inline-block">{% trans "Créer un code" %}</a>
+</div>
+{% endif %}
+{% endblock %}

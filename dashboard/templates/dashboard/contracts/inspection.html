@@ -1,0 +1,234 @@
+{% extends "dashboard/_layout.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "Inspection" %} — {% trans "Contrat" %} #{{ contract.pk }}{% endblock %}
+{% block page_title %}{% trans "Inspection retour" %}{% endblock %}
+{% block page_subtitle %}{% trans "Contrat" %} #{{ contract.pk }} — {{ contract.client.full_name }} — {{ contract.vehicle }}{% endblock %}
+
+{% block page_actions %}
+<a href="{% url 'dashboard:contract_detail' contract.pk %}" class="inline-flex rounded-xl border border-slate-200 px-4 py-2 text-sm font-medium text-slate-600 hover:bg-slate-50 transition items-center gap-1.5">
+  <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 15 3 9m0 0 6-6M3 9h12a6 6 0 0 1 0 12h-3"/></svg>
+  {% trans "Retour au contrat" %}
+</a>
+{% endblock %}
+
+{% block content %}
+<div class="grid lg:grid-cols-3 gap-6">
+  <!-- Main form -->
+  <div class="lg:col-span-2">
+    <form method="post" class="space-y-6">
+      {% csrf_token %}
+
+      <!-- Km & Fuel -->
+      <div class="rounded-2xl bg-white border border-slate-200 shadow-sm p-5">
+        <h3 class="font-semibold text-sm text-slate-800 mb-4 flex items-center gap-2">
+          <svg class="w-4 h-4 text-gaboomViolet" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 0 1 3 19.875v-6.75Z"/></svg>
+          {% trans "Kilométrage & Carburant" %}
+        </h3>
+        <div class="grid sm:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-xs font-medium text-slate-500 mb-1">{% trans "Km départ" %}</label>
+            <input type="number" value="{{ contract.km_depart }}" disabled class="w-full rounded-xl border border-slate-200 px-3 py-2.5 text-sm bg-slate-50 text-slate-500" />
+          </div>
+          <div>
+            <label class="block text-xs font-medium text-slate-500 mb-1">{% trans "Km retour" %} <span class="text-red-500">*</span></label>
+            <input type="number" name="km_retour" value="{% if inspection %}{{ inspection.contract.km_retour|default:'' }}{% endif %}" required min="0" class="w-full rounded-xl border border-slate-200 px-3 py-2.5 text-sm focus:border-violet-400 focus:ring-1 focus:ring-violet-400 outline-none" />
+          </div>
+          <div>
+            <label class="block text-xs font-medium text-slate-500 mb-1">{% trans "Jauge carburant départ" %}</label>
+            <input type="number" value="{{ contract.fuel_depart }}" disabled class="w-full rounded-xl border border-slate-200 px-3 py-2.5 text-sm bg-slate-50 text-slate-500" />
+          </div>
+          <div>
+            <label class="block text-xs font-medium text-slate-500 mb-1">{% trans "Jauge carburant retour (1-8)" %} <span class="text-red-500">*</span></label>
+            <input type="number" name="fuel_retour" value="{% if inspection %}{{ contract.fuel_retour|default:'' }}{% endif %}" required min="1" max="8" class="w-full rounded-xl border border-slate-200 px-3 py-2.5 text-sm focus:border-violet-400 focus:ring-1 focus:ring-violet-400 outline-none" />
+          </div>
+        </div>
+      </div>
+
+      <!-- Condition ratings -->
+      <div class="rounded-2xl bg-white border border-slate-200 shadow-sm p-5">
+        <h3 class="font-semibold text-sm text-slate-800 mb-4 flex items-center gap-2">
+          <svg class="w-4 h-4 text-gaboomViolet" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 0 0 2.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 0 0-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 0 0 .75-.75 2.25 2.25 0 0 0-.1-.664m-5.8 0A2.251 2.251 0 0 1 13.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25Z"/></svg>
+          {% trans "État du véhicule" %}
+        </h3>
+        <div class="grid sm:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-xs font-medium text-slate-500 mb-1">{% trans "Extérieur" %}</label>
+            <select name="exterior_condition" class="w-full rounded-xl border border-slate-200 px-3 py-2.5 text-sm focus:border-violet-400 focus:ring-1 focus:ring-violet-400 outline-none">
+              {% for val, label in condition_choices %}
+              <option value="{{ val }}" {% if inspection and inspection.exterior_condition == val %}selected{% endif %}>{{ label }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-medium text-slate-500 mb-1">{% trans "Intérieur" %}</label>
+            <select name="interior_condition" class="w-full rounded-xl border border-slate-200 px-3 py-2.5 text-sm focus:border-violet-400 focus:ring-1 focus:ring-violet-400 outline-none">
+              {% for val, label in condition_choices %}
+              <option value="{{ val }}" {% if inspection and inspection.interior_condition == val %}selected{% endif %}>{{ label }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-medium text-slate-500 mb-1">{% trans "Pneus" %}</label>
+            <select name="tires_condition" class="w-full rounded-xl border border-slate-200 px-3 py-2.5 text-sm focus:border-violet-400 focus:ring-1 focus:ring-violet-400 outline-none">
+              {% for val, label in condition_choices %}
+              <option value="{{ val }}" {% if inspection and inspection.tires_condition == val %}selected{% endif %}>{{ label }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-medium text-slate-500 mb-1">{% trans "Éclairage" %}</label>
+            <select name="lights_condition" class="w-full rounded-xl border border-slate-200 px-3 py-2.5 text-sm focus:border-violet-400 focus:ring-1 focus:ring-violet-400 outline-none">
+              {% for val, label in condition_choices %}
+              <option value="{{ val }}" {% if inspection and inspection.lights_condition == val %}selected{% endif %}>{{ label }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-medium text-slate-500 mb-1">{% trans "Moteur" %}</label>
+            <select name="engine_condition" class="w-full rounded-xl border border-slate-200 px-3 py-2.5 text-sm focus:border-violet-400 focus:ring-1 focus:ring-violet-400 outline-none">
+              {% for val, label in condition_choices %}
+              <option value="{{ val }}" {% if inspection and inspection.engine_condition == val %}selected{% endif %}>{{ label }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-medium text-slate-500 mb-1">{% trans "Propreté" %}</label>
+            <select name="cleanliness_ok" class="w-full rounded-xl border border-slate-200 px-3 py-2.5 text-sm focus:border-violet-400 focus:ring-1 focus:ring-violet-400 outline-none">
+              <option value="1" {% if not inspection or inspection.cleanliness_ok %}selected{% endif %}>{% trans "OK" %}</option>
+              <option value="0" {% if inspection and not inspection.cleanliness_ok %}selected{% endif %}>{% trans "Non satisfaisant" %}</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- Damage -->
+      <div class="rounded-2xl bg-white border border-slate-200 shadow-sm p-5">
+        <h3 class="font-semibold text-sm text-slate-800 mb-4 flex items-center gap-2">
+          <svg class="w-4 h-4 text-red-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z"/></svg>
+          {% trans "Dommages" %}
+        </h3>
+        <div class="space-y-4">
+          <div class="flex items-center gap-3">
+            <label class="flex items-center gap-2 cursor-pointer">
+              <input type="checkbox" name="has_new_damage" value="1" {% if inspection and inspection.has_new_damage %}checked{% endif %}
+                class="rounded border-slate-300 text-red-600 focus:ring-red-500" onchange="document.getElementById('damageFields').classList.toggle('hidden', !this.checked)" />
+              <span class="text-sm font-medium text-slate-700">{% trans "Nouveaux dommages constatés" %}</span>
+            </label>
+          </div>
+          <div id="damageFields" class="space-y-3 {% if not inspection or not inspection.has_new_damage %}hidden{% endif %}">
+            <div>
+              <label class="block text-xs font-medium text-slate-500 mb-1">{% trans "Description des dommages" %}</label>
+              <textarea name="damage_description" rows="3" maxlength="2000" class="w-full rounded-xl border border-slate-200 px-3 py-2.5 text-sm focus:border-red-400 focus:ring-1 focus:ring-red-400 outline-none resize-none" placeholder="{% trans 'Décrivez les dommages constatés...' %}">{% if inspection %}{{ inspection.damage_description }}{% endif %}</textarea>
+            </div>
+            <div>
+              <label class="block text-xs font-medium text-slate-500 mb-1">{% trans "Estimation des frais de réparation" %}</label>
+              <input type="number" name="damage_cost_estimate" step="0.01" min="0" value="{% if inspection %}{{ inspection.damage_cost_estimate }}{% else %}0{% endif %}" class="w-full rounded-xl border border-slate-200 px-3 py-2.5 text-sm focus:border-red-400 focus:ring-1 focus:ring-red-400 outline-none" />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Notes & Decision -->
+      <div class="rounded-2xl bg-white border border-slate-200 shadow-sm p-5">
+        <h3 class="font-semibold text-sm text-slate-800 mb-4 flex items-center gap-2">
+          <svg class="w-4 h-4 text-gaboomViolet" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M11.35 3.836c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 0 0 .75-.75 2.25 2.25 0 0 0-.1-.664m-5.8 0A2.251 2.251 0 0 1 13.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m8.9-4.414c.376.023.75.05 1.124.08 1.131.094 1.976 1.057 1.976 2.192V16.5A2.25 2.25 0 0 1 18 18.75h-2.25m-7.5-10.5H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V18.75m-7.5-10.5h6.375c.621 0 1.125.504 1.125 1.125v9.375m-8.25-3 1.5 1.5 3-3.75"/></svg>
+          {% trans "Décision" %}
+        </h3>
+        <div class="space-y-4">
+          <div>
+            <label class="block text-xs font-medium text-slate-500 mb-1">{% trans "Notes d'inspection" %}</label>
+            <textarea name="notes" rows="3" maxlength="2000" class="w-full rounded-xl border border-slate-200 px-3 py-2.5 text-sm focus:border-violet-400 focus:ring-1 focus:ring-violet-400 outline-none resize-none" placeholder="{% trans 'Notes supplémentaires...' %}">{% if inspection %}{{ inspection.notes }}{% endif %}</textarea>
+          </div>
+          <div>
+            <label class="block text-xs font-medium text-slate-500 mb-2">{% trans "Que faire du véhicule ?" %}</label>
+            <div class="grid sm:grid-cols-2 gap-3">
+              {% for val, label in decision_choices %}
+              <label class="flex items-center gap-3 rounded-xl border px-4 py-3 cursor-pointer transition
+                {% if val == 'available' %}border-emerald-200 hover:bg-emerald-50{% else %}border-amber-200 hover:bg-amber-50{% endif %}">
+                <input type="radio" name="decision" value="{{ val }}" {% if not inspection or inspection.decision == val %}checked{% endif %}
+                  class="{% if val == 'available' %}text-emerald-600 focus:ring-emerald-500{% else %}text-amber-600 focus:ring-amber-500{% endif %}" />
+                <div>
+                  <span class="text-sm font-medium {% if val == 'available' %}text-emerald-700{% else %}text-amber-700{% endif %}">{{ label }}</span>
+                </div>
+              </label>
+              {% endfor %}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Submit -->
+      <div class="flex gap-3">
+        <a href="{% url 'dashboard:contract_detail' contract.pk %}" class="rounded-xl border border-slate-200 px-6 py-3 text-sm font-medium text-slate-600 hover:bg-slate-50 transition">{% trans "Annuler" %}</a>
+        <button type="submit" class="rounded-xl bg-gaboomViolet text-white px-6 py-3 text-sm font-semibold hover:opacity-95 transition flex items-center gap-2">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5"/></svg>
+          {% trans "Valider l'inspection & clôturer" %}
+        </button>
+      </div>
+    </form>
+  </div>
+
+  <!-- Sidebar: photos comparison -->
+  <div class="space-y-4">
+    <!-- Contract info -->
+    <div class="rounded-2xl bg-white border border-slate-200 shadow-sm p-5">
+      <h3 class="font-semibold text-sm text-slate-800 mb-3">{% trans "Infos contrat" %}</h3>
+      <dl class="space-y-2 text-sm">
+        <div class="flex justify-between"><dt class="text-slate-400">{% trans "Client" %}</dt><dd class="font-medium">{{ contract.client.full_name }}</dd></div>
+        <div class="flex justify-between"><dt class="text-slate-400">{% trans "Véhicule" %}</dt><dd class="font-medium">{{ contract.vehicle }}</dd></div>
+        <div class="flex justify-between"><dt class="text-slate-400">{% trans "Période" %}</dt><dd class="font-medium">{{ contract.start_date|date:"d/m" }} → {{ contract.end_date|date:"d/m" }}</dd></div>
+        <div class="flex justify-between"><dt class="text-slate-400">{% trans "Km départ" %}</dt><dd class="font-medium">{{ contract.km_depart }} km</dd></div>
+        <div class="flex justify-between"><dt class="text-slate-400">{% trans "Km inclus" %}</dt><dd class="font-medium">{{ contract.km_included }} km</dd></div>
+      </dl>
+    </div>
+
+    <!-- Pickup photos -->
+    <div class="rounded-2xl bg-white border border-slate-200 shadow-sm p-5">
+      <h3 class="font-semibold text-sm text-slate-800 mb-3">{% trans "Photos départ" %} ({{ pickup_photos|length }})</h3>
+      {% if pickup_photos %}
+      <div class="grid grid-cols-2 gap-2">
+        {% for p in pickup_photos %}
+        <div>
+          <img src="{{ p.photo.url }}" alt="{{ p.description }}" class="w-full h-20 object-cover rounded-xl border border-slate-200" />
+          {% if p.description %}<span class="text-[10px] text-slate-400">{{ p.description }}</span>{% endif %}
+        </div>
+        {% endfor %}
+      </div>
+      {% else %}
+      <p class="text-sm text-slate-400">{% trans "Aucune photo de départ." %}</p>
+      {% endif %}
+    </div>
+
+    <!-- Return photos -->
+    <div class="rounded-2xl bg-white border border-slate-200 shadow-sm p-5">
+      <h3 class="font-semibold text-sm text-slate-800 mb-3">{% trans "Photos retour" %} ({{ return_photos|length }})</h3>
+      {% if return_photos %}
+      <div class="grid grid-cols-2 gap-2">
+        {% for p in return_photos %}
+        <div>
+          <img src="{{ p.photo.url }}" alt="{{ p.description }}" class="w-full h-20 object-cover rounded-xl border border-slate-200" />
+          {% if p.description %}<span class="text-[10px] text-slate-400">{{ p.description }}</span>{% endif %}
+        </div>
+        {% endfor %}
+      </div>
+      {% else %}
+      <p class="text-sm text-slate-400">{% trans "Ajoutez des photos de retour depuis le contrat avant l'inspection." %}</p>
+      {% endif %}
+    </div>
+
+    <!-- Upload return photos -->
+    <div class="rounded-2xl bg-white border border-slate-200 shadow-sm p-5">
+      <h3 class="font-semibold text-sm text-slate-800 mb-3">{% trans "Ajouter photos retour" %}</h3>
+      <form method="post" action="{% url 'dashboard:contract_photo_upload' pk=contract.pk %}" enctype="multipart/form-data" class="space-y-3">
+        {% csrf_token %}
+        <input type="hidden" name="moment" value="return" />
+        <input type="hidden" name="next" value="{% url 'dashboard:contract_inspection' contract.pk %}" />
+        <input type="text" name="description" maxlength="255" placeholder="{% trans 'Description' %}" class="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm" />
+        <input type="file" name="photos" accept="image/*" multiple class="text-sm w-full" />
+        <button type="submit" class="w-full rounded-xl bg-gaboomViolet text-white px-4 py-2.5 text-sm font-medium hover:opacity-95 transition">{% trans "Ajouter" %}</button>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

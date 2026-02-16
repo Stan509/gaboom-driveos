@@ -1,0 +1,57 @@
+{% extends "dashboard/_layout.html" %}
+{% load i18n %}
+
+{% block title %}{{ title }} — Dashboard{% endblock %}
+{% block page_title %}{{ title }}{% endblock %}
+{% block page_subtitle %}{% if member %}{% trans "Modifier les informations du membre" %}{% else %}{% trans "Créer un nouveau membre de l'équipe" %}{% endif %}{% endblock %}
+
+{% block page_actions %}
+<a href="{% url 'dashboard:team' %}"
+   class="inline-flex items-center gap-1.5 rounded-xl border border-slate-200 bg-white px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50 transition-all">
+  <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 15 3 9m0 0 6-6M3 9h12a6 6 0 0 1 0 12h-3"/></svg>
+  {% trans "Retour" %}
+</a>
+<button type="submit" form="teamForm"
+        class="inline-flex items-center gap-1.5 rounded-xl bg-gaboomViolet text-white px-5 py-2 text-sm font-semibold shadow-lg shadow-violet-200/50 hover:shadow-xl hover:bg-violet-700 transition-all">
+  <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5"/></svg>
+  {% if member %}{% trans "Enregistrer" %}{% else %}{% trans "Créer le membre" %}{% endif %}
+</button>
+{% endblock %}
+
+{% block content %}
+<div class="max-w-xl">
+  <form method="post" id="teamForm" class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm space-y-5">
+    {% csrf_token %}
+
+    {% if form.non_field_errors %}
+    <div class="rounded-xl bg-red-50 border border-red-200 text-red-700 text-sm px-4 py-2.5">
+      {% for error in form.non_field_errors %}{{ error }}{% endfor %}
+    </div>
+    {% endif %}
+
+    {% for field in form %}
+    <div>
+      <label class="block text-xs font-medium text-slate-500 mb-1.5">{{ field.label }}</label>
+      {{ field }}
+      {% if field.errors %}
+      <p class="mt-1 text-xs text-red-500">{% for e in field.errors %}{{ e }}{% endfor %}</p>
+      {% endif %}
+      {% if field.help_text %}
+      <p class="mt-1 text-xs text-slate-400">{{ field.help_text }}</p>
+      {% endif %}
+    </div>
+    {% endfor %}
+
+    {% if not member %}
+    <div class="rounded-xl bg-amber-50 border border-amber-200 px-4 py-3">
+      <div class="flex items-start gap-2">
+        <svg class="w-4 h-4 text-amber-600 mt-0.5 shrink-0" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m9-.75a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 3.75h.008v.008H12v-.008Z"/></svg>
+        <div class="text-xs text-amber-800">
+          <strong>Mot de passe temporaire</strong> — Un mot de passe sera généré automatiquement et affiché une seule fois après la création. Communiquez-le de manière sécurisée au nouveau membre.
+        </div>
+      </div>
+    </div>
+    {% endif %}
+  </form>
+</div>
+{% endblock %}

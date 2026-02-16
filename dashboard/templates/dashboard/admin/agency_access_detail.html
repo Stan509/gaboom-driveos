@@ -1,0 +1,264 @@
+{% extends "dashboard/_layout.html" %}
+{% load humanize i18n %}
+
+{% block page_title %}{% trans "Accès" %} — {{ access.agency.name }}{% endblock %}
+{% block page_subtitle %}{{ access.get_status_display }} · {{ access.agency.slug }}{% endblock %}
+
+{% block page_actions %}
+<a href="{% url 'dashboard:admin_agencies_access' %}" class="inline-flex items-center gap-1.5 text-sm text-slate-500 hover:text-gaboomViolet transition font-medium">
+  <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5"/></svg>
+  {% trans "Retour" %}
+</a>
+{% endblock %}
+
+{% block content %}
+<!-- TEMP BUILD MARKER -->
+<div style="position:fixed;top:12px;right:12px;z-index:9999;background:#7c3aed;color:#fff;padding:4px 14px;border-radius:999px;font-size:12px;font-weight:700;box-shadow:0 2px 8px rgba(0,0,0,.25);pointer-events:none;">BUILD: ACCESS-v2</div>
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+  <!-- Left column -->
+  <div class="lg:col-span-2 space-y-6">
+
+    <!-- Status banner -->
+    <div class="rounded-2xl p-4 flex items-center gap-3
+      {% if access.status == 'trial' %}bg-blue-50 border border-blue-200
+      {% elif access.status == 'active' %}bg-emerald-50 border border-emerald-200
+      {% elif access.status == 'suspended' %}bg-red-50 border border-red-200{% endif %}">
+      {% if access.status == 'trial' %}
+        <span class="relative flex h-3 w-3"><span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span><span class="relative inline-flex rounded-full h-3 w-3 bg-blue-500"></span></span>
+        <span class="font-semibold text-blue-800">Essai gratuit — expire le {{ access.access_ends_at|date:"d/m/Y H:i" }}</span>
+      {% elif access.status == 'active' %}
+        <svg class="w-5 h-5 text-emerald-600" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5"/></svg>
+        <span class="font-semibold text-emerald-800">Actif — expire le {{ access.access_ends_at|date:"d/m/Y H:i" }}</span>
+      {% elif access.status == 'suspended' %}
+        <svg class="w-5 h-5 text-red-600" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12"/></svg>
+        <span class="font-semibold text-red-800">Suspendu — {{ access.suspended_reason|default:"Raison non précisée" }}</span>
+      {% endif %}
+    </div>
+
+    <!-- Agency info -->
+    <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden">
+      <div class="px-5 py-3 border-b border-slate-100">
+        <h3 class="text-sm font-semibold text-slate-700">{% trans "Agence" %}</h3>
+      </div>
+      <div class="p-5 grid grid-cols-2 gap-4 text-sm">
+        <div>
+          <span class="block text-xs text-slate-400 mb-0.5">{% trans "Nom" %}</span>
+          <span class="font-medium">{{ access.agency.name }}</span>
+        </div>
+        <div>
+          <span class="block text-xs text-slate-400 mb-0.5">{% trans "Slug" %}</span>
+          <span class="font-mono text-xs">{{ access.agency.slug }}</span>
+        </div>
+        <div>
+          <span class="block text-xs text-slate-400 mb-0.5">{% trans "Owner" %}</span>
+          {% if owner %}
+            <span class="font-medium">{{ owner.email }}</span>
+          {% else %}
+            <span class="text-slate-300">—</span>
+          {% endif %}
+        </div>
+        <div>
+          <span class="block text-xs text-slate-400 mb-0.5">{% trans "Créée le" %}</span>
+          <span class="font-medium">{{ access.agency.created_at|date:"d/m/Y H:i" }}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Access details -->
+    <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden">
+      <div class="px-5 py-3 border-b border-slate-100">
+        <h3 class="text-sm font-semibold text-slate-700">{% trans "Détails accès" %}</h3>
+      </div>
+      <div class="p-5 grid grid-cols-2 sm:grid-cols-3 gap-4 text-sm">
+        <div>
+          <span class="block text-xs text-slate-400 mb-0.5">{% trans "Statut" %}</span>
+          <span class="font-bold">{{ access.get_status_display }}</span>
+        </div>
+        <div>
+          <span class="block text-xs text-slate-400 mb-0.5">{% trans "Essai début" %}</span>
+          <span>{{ access.trial_started_at|date:"d/m/Y H:i" }}</span>
+        </div>
+        <div>
+          <span class="block text-xs text-slate-400 mb-0.5">{% trans "Deadline" %}</span>
+          <span>{{ access.access_ends_at|date:"d/m/Y H:i" }}</span>
+        </div>
+        <div>
+          <span class="block text-xs text-slate-400 mb-0.5">{% trans "Countdown" %}</span>
+          <span class="font-bold {% if access.days_remaining <= 1 %}text-red-600{% elif access.days_remaining <= 3 %}text-amber-600{% else %}text-slate-900{% endif %}">{{ access.countdown_label }}</span>
+        </div>
+        <div>
+          <span class="block text-xs text-slate-400 mb-0.5">{% trans "Jours restants" %}</span>
+          <span class="font-bold">{{ access.days_remaining }}j</span>
+        </div>
+        {% if access.suspended_reason %}
+        <div>
+          <span class="block text-xs text-slate-400 mb-0.5">{% trans "Raison suspension" %}</span>
+          <span class="text-red-600">{{ access.suspended_reason }}</span>
+        </div>
+        {% endif %}
+      </div>
+    </div>
+
+    <!-- Proofs -->
+    <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden">
+      <div class="px-5 py-3 border-b border-slate-100">
+        <h3 class="text-sm font-semibold text-slate-700">{% trans "Preuves de paiement" %} ({{ proofs|length }})</h3>
+      </div>
+      {% if proofs %}
+      <div class="divide-y divide-slate-50">
+        {% for p in proofs %}
+        <div class="p-5 flex items-start gap-4">
+          <a href="{{ p.image.url }}" target="_blank" class="shrink-0">
+            <img src="{{ p.image.url }}" alt="Preuve #{{ p.pk }}" class="w-20 h-16 rounded-xl object-cover border border-slate-200 hover:opacity-80 transition" />
+          </a>
+          <div class="flex-1 min-w-0">
+            <div class="flex items-center gap-2 mb-1">
+              {% if p.status == 'pending' %}
+                <span class="inline-flex items-center gap-1 rounded-full bg-amber-100 text-amber-800 px-2 py-0.5 text-xs font-semibold">
+                  <span class="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse"></span>En attente
+                </span>
+              {% elif p.status == 'approved' %}
+                <span class="inline-flex items-center gap-1 rounded-full bg-emerald-100 text-emerald-800 px-2 py-0.5 text-xs font-semibold">Approuvée</span>
+              {% elif p.status == 'rejected' %}
+                <span class="inline-flex items-center gap-1 rounded-full bg-red-100 text-red-800 px-2 py-0.5 text-xs font-semibold">Rejetée</span>
+              {% endif %}
+              <span class="text-xs text-slate-400">{{ p.uploaded_at|date:"d/m/Y H:i" }}</span>
+            </div>
+            <div class="text-xs text-slate-500">
+              Par {{ p.uploaded_by.email|default:"—" }}
+              {% if p.reviewed_by %} · Revue par {{ p.reviewed_by.email }} le {{ p.reviewed_at|date:"d/m/Y H:i" }}{% endif %}
+            </div>
+            {% if p.review_note %}
+            <p class="text-xs text-slate-600 mt-1 bg-slate-50 rounded-lg px-3 py-1.5">{{ p.review_note }}</p>
+            {% endif %}
+          </div>
+          <div class="shrink-0 flex flex-col gap-1.5">
+            {% if p.status == 'pending' %}
+            <form method="post" action="{% url 'dashboard:admin_proof_approve' proof_pk=p.pk %}">
+              {% csrf_token %}
+              <input type="hidden" name="next" value="{% url 'dashboard:admin_agency_access_detail' pk=access.pk %}" />
+              <button type="submit" class="px-3 py-1.5 rounded-lg bg-emerald-100 text-emerald-700 text-xs font-semibold hover:bg-emerald-200 transition w-full">Approuver</button>
+            </form>
+            <button onclick="document.getElementById('rejectModal{{ p.pk }}').classList.remove('hidden')" class="px-3 py-1.5 rounded-lg bg-red-50 text-red-600 text-xs font-semibold hover:bg-red-100 transition w-full">Rejeter</button>
+            {% endif %}
+          </div>
+        </div>
+
+        {% if p.status == 'pending' %}
+        <!-- Reject modal -->
+        <div id="rejectModal{{ p.pk }}" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur-sm">
+          <div class="bg-white rounded-2xl shadow-2xl max-w-md w-full mx-4 p-6">
+            <h3 class="text-lg font-bold text-slate-900 mb-2">Rejeter la preuve #{{ p.pk }} ?</h3>
+            <form method="post" action="{% url 'dashboard:admin_proof_reject' proof_pk=p.pk %}">
+              {% csrf_token %}
+              <input type="hidden" name="next" value="{% url 'dashboard:admin_agency_access_detail' pk=access.pk %}" />
+              <label class="block text-sm text-slate-600 mb-1">Note (visible par l'agence)</label>
+              <textarea name="review_note" rows="3" class="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm focus:border-red-400 outline-none resize-none mb-4" placeholder="Preuve non conforme, illisible, etc."></textarea>
+              <div class="flex gap-3">
+                <button type="button" onclick="this.closest('[id^=rejectModal]').classList.add('hidden')" class="flex-1 py-2.5 rounded-xl border border-slate-200 text-sm font-semibold text-slate-600 hover:bg-slate-50 transition">Annuler</button>
+                <button type="submit" class="flex-1 py-2.5 rounded-xl bg-red-600 text-white text-sm font-semibold hover:bg-red-700 transition">Rejeter</button>
+              </div>
+            </form>
+          </div>
+        </div>
+        {% endif %}
+        {% endfor %}
+      </div>
+      {% else %}
+      <div class="p-5 text-center text-slate-400 text-sm">Aucune preuve envoyée.</div>
+      {% endif %}
+    </div>
+  </div>
+
+  <!-- Right column: Actions + Notes -->
+  <div class="space-y-6">
+
+    <!-- Quick actions -->
+    <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden">
+      <div class="px-5 py-3 border-b border-slate-100">
+        <h3 class="text-sm font-semibold text-slate-700">Actions rapides</h3>
+      </div>
+      <div class="p-5 space-y-3">
+        <form method="post" action="{% url 'dashboard:admin_access_renew' pk=access.pk %}">
+          {% csrf_token %}
+          <input type="hidden" name="next" value="{% url 'dashboard:admin_agency_access_detail' pk=access.pk %}" />
+          <button type="submit" class="w-full py-2.5 rounded-xl bg-gaboomViolet text-white font-semibold text-sm hover:opacity-90 transition flex items-center justify-center gap-2">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182"/></svg>
+            Renouveler 30 jours
+          </button>
+        </form>
+
+        <form method="post" action="{% url 'dashboard:admin_access_bonus' pk=access.pk %}">
+          {% csrf_token %}
+          <input type="hidden" name="next" value="{% url 'dashboard:admin_agency_access_detail' pk=access.pk %}" />
+          <input type="hidden" name="days" value="7" />
+          <button type="submit" class="w-full py-2.5 rounded-xl bg-slate-100 text-slate-700 font-semibold text-sm hover:bg-slate-200 transition flex items-center justify-center gap-2">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v12m6-6H6"/></svg>
+            +7 jours bonus
+          </button>
+        </form>
+
+        {% if access.status != 'suspended' %}
+        <form method="post" action="{% url 'dashboard:admin_access_suspend' pk=access.pk %}">
+          {% csrf_token %}
+          <input type="hidden" name="next" value="{% url 'dashboard:admin_agency_access_detail' pk=access.pk %}" />
+          <button type="submit" class="w-full py-2.5 rounded-xl bg-red-50 text-red-600 border border-red-200 font-semibold text-sm hover:bg-red-100 transition flex items-center justify-center gap-2">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 0 0 5.636 5.636m12.728 12.728A9 9 0 0 1 5.636 5.636m12.728 12.728L5.636 5.636"/></svg>
+            Suspendre
+          </button>
+        </form>
+        {% endif %}
+      </div>
+    </div>
+
+    <!-- Internal notes -->
+    <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden">
+      <div class="px-5 py-3 border-b border-slate-100">
+        <h3 class="text-sm font-semibold text-slate-700">Notes internes</h3>
+      </div>
+      <div class="p-5">
+        <form method="post" action="{% url 'dashboard:admin_access_save_notes' pk=access.pk %}">
+          {% csrf_token %}
+          <textarea name="notes_internal" rows="5" class="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm focus:border-violet-400 outline-none resize-none mb-3" placeholder="Notes privées sur cette agence…">{{ access.notes_internal }}</textarea>
+          <button type="submit" class="w-full py-2 rounded-xl bg-slate-100 text-slate-700 font-semibold text-sm hover:bg-slate-200 transition">Enregistrer</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Timeline -->
+    <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden">
+      <div class="px-5 py-3 border-b border-slate-100">
+        <h3 class="text-sm font-semibold text-slate-700">Historique</h3>
+      </div>
+      <div class="p-5 space-y-4">
+        <div class="flex items-start gap-3">
+          <div class="w-2.5 h-2.5 rounded-full bg-blue-500 mt-1.5 shrink-0"></div>
+          <div>
+            <p class="text-sm font-medium">Inscription</p>
+            <p class="text-xs text-slate-400">{{ access.trial_started_at|date:"d M Y H:i" }}</p>
+          </div>
+        </div>
+        {% if access.status == 'active' %}
+        <div class="flex items-start gap-3">
+          <div class="w-2.5 h-2.5 rounded-full bg-emerald-500 mt-1.5 shrink-0"></div>
+          <div>
+            <p class="text-sm font-medium text-emerald-700">Actif jusqu'au {{ access.access_ends_at|date:"d M Y H:i" }}</p>
+            <p class="text-xs text-slate-400">Mis à jour le {{ access.updated_at|date:"d M Y H:i" }}</p>
+          </div>
+        </div>
+        {% endif %}
+        {% if access.status == 'suspended' %}
+        <div class="flex items-start gap-3">
+          <div class="w-2.5 h-2.5 rounded-full bg-red-500 mt-1.5 shrink-0"></div>
+          <div>
+            <p class="text-sm font-medium text-red-700">Suspendu</p>
+            <p class="text-xs text-slate-400">{{ access.suspended_reason|default:"—" }}</p>
+          </div>
+        </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

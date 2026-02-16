@@ -1,0 +1,85 @@
+{% extends "dashboard/_layout.html" %}
+{% load humanize i18n %}
+
+{% block title %}{% trans "Historique" %} — {{ vehicle }} — Dashboard{% endblock %}
+{% block page_title %}{% trans "Historique d'entretien" %}{% endblock %}
+{% block page_subtitle %}{{ vehicle.make }} {{ vehicle.model }} — {{ vehicle.plate_number }}{% endblock %}
+
+{% block page_actions %}
+  <a href="{% url 'dashboard:maintenance_list' %}" class="hidden sm:inline-flex rounded-xl border border-slate-200 text-slate-600 px-4 py-2 text-sm font-medium hover:bg-slate-50 transition items-center gap-1.5">
+    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 15 3 9m0 0 6-6M3 9h12a6 6 0 0 1 0 12h-3"/></svg>
+    {% trans "Retour" %}
+  </a>
+{% endblock %}
+
+{% block content %}
+
+<!-- Vehicle summary card -->
+<div class="rounded-2xl bg-white border border-slate-200 shadow-sm p-5 mb-6 flex flex-wrap items-center gap-6">
+  <div>
+    <div class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider mb-0.5">{% trans "KM actuel" %}</div>
+    <div class="text-lg font-bold text-slate-900">{{ vehicle.current_km|intcomma }} km</div>
+  </div>
+  <div>
+    <div class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider mb-0.5">{% trans "Dernier entretien" %}</div>
+    <div class="text-lg font-bold text-slate-900">{{ vehicle.last_maintenance_km|intcomma }} km</div>
+  </div>
+  <div>
+    <div class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider mb-0.5">{% trans "Prochain entretien" %}</div>
+    <div class="text-lg font-bold text-slate-900">{{ vehicle.next_maintenance_km|intcomma }} km</div>
+  </div>
+  <div>
+    <div class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider mb-0.5">{% trans "Statut" %}</div>
+    {% if vehicle.maintenance_status == "ok" %}
+    <span class="inline-flex items-center gap-1 rounded-full bg-emerald-100 text-emerald-700 px-2.5 py-0.5 text-xs font-semibold"><span class="h-1.5 w-1.5 rounded-full bg-emerald-500"></span>{% trans "À jour" %}</span>
+    {% elif vehicle.maintenance_status == "soon" %}
+    <span class="inline-flex items-center gap-1 rounded-full bg-amber-100 text-amber-700 px-2.5 py-0.5 text-xs font-semibold"><span class="h-1.5 w-1.5 rounded-full bg-amber-500"></span>{% trans "Bientôt" %}</span>
+    {% elif vehicle.maintenance_status == "urgent" %}
+    <span class="inline-flex items-center gap-1 rounded-full bg-red-100 text-red-700 px-2.5 py-0.5 text-xs font-semibold"><span class="h-1.5 w-1.5 rounded-full bg-red-500"></span>{% trans "Urgent" %}</span>
+    {% elif vehicle.maintenance_status == "blocked" %}
+    <span class="inline-flex items-center gap-1 rounded-full bg-slate-200 text-slate-600 px-2.5 py-0.5 text-xs font-semibold"><span class="h-1.5 w-1.5 rounded-full bg-slate-500"></span>{% trans "Bloqué" %}</span>
+    {% endif %}
+  </div>
+</div>
+
+<!-- History table -->
+<div class="rounded-2xl bg-white border border-slate-200 shadow-sm overflow-hidden">
+  <div class="px-5 py-3.5 border-b border-slate-100">
+    <h3 class="font-semibold text-sm text-slate-800">{% trans "Interventions" %} ({{ records|length }})</h3>
+  </div>
+
+  {% if records %}
+  <div class="overflow-x-auto">
+    <table class="w-full text-sm">
+      <thead>
+        <tr class="border-b border-slate-200 text-left text-[11px] font-semibold text-slate-400 uppercase tracking-wider">
+          <th class="px-5 py-3">{% trans "Date" %}</th>
+          <th class="px-3 py-3">{% trans "Type" %}</th>
+          <th class="px-3 py-3">{% trans "KM" %}</th>
+          <th class="px-3 py-3">{% trans "Coût" %}</th>
+          <th class="px-3 py-3">{% trans "Notes" %}</th>
+        </tr>
+      </thead>
+      <tbody class="divide-y divide-slate-100">
+        {% for r in records %}
+        <tr class="hover:bg-slate-50/60 transition">
+          <td class="px-5 py-3 font-medium text-slate-800">{{ r.date|date:"d/m/Y" }}</td>
+          <td class="px-3 py-3">
+            <span class="inline-flex rounded-full bg-violet-100 text-gaboomViolet px-2.5 py-0.5 text-[11px] font-semibold">{{ r.get_service_type_display }}</span>
+          </td>
+          <td class="px-3 py-3 text-slate-600">{{ r.km_at_service|intcomma }} km</td>
+          <td class="px-3 py-3 text-slate-600">{% if r.cost %}{{ r.cost }} €{% else %}—{% endif %}</td>
+          <td class="px-3 py-3 text-slate-500 text-xs max-w-[200px] truncate">{{ r.notes|default:"—" }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% else %}
+  <div class="px-5 py-12 text-center">
+    <h3 class="font-semibold text-slate-900">{% trans "Aucun historique" %}</h3>
+    <p class="mt-1 text-sm text-slate-500">{% trans "Aucune intervention enregistrée pour ce véhicule." %}</p>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}

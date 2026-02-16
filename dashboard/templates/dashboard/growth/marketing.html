@@ -1,0 +1,107 @@
+{% extends "dashboard/_layout.html" %}
+{% load humanize i18n %}
+
+{% block page_title %}{% trans "Marketing" %}{% endblock %}
+{% block page_subtitle %}{% trans "KPIs et insights pour votre agence" %}{% endblock %}
+
+{% block content %}
+<!-- KPI Cards -->
+<div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+  {% with cards="conversion_rate,Conversion,percent,emerald|revenue_last_30_days,Revenu 30j,$,violet|negotiation_success_rate,Négo réussies,percent,amber|repeat_customer_rate,Clients fidèles,percent,blue" %}
+  {% for card_str in cards|cut:" " %}{% endfor %}
+  {% endwith %}
+
+  <div class="d-card p-5 d-fade-in" style="animation-delay:.05s">
+    <div class="flex items-center gap-2 mb-3">
+      <div class="w-9 h-9 rounded-xl bg-emerald-100 text-emerald-600 flex items-center justify-center">
+        <svg class="w-4.5 h-4.5" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 18 9 11.25l4.306 4.306a11.95 11.95 0 0 1 5.814-5.518l2.74-1.22m0 0-5.94-2.281m5.94 2.28-2.28 5.941"/></svg>
+      </div>
+      <span class="text-xs font-medium opacity-50">{% trans "Conversion" %}</span>
+    </div>
+    <div class="text-2xl font-bold">{{ stats.conversion_rate }}%</div>
+    <div class="text-[11px] opacity-40 mt-1">{% blocktrans with confirmed=stats.confirmed_30 total=stats.total_30 %}{{ confirmed }}/{{ total }} réservations (30j){% endblocktrans %}</div>
+  </div>
+
+  <div class="d-card p-5 d-fade-in" style="animation-delay:.1s">
+    <div class="flex items-center gap-2 mb-3">
+      <div class="w-9 h-9 rounded-xl bg-violet-100 text-violet-600 flex items-center justify-center">
+        <svg class="w-4.5 h-4.5" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v12m-3-2.818.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/></svg>
+      </div>
+      <span class="text-xs font-medium opacity-50">{% trans "Revenu 30j" %}</span>
+    </div>
+    <div class="text-2xl font-bold">{{ stats.revenue_last_30_days|floatformat:0|intcomma }}</div>
+    <div class="text-[11px] opacity-40 mt-1">{% trans "Prix moyen :" %} {{ stats.avg_price_per_booking }}/jour</div>
+  </div>
+
+  <div class="d-card p-5 d-fade-in" style="animation-delay:.15s">
+    <div class="flex items-center gap-2 mb-3">
+      <div class="w-9 h-9 rounded-xl bg-amber-100 text-amber-600 flex items-center justify-center">
+        <svg class="w-4.5 h-4.5" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M7.5 21 3 16.5m0 0L7.5 12M3 16.5h13.5m0-13.5L21 7.5m0 0L16.5 12M21 7.5H7.5"/></svg>
+      </div>
+      <span class="text-xs font-medium opacity-50">{% trans "Négo réussies" %}</span>
+    </div>
+    <div class="text-2xl font-bold">{{ stats.negotiation_success_rate }}%</div>
+    <div class="text-[11px] opacity-40 mt-1">{% trans "Taux de négo :" %} {{ stats.negotiation_rate }}%</div>
+  </div>
+
+  <div class="d-card p-5 d-fade-in" style="animation-delay:.2s">
+    <div class="flex items-center gap-2 mb-3">
+      <div class="w-9 h-9 rounded-xl bg-blue-100 text-blue-600 flex items-center justify-center">
+        <svg class="w-4.5 h-4.5" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M18 18.72a9.094 9.094 0 0 0 3.741-.479 3 3 0 0 0-4.682-2.72m.94 3.198.001.031c0 .225-.012.447-.037.666A11.944 11.944 0 0 1 12 21c-2.17 0-4.207-.576-5.963-1.584A6.062 6.062 0 0 1 6 18.719m12 0a5.971 5.971 0 0 0-.941-3.197m0 0A5.995 5.995 0 0 0 12 12.75a5.995 5.995 0 0 0-5.058 2.772m0 0a3 3 0 0 0-4.681 2.72 8.986 8.986 0 0 0 3.74.477m.94-3.197a5.971 5.971 0 0 0-.94 3.197M15 6.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Zm6 3a2.25 2.25 0 1 1-4.5 0 2.25 2.25 0 0 1 4.5 0Zm-13.5 0a2.25 2.25 0 1 1-4.5 0 2.25 2.25 0 0 1 4.5 0Z"/></svg>
+      </div>
+      <span class="text-xs font-medium opacity-50">{% trans "Clients fidèles" %}</span>
+    </div>
+    <div class="text-2xl font-bold">{{ stats.repeat_customer_rate }}%</div>
+    <div class="text-[11px] opacity-40 mt-1">{% trans "Total :" %} {{ stats.total_reservations }} {% trans "réservations" %}</div>
+  </div>
+</div>
+
+<!-- Secondary stats -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+  <div class="d-card p-5 d-fade-in" style="animation-delay:.25s">
+    <div class="text-xs font-medium opacity-50 mb-2">{% trans "Véhicule star" %}</div>
+    {% if stats.top_vehicle %}
+    <div class="font-bold">{{ stats.top_vehicle.name }}</div>
+    <div class="text-xs opacity-40">{% blocktrans count stats.top_vehicle.count as count %}{{ count }} réservation{% plural %}{{ count }} réservations{% endblocktrans %} (30j)</div>
+    {% else %}
+    <div class="text-sm opacity-40">{% trans "Pas assez de données" %}</div>
+    {% endif %}
+  </div>
+  <div class="d-card p-5 d-fade-in" style="animation-delay:.3s">
+    <div class="text-xs font-medium opacity-50 mb-2">{% trans "Jour le plus actif" %}</div>
+    <div class="font-bold">{{ stats.most_active_day }}</div>
+  </div>
+  <div class="d-card p-5 d-fade-in" style="animation-delay:.35s">
+    <div class="text-xs font-medium opacity-50 mb-2">{% trans "Réservations confirmées" %}</div>
+    <div class="font-bold text-emerald-600">{{ stats.confirmed_reservations }}</div>
+    <div class="text-xs opacity-40">{% trans "sur" %} {{ stats.total_reservations }} {% trans "totales" %}</div>
+  </div>
+</div>
+
+<!-- Smart suggestions (Part 8) -->
+{% if suggestions %}
+<div class="space-y-3 mb-8">
+  <h3 class="text-sm font-semibold flex items-center gap-2">
+    <svg class="w-4 h-4 text-amber-500" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 18v-5.25m0 0a6.01 6.01 0 0 0 1.5-.189m-1.5.189a6.01 6.01 0 0 1-1.5-.189m3.75 7.478a12.06 12.06 0 0 1-4.5 0m3.75 2.383a14.406 14.406 0 0 1-3 0M14.25 18v-.192c0-.983.658-1.823 1.508-2.316a7.5 7.5 0 1 0-7.517 0c.85.493 1.509 1.333 1.509 2.316V18"/></svg>
+    {% trans "Suggestions intelligentes" %}
+  </h3>
+  {% for s in suggestions %}
+  <div class="d-card p-4 flex items-start gap-3 d-fade-in" style="animation-delay:{{ forloop.counter0 }}50ms">
+    {% if s.type == 'warning' %}
+    <div class="w-8 h-8 rounded-lg bg-amber-100 text-amber-600 flex items-center justify-center shrink-0">
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z"/></svg>
+    </div>
+    {% else %}
+    <div class="w-8 h-8 rounded-lg bg-blue-100 text-blue-600 flex items-center justify-center shrink-0">
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="m11.25 11.25.041-.02a.75.75 0 0 1 1.063.852l-.708 2.836a.75.75 0 0 0 1.063.853l.041-.021M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9-3.75h.008v.008H12V8.25Z"/></svg>
+    </div>
+    {% endif %}
+    <div>
+      <div class="font-semibold text-sm">{{ s.title }}</div>
+      <div class="text-xs opacity-60 mt-0.5">{{ s.message }}</div>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,56 @@
+{% extends "client_portal/_base.html" %}
+{% load i18n %}
+
+{% block portal_content %}
+<div class="max-w-lg space-y-6">
+  <h1 class="text-xl font-bold">Mon profil</h1>
+
+  {% if success %}
+  <div class="rounded-xl bg-emerald-50 border border-emerald-200 p-3 text-sm text-emerald-700 flex items-center gap-2">
+    <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5"/></svg>
+    {{ success }}
+  </div>
+  {% endif %}
+
+  {% if error %}
+  <div class="rounded-xl bg-red-50 border border-red-200 p-3 text-sm text-red-700 flex items-center gap-2">
+    <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m9-.75a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 3.75h.008v.008H12v-.008Z"/></svg>
+    {{ error }}
+  </div>
+  {% endif %}
+
+  <form method="post" class="ps-card rounded-2xl border p-6 space-y-4" style="border-color: color-mix(in srgb, var(--text) 10%, transparent);">
+    {% csrf_token %}
+    <div>
+      <label class="block text-xs font-semibold opacity-50 uppercase tracking-wider mb-1">Nom complet</label>
+      <input type="text" name="full_name" value="{{ client_account.full_name }}" required
+             class="w-full rounded-xl border px-4 py-2.5 text-sm outline-none focus:ring-2"
+             style="border-color: color-mix(in srgb, var(--text) 15%, transparent); --tw-ring-color: var(--primary);" />
+    </div>
+    <div>
+      <label class="block text-xs font-semibold opacity-50 uppercase tracking-wider mb-1">Email</label>
+      <input type="email" value="{{ client_account.email }}" disabled
+             class="w-full rounded-xl border px-4 py-2.5 text-sm opacity-50 cursor-not-allowed"
+             style="border-color: color-mix(in srgb, var(--text) 10%, transparent);" />
+      <p class="text-[11px] opacity-40 mt-1">L'email ne peut pas être modifié.</p>
+    </div>
+    <div>
+      <label class="block text-xs font-semibold opacity-50 uppercase tracking-wider mb-1">Téléphone</label>
+      <input type="tel" name="phone" value="{{ client_account.phone }}"
+             class="w-full rounded-xl border px-4 py-2.5 text-sm outline-none focus:ring-2"
+             style="border-color: color-mix(in srgb, var(--text) 15%, transparent); --tw-ring-color: var(--primary);" />
+    </div>
+
+    <hr style="border-color: color-mix(in srgb, var(--text) 8%, transparent);" />
+
+    <div>
+      <label class="block text-xs font-semibold opacity-50 uppercase tracking-wider mb-1">Nouveau mot de passe <span class="opacity-40">(laisser vide pour ne pas changer)</span></label>
+      <input type="password" name="new_password" minlength="6"
+             class="w-full rounded-xl border px-4 py-2.5 text-sm outline-none focus:ring-2"
+             style="border-color: color-mix(in srgb, var(--text) 15%, transparent); --tw-ring-color: var(--primary);" />
+    </div>
+
+    <button type="submit" class="ps-btn !rounded-xl !py-2.5">Enregistrer</button>
+  </form>
+</div>
+{% endblock %}

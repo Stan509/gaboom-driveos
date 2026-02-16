@@ -1,0 +1,682 @@
+{% extends "dashboard/_layout.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "Site public" %} — Gaboom DriveOS{% endblock %}
+{% block page_title %}{% trans "Website Builder" %}{% endblock %}
+{% block page_subtitle %}{% trans "Personnalisez votre vitrine en ligne" %}{% endblock %}
+
+{% block page_actions %}
+<!-- Status badge -->
+{% if ss.status == "published" %}
+<span class="hidden sm:inline-flex items-center gap-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 px-2.5 py-1 text-[11px] font-semibold">
+  <span class="h-1.5 w-1.5 rounded-full bg-emerald-500"></span>{% trans "Publié" %}
+</span>
+{% else %}
+<span class="hidden sm:inline-flex items-center gap-1 rounded-full bg-amber-50 text-amber-700 border border-amber-200 px-2.5 py-1 text-[11px] font-semibold">
+  <span class="h-1.5 w-1.5 rounded-full bg-amber-500"></span>{% trans "Brouillon" %}
+</span>
+{% endif %}
+<a href="/a/{{ agency.slug }}/" target="_blank" class="inline-flex items-center gap-1.5 rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50 transition" title="{% trans "Voir le site" %}">
+  <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 0 0 3 8.25v10.5A2.25 2.25 0 0 0 5.25 21h10.5A2.25 2.25 0 0 0 18 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25"/></svg>
+  <span class="hidden md:inline">{% trans "Voir le site" %}</span>
+</a>
+<a href="/a/{{ agency.slug }}/?preview=1" target="_blank" class="inline-flex items-center gap-1.5 rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50 transition" title="{% trans "Prévisualiser" %}">
+  <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"/></svg>
+  <span class="hidden md:inline">{% trans "Prévisualiser" %}</span>
+</a>
+{% if can_edit %}
+<button type="submit" form="builderForm" name="action" value="save" class="inline-flex items-center gap-1.5 rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50 transition">
+  <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5"/></svg>
+  <span class="hidden md:inline">{% trans "Enregistrer" %}</span>
+</button>
+{% if is_owner %}
+<button type="submit" form="builderForm" name="action" value="publish" class="inline-flex items-center gap-1.5 rounded-xl bg-gaboomViolet text-white px-4 py-2 text-sm font-semibold shadow-lg shadow-violet-200/50 hover:bg-violet-700 transition">
+  <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 16.5V9.75m0 0 3 3m-3-3-3 3M6.75 19.5a4.5 4.5 0 0 1-1.41-8.775 5.25 5.25 0 0 1 10.233-2.33 3 3 0 0 1 3.758 3.848A3.752 3.752 0 0 1 18 19.5H6.75Z"/></svg>
+  <span class="hidden md:inline">{% trans "Publier" %}</span>
+</button>
+{% endif %}
+{% endif %}
+{% endblock %}
+
+{% block page_css %}
+<style>
+  @keyframes cardIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+  @keyframes fadeSlide{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+  .card-in{animation:cardIn .25s ease-out both}
+  .sp-card{transition:box-shadow .2s,transform .15s}
+  .sp-card:hover{box-shadow:0 4px 20px rgba(0,0,0,.05);transform:translateY(-1px)}
+  .nav-btn{transition:all .12s}
+  .nav-btn:hover{background:rgba(109,40,217,.04)}
+  .nav-btn.active{background:rgba(109,40,217,.08);color:#6D28D9;font-weight:600;border-color:#6D28D9}
+  .panel{display:none}.panel.active{display:block}
+  .tl-row{transition:background .12s}
+  .tl-row:hover{background:#f8fafc}
+  .tl-row.active{background:rgba(109,40,217,.035)}
+  .tl-row.active .tl-badge{display:inline-flex}
+  .tl-badge{display:none}
+  .toggle-track{transition:background .2s}
+  .toggle-dot{transition:transform .2s}
+  .modal-bg{position:fixed;inset:0;background:rgba(15,23,42,.45);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);display:none;align-items:center;justify-content:center;padding:1.25rem;z-index:60}
+  .modal-bg.is-open{display:flex}
+  .modal-box{background:#fff;border:1px solid #e2e8f0;border-radius:20px;box-shadow:0 30px 80px rgba(0,0,0,.2);width:100%;max-width:980px;max-height:88vh;overflow:hidden;transform:translateY(12px) scale(.98);opacity:0;transition:transform .2s ease,opacity .2s ease}
+  .modal-bg.is-open .modal-box{transform:translateY(0) scale(1);opacity:1}
+  .modal-body{max-height:calc(88vh - 60px);overflow:auto}
+  body.modal-open{overflow:hidden}
+  @media(max-width:768px){.modal-box{max-width:100%;border-radius:16px}.modal-body{max-height:calc(100vh - 80px)}}
+  @media(prefers-reduced-motion:reduce){.modal-box{transition:none}}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-4">
+
+<!-- ═══════════════════ LEFT NAV (col-span-3) ═══════════════════ -->
+<div class="lg:col-span-3">
+  <div class="card-in sp-card rounded-2xl border border-slate-200 bg-white shadow-sm overflow-hidden lg:sticky lg:top-24">
+    <div class="px-4 py-3 border-b border-slate-100">
+      <h3 class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Outils</h3>
+    </div>
+    <nav class="p-2 space-y-0.5">
+      <button type="button" data-panel="branding" class="nav-btn w-full flex items-center gap-2.5 rounded-xl px-3 py-2.5 text-[13px] text-slate-600 text-left border border-transparent {% if active_panel == 'branding' %}active{% endif %}">
+        <svg class="w-4 h-4 text-slate-400 shrink-0" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Z"/></svg>
+        Branding
+      </button>
+      <button type="button" data-panel="theme" class="nav-btn w-full flex items-center gap-2.5 rounded-xl px-3 py-2.5 text-[13px] text-slate-600 text-left border border-transparent {% if active_panel == 'theme' %}active{% endif %}">
+        <svg class="w-4 h-4 text-slate-400 shrink-0" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4.098 19.902a3.75 3.75 0 0 0 5.304 0l6.401-6.402M6.75 21A3.75 3.75 0 0 1 3 17.25V4.125C3 3.504 3.504 3 4.125 3h5.25c.621 0 1.125.504 1.125 1.125v4.072M6.75 21a3.75 3.75 0 0 0 3.75-3.75V8.197"/></svg>
+        Thème
+      </button>
+      <button type="button" data-panel="sections" class="nav-btn w-full flex items-center gap-2.5 rounded-xl px-3 py-2.5 text-[13px] text-slate-600 text-left border border-transparent {% if active_panel == 'sections' %}active{% endif %}">
+        <svg class="w-4 h-4 text-slate-400 shrink-0" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6A2.25 2.25 0 0 1 6 3.75h2.25A2.25 2.25 0 0 1 10.5 6v2.25a2.25 2.25 0 0 1-2.25 2.25H6a2.25 2.25 0 0 1-2.25-2.25V6ZM3.75 15.75A2.25 2.25 0 0 1 6 13.5h2.25a2.25 2.25 0 0 1 2.25 2.25V18a2.25 2.25 0 0 1-2.25 2.25H6A2.25 2.25 0 0 1 3.75 18v-2.25ZM13.5 6a2.25 2.25 0 0 1 2.25-2.25H18A2.25 2.25 0 0 1 20.25 6v2.25A2.25 2.25 0 0 1 18 10.5h-2.25a2.25 2.25 0 0 1-2.25-2.25V6ZM13.5 15.75a2.25 2.25 0 0 1 2.25-2.25H18a2.25 2.25 0 0 1 2.25 2.25V18A2.25 2.25 0 0 1 18 20.25h-2.25a2.25 2.25 0 0 1-2.25-2.25v-2.25Z"/></svg>
+        Sections
+      </button>
+      <button type="button" data-panel="seo" class="nav-btn w-full flex items-center gap-2.5 rounded-xl px-3 py-2.5 text-[13px] text-slate-600 text-left border border-transparent {% if active_panel == 'seo' %}active{% endif %}">
+        <svg class="w-4 h-4 text-slate-400 shrink-0" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"/></svg>
+        SEO
+      </button>
+      <button type="button" data-open-pages-modal="1" aria-controls="pagesModal" class="nav-btn w-full flex items-center gap-2.5 rounded-xl px-3 py-2.5 text-[13px] text-slate-600 text-left border border-transparent">
+        <svg class="w-4 h-4 text-slate-400 shrink-0" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z"/></svg>
+        Pages
+      </button>
+    </nav>
+    <!-- Site URL -->
+    <div class="px-4 py-3 border-t border-slate-100">
+      <div class="text-[10px] text-slate-400 uppercase tracking-wider font-semibold mb-1.5">URL du site</div>
+      <div class="rounded-lg bg-slate-50 border border-slate-200 px-2.5 py-1.5 font-mono text-[11px] text-slate-600 truncate" id="siteUrl">{{ request.scheme }}://{{ request.get_host }}/a/{{ agency.slug }}/</div>
+      <button type="button" onclick="navigator.clipboard.writeText(document.getElementById('siteUrl').textContent.trim());this.textContent='Copié !';setTimeout(()=>this.textContent='Copier le lien',1500)" class="mt-1.5 w-full text-center rounded-lg border border-slate-200 px-2 py-1.5 text-[11px] font-medium text-slate-500 hover:bg-slate-50 transition">Copier le lien</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════ CENTER PANEL (col-span-4) ═══════════════════ -->
+<div class="lg:col-span-4">
+  <form method="post" id="builderForm" enctype="multipart/form-data">
+  {% csrf_token %}
+  <!-- ── Panel: Branding ── -->
+  <div class="panel {% if active_panel == 'branding' %}active{% endif %}" id="panel-branding">
+    <div class="card-in sp-card rounded-2xl border border-slate-200 bg-white p-5 shadow-sm space-y-4">
+      <div class="flex items-center gap-2 mb-1">
+        <div class="h-7 w-7 rounded-lg bg-violet-50 flex items-center justify-center">
+          <svg class="w-3.5 h-3.5 text-gaboomViolet" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Z"/></svg>
+        </div>
+        <h3 class="text-sm font-semibold text-slate-800">Branding & Contenu</h3>
+      </div>
+
+      <!-- Logo -->
+      <div>
+        <label class="block text-xs font-medium text-slate-500 mb-1.5">Logo</label>
+        <div class="flex items-center gap-3">
+          {% if ss.logo %}
+          <img src="{{ ss.logo.url }}" alt="Logo" class="h-12 w-12 rounded-xl object-cover border border-slate-200" />
+          {% else %}
+          <div class="h-12 w-12 rounded-xl bg-violet-100 flex items-center justify-center text-gaboomViolet font-bold text-lg">{{ agency.name|first }}</div>
+          {% endif %}
+          <div class="flex-1">{{ form.logo }}</div>
+        </div>
+      </div>
+
+      <!-- Hero -->
+      <div>
+        <label class="block text-xs font-medium text-slate-500 mb-1">{{ form.hero_title.label }}</label>
+        {{ form.hero_title }}
+      </div>
+      <div>
+        <label class="block text-xs font-medium text-slate-500 mb-1">{{ form.hero_subtitle.label }}</label>
+        {{ form.hero_subtitle }}
+      </div>
+      <div>
+        <label class="block text-xs font-medium text-slate-500 mb-1">{{ form.cta_text.label }}</label>
+        {{ form.cta_text }}
+      </div>
+
+      <!-- Contact -->
+      <div class="pt-3 border-t border-slate-100">
+        <div class="text-[10px] text-slate-400 uppercase tracking-wider font-semibold mb-2">Contact</div>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-medium text-slate-500 mb-1">{{ form.contact_phone.label }}</label>
+            {{ form.contact_phone }}
+          </div>
+          <div>
+            <label class="block text-xs font-medium text-slate-500 mb-1">{{ form.whatsapp.label }}</label>
+            {{ form.whatsapp }}
+          </div>
+          <div>
+            <label class="block text-xs font-medium text-slate-500 mb-1">{{ form.contact_email.label }}</label>
+            {{ form.contact_email }}
+          </div>
+          <div>
+            <label class="block text-xs font-medium text-slate-500 mb-1">{{ form.city.label }}</label>
+            {{ form.city }}
+          </div>
+        </div>
+      </div>
+
+      <!-- Toggles -->
+      <div class="pt-3 border-t border-slate-100 space-y-3">
+        <label class="flex items-center justify-between gap-3 cursor-pointer">
+          <div>
+            <div class="text-sm font-medium text-slate-700">Site public</div>
+            <div class="text-xs text-slate-400">Accessible aux visiteurs</div>
+          </div>
+          <div class="relative shrink-0">
+            <input type="checkbox" name="is_public_enabled" class="sr-only peer" {% if ss.is_public_enabled %}checked{% endif %} {% if not can_edit %}disabled{% endif %} />
+            <div class="w-10 h-[22px] bg-slate-200 rounded-full peer-checked:bg-gaboomViolet toggle-track"></div>
+            <div class="absolute left-0.5 top-[3px] w-4 h-4 bg-white rounded-full shadow peer-checked:translate-x-[18px] toggle-dot"></div>
+          </div>
+        </label>
+        <label class="flex items-center justify-between gap-3 cursor-pointer">
+          <div>
+            <div class="text-sm font-medium text-slate-700">Mode maintenance</div>
+            <div class="text-xs text-slate-400">Page temporaire</div>
+          </div>
+          <div class="relative shrink-0">
+            <input type="checkbox" name="is_maintenance_enabled" class="sr-only peer" {% if ss.is_maintenance_enabled %}checked{% endif %} {% if not can_edit %}disabled{% endif %} />
+            <div class="w-10 h-[22px] bg-slate-200 rounded-full peer-checked:bg-amber-500 toggle-track"></div>
+            <div class="absolute left-0.5 top-[3px] w-4 h-4 bg-white rounded-full shadow peer-checked:translate-x-[18px] toggle-dot"></div>
+          </div>
+        </label>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Panel: Theme ── -->
+  <div class="panel {% if active_panel == 'theme' %}active{% endif %}" id="panel-theme">
+    <div class="card-in sp-card rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+      <div class="flex items-center gap-2 mb-3">
+        <div class="h-7 w-7 rounded-lg bg-amber-50 flex items-center justify-center">
+          <svg class="w-3.5 h-3.5 text-amber-600" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4.098 19.902a3.75 3.75 0 0 0 5.304 0l6.401-6.402M6.75 21A3.75 3.75 0 0 1 3 17.25V4.125C3 3.504 3.504 3 4.125 3h5.25c.621 0 1.125.504 1.125 1.125v4.072M6.75 21a3.75 3.75 0 0 0 3.75-3.75V8.197"/></svg>
+        </div>
+        <h3 class="text-sm font-semibold text-slate-800">Thème</h3>
+      </div>
+
+      {{ form.theme_key.as_hidden }}
+
+      <div class="rounded-xl border border-slate-200 divide-y divide-slate-100 overflow-hidden max-h-[340px] overflow-y-auto">
+        {% for t in themes %}
+        <label class="tl-row flex items-center gap-2.5 px-3 py-2 cursor-pointer {% if ss.theme_key == t.id %}active{% endif %}" onclick="selectTheme('{{ t.id }}','{{ t.primary }}','{{ t.secondary }}',this)">
+          <input type="radio" name="_theme_radio" value="{{ t.id }}" class="h-3.5 w-3.5 shrink-0 accent-violet-600" {% if ss.theme_key == t.id %}checked{% endif %} {% if not can_edit %}disabled{% endif %} />
+          <div class="h-7 w-7 shrink-0 rounded-md border border-slate-200 overflow-hidden relative" data-theme-swatch data-bg="{{ t.bg }}" data-primary="{{ t.primary }}" data-secondary="{{ t.secondary }}" data-card="{{ t.card_bg }}">
+            <div class="absolute top-0.5 left-0.5 right-0.5 h-1 rounded-full" data-theme-primary style="opacity:.7"></div>
+            <div class="absolute bottom-0.5 left-0.5 w-2 h-2 rounded-sm" data-theme-card data-theme-secondary></div>
+            <div class="absolute bottom-0.5 right-0.5 h-1 w-2 rounded-full" data-theme-secondary-fill></div>
+          </div>
+          <div class="flex-1 min-w-0 flex items-center gap-1.5">
+            <span class="text-[12px] font-medium text-slate-800 truncate">{{ t.name }}</span>
+            <span class="text-[9px] text-slate-400 border border-slate-200 rounded px-1 py-px">{{ t.style }}</span>
+          </div>
+          <span class="tl-badge items-center gap-0.5 shrink-0 text-[9px] font-semibold text-gaboomViolet bg-violet-50 border border-violet-200 rounded-full px-1.5 py-0.5">
+            <svg class="w-2.5 h-2.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5"/></svg>
+            Actif
+          </span>
+        </label>
+        {% endfor %}
+      </div>
+
+      <!-- Color overrides -->
+      <div class="mt-4 pt-3 border-t border-slate-100">
+        <div class="text-[10px] text-slate-400 uppercase tracking-wider font-semibold mb-2">Couleurs personnalisées</div>
+        <div class="flex flex-wrap items-center gap-4">
+          <div class="flex items-center gap-2">
+            <label class="text-xs font-medium text-slate-600">Primaire</label>
+            {{ form.primary_color }}
+            <span class="text-[10px] text-slate-400 font-mono" id="primaryHex">{{ ss.primary_color }}</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <label class="text-xs font-medium text-slate-600">Secondaire</label>
+            {{ form.secondary_color }}
+            <span class="text-[10px] text-slate-400 font-mono" id="secondaryHex">{{ ss.secondary_color }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Font -->
+      <div class="mt-3">
+        <label class="block text-xs font-medium text-slate-500 mb-1">{{ form.font_family.label }}</label>
+        {{ form.font_family }}
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Panel: Sections ── -->
+  <div class="panel {% if active_panel == 'sections' %}active{% endif %}" id="panel-sections">
+    <div class="card-in sp-card rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+      <div class="flex items-center gap-2 mb-3">
+        <div class="h-7 w-7 rounded-lg bg-blue-50 flex items-center justify-center">
+          <svg class="w-3.5 h-3.5 text-blue-600" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6A2.25 2.25 0 0 1 6 3.75h2.25A2.25 2.25 0 0 1 10.5 6v2.25a2.25 2.25 0 0 1-2.25 2.25H6a2.25 2.25 0 0 1-2.25-2.25V6Z"/></svg>
+        </div>
+        <h3 class="text-sm font-semibold text-slate-800">Sections de la page</h3>
+      </div>
+      <div class="space-y-1">
+        {% for sec in sections %}
+        <label class="flex items-center justify-between gap-3 rounded-xl px-3 py-2.5 hover:bg-slate-50/60 transition cursor-pointer">
+          <div class="flex-1 min-w-0">
+            <div class="text-sm font-medium text-slate-700">{{ sec.label }}</div>
+            <div class="text-[11px] text-slate-400">{{ sec.description }}</div>
+          </div>
+          <div class="relative shrink-0">
+            <input type="checkbox" name="section_{{ sec.key }}" class="sr-only peer" {% if sec.enabled %}checked{% endif %} {% if not can_edit %}disabled{% endif %} />
+            <div class="w-9 h-5 bg-slate-200 rounded-full peer-checked:bg-gaboomViolet toggle-track"></div>
+            <div class="absolute left-0.5 top-[2px] w-4 h-4 bg-white rounded-full shadow peer-checked:translate-x-4 toggle-dot"></div>
+          </div>
+        </label>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Panel: SEO ── -->
+  <div class="panel {% if active_panel == 'seo' %}active{% endif %}" id="panel-seo">
+    <div class="card-in sp-card rounded-2xl border border-slate-200 bg-white p-5 shadow-sm space-y-4">
+      <div class="flex items-center gap-2 mb-1">
+        <div class="h-7 w-7 rounded-lg bg-emerald-50 flex items-center justify-center">
+          <svg class="w-3.5 h-3.5 text-emerald-600" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"/></svg>
+        </div>
+        <h3 class="text-sm font-semibold text-slate-800">SEO</h3>
+      </div>
+      <div>
+        <div class="flex items-center justify-between mb-1">
+          <label class="text-xs font-medium text-slate-500">{{ form.seo_title.label }}</label>
+          <span class="text-[10px] text-slate-400"><span id="seoTitleCount">{{ ss.seo_title|length }}</span>/70</span>
+        </div>
+        {{ form.seo_title }}
+      </div>
+      <div>
+        <div class="flex items-center justify-between mb-1">
+          <label class="text-xs font-medium text-slate-500">{{ form.seo_description.label }}</label>
+          <span class="text-[10px] text-slate-400"><span id="seoDescCount">{{ ss.seo_description|length }}</span>/160</span>
+        </div>
+        {{ form.seo_description }}
+      </div>
+      <!-- SEO Score -->
+      <div class="pt-3 border-t border-slate-100">
+        <div class="flex items-center justify-between mb-1.5">
+          <span class="text-xs font-medium text-slate-600">Score SEO</span>
+          <span class="text-xs font-bold" id="seoScoreLabel">0%</span>
+        </div>
+        <div class="h-2 rounded-full bg-slate-100 overflow-hidden">
+          <div id="seoScoreBar" class="h-full rounded-full bg-emerald-500 transition-all duration-300" style="width:0%"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  {% if form.errors %}
+  <div class="mt-3 rounded-xl bg-red-50 border border-red-200 px-4 py-3 text-sm text-red-700">
+    {% for field, errors in form.errors.items %}
+      <div><strong>{{ field }}:</strong> {{ errors.0 }}</div>
+    {% endfor %}
+  </div>
+  {% endif %}
+  </form>
+</div>
+
+<!-- ═══════════════════ RIGHT PREVIEW (col-span-5) ═══════════════════ -->
+<div class="lg:col-span-5">
+  <div class="card-in sp-card rounded-2xl border border-slate-200 bg-white shadow-sm overflow-hidden lg:sticky lg:top-24" style="animation-delay:80ms">
+    <div class="px-4 py-3 border-b border-slate-100 flex items-center justify-between">
+      <h3 class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Aperçu</h3>
+      <div class="flex items-center gap-1">
+        <button type="button" onclick="setPreviewMode('desktop')" id="prevDesktop" class="rounded-lg p-1.5 bg-slate-100 text-slate-600 transition" title="Desktop">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 17.25v1.007a3 3 0 0 1-.879 2.122L7.5 21h9l-.621-.621A3 3 0 0 1 15 18.257V17.25m6-12V15a2.25 2.25 0 0 1-2.25 2.25H5.25A2.25 2.25 0 0 1 3 15V5.25A2.25 2.25 0 0 1 5.25 3h13.5A2.25 2.25 0 0 1 21 5.25Z"/></svg>
+        </button>
+        <button type="button" onclick="setPreviewMode('mobile')" id="prevMobile" class="rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 transition" title="Mobile">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M10.5 1.5H8.25A2.25 2.25 0 0 0 6 3.75v16.5a2.25 2.25 0 0 0 2.25 2.25h7.5A2.25 2.25 0 0 0 18 20.25V3.75a2.25 2.25 0 0 0-2.25-2.25H13.5m-3 0V3h3V1.5m-3 0h3m-3 18.75h3"/></svg>
+        </button>
+        <button type="button" onclick="reloadPreview()" class="rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 transition ml-1" title="Rafraîchir">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182"/></svg>
+        </button>
+      </div>
+    </div>
+    <div class="flex justify-center bg-slate-50/50 p-3" id="previewContainer">
+      <iframe id="previewFrame" src="/a/{{ agency.slug }}/?preview=1" class="rounded-xl border border-slate-200 bg-white shadow-sm transition-all duration-300" style="width:100%;height:calc(100vh - 200px);min-height:500px"></iframe>
+    </div>
+  </div>
+
+  <div class="modal-bg" id="pagesModal" role="dialog" aria-modal="true" aria-hidden="true" aria-labelledby="pagesModalTitle">
+    <div class="modal-box" role="document">
+      <div class="px-5 py-4 border-b border-slate-100 flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <div class="h-8 w-8 rounded-lg bg-indigo-50 flex items-center justify-center">
+            <svg class="w-4 h-4 text-indigo-600" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z"/></svg>
+          </div>
+          <div>
+            <div id="pagesModalTitle" class="text-sm font-semibold text-slate-800">Pages publiques</div>
+            <div class="text-xs text-slate-400">Contenu et navigation du site public</div>
+          </div>
+        </div>
+        <div class="flex items-center gap-2">
+          {% if is_admin and not cms_creating and not cms_editing %}
+          <a href="{% url 'dashboard:site_public_settings' %}?panel=pages&cms_create=1" class="px-4 py-2 rounded-xl bg-gaboomViolet text-white text-xs font-semibold hover:opacity-90 transition">+ Nouvelle page</a>
+          {% endif %}
+          <button type="button" data-close-pages-modal="1" class="p-2 rounded-lg hover:bg-slate-100 text-slate-400 hover:text-slate-600 transition" aria-label="Fermer la fenêtre">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+          </button>
+        </div>
+      </div>
+      <div class="modal-body p-5">
+        <div class="grid grid-cols-1 lg:grid-cols-5 gap-4">
+          {% if is_admin and cms_creating or is_admin and cms_editing %}
+          <div class="lg:col-span-3">
+            <form method="post" action="{% if cms_editing %}{% url 'dashboard:cms_page_edit' pk=cms_editing.pk %}{% else %}{% url 'dashboard:cms_page_create' %}{% endif %}" class="bg-white rounded-2xl border border-slate-200 overflow-hidden">
+              {% csrf_token %}
+              <input type="hidden" name="next" value="{% url 'dashboard:site_public_settings' %}?panel=pages" />
+              <div class="px-5 py-3 border-b border-slate-100 flex items-center justify-between">
+                <h2 class="text-sm font-bold text-slate-700">{% if cms_editing %}Modifier « {{ cms_editing.title }} »{% else %}Nouvelle page{% endif %}</h2>
+                <a href="{% url 'dashboard:site_public_settings' %}?panel=pages" class="text-xs text-slate-400 hover:text-slate-600 transition">Annuler</a>
+              </div>
+              <div class="p-5 space-y-4">
+                <div>
+                  <label class="block text-[11px] font-semibold text-slate-400 uppercase tracking-wider mb-1">Titre</label>
+                  <input type="text" name="title" required value="{{ cms_editing.title|default:'' }}" class="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm focus:border-gaboomViolet outline-none" oninput="autoSlug(this)" />
+                </div>
+                <div>
+                  <label class="block text-[11px] font-semibold text-slate-400 uppercase tracking-wider mb-1">Slug (URL)</label>
+                  <input type="text" name="slug" id="slugInput" value="{{ cms_editing.slug|default:'' }}" class="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm font-mono focus:border-gaboomViolet outline-none" />
+                  <p class="text-[11px] text-slate-400 mt-1">Auto-généré depuis le titre si vide.</p>
+                </div>
+                <div>
+                  <label class="block text-[11px] font-semibold text-slate-400 uppercase tracking-wider mb-1">Contenu</label>
+                  <textarea name="content" rows="10" class="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm focus:border-gaboomViolet outline-none font-mono">{{ cms_editing.content|default:'' }}</textarea>
+                  <p class="text-[11px] text-slate-400 mt-1">Markdown supporté. Pour la FAQ, utilisez <code class="bg-slate-100 px-1 rounded">## Question</code> pour chaque question.</p>
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                  <div>
+                    <label class="block text-[11px] font-semibold text-slate-400 uppercase tracking-wider mb-1">Template</label>
+                    <select name="template_variant" class="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm focus:border-gaboomViolet outline-none">
+                      <option value="default" {% if cms_editing.template_variant == 'default' %}selected{% endif %}>Par défaut</option>
+                      <option value="about" {% if cms_editing.template_variant == 'about' %}selected{% endif %}>À propos</option>
+                      <option value="faq" {% if cms_editing.template_variant == 'faq' %}selected{% endif %}>FAQ</option>
+                      <option value="contact" {% if cms_editing.template_variant == 'contact' %}selected{% endif %}>Contact</option>
+                      <option value="legal" {% if cms_editing.template_variant == 'legal' %}selected{% endif %}>Mentions légales</option>
+                      <option value="promo" {% if cms_editing.template_variant == 'promo' %}selected{% endif %}>Promo / Landing</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label class="block text-[11px] font-semibold text-slate-400 uppercase tracking-wider mb-1">Ordre nav</label>
+                    <input type="number" name="nav_order" value="{{ cms_editing.nav_order|default:'0' }}" min="0" class="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm focus:border-gaboomViolet outline-none" />
+                  </div>
+                </div>
+                <div class="flex flex-wrap items-center gap-6">
+                  <label class="flex items-center gap-2 text-sm text-slate-700 cursor-pointer">
+                    <input type="checkbox" name="is_published" class="rounded border-slate-300 text-gaboomViolet focus:ring-gaboomViolet" {% if cms_editing.is_published %}checked{% endif %} />
+                    <span>Publiée</span>
+                  </label>
+                  <label class="flex items-center gap-2 text-sm text-slate-700 cursor-pointer">
+                    <input type="checkbox" name="show_in_nav" class="rounded border-slate-300 text-gaboomViolet focus:ring-gaboomViolet" {% if cms_editing.show_in_nav %}checked{% endif %} />
+                    <span>Afficher dans la navigation</span>
+                  </label>
+                </div>
+                <details class="mt-2" open>
+                  <summary class="text-xs font-bold text-gaboomViolet cursor-pointer hover:underline">CTA & SEO (optionnel)</summary>
+                  <div class="mt-3 grid grid-cols-2 gap-3">
+                    <div>
+                      <label class="block text-[11px] font-semibold text-slate-400 uppercase tracking-wider mb-1">Bouton CTA (label)</label>
+                      <input type="text" name="cta_label" value="{{ cms_editing.cta_label|default:'' }}" placeholder="Ex: Réserver maintenant" class="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm focus:border-gaboomViolet outline-none" />
+                    </div>
+                    <div>
+                      <label class="block text-[11px] font-semibold text-slate-400 uppercase tracking-wider mb-1">CTA URL</label>
+                      <input type="text" name="cta_url" value="{{ cms_editing.cta_url|default:'' }}" placeholder="/a/slug/catalog/" class="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm focus:border-gaboomViolet outline-none" />
+                    </div>
+                  </div>
+                  <div class="mt-3 space-y-3">
+                    <div>
+                      <label class="block text-[11px] font-semibold text-slate-400 uppercase tracking-wider mb-1">Titre SEO</label>
+                      <input type="text" name="seo_title" value="{{ cms_editing.seo_title|default:'' }}" class="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm focus:border-gaboomViolet outline-none" />
+                    </div>
+                    <div>
+                      <label class="block text-[11px] font-semibold text-slate-400 uppercase tracking-wider mb-1">Description SEO</label>
+                      <textarea name="seo_description" rows="2" class="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm focus:border-gaboomViolet outline-none">{{ cms_editing.seo_description|default:'' }}</textarea>
+                    </div>
+                  </div>
+                </details>
+              </div>
+              <div class="px-5 py-3 border-t border-slate-100 flex items-center gap-3">
+                <button type="submit" class="px-5 py-2 rounded-xl bg-gaboomViolet text-white text-sm font-semibold hover:opacity-90 transition">{% if cms_editing %}Mettre à jour{% else %}Créer la page{% endif %}</button>
+                {% if cms_editing and request.user.agency %}
+                <a href="/a/{{ request.user.agency.slug }}/p/{{ cms_editing.slug }}/" target="_blank" class="px-4 py-2 rounded-xl border border-slate-200 text-sm font-medium text-slate-600 hover:bg-slate-50 transition">Prévisualiser ↗</a>
+                {% endif %}
+              </div>
+            </form>
+          </div>
+          {% endif %}
+          <div class="{% if is_admin and cms_creating or is_admin and cms_editing %}lg:col-span-2{% else %}lg:col-span-5{% endif %}">
+            <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden">
+              <div class="px-5 py-3 border-b border-slate-100">
+                <form method="get" class="flex-1 flex items-center gap-2">
+                  <input type="hidden" name="panel" value="pages" />
+                  <input type="text" name="q" value="{{ q }}" placeholder="Rechercher..." class="flex-1 rounded-xl border border-slate-200 px-3 py-1.5 text-xs focus:border-gaboomViolet outline-none" />
+                  <select name="filter" onchange="this.form.submit()" class="rounded-xl border border-slate-200 px-2 py-1.5 text-xs focus:border-gaboomViolet outline-none">
+                    <option value="">Toutes</option>
+                    <option value="published" {% if filter == 'published' %}selected{% endif %}>Publiées</option>
+                    <option value="draft" {% if filter == 'draft' %}selected{% endif %}>Brouillons</option>
+                    <option value="nav" {% if filter == 'nav' %}selected{% endif %}>Dans la nav</option>
+                  </select>
+                </form>
+              </div>
+              {% if pages %}
+              <div class="divide-y divide-slate-100">
+                {% for p in pages %}
+                <div class="px-5 py-3 flex items-center justify-between gap-3 hover:bg-slate-50/50 transition" data-anim-delay="{{ forloop.counter0 }}">
+                  <div class="min-w-0 flex-1">
+                    <div class="flex items-center gap-2">
+                      <span class="font-medium text-sm text-slate-800 truncate">{{ p.title }}</span>
+                      {% if p.is_published %}
+                      <span class="shrink-0 w-2 h-2 rounded-full bg-emerald-500" title="Publiée"></span>
+                      {% else %}
+                      <span class="shrink-0 w-2 h-2 rounded-full bg-slate-300" title="Brouillon"></span>
+                      {% endif %}
+                      {% if p.show_in_nav %}
+                      <span class="shrink-0 text-[10px] font-semibold text-blue-600 bg-blue-50 px-1.5 py-0.5 rounded">NAV</span>
+                      {% endif %}
+                    </div>
+                    <div class="text-[11px] text-slate-400 font-mono mt-0.5">/p/{{ p.slug }}/</div>
+                  </div>
+                  {% if is_admin %}
+                  <div class="flex items-center gap-1 shrink-0">
+                    <a href="{% url 'dashboard:site_public_settings' %}?panel=pages&cms_edit={{ p.pk }}" class="p-1.5 rounded-lg hover:bg-slate-100 text-slate-400 hover:text-gaboomViolet transition" title="Modifier">
+                      <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125"/></svg>
+                    </a>
+                    <form method="post" action="{% url 'dashboard:cms_page_delete' pk=p.pk %}" class="inline" onsubmit="return confirm('Supprimer « {{ p.title }} » ?')">
+                      {% csrf_token %}
+                      <input type="hidden" name="next" value="{% url 'dashboard:site_public_settings' %}?panel=pages" />
+                      <button type="submit" class="p-1.5 rounded-lg hover:bg-red-50 text-slate-400 hover:text-red-500 transition" title="Supprimer">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0"/></svg>
+                      </button>
+                    </form>
+                  </div>
+                  {% endif %}
+                </div>
+                {% endfor %}
+              </div>
+              {% else %}
+              <div class="px-5 py-12 text-center text-sm text-slate-400">
+                Aucune page trouvée.
+                {% if is_admin %}
+                <a href="{% url 'dashboard:site_public_settings' %}?panel=pages&cms_create=1" class="text-gaboomViolet font-semibold hover:underline block mt-1">Créer votre première page</a>
+                {% endif %}
+              </div>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════ JS ═══════ -->
+<script>
+// Panel navigation
+document.querySelectorAll('[data-panel]').forEach(function(btn){
+  btn.addEventListener('click',function(){
+    document.querySelectorAll('[data-panel]').forEach(function(b){b.classList.remove('active')});
+    btn.classList.add('active');
+    document.querySelectorAll('.panel').forEach(function(p){p.classList.remove('active')});
+    var target=document.getElementById('panel-'+btn.dataset.panel);
+    if(target)target.classList.add('active');
+  });
+});
+
+var pagesModal=document.getElementById('pagesModal');
+var pagesOpenBtn=document.querySelector('[data-open-pages-modal]');
+var pagesCloseBtn=pagesModal?pagesModal.querySelector('[data-close-pages-modal]'):null;
+var lastFocused=null;
+var focusableSel='a[href],button:not([disabled]),textarea,input,select,[tabindex]:not([tabindex="-1"])';
+
+function getModalFocusables(){
+  if(!pagesModal) return [];
+  return Array.prototype.slice.call(pagesModal.querySelectorAll(focusableSel)).filter(function(el){
+    return el.offsetParent!==null && !el.hasAttribute('disabled');
+  });
+}
+
+function openPagesModal(){
+  if(!pagesModal) return;
+  lastFocused=document.activeElement;
+  pagesModal.classList.add('is-open');
+  pagesModal.setAttribute('aria-hidden','false');
+  document.body.classList.add('modal-open');
+  if(pagesOpenBtn) pagesOpenBtn.classList.add('active');
+  var focusables=getModalFocusables();
+  if(focusables.length){focusables[0].focus();}
+  document.addEventListener('keydown',handleModalKeydown);
+}
+
+function closePagesModal(){
+  if(!pagesModal) return;
+  pagesModal.classList.remove('is-open');
+  pagesModal.setAttribute('aria-hidden','true');
+  document.body.classList.remove('modal-open');
+  if(pagesOpenBtn) pagesOpenBtn.classList.remove('active');
+  document.removeEventListener('keydown',handleModalKeydown);
+  if(lastFocused && typeof lastFocused.focus==='function'){lastFocused.focus();}
+}
+
+function handleModalKeydown(e){
+  if(!pagesModal || !pagesModal.classList.contains('is-open')) return;
+  if(e.key==='Escape'){e.preventDefault();closePagesModal();return;}
+  if(e.key!=='Tab') return;
+  var focusables=getModalFocusables();
+  if(!focusables.length) return;
+  var first=focusables[0];
+  var last=focusables[focusables.length-1];
+  if(e.shiftKey && document.activeElement===first){e.preventDefault();last.focus();return;}
+  if(!e.shiftKey && document.activeElement===last){e.preventDefault();first.focus();return;}
+}
+
+if(pagesOpenBtn){pagesOpenBtn.addEventListener('click',openPagesModal);}
+if(pagesCloseBtn){pagesCloseBtn.addEventListener('click',closePagesModal);}
+if(pagesModal){
+  pagesModal.addEventListener('click',function(e){
+    if(e.target===pagesModal) closePagesModal();
+  });
+}
+if("{{ active_panel }}"==="pages"){openPagesModal();}
+
+function autoSlug(input){
+  var slugInput=document.getElementById('slugInput');
+  if(!slugInput||slugInput.value.trim())return;
+  var value=input.value.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]+/g,'-').replace(/(^-|-$)/g,'');
+  slugInput.value=value;
+}
+
+// Theme selection
+function selectTheme(id,primary,secondary,el){
+  document.getElementById('id_theme_key').value=id;
+  document.getElementById('id_primary_color').value=primary;
+  document.getElementById('id_secondary_color').value=secondary;
+  document.getElementById('primaryHex').textContent=primary;
+  document.getElementById('secondaryHex').textContent=secondary;
+  document.querySelectorAll('.tl-row').forEach(function(r){r.classList.remove('active')});
+  el.classList.add('active');
+}
+
+document.querySelectorAll('[data-theme-swatch]').forEach(function(el){
+  var bg=el.dataset.bg||'';
+  var primary=el.dataset.primary||'';
+  var secondary=el.dataset.secondary||'';
+  var card=el.dataset.card||'';
+  if(bg) el.style.background=bg;
+  var p=el.querySelector('[data-theme-primary]');
+  if(p && primary) p.style.background=primary;
+  var c=el.querySelector('[data-theme-card]');
+  if(c && card) c.style.background=card;
+  if(c && secondary) c.style.border='1px solid '+secondary;
+  var s=el.querySelector('[data-theme-secondary-fill]');
+  if(s && secondary) s.style.background=secondary;
+});
+
+document.querySelectorAll('[data-anim-delay]').forEach(function(el){
+  var d=parseInt(el.dataset.animDelay||'0',10);
+  var delay=isNaN(d)?0:d*50;
+  el.style.animation='fadeSlide 0.2s ease '+delay+'ms both';
+});
+
+// Color hex display
+var pc=document.getElementById('id_primary_color');
+var sc=document.getElementById('id_secondary_color');
+if(pc)pc.addEventListener('input',function(){document.getElementById('primaryHex').textContent=this.value});
+if(sc)sc.addEventListener('input',function(){document.getElementById('secondaryHex').textContent=this.value});
+
+// Preview mode
+function setPreviewMode(mode){
+  var f=document.getElementById('previewFrame');
+  var db=document.getElementById('prevDesktop');
+  var mb=document.getElementById('prevMobile');
+  if(mode==='mobile'){
+    f.style.width='375px';f.style.maxWidth='100%';
+    db.classList.remove('bg-slate-100','text-slate-600');db.classList.add('text-slate-400');
+    mb.classList.add('bg-slate-100','text-slate-600');mb.classList.remove('text-slate-400');
+  }else{
+    f.style.width='100%';
+    mb.classList.remove('bg-slate-100','text-slate-600');mb.classList.add('text-slate-400');
+    db.classList.add('bg-slate-100','text-slate-600');db.classList.remove('text-slate-400');
+  }
+}
+
+function reloadPreview(){
+  var f=document.getElementById('previewFrame');
+  f.src=f.src;
+}
+
+// SEO counters
+var st=document.getElementById('id_seo_title');
+var sd=document.getElementById('id_seo_description');
+function updateSeo(){
+  var tc=st?st.value.length:0;
+  var dc=sd?sd.value.length:0;
+  document.getElementById('seoTitleCount').textContent=tc;
+  document.getElementById('seoDescCount').textContent=dc;
+  var score=0;
+  if(tc>10&&tc<=70)score+=50;else if(tc>0)score+=20;
+  if(dc>30&&dc<=160)score+=50;else if(dc>0)score+=20;
+  document.getElementById('seoScoreLabel').textContent=score+'%';
+  var bar=document.getElementById('seoScoreBar');
+  bar.style.width=score+'%';
+  bar.className='h-full rounded-full transition-all duration-300 '+(score>=80?'bg-emerald-500':score>=40?'bg-amber-500':'bg-red-400');
+}
+if(st)st.addEventListener('input',updateSeo);
+if(sd)sd.addEventListener('input',updateSeo);
+updateSeo();
+</script>
+{% endblock %}

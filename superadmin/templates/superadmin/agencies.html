@@ -1,0 +1,179 @@
+{% extends "superadmin/_layout.html" %}
+
+{% block page_title %}Agences{% endblock %}
+{% block page_subtitle %}Gestion de toutes les agences de la plateforme{% endblock %}
+
+{% block content %}
+<!-- Filters -->
+<div class="bg-white rounded-2xl border border-slate-200 p-4 mb-6">
+  <form method="get" class="flex flex-wrap items-end gap-3">
+    <div class="flex-1 min-w-[180px]">
+      <label class="block text-[11px] font-semibold text-slate-400 uppercase tracking-wider mb-1">Recherche</label>
+      <input type="text" name="q" value="{{ search }}" placeholder="Nom agence, email owner..."
+        class="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm focus:border-sa-400 focus:ring-1 focus:ring-sa-400 outline-none" />
+    </div>
+    <div class="w-36">
+      <label class="block text-[11px] font-semibold text-slate-400 uppercase tracking-wider mb-1">Statut</label>
+      <select name="status" class="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm focus:border-sa-400 outline-none">
+        <option value="">Tous</option>
+        <option value="trial" {% if status_filter == 'trial' %}selected{% endif %}>Essai</option>
+        <option value="active" {% if status_filter == 'active' %}selected{% endif %}>Actif</option>
+        <option value="suspended" {% if status_filter == 'suspended' %}selected{% endif %}>Suspendu</option>
+      </select>
+    </div>
+    <div class="w-40">
+      <label class="block text-[11px] font-semibold text-slate-400 uppercase tracking-wider mb-1">Tri</label>
+      <select name="sort" class="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm focus:border-sa-400 outline-none">
+        <option value="recent" {% if sort == 'recent' %}selected{% endif %}>Plus recent</option>
+        <option value="expiring" {% if sort == 'expiring' %}selected{% endif %}>Expire bientot</option>
+        <option value="name" {% if sort == 'name' %}selected{% endif %}>Nom A-Z</option>
+        <option value="most_vehicles" {% if sort == 'most_vehicles' %}selected{% endif %}>Plus de vehicules</option>
+      </select>
+    </div>
+    <div class="w-32">
+      <label class="block text-[11px] font-semibold text-slate-400 uppercase tracking-wider mb-1">Paiement</label>
+      <select name="billing" class="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm focus:border-sa-400 outline-none">
+        <option value="">Tous</option>
+        <option value="manual" {% if billing_filter == 'manual' %}selected{% endif %}>Manuel</option>
+        <option value="paypal" {% if billing_filter == 'paypal' %}selected{% endif %}>PayPal</option>
+      </select>
+    </div>
+    <label class="flex items-center gap-2 text-sm text-slate-600 cursor-pointer">
+      <input type="checkbox" name="pending" value="1" {% if pending_only %}checked{% endif %} class="rounded border-slate-300 text-sa-500 focus:ring-sa-500" />
+      Preuves pending
+    </label>
+    <label class="flex items-center gap-2 text-sm text-red-600 cursor-pointer">
+      <input type="checkbox" name="alerts" value="1" {% if alerts_only %}checked{% endif %} class="rounded border-red-300 text-red-500 focus:ring-red-500" />
+      Alertes
+    </label>
+    <button type="submit" class="px-5 py-2 rounded-xl bg-sa-500 text-white text-sm font-semibold hover:bg-sa-600 transition">Filtrer</button>
+  </form>
+</div>
+
+<!-- Desktop table -->
+<div class="hidden lg:block bg-white rounded-2xl border border-slate-200 overflow-hidden">
+  <table class="w-full text-sm">
+    <thead>
+      <tr class="border-b border-slate-100 text-left text-[10px] font-bold text-slate-400 uppercase tracking-wider">
+        <th class="px-5 py-3">Agence</th>
+        <th class="px-5 py-3">Owner</th>
+        <th class="px-5 py-3">Statut</th>
+        <th class="px-5 py-3">Paiement</th>
+        <th class="px-5 py-3">Expire le</th>
+        <th class="px-5 py-3">Restant</th>
+        <th class="px-5 py-3">Preuves</th>
+        <th class="px-5 py-3">Alerte</th>
+        <th class="px-5 py-3 text-right">Actions</th>
+      </tr>
+    </thead>
+    <tbody class="divide-y divide-slate-50">
+      {% for row in rows %}
+      {% with acc=row.access %}
+      <tr class="hover:bg-slate-50/50 transition">
+        <td class="px-5 py-3">
+          <a href="{% url 'superadmin:agency_detail' pk=acc.pk %}" class="font-semibold text-slate-800 hover:text-sa-500">{{ acc.agency.name }}</a>
+          <div class="text-[11px] text-slate-400">{{ acc.agency.slug }}</div>
+        </td>
+        <td class="px-5 py-3 text-xs text-slate-500">{{ row.owner_email }}</td>
+        <td class="px-5 py-3">
+          {% if acc.status == 'trial' %}
+            <span class="inline-flex items-center gap-1 rounded-full bg-blue-100 text-blue-800 px-2.5 py-0.5 text-[11px] font-bold">Essai</span>
+          {% elif acc.status == 'active' %}
+            <span class="inline-flex items-center gap-1 rounded-full bg-emerald-100 text-emerald-800 px-2.5 py-0.5 text-[11px] font-bold">Actif</span>
+          {% elif acc.status == 'suspended' %}
+            <span class="inline-flex items-center gap-1 rounded-full bg-red-100 text-red-800 px-2.5 py-0.5 text-[11px] font-bold">Suspendu</span>
+          {% endif %}
+        </td>
+        <td class="px-5 py-3">
+          {% if acc.billing_mode == 'paypal' %}
+            <span class="inline-flex items-center gap-1 rounded-full bg-blue-100 text-blue-700 px-2 py-0.5 text-[11px] font-bold">PayPal</span>
+          {% else %}
+            <span class="rounded-full bg-slate-100 text-slate-600 px-2 py-0.5 text-[11px] font-bold">Manuel</span>
+          {% endif %}
+        </td>
+        <td class="px-5 py-3 text-xs text-slate-500">{{ acc.access_ends_at|date:"d/m/Y H:i" }}</td>
+        <td class="px-5 py-3">
+          {% if acc.status == 'suspended' %}
+            <span class="text-xs font-bold text-red-600">Expire</span>
+          {% elif acc.days_remaining <= 1 %}
+            <span class="text-xs font-bold text-red-600">{{ acc.days_remaining }}j</span>
+          {% elif acc.days_remaining <= 3 %}
+            <span class="text-xs font-bold text-amber-600">{{ acc.days_remaining }}j</span>
+          {% else %}
+            <span class="text-xs font-medium text-slate-600">{{ acc.days_remaining }}j</span>
+          {% endif %}
+        </td>
+        <td class="px-5 py-3">
+          {% if row.pending_count %}
+            <span class="inline-flex items-center gap-1 rounded-full bg-amber-100 text-amber-800 px-2 py-0.5 text-[11px] font-bold">
+              <span class="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse"></span>{{ row.pending_count }}
+            </span>
+          {% else %}
+            <span class="text-xs text-slate-300">—</span>
+          {% endif %}
+        </td>
+        <td class="px-5 py-3">
+          {% if acc.needs_admin_attention %}
+            <span class="inline-flex items-center gap-1 rounded-full bg-red-100 text-red-700 px-2 py-0.5 text-[11px] font-bold"><span class="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse"></span>{{ acc.get_admin_alert_code_display }}</span>
+          {% else %}
+            <span class="text-xs text-slate-300">—</span>
+          {% endif %}
+        </td>
+        <td class="px-5 py-3 text-right">
+          <div class="flex items-center justify-end gap-1.5">
+            <form method="post" action="{% url 'superadmin:action_renew' pk=acc.pk %}" class="inline">{% csrf_token %}<input type="hidden" name="next" value="/saas/agencies/" /><button type="submit" title="Renouveler 30j" class="px-2.5 py-1.5 rounded-lg bg-sa-500 text-white text-xs font-semibold hover:bg-sa-600 transition">+30j</button></form>
+            <form method="post" action="{% url 'superadmin:action_bonus' pk=acc.pk %}" class="inline">{% csrf_token %}<input type="hidden" name="next" value="/saas/agencies/" /><input type="hidden" name="days" value="7" /><button type="submit" title="+7j bonus" class="px-2.5 py-1.5 rounded-lg bg-slate-100 text-slate-600 text-xs font-semibold hover:bg-slate-200 transition">+7j</button></form>
+            {% if acc.status != 'suspended' %}
+            <form method="post" action="{% url 'superadmin:action_suspend' pk=acc.pk %}" class="inline">{% csrf_token %}<input type="hidden" name="next" value="/saas/agencies/" /><button type="submit" title="Suspendre" class="px-2.5 py-1.5 rounded-lg bg-red-50 text-red-600 text-xs font-semibold hover:bg-red-100 transition">Stop</button></form>
+            {% endif %}
+            <a href="{% url 'superadmin:agency_detail' pk=acc.pk %}" title="Details" class="px-2.5 py-1.5 rounded-lg bg-slate-50 text-slate-500 text-xs font-semibold hover:bg-slate-100 transition">
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5"/></svg>
+            </a>
+          </div>
+        </td>
+      </tr>
+      {% endwith %}
+      {% empty %}
+      <tr><td colspan="9" class="px-5 py-12 text-center text-slate-400">Aucune agence trouvee.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+<!-- Mobile cards -->
+<div class="lg:hidden space-y-3">
+  {% for row in rows %}
+  {% with acc=row.access %}
+  <div class="bg-white rounded-2xl border border-slate-200 p-4">
+    <div class="flex items-start justify-between gap-3 mb-3">
+      <div>
+        <a href="{% url 'superadmin:agency_detail' pk=acc.pk %}" class="font-semibold text-slate-800 hover:text-sa-500">{{ acc.agency.name }}</a>
+        <div class="text-[11px] text-slate-400">{{ row.owner_email }}</div>
+      </div>
+      {% if acc.status == 'trial' %}
+        <span class="shrink-0 rounded-full bg-blue-100 text-blue-800 px-2 py-0.5 text-[11px] font-bold">Essai</span>
+      {% elif acc.status == 'active' %}
+        <span class="shrink-0 rounded-full bg-emerald-100 text-emerald-800 px-2 py-0.5 text-[11px] font-bold">Actif</span>
+      {% elif acc.status == 'suspended' %}
+        <span class="shrink-0 rounded-full bg-red-100 text-red-800 px-2 py-0.5 text-[11px] font-bold">Suspendu</span>
+      {% endif %}
+    </div>
+    <div class="text-xs text-slate-500 mb-3">
+      Expire : {{ acc.access_ends_at|date:"d/m/Y" }} · {{ acc.countdown_label }} · {{ acc.access_source_label }}
+      {% if row.pending_count %} · <span class="text-amber-600 font-bold">{{ row.pending_count }} preuve(s)</span>{% endif %}
+      {% if acc.needs_admin_attention %} · <span class="text-red-600 font-bold">Alerte</span>{% endif %}
+    </div>
+    <div class="flex flex-wrap gap-2">
+      <form method="post" action="{% url 'superadmin:action_renew' pk=acc.pk %}" class="inline">{% csrf_token %}<input type="hidden" name="next" value="/saas/agencies/" /><button type="submit" class="px-3 py-1.5 rounded-lg bg-sa-500 text-white text-xs font-semibold">+30j</button></form>
+      <form method="post" action="{% url 'superadmin:action_bonus' pk=acc.pk %}" class="inline">{% csrf_token %}<input type="hidden" name="next" value="/saas/agencies/" /><input type="hidden" name="days" value="7" /><button type="submit" class="px-3 py-1.5 rounded-lg bg-slate-100 text-slate-600 text-xs font-semibold">+7j</button></form>
+      {% if acc.status != 'suspended' %}
+      <form method="post" action="{% url 'superadmin:action_suspend' pk=acc.pk %}" class="inline">{% csrf_token %}<input type="hidden" name="next" value="/saas/agencies/" /><button type="submit" class="px-3 py-1.5 rounded-lg bg-red-50 text-red-600 text-xs font-semibold">Stop</button></form>
+      {% endif %}
+    </div>
+  </div>
+  {% endwith %}
+  {% empty %}
+  <div class="text-center text-slate-400 py-12">Aucune agence.</div>
+  {% endfor %}
+</div>
+{% endblock %}

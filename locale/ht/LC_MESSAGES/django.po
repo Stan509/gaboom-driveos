@@ -1,0 +1,2030 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Gaboom DriveOS\n"
+"POT-Creation-Date: 2026-02-13 00:00+0000\n"
+"PO-Revision-Date: 2026-02-13 00:00+0000\n"
+"Language: ht\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "Gaboom DriveOS"
+msgstr "Gaboom DriveOS"
+
+msgid "Gaboom DriveOS — Le cockpit tout-en-un pour piloter une agence de location."
+msgstr "Gaboom DriveOS — Tablo kontwòl tout‑an‑yon pou jere yon ajans lokasyon."
+
+msgid "Catalogue"
+msgstr "Katalòg"
+
+msgid "Appeler"
+msgstr "Rele"
+
+msgid "Mon espace"
+msgstr "Espas mwen"
+
+msgid "Déconnexion"
+msgstr "Dekonekte"
+
+msgid "Connexion"
+msgstr "Konekte"
+
+msgid "Créer un compte"
+msgstr "Kreye kont"
+
+msgid "Tous droits réservés."
+msgstr "Tout dwa rezève."
+
+msgid "Vue d'ensemble de votre agence"
+msgstr "Sou-vè sou ajans ou"
+
+msgid "Gestion de votre flotte"
+msgstr "Jere flòt ou"
+
+msgid "Propulsé par"
+msgstr "Pouvi pa"
+
+msgid "Tableau de bord"
+msgstr "Tablo de bò"
+
+msgid "Mes réservations"
+msgstr "Rezèvasyon mwen yo"
+
+msgid "Mes contrats"
+msgstr "Kontra mwen yo"
+
+msgid "Conduite IA"
+msgstr "Kondwi IA"
+
+msgid "Profil"
+msgstr "Pwofil"
+
+msgid "Notifications"
+msgstr "Notifikasyon"
+
+msgid "Gaboom DriveOS — Le système d'exploitation pour agences de location"
+msgstr "Gaboom DriveOS — Sistèm operasyon pou ajans lokasyon"
+
+msgid "Fonctionnalités"
+msgstr "Fonksyonalite"
+
+msgid "Tarifs"
+msgstr "Pri"
+
+msgid "Démo"
+msgstr "Demo"
+
+msgid "Créer mon agence"
+msgstr "Kreye ajans mwen"
+
+msgid "Simple, transparent, sans surprise"
+msgstr "Senp, klè, san sipriz"
+
+msgid "Essai gratuit sur tous les plans. Aucune carte requise."
+msgstr "Esè gratis sou tout plan yo. Pa bezwen kat."
+
+msgid "Populaire"
+msgstr "Popilè"
+
+msgid "Business"
+msgstr "Biznis"
+
+msgid "Entreprise"
+msgstr "Antrepriz"
+
+msgid "Essai gratuit"
+msgstr "Esè gratis"
+
+msgid "Starter"
+msgstr "Starter"
+
+msgid "/mois"
+msgstr "/mwa"
+
+msgid "Pour démarrer avec une agence."
+msgstr "Pou kòmanse ak yon ajans."
+
+msgid "Dashboard"
+msgstr "Tablo de bò"
+
+msgid "Changer de thème"
+msgstr "Chanje tèm"
+
+msgid "Principal"
+msgstr "Prensipal"
+
+msgid "Véhicules"
+msgstr "Machin"
+
+msgid "Clients"
+msgstr "Kliyan"
+
+msgid "Contrat et Paiement"
+msgstr "Kontra ak Peman"
+
+msgid "Réservations"
+msgstr "Rezèvasyon"
+
+msgid "Suivi GPS"
+msgstr "Swivi GPS"
+
+msgid "Maintenance"
+msgstr "Antretyen"
+
+msgid "Administration"
+msgstr "Administrasyon"
+
+msgid "Paramètres métier"
+msgstr "Paramèt biznis"
+
+msgid "Équipe"
+msgstr "Ekip"
+
+msgid "Site public"
+msgstr "Sit piblik"
+
+msgid "Croissance"
+msgstr "Kwasans"
+
+msgid "Marketing"
+msgstr "Maketing"
+
+msgid "Promotions"
+msgstr "Pwomosyon"
+
+msgid "Campagnes"
+msgstr "Kanpay"
+
+msgid "Bannières"
+msgstr "Banyè"
+
+msgid "Marketing Engine"
+msgstr "Motè Maketing"
+
+msgid "Campagnes IA"
+msgstr "Kanpay IA"
+
+msgid "Automatisations"
+msgstr "Otomatizasyon"
+
+msgid "Analytics"
+msgstr "Analitik"
+
+msgid "min restants"
+msgstr "min ki rete"
+
+msgid "WhatsApp"
+msgstr "WhatsApp"
+
+msgid "Dernière mise à jour"
+msgstr "Dènye Mizajou:"
+
+msgid "Compte"
+msgstr "Kont"
+
+msgid "Abonnement"
+msgstr "Abònman"
+
+msgid "Mon compte"
+msgstr "Kont mwen"
+
+msgid "SuperAdmin"
+msgstr "SuperAdmin"
+
+msgid "Multi-agence natif"
+msgstr "Multi-ajans natif"
+
+msgid "Client retention intégré"
+msgstr "Retansyon kliyan entegre"
+
+msgid "Le système d'exploitation pour agences de location modernes."
+msgstr "Sistèm operasyon pou ajans lokasyon modèn."
+
+msgid "Gérez votre flotte, automatisez vos contrats, encaissez en ligne et fidélisez vos clients — le tout depuis un seul dashboard."
+msgstr "Jere flòt ou, otomatize kontra ou, resevwa peman sou entènèt epi kenbe kliyan yo — tout nan yon sèl tablodbò."
+
+msgid "Voir la démo"
+msgstr "Gade demo a"
+
+msgid "Aucune carte bancaire requise. Activation immédiate."
+msgstr "Pa bezwen kat bank. Aktive touswit."
+
+msgid "En location"
+msgstr "An lokasyon"
+
+msgid "Disponible"
+msgstr "Disponib"
+
+msgid "Opérationnel"
+msgstr "Operasyonèl"
+
+msgid "Mis à jour il y a 2 min"
+msgstr "Mizajou 2 min de sa"
+
+msgid "Problème"
+msgstr "Pwoblèm"
+
+msgid "Gestion papier, pertes, retards"
+msgstr "Jesyon papye, pèt, reta"
+
+msgid "Tableurs dispersés, données incohérentes"
+msgstr "Fèy kalkil gaye, done pa koeran"
+
+msgid "Véhicules mal suivis, inspections oubliées"
+msgstr "Machin pa byen swiv, enspeksyon bliye"
+
+msgid "Aucune visibilité sur la rentabilité réelle"
+msgstr "Pa gen vizibilite sou rentabilite reyèl"
+
+msgid "Communication WhatsApp, zéro traçabilité"
+msgstr "Kominikasyon WhatsApp, pa gen tras"
+
+msgid "Solution"
+msgstr "Solisyon"
+
+msgid "Tout centralisé, en temps réel"
+msgstr "Tout santralize, an tan reyèl"
+
+msgid "Un cockpit unique pour toute la flotte"
+msgstr "Yon sèl kokpit pou tout flòt la"
+
+msgid "Tracking, inspections, maintenance planifiée"
+msgstr "Swivi, enspeksyon, antretyen planifye"
+
+msgid "Analytics et KPIs orientés décision"
+msgstr "Analitik ak KPI pou pran desizyon"
+
+msgid "Équipe structurée, rôles, permissions"
+msgstr "Ekip estriktire, wòl, pèmisyon"
+
+msgid "Augmente tes revenus sans augmenter ta flotte"
+msgstr "Ogmante revni san ogmante flòt"
+
+msgid "Optimise chaque véhicule, chaque client, chaque euro."
+msgstr "Optimize chak machin, chak kliyan, chak ero."
+
+msgid "Optimisation taux d'occupation"
+msgstr "Optimize to okipasyon"
+
+msgid "Maximise le temps de location de chaque véhicule."
+msgstr "Maksimize tan lokasyon chak machin."
+
+msgid "Recommandations intelligentes"
+msgstr "Rekòmandasyon entèlijan"
+
+msgid "Suggestions basées sur l'historique et la saisonnalité."
+msgstr "Sijesyon baze sou istwa ak sezon."
+
+msgid "Rappels de retour"
+msgstr "Rapèl retou"
+
+msgid "Notifications automatiques pour réduire les retards."
+msgstr "Notifikasyon otomatik pou diminye reta."
+
+msgid "Relances clients inactifs"
+msgstr "Relans kliyan inaktif"
+
+msgid "Réactive les anciens clients avec des offres ciblées."
+msgstr "Reaktive ansyen kliyan ak òf vize."
+
+msgid "Tout ce qu'il faut pour scaler"
+msgstr "Tout sa w bezwen pou grandisan"
+
+msgid "Chaque module est pensé pour fonctionner seul et s'intégrer au reste."
+msgstr "Chak modil fèt pou mache poukont li epi entegre ak rès la."
+
+msgid "Contrats & réservations"
+msgstr "Kontra ak rezèvasyon"
+
+msgid "Crée, signe et archive tes contrats. Suivi du cycle complet de chaque location."
+msgstr "Kreye, siyen, epi achive kontra yo. Swivi sik konplè chak lokasyon."
+
+msgid "Inspection & photos"
+msgstr "Enspeksyon ak foto"
+
+msgid "Checklists visuelles, photos avant/après, historique complet de l'état véhicule."
+msgstr "Lis vizyèl, foto avan/apre, istwa konplè eta machin."
+
+msgid "Maintenance intelligente"
+msgstr "Antretyen entèlijan"
+
+msgid "Planifie les entretiens, reçois des alertes, réduis les immobilisations."
+msgstr "Planifye antretyen, resevwa alèt, diminye tan immobilize."
+
+msgid "GPS tracking & géofencing"
+msgstr "Swivi GPS ak geofencing"
+
+msgid "Localise ta flotte, définis des zones, reçois des alertes de sortie en temps réel."
+msgstr "Lokalize flòt ou, defini zòn, resevwa alèt sòti an tan reyèl."
+
+msgid "Analytics rentabilité"
+msgstr "Analitik rentabilite"
+
+msgid "KPIs par véhicule, taux d'occupation, revenus. Décide avec de la data, pas au feeling."
+msgstr "KPI pa machin, to okipasyon, revni. Deside ak done, pa ak santiman."
+
+msgid "Équipe & permissions"
+msgstr "Ekip ak pèmisyon"
+
+msgid "Owner, Admin, Staff — chaque rôle a ses droits. Multi-agence natif."
+msgstr "Owner, Admin, Staff — chak wòl gen dwa li. Multi-ajans natif."
+
+msgid "Fidélise tes clients automatiquement"
+msgstr "Fidelize kliyan yo otomatikman"
+
+msgid "Ne perds plus jamais un ancien client. Gaboom DriveOS t'aide à garder le contact et à maximiser la valeur de chaque location."
+msgstr "Pa janm pèdi yon ansyen kliyan ankò. Gaboom DriveOS ede w kenbe kontak epi ogmante valè chak lokasyon."
+
+msgid "Historique client complet"
+msgstr "Istwa kliyan konplè"
+
+msgid "Fiche client avec historique des locations, préférences et notes."
+msgstr "Fich kliyan ak istwa lokasyon, preferans ak nòt."
+
+msgid "Relances automatiques"
+msgstr "Relans otomatik"
+
+msgid "Relance automatique après restitution pour rebooker rapidement."
+msgstr "Relans otomatik apre retou pou rebook vit."
+
+msgid "Notifications promotions"
+msgstr "Notifikasyon pwomosyon"
+
+msgid "Offres spéciales ciblées pour anciens clients et périodes creuses."
+msgstr "Òf espesyal vize pou ansyen kliyan ak peryòd fèb."
+
+msgid "Base CRM intégrée"
+msgstr "Baz CRM entegre"
+
+msgid "Base de données centralisée de tous vos clients et interactions."
+msgstr "Baz done santralize pou tout kliyan ak entèraksyon yo."
+
+msgid "Ta flotte est protégée"
+msgstr "Flòt ou pwoteje"
+
+msgid "Isolation stricte des données par agence. Architecture multi-tenant sécurisée. Logs d'audit prêts pour conformité."
+msgstr "Izolasyon strik done pa ajans. Achitekti multi-tenant sekirize. Log odit pare pou konfòmite."
+
+msgid "Isolation par agence"
+msgstr "Izolasyon pa ajans"
+
+msgid "Chaque agence est un silo étanche. Aucun accès croisé possible entre les données."
+msgstr "Chak ajans se yon silo izole. Pa gen aksè kwaze ant done."
+
+msgid "Architecture multi-tenant"
+msgstr "Achitekti multi-tenant"
+
+msgid "Séparation stricte au niveau base de données, middleware et permissions."
+msgstr "Separasyon strik nan bazdone, middleware ak pèmisyon."
+
+msgid "Logs d'audit"
+msgstr "Log odit"
+
+msgid "Traçabilité complète des actions. Prêt pour conformité et audits."
+msgstr "Tras konplè aksyon yo. Pare pou konfòmite ak odit."
+
+msgid "Multi-agence, équipe complète."
+msgstr "Multi-ajans, ekip konplè."
+
+msgid "Multi-agence"
+msgstr "Multi-ajans"
+
+msgid "15 utilisateurs"
+msgstr "15 itilizatè"
+
+msgid "Véhicules illimités"
+msgstr "Machin san limit"
+
+msgid "Support prioritaire"
+msgstr "Sipò priyorite"
+
+msgid "Sur mesure, accompagnement dédié."
+msgstr "Sou mezi, akonpayman dedye."
+
+msgid "Tout Pro inclus"
+msgstr "Tout Pro ladan"
+
+msgid "Workflows custom"
+msgstr "Workflows pèsonalize"
+
+msgid "Intégrations avancées"
+msgstr "Entegrasyon avanse"
+
+msgid "Onboarding personnalisé"
+msgstr "Onboarding pèsonalize"
+
+msgid "SLA garanti"
+msgstr "SLA garanti"
+
+msgid "Questions fréquentes"
+msgstr "Kesyon souvan"
+
+msgid "Tout ce que tu dois savoir avant de commencer."
+msgstr "Tout sa w dwe konnen avan w kòmanse."
+
+msgid "Est-ce vraiment multi-agence ?"
+msgstr "Èske se vrèman multi-ajans?"
+
+msgid "Oui. Chaque utilisateur est rattaché à une agence. Les données sont strictement séparées. Tu peux gérer plusieurs agences depuis un seul compte owner."
+msgstr "Wi. Chak itilizatè lye ak yon ajans. Done yo separe strikteman. Ou ka jere plizyè ajans ak yon sèl kont owner."
+
+msgid "Puis-je essayer gratuitement ?"
+msgstr "Èske mwen ka teste gratis?"
+
+msgid "Absolument. Tous les plans incluent un essai gratuit sans carte bancaire. Tu testes, tu décides."
+msgstr "Absoliman. Tout plan yo gen esè gratis san kat bank. Ou teste, ou deside."
+
+msgid "Le paiement Stripe est-il inclus ?"
+msgstr "Èske peman Stripe enkli?"
+
+msgid "Oui. Stripe est intégré pour permettre à vos clients de payer leurs réservations en ligne directement sur votre site public. Vous connectez votre compte Stripe et recevez les paiements directement. Gaboom DriveOS ne prend pas le contrôle de vos fonds."
+msgstr "Wi. Stripe entegre pou pèmèt kliyan peye sou entènèt sou sit piblik ou. Ou konekte kont Stripe ou epi resevwa peman dirèk. Gaboom DriveOS pa kontwole lajan ou."
+
+msgid "Mes clients peuvent-ils réserver en ligne ?"
+msgstr "Èske kliyan mwen yo ka rezève sou entènèt?"
+
+msgid "Oui. Chaque agence dispose d'un site public avec catalogue et formulaire de réservation, activable en un clic."
+msgstr "Wi. Chak ajans gen yon sit piblik ak katalòg ak fòm rezèvasyon, aktivab an yon klik."
+
+msgid "Le GPS est-il intégré ?"
+msgstr "Èske GPS la entegre?"
+
+msgid "Le module GPS tracking avec géofencing est prévu dans le plan Pro. L'architecture supporte déjà les fournisseurs tiers."
+msgstr "Modil swivi GPS ak geofencing nan plan Pro. Achitekti a deja sipòte founisè twazyèm pati."
+
+msgid "Puis-je personnaliser le site de mon agence ?"
+msgstr "Èske mwen ka pèsonalize sit ajans mwen?"
+
+msgid "Oui. Couleurs, thème, activation/désactivation, mode maintenance — tout est configurable depuis le dashboard."
+msgstr "Wi. Koulè, tèm, aktive/dezaktive, mòd antretyen — tout konfigirab nan tablodbò a."
+
+msgid "Prêt à piloter ta flotte ?"
+msgstr "Prè pou pilote flòt ou?"
+
+msgid "Rejoins les agences qui passent au niveau supérieur."
+msgstr "Antre nan ajans k ap pase nan nivo siperyè."
+
+msgid "Démarrer maintenant"
+msgstr "Kòmanse kounye a"
+
+msgid "Gratuit · Sans engagement · En 30 secondes"
+msgstr "Gratis · San angajman · An 30 segonn"
+
+msgid "Produit"
+msgstr "Pwodwi"
+
+msgid "Créer une agence"
+msgstr "Kreye yon ajans"
+
+msgid "Portail client non disponible"
+msgstr "Pòtal kliyan pa disponib"
+
+msgid "Cette fonctionnalité n'est pas incluse dans votre plan actuel."
+msgstr "Fonksyon sa pa nan plan ou aktyèl la."
+
+msgid "Le portail client permet à vos clients de suivre leurs réservations, signer leurs contrats et gérer leur profil en toute autonomie."
+msgstr "Pòtal kliyan a pèmèt kliyan ou swive rezèvasyon yo, siye kontra yo, e jere pwofil yo an otònòm."
+
+msgid "Avec le portail client, vos clients peuvent :"
+msgstr "Avèk pòtal kliyan an, kliyan ou ka:"
+
+msgid "Suivre leurs réservations en temps réel"
+msgstr "Swive rezèvasyon yo an tan reyèl"
+
+msgid "Signer numériquement leurs contrats"
+msgstr "Siyen kontra yo nimèrikman"
+
+msgid "Consulter leurs documents"
+msgstr "Konsilte dokiman yo"
+
+msgid "Communiquer directement avec vous"
+msgstr "Kominike dirèkteman avèk ou"
+
+msgid "L'équipe Gaboom s'excuse pour la gêne occasionnée."
+msgstr "Ekip Gaboom an ekskize pou enèj ki te lakòz."
+
+msgid "Contactez-nous pour mettre à niveau votre abonnement et débloquer cette fonctionnalité."
+msgstr "Kontakte nou pou mete ajou abònman ou e debloke fonksyon sa."
+
+msgid "Retour à l'accueil"
+msgstr "Retounen lakay"
+
+msgid "Contacter le support"
+msgstr "Kontakte sipò"
+
+msgid "Mon compte"
+msgstr "Kont mwen"
+
+msgid "Gérez votre profil et les informations de votre agence"
+msgstr "Jere pwofil ou ak enfòmasyon ajans ou"
+
+msgid "Profil utilisateur"
+msgstr "Pwofil itilizatè"
+
+msgid "Vos informations personnelles"
+msgstr "Enfòmasyon pèsonèl ou"
+
+msgid "Compte"
+msgstr "Kont"
+
+msgid "Email"
+msgstr "Email"
+
+msgid "Vérifié"
+msgstr "Vèfye"
+
+msgid "Non vérifié"
+msgstr "Pa vèfye"
+
+msgid "Rôle"
+msgstr "Wòl"
+
+msgid "Agence"
+msgstr "Ajans"
+
+msgid "Identité agence"
+msgstr "Idantite ajans"
+
+msgid "Nom, slogan et logo"
+msgstr "Non, slogan ak logo"
+
+msgid "Logo"
+msgstr "Logo"
+
+msgid "PNG, JPG ou WebP — max 5 Mo"
+msgstr "PNG, JPG oswa WebP — max 5 MB"
+
+msgid "Contact & adresse"
+msgstr "Kontak ak adrès"
+
+msgid "Coordonnées de l'agence"
+msgstr "Enfòmasyon kontak ajans la"
+
+msgid "Documents & facturation"
+msgstr "Dokiman ak faktirasyon"
+
+msgid "Infos légales pour contrats et factures"
+msgstr "Enfòmasyon legal pou kontra ak fakti"
+
+msgid "Affiché en bas des factures et devis"
+msgstr "Montre anba fakti ak devi"
+
+msgid "Enregistrer"
+msgstr "Anrejistre"
+
+msgid "Nom complet"
+msgstr "Non konplè"
+
+msgid "Téléphone"
+msgstr "Telefòn"
+
+msgid "WhatsApp"
+msgstr "WhatsApp"
+
+msgid "Nom commercial"
+msgstr "Non komèsyal"
+
+msgid "Slogan"
+msgstr "Slogan"
+
+msgid "Email de contact"
+msgstr "Email kontak"
+
+msgid "Adresse ligne 1"
+msgstr "Adrès liy 1"
+
+msgid "Adresse ligne 2"
+msgstr "Adrès liy 2"
+
+msgid "Ville"
+msgstr "Vil"
+
+msgid "Pays"
+msgstr "Peyi"
+
+msgid "Site web"
+msgstr "Sitwèb"
+
+msgid "Raison sociale"
+msgstr "Rezon sosyal"
+
+msgid "N° TVA / SIRET"
+msgstr "N° TVA / SIRET"
+
+msgid "Devise"
+msgstr "Deviz"
+
+msgid "Pied de facture"
+msgstr "Pye fakti"
+
+msgid "Pages CMS"
+msgstr "Paj CMS"
+
+msgid "Gérez les pages publiques de votre site"
+msgstr "Jere paj piblik sit ou"
+
+msgid "Nouvelle page"
+msgstr "Nouvèl paj"
+
+msgid "Site public"
+msgstr "Sit piblik"
+
+msgid "Website Builder"
+msgstr "Konstititè sitwèb"
+
+msgid "Personnalisez votre vitrine en ligne"
+msgstr "Pèsonnalize vitrin ou an liy"
+
+msgid "Publié"
+msgstr "Pibliye"
+
+msgid "Brouillon"
+msgstr "Bwoton"
+
+msgid "Voir le site"
+msgstr "Wè sit la"
+
+msgid "Prévisualiser"
+msgstr "Previzyalize"
+
+msgid "Publier"
+msgstr "Pibliye"
+
+msgid "Abonnement"
+msgstr "Abònman"
+
+msgid "Gérez votre abonnement Gaboom DriveOS"
+msgstr "Jere abònman Gaboom DriveOS ou"
+
+msgid "Instructions PDF"
+msgstr "Enstriksyon PDF"
+
+msgid "Modifier les informations du membre"
+msgstr "Modifye enfòmasyon manm lan"
+
+msgid "Créer un nouveau membre de l'équipe"
+msgstr "Kreye yon nouvo manm ekip"
+
+msgid "Retour"
+msgstr "Retounen"
+
+msgid "Créer le membre"
+msgstr "Kreye manm lan"
+
+msgid "Gestion accès agences"
+msgstr "Jesyon aksè ajans"
+
+msgid "Administration des abonnements et accès"
+msgstr "Administrayon abònman ak aksè"
+
+msgid "Total"
+msgstr "Total"
+
+msgid "Essais"
+msgstr "Ezay"
+
+msgid "Actives"
+msgstr "Aktif"
+
+msgid "Suspendues"
+msgstr "Sispann"
+
+msgid "Preuves pending"
+msgstr "Pouvwa ann atann"
+
+msgid "Recherche"
+msgstr "Rechèch"
+
+msgid "Nom agence, email owner…"
+msgstr "Non ajans, email pwopriyetè…"
+
+msgid "Tous"
+msgstr "Tout"
+
+msgid "Essai"
+msgstr "Ezay"
+
+msgid "Actif"
+msgstr "Aktif"
+
+msgid "Suspendu"
+msgstr "Sispann"
+
+msgid "Tri"
+msgstr "Tri"
+
+msgid "Plus urgent"
+msgstr "Pi ijans"
+
+msgid "Nom"
+msgstr "Non"
+
+msgid "Plus récent"
+msgstr "Pi resan"
+
+msgid "Filtrer"
+msgstr "Filtre"
+
+msgid "Agence"
+msgstr "Ajans"
+
+msgid "Owner"
+msgstr "Pwopriyetè"
+
+msgid "Expire le"
+msgstr "Ekspi le"
+
+msgid "Restant"
+msgstr "Retan"
+
+msgid "Preuve"
+msgstr "Pouvwa"
+
+msgid "Actions"
+msgstr "Aksyon"
+
+msgid "En attente de votre décision"
+msgstr "Ann tann desizyon w"
+
+msgid "Réservation confirmée — en attente du client"
+msgstr "Rezèvasyon konfime — ann tann kliyan an"
+
+msgid "Sous contrat — cette réservation est devenue un contrat"
+msgstr "Anba kontra — rezervasyon sa vin yon kontra"
+
+msgid "Réservation refusée"
+msgstr "Rezèvasyon refize"
+
+msgid "Créer le contrat"
+msgstr "Kreye kontra a"
+
+msgid "Voir le contrat"
+msgstr "Wè kontra a"
+
+msgid "Client"
+msgstr "Kliyan"
+
+msgid "Message du client"
+msgstr "Mesaj kliyan an"
+
+msgid "Offre client"
+msgstr "Of kliyan an"
+
+msgid "Date début"
+msgstr "Dat kòmanse"
+
+msgid "Date fin"
+msgstr "Dat fini"
+
+msgid "Durée"
+msgstr "Dire"
+
+msgid "Estimation"
+msgstr "Estimasyon"
+
+msgid "Source"
+msgstr "Sòs"
+
+msgid "Créée le"
+msgstr "Kreye le"
+
+msgid "Modifier"
+msgstr "Modifye"
+
+msgid "Nouvelle"
+msgstr "Nouvèl"
+
+msgid "campagne"
+msgstr "kampàn"
+
+msgid "Modifier la campagne"
+msgstr "Modifye kampàn nan"
+
+msgid "Nouvelle campagne IA"
+msgstr "Nouvèl kampàn IA"
+
+msgid "Assistant IA embarqué — génération, scoring et optimisation locale"
+msgstr "Asistan IA entegre — generasyon, scoring ak optimizasyon lokal"
+
+msgid "Informations"
+msgstr "Enfòmasyon"
+
+msgid "Nom de la campagne"
+msgstr "Non kampàn nan"
+
+msgid "Ex: Promo été 2026"
+msgstr "Eg: Promo ete 2026"
+
+msgid "Objectif"
+msgstr "Objektif"
+
+msgid "Cible"
+msgstr "Sib"
+
+msgid "Tous les clients"
+msgstr "Tout kliyan yo"
+
+msgid "Clients actifs"
+msgstr "Kliyan aktif yo"
+
+msgid "Inactifs 30 jours"
+msgstr "Inaktif 30 jou"
+
+msgid "Tag personnalisé"
+msgstr "Tag pèsonalize"
+
+msgid "Planifier l'envoi"
+msgstr "Planifye voyaj la"
+
+msgid "Lien de réservation"
+msgstr "Lyen rezèvasyon"
+
+msgid "Paiements"
+msgstr "Peman"
+
+msgid "Historique et suivi des encaissements"
+msgstr "Istwa ak swivi kobman yo"
+
+msgid "Total encaissé"
+msgstr "Total kobman"
+
+msgid "Aujourd'hui"
+msgstr "Jodi a"
+
+msgid "Méthode principale"
+msgstr "Metòd prensipal"
+
+msgid "Accès"
+msgstr "Akè"
+
+msgid "Détails accès"
+msgstr "Detay akè"
+
+msgid "Deadline"
+msgstr "Dat limit"
+
+msgid "Countdown"
+msgstr "Kont deklans"
+
+msgid "Jours restants"
+msgstr "Jou ki rete"
+
+msgid "Raison suspension"
+msgstr "Rezon sispann"
+
+msgid "Preuves de paiement"
+msgstr "Pouv peman"
+
+msgid "Export CSV"
+msgstr "Ekspòte CSV"
+
+msgid "Client, véhicule, immat, réf…"
+msgstr "Kliyan, vétikil, plak, ref…"
+
+msgid "30 derniers jours"
+msgstr "30 dènye jou yo"
+
+msgid "7 derniers jours"
+msgstr "7 dènye jou yo"
+
+msgid "Tout"
+msgstr "Tout"
+
+msgid "Personnalisé"
+msgstr "Pèsonalize"
+
+msgid "Méthode : toutes"
+msgstr "Metòd: tout yo"
+
+msgid "Espèces"
+msgstr "Kob"
+
+msgid "Terminal CB"
+msgstr "Tèminal kat"
+
+msgid "Virement"
+msgstr "Vireman"
+
+msgid "Statut : tous"
+msgstr "Eta: tout yo"
+
+msgid "Réussi"
+msgstr "Siksè"
+
+msgid "Remboursé"
+msgstr "Ranbouse"
+
+msgid "Échoué"
+msgstr "Echwe"
+
+msgid "Tri : Date"
+msgstr "Tri: Dat"
+
+msgid "Tri : Montant"
+msgstr "Tri: Montan"
+
+msgid "Tri : Client"
+msgstr "Tri: Kliyan"
+
+msgid "Filtrer"
+msgstr "Filtre"
+
+msgid "Réinitialiser"
+msgstr "Re-enisyaje"
+
+msgid "Montant"
+msgstr "Montan"
+
+msgid "Contrat"
+msgstr "Kontra"
+
+msgid "Réf"
+msgstr "Ref"
+
+msgid "paiement"
+msgstr "peman"
+
+msgid "Page"
+msgstr "Paj"
+
+msgid "Préc."
+msgstr "Pres."
+
+msgid "Suiv."
+msgstr "Swiv."
+
+msgid "Aucun paiement"
+msgstr "Okenn peman"
+
+msgid "Les paiements apparaîtront ici une fois enregistrés sur les contrats."
+msgstr "Peman yo ap parèt isit la yon fwa anrejistre sou kontra yo."
+
+msgid "Créer un contrat"
+msgstr "Kreye yon kontra"
+
+msgid "Supprimer véhicule"
+msgstr "Elimine vétikil"
+
+msgid "Supprimer ce véhicule ?"
+msgstr "Elimine vétikil sa a?"
+
+msgid "Retour à la liste"
+msgstr "Retounen nan lis la"
+
+msgid "Tu es sur le point de supprimer"
+msgstr "Ou ap elimine"
+
+msgid "Cette action est irréversible."
+msgstr "Aksyon sa a pa kapab anile."
+
+msgid "Confirmer la suppression"
+msgstr "Konfime eliminasyon an"
+
+msgid "Annuler"
+msgstr "Anile"
+
+msgid "Créer le membre"
+msgstr "Kreye manm la"
+
+msgid "Tous rôles"
+msgstr "Tout wòl yo"
+
+msgid "Tous statuts"
+msgstr "Tout eta yo"
+
+msgid "Actif"
+msgstr "Aktif"
+
+msgid "Désactivé"
+msgstr "Dezaktive"
+
+msgid "Membre"
+msgstr "Manm"
+
+msgid "Rôle"
+msgstr "Wòl"
+
+msgid "Statut"
+msgstr "Eta"
+
+msgid "Actions"
+msgstr "Aksyon"
+
+msgid "Rechercher nom ou email…"
+msgstr "Chache non oswa imèl…"
+
+msgid "Modifier"
+msgstr "Modifye"
+
+msgid "Activer"
+msgstr "Aktive"
+
+msgid "Désactiver"
+msgstr "Dezaktive"
+
+msgid "Supprimer"
+msgstr "Elimine"
+
+msgid "Aucun membre trouvé."
+msgstr "Okenn manm jwenn."
+
+msgid "Voir"
+msgstr "Wè"
+
+msgid "Équipe"
+msgstr "Ekip"
+
+msgid "Gérez les membres de votre agence"
+msgstr "Gere manm ajans ou"
+
+msgid "Sans titre"
+msgstr "San tit"
+
+msgid "Légal"
+msgstr "Legal"
+
+msgid "CGU (bientôt)"
+msgstr "Tèm (byento)"
+
+msgid "Confidentialité (bientôt)"
+msgstr "Konfidansyalite (byento)"
+
+msgid "Tous les systèmes opérationnels"
+msgstr "Tout sistèm yo operasyonèl"
+
+msgid "1 agence"
+msgstr "1 ajans"
+
+msgid "3 utilisateurs"
+msgstr "3 itilizatè"
+
+msgid "20 véhicules"
+msgstr "20 machin"
+
+msgid "Dernière mise à jour :"
+msgstr "Dènye Mizajou:"
+
+msgid "Réservez un véhicule en quelques clics."
+msgstr "Rezève yon machin nan kèk klik."
+
+msgid "Voir le catalogue"
+msgstr "Gade katalòg la"
+
+msgid "Véhicules disponibles"
+msgstr "Machin disponib"
+
+msgid "/jour"
+msgstr "/jou"
+
+msgid "Détails"
+msgstr "Detay"
+
+msgid "Aucun véhicule disponible"
+msgstr "Pa gen machin disponib"
+
+msgid "Les véhicules seront affichés ici dès qu'ils seront publiés."
+msgstr "Machin yo ap parèt isit la depi yo pibliye."
+
+msgid "Pourquoi nous choisir"
+msgstr "Poukisa chwazi nou"
+
+msgid "Véhicules vérifiés"
+msgstr "Machin verifye"
+
+msgid "Tous nos véhicules sont inspectés et entretenus régulièrement."
+msgstr "Tout machin nou yo enspekte epi antreteni regilyèman."
+
+msgid "Réservation rapide"
+msgstr "Rezèvasyon rapid"
+
+msgid "Réservez en quelques minutes, sans paperasse inutile."
+msgstr "Rezève nan kèk minit, san papye initil."
+
+msgid "Prix transparents"
+msgstr "Pri transparan"
+
+msgid "Aucun frais caché. Le prix affiché est le prix final."
+msgstr "Pa gen frè kache. Pri ki parèt la se pri final la."
+
+msgid "Comment ça marche"
+msgstr "Kijan sa mache"
+
+msgid "Choisissez"
+msgstr "Chwazi"
+
+msgid "Parcourez notre catalogue et sélectionnez le véhicule idéal."
+msgstr "Gade katalòg nou an epi chwazi machin ki pi bon an."
+
+msgid "Réservez"
+msgstr "Rezève"
+
+msgid "Contactez-nous par téléphone ou WhatsApp pour confirmer."
+msgstr "Kontakte nou pa telefòn oswa WhatsApp pou konfime."
+
+msgid "Roulez"
+msgstr "Kondwi"
+
+msgid "Récupérez votre véhicule et profitez de la route !"
+msgstr "Ranmase machin ou epi jwi wout la!"
+
+msgid "Besoin d'aide ?"
+msgstr "Bezwen èd?"
+
+msgid "Contactez-nous, nous sommes disponibles pour vous."
+msgstr "Kontakte nou, nou disponib pou ou."
+
+msgid "Email"
+msgstr "Email"
+
+msgid "Tous les véhicules disponibles à la location."
+msgstr "Tout machin ki disponib pou lokasyon."
+
+msgid "Négociable"
+msgstr "Negozyab"
+
+msgid "Voir"
+msgstr "Gade"
+
+msgid "Tarif journalier"
+msgstr "Pri pa jou"
+
+msgid "Prix négociable"
+msgstr "Pri negosyab"
+
+msgid "Réserver"
+msgstr "Rezève"
+
+msgid "Informations"
+msgstr "Enfòmasyon"
+
+msgid "Marque"
+msgstr "Mak"
+
+msgid "Modèle"
+msgstr "Modèl"
+
+msgid "Plaque"
+msgstr "Plak"
+
+msgid "Statut"
+msgstr "Estati"
+
+msgid "Retour au catalogue"
+msgstr "Retounen nan katalòg la"
+
+msgid "Retour au véhicule"
+msgstr "Retounen nan machin nan"
+
+msgid "Ce véhicule n'est plus disponible"
+msgstr "Machin sa a pa disponib ankò"
+
+msgid "Ce véhicule est actuellement en location ou en maintenance. Veuillez choisir un autre véhicule."
+msgstr "Machin sa a kounye a an lokasyon oswa an antretyen. Tanpri chwazi yon lòt machin."
+
+msgid "Voir les véhicules disponibles"
+msgstr "Gade machin ki disponib"
+
+msgid "Ce véhicule n'est plus disponible pour ces dates"
+msgstr "Machin sa a pa disponib pou dat sa yo"
+
+msgid "Une réservation confirmée existe déjà pour cette période. Choisissez d'autres dates ou un autre véhicule."
+msgstr "Gen yon rezèvasyon konfime deja pou peryòd sa a. Chwazi lòt dat oswa yon lòt machin."
+
+msgid "Véhicules disponibles :"
+msgstr "Machin disponib:"
+
+msgid "Demande de réservation"
+msgstr "Demann rezèvasyon"
+
+msgid "Remplissez le formulaire ci-dessous."
+msgstr "Ranpli fòm anba a."
+
+msgid "Créez un compte pour négocier le prix."
+msgstr "Kreye yon kont pou negosye pri a."
+
+msgid "Connecté en tant que"
+msgstr "Konekte kòm"
+
+msgid "Téléphone"
+msgstr "Telefòn"
+
+msgid "Date de début"
+msgstr "Dat kòmansman"
+
+msgid "Date de fin"
+msgstr "Dat fen"
+
+msgid "Message"
+msgstr "Mesaj"
+
+msgid "optionnel"
+msgstr "opsyonèl"
+
+msgid "Code promo"
+msgstr "Kòd promo"
+
+msgid "Proposez votre prix"
+msgstr "Pwopoze pri ou"
+
+msgid "Prix affiché :"
+msgstr "Pri ki parèt:"
+
+msgid "Offre minimum :"
+msgstr "Òf minimòm:"
+
+msgid "Votre prix par jour"
+msgstr "Pri ou pa jou"
+
+msgid "Les échanges de négociation se feront via la messagerie interne de votre espace client."
+msgstr "Negosyasyon yo ap fèt nan mesajri entènen espas kliyan ou."
+
+msgid "Ce véhicule est négociable"
+msgstr "Machin sa a negosyab"
+
+msgid "Vous pouvez proposer votre prix pour ce véhicule ! Pour négocier, créez un compte gratuit ou connectez-vous. Les échanges se feront via la messagerie interne."
+msgstr "Ou ka pwopoze pri ou pou machin sa a! Pou negosye, kreye yon kont gratis oswa konekte. Echanj yo ap fèt nan mesajri entènen an."
+
+msgid "Se connecter"
+msgstr "Konekte"
+
+msgid "Envoyer la demande"
+msgstr "Voye demann lan"
+
+msgid "Votre demande sera traitée par l'agence. Vous recevrez un lien de suivi."
+msgstr "Ajans lan ap trete demann ou an. W ap resevwa yon lyen pou swiv."
+
+msgid "Contre-offre reçue — Répondez !"
+msgstr "Kont-òf resevwa — reponn!"
+
+msgid "En attente de confirmation"
+msgstr "Ap tann konfimasyon"
+
+msgid "Réservation confirmée"
+msgstr "Rezèvasyon konfime"
+
+msgid "Réservation refusée"
+msgstr "Rezèvasyon refize"
+
+msgid "Expirée"
+msgstr "Ekspire"
+
+msgid "Offre expirée"
+msgstr "Ofri ekspire"
+
+msgid "Suivi de votre demande"
+msgstr "Swivi demann ou an"
+
+msgid "Référence :"
+msgstr "Referans:"
+
+msgid "Client"
+msgstr "Kliyan"
+
+msgid "Durée"
+msgstr "Dire"
+
+msgid "Estimation"
+msgstr "Estimasyon"
+
+msgid "Négociation"
+msgstr "Negosyasyon"
+
+msgid "Votre offre :"
+msgstr "Òf ou:"
+
+msgid "Contre-offre de l'agence"
+msgstr "Kont-òf ajans lan"
+
+msgid "par jour"
+msgstr "pa jou"
+
+msgid "Total estimé :"
+msgstr "Total estime:"
+
+msgid "Message de l'agence :"
+msgstr "Mesaj ajans lan:"
+
+msgid "Accepter"
+msgstr "Aksepte"
+
+msgid "Êtes-vous sûr de vouloir refuser cette contre-offre ? La réservation sera annulée."
+msgstr "Èske ou sèten ou vle refize kont-òf sa a? Rezèvasyon an ap anile."
+
+msgid "Refuser"
+msgstr "Refize"
+
+msgid "Accord trouvé :"
+msgstr "Akò jwenn:"
+
+msgid "Négociation refusée"
+msgstr "Negosyasyon refize"
+
+msgid "Offre envoyée — en attente de réponse de l'agence"
+msgstr "Òf voye — ap tann repons ajans lan"
+
+msgid "Messages"
+msgstr "Mesaj yo"
+
+msgid "Vous"
+msgstr "Ou"
+
+msgid "Aucun message pour le moment. Envoyez un message à l'agence."
+msgstr "Pa gen mesaj pou le moman. Voye yon mesaj bay ajans lan."
+
+msgid "Historique"
+msgstr "Istwa"
+
+msgid "Demande envoyée"
+msgstr "Demand voye"
+
+msgid "Offre de %(price)s/jour envoyée"
+msgstr "Of seryò %(price)s/jou voye"
+
+msgid "Contre-offre de l'agence : %(price)s/jour"
+msgstr "Kont-of ajans lan: %(price)s/jou"
+
+msgid "Contre-offre acceptée — accord à %(price)s/jour"
+msgstr "Kont-of aksepte — akò a %(price)s/jou"
+
+msgid "Connectez-vous"
+msgstr "Konekte"
+
+msgid "pour envoyer un message à l'agence."
+msgstr "pou voye yon mesaj bay ajans lan."
+
+msgid "Voir les véhicules disponibles"
+msgstr "Gade machin ki disponib"
+
+msgid "Contacter via WhatsApp"
+msgstr "Kontakte via WhatsApp"
+
+msgid "Conservez ce lien pour suivre votre demande."
+msgstr "Kenbe lyen sa a pou swiv demann ou."
+
+msgid "À signer"
+msgstr "Pou siyen"
+
+msgid "Actif"
+msgstr "Aktif"
+
+msgid "Clôturé"
+msgstr "Fèmen"
+
+msgid "Brouillon"
+msgstr "Bwonon"
+
+msgid "Retour en cours"
+msgstr "Retoun an kou"
+
+msgid "Annulé"
+msgstr "Anile"
+
+msgid "Aucun contrat pour le moment."
+msgstr "Pa gen kontra pou le moman."
+
+msgid "Nouvelle réservation"
+msgstr "Nouvèl rezèvasyon"
+
+msgid "Toutes"
+msgstr "Yo tout"
+
+msgid "Prix"
+msgstr "Pri"
+
+msgid "Offre"
+msgstr "Of"
+
+msgid "Contre-offre"
+msgstr "Kont-of"
+
+msgid "Accepté"
+msgstr "Aksepte"
+
+msgid "Total"
+msgstr "Total"
+
+msgid "Agence"
+msgstr "Ajans"
+
+msgid "Accepter"
+msgstr "Aksepte"
+
+msgid "Refuser"
+msgstr "Refize"
+
+msgid "Choisir un autre véhicule"
+msgstr "Chwazi yon lòt machin"
+
+msgid "Aucune réservation"
+msgstr "Pa gen rezèvasyon"
+
+msgid "Parcourez notre catalogue pour réserver un véhicule."
+msgstr "Parkou katalòg nou an pou rezève yon machin."
+
+msgid "Voir le catalogue"
+msgstr "Wè katalòg la"
+
+msgid "Du"
+msgstr "Soti"
+
+msgid "au"
+msgstr "rive"
+
+msgid "jour"
+msgid_plural "jours"
+msgstr[0] "jou"
+msgstr[1] "jou"
+
+msgid "Pilote ta flotte"
+msgstr "Pilote flòt ou"
+
+msgid "depuis un seul cockpit."
+msgstr "soti nan yon sèl tablo kontwòl."
+
+msgid "Véhicules, contrats, équipe, analytics — tout centralisé."
+msgstr "Machin, kontra, ekip, analiz — tout santralize."
+
+msgid "Tous les systèmes opérationnels"
+msgstr "Tout sistèm operasyonèl"
+
+msgid "Accède à ton dashboard."
+msgstr "Aksede tablo bò ou."
+
+msgid "Nom d'utilisateur"
+msgstr "Non itilizatè"
+
+msgid "Mot de passe"
+msgstr "Modpas"
+
+msgid "Se connecter"
+msgstr "Konekte"
+
+msgid "Pas encore de compte ?"
+msgstr "Pa gen kont ankò?"
+
+msgid "Créer une agence"
+msgstr "Kreye yon ajans"
+
+msgid "Portail client non disponible"
+msgstr "Pòtal kliyan pa disponib"
+
+msgid "Cette fonctionnalité n'est pas incluse dans votre plan actuel."
+msgstr "Fonksyon sa pa nan plan ou aktyèl la."
+
+msgid "Le portail client permet à vos clients de suivre leurs réservations, signer leurs contrats et gérer leur profil en toute autonomie."
+msgstr "Pòtal kliyan a pèmèt kliyan ou swive rezèvasyon yo, siye kontra yo, e jere pwofil yo an otònòm."
+
+msgid "Avec le portail client, vos clients peuvent :"
+msgstr "Avèk pòtal kliyan an, kliyan ou ka:"
+
+msgid "Suivre leurs réservations en temps réel"
+msgstr "Swive rezèvasyon yo an tan reyèl"
+
+msgid "Signer numériquement leurs contrats"
+msgstr "Siyen kontra yo nimèrikman"
+
+msgid "Consulter leurs documents"
+msgstr "Konsilte dokiman yo"
+
+msgid "Communiquer directement avec vous"
+msgstr "Kominike dirèkteman avèk ou"
+
+msgid "L'équipe Gaboom s'excuse pour la gêne occasionnée."
+msgstr "Ekip Gaboom an ekskize pou enèj ki te lakòz."
+
+msgid "Contactez-nous pour mettre à niveau votre abonnement et débloquer cette fonctionnalité."
+msgstr "Kontakte nou pou mete ajou abònman ou e debloke fonksyon sa."
+
+msgid "Retour à l'accueil"
+msgstr "Retounen lakay"
+
+msgid "Contacter le support"
+msgstr "Kontakte sipò"
+
+msgid "Mon compte"
+msgstr "Kont mwen"
+
+msgid "Gérez votre profil et les informations de votre agence"
+msgstr "Jere pwofil ou ak enfòmasyon ajans ou"
+
+msgid "Profil utilisateur"
+msgstr "Pwofil itilizatè"
+
+msgid "Vos informations personnelles"
+msgstr "Enfòmasyon pèsonèl ou"
+
+msgid "Compte"
+msgstr "Kont"
+
+msgid "Email"
+msgstr "Email"
+
+msgid "Vérifié"
+msgstr "Vèfye"
+
+msgid "Non vérifié"
+msgstr "Pa vèfye"
+
+msgid "Rôle"
+msgstr "Wòl"
+
+msgid "Agence"
+msgstr "Ajans"
+
+msgid "Identité agence"
+msgstr "Idantite ajans"
+
+msgid "Nom, slogan et logo"
+msgstr "Non, slogan ak logo"
+
+msgid "Logo"
+msgstr "Logo"
+
+msgid "PNG, JPG ou WebP — max 5 Mo"
+msgstr "PNG, JPG oswa WebP — max 5 MB"
+
+msgid "Contact & adresse"
+msgstr "Kontak ak adrès"
+
+msgid "Coordonnées de l'agence"
+msgstr "Enfòmasyon kontak ajans la"
+
+msgid "Documents & facturation"
+msgstr "Dokiman ak faktirasyon"
+
+msgid "Infos légales pour contrats et factures"
+msgstr "Enfòmasyon legal pou kontra ak fakti"
+
+msgid "Affiché en bas des factures et devis"
+msgstr "Montre anba fakti ak devi"
+
+msgid "Enregistrer"
+msgstr "Anrejistre"
+
+msgid "Nom complet"
+msgstr "Non konplè"
+
+msgid "Téléphone"
+msgstr "Telefòn"
+
+msgid "WhatsApp"
+msgstr "WhatsApp"
+
+msgid "Nom commercial"
+msgstr "Non komèsyal"
+
+msgid "Slogan"
+msgstr "Slogan"
+
+msgid "Email de contact"
+msgstr "Email kontak"
+
+msgid "Adresse ligne 1"
+msgstr "Adrès liy 1"
+
+msgid "Adresse ligne 2"
+msgstr "Adrès liy 2"
+
+msgid "Ville"
+msgstr "Vil"
+
+msgid "Pays"
+msgstr "Peyi"
+
+msgid "Site web"
+msgstr "Sitwèb"
+
+msgid "Raison sociale"
+msgstr "Rezon sosyal"
+
+msgid "N° TVA / SIRET"
+msgstr "N° TVA / SIRET"
+
+msgid "Devise"
+msgstr "Deviz"
+
+msgid "Pied de facture"
+msgstr "Pye fakti"
+
+msgid "Pages CMS"
+msgstr "Paj CMS"
+
+msgid "Gérez les pages publiques de votre site"
+msgstr "Jere paj piblik sit ou"
+
+msgid "Nouvelle page"
+msgstr "Nouvèl paj"
+
+msgid "Site public"
+msgstr "Sit piblik"
+
+msgid "Website Builder"
+msgstr "Konstititè sitwèb"
+
+msgid "Personnalisez votre vitrine en ligne"
+msgstr "Pèsonnalize vitrin ou an liy"
+
+msgid "Publié"
+msgstr "Pibliye"
+
+msgid "Brouillon"
+msgstr "Bwoton"
+
+msgid "Voir le site"
+msgstr "Wè sit la"
+
+msgid "Prévisualiser"
+msgstr "Previzyalize"
+
+msgid "Publier"
+msgstr "Pibliye"
+
+msgid "Abonnement"
+msgstr "Abònman"
+
+msgid "Gérez votre abonnement Gaboom DriveOS"
+msgstr "Jere abònman Gaboom DriveOS ou"
+
+msgid "Instructions PDF"
+msgstr "Enstriksyon PDF"
+
+msgid "Modifier les informations du membre"
+msgstr "Modifye enfòmasyon manm lan"
+
+msgid "Créer un nouveau membre de l'équipe"
+msgstr "Kreye yon nouvo manm ekip"
+
+msgid "Retour"
+msgstr "Retounen"
+
+msgid "Créer le membre"
+msgstr "Kreye manm lan"
+
+msgid "Gestion accès agences"
+msgstr "Jesyon aksè ajans"
+
+msgid "Administration des abonnements et accès"
+msgstr "Administrayon abònman ak aksè"
+
+msgid "Total"
+msgstr "Total"
+
+msgid "Essais"
+msgstr "Ezay"
+
+msgid "Actives"
+msgstr "Aktif"
+
+msgid "Suspendues"
+msgstr "Sispann"
+
+msgid "Preuves pending"
+msgstr "Pouvwa ann atann"
+
+msgid "Recherche"
+msgstr "Rechèch"
+
+msgid "Nom agence, email owner…"
+msgstr "Non ajans, email pwopriyetè…"
+
+msgid "Tous"
+msgstr "Tout"
+
+msgid "Essai"
+msgstr "Ezay"
+
+msgid "Actif"
+msgstr "Aktif"
+
+msgid "Suspendu"
+msgstr "Sispann"
+
+msgid "Tri"
+msgstr "Tri"
+
+msgid "Plus urgent"
+msgstr "Pi ijans"
+
+msgid "Nom"
+msgstr "Non"
+
+msgid "Plus récent"
+msgstr "Pi resan"
+
+msgid "Filtrer"
+msgstr "Filtre"
+
+msgid "Agence"
+msgstr "Ajans"
+
+msgid "Owner"
+msgstr "Pwopriyetè"
+
+msgid "Expire le"
+msgstr "Ekspi le"
+
+msgid "Restant"
+msgstr "Retan"
+
+msgid "Preuve"
+msgstr "Pouvwa"
+
+msgid "Actions"
+msgstr "Aksyon"
+
+msgid "En attente de votre décision"
+msgstr "Ann tann desizyon w"
+
+msgid "Réservation confirmée — en attente du client"
+msgstr "Rezèvasyon konfime — ann tann kliyan an"
+
+msgid "Sous contrat — cette réservation est devenue un contrat"
+msgstr "Anba kontra — rezervasyon sa vin yon kontra"
+
+msgid "Réservation refusée"
+msgstr "Rezèvasyon refize"
+
+msgid "Créer le contrat"
+msgstr "Kreye kontra a"
+
+msgid "Voir le contrat"
+msgstr "Wè kontra a"
+
+msgid "Client"
+msgstr "Kliyan"
+
+msgid "Message du client"
+msgstr "Mesaj kliyan an"
+
+msgid "Offre client"
+msgstr "Of kliyan an"
+
+msgid "Date début"
+msgstr "Dat kòmanse"
+
+msgid "Date fin"
+msgstr "Dat fini"
+
+msgid "Durée"
+msgstr "Dire"
+
+msgid "Estimation"
+msgstr "Estimasyon"
+
+msgid "Source"
+msgstr "Sòs"
+
+msgid "Créée le"
+msgstr "Kreye le"
+
+msgid "Modifier"
+msgstr "Modifye"
+
+msgid "Nouvelle"
+msgstr "Nouvèl"
+
+msgid "campagne"
+msgstr "kampàn"
+
+msgid "Modifier la campagne"
+msgstr "Modifye kampàn nan"
+
+msgid "Nouvelle campagne IA"
+msgstr "Nouvèl kampàn IA"
+
+msgid "Assistant IA embarqué — génération, scoring et optimisation locale"
+msgstr "Asistan IA entegre — generasyon, scoring ak optimizasyon lokal"
+
+msgid "Informations"
+msgstr "Enfòmasyon"
+
+msgid "Nom de la campagne"
+msgstr "Non kampàn nan"
+
+msgid "Ex: Promo été 2026"
+msgstr "Eg: Promo ete 2026"
+
+msgid "Objectif"
+msgstr "Objektif"
+
+msgid "Cible"
+msgstr "Sib"
+
+msgid "Tous les clients"
+msgstr "Tout kliyan yo"
+
+msgid "Clients actifs"
+msgstr "Kliyan aktif yo"
+
+msgid "Inactifs 30 jours"
+msgstr "Inaktif 30 jou"
+
+msgid "Tag personnalisé"
+msgstr "Tag pèsonalize"
+
+msgid "Planifier l'envoi"
+msgstr "Planifye voyaj la"
+
+msgid "Lien de réservation"
+msgstr "Lyen rezèvasyon"
+
+msgid "Paiements"
+msgstr "Peman"
+
+msgid "Historique et suivi des encaissements"
+msgstr "Istwa ak swivi kobman yo"
+
+msgid "Total encaissé"
+msgstr "Total kobman"
+
+msgid "Aujourd'hui"
+msgstr "Jodi a"
+
+msgid "Méthode principale"
+msgstr "Metòd prensipal"
+
+msgid "Accès"
+msgstr "Akè"
+
+msgid "Détails accès"
+msgstr "Detay akè"
+
+msgid "Deadline"
+msgstr "Dat limit"
+
+msgid "Countdown"
+msgstr "Kont deklans"
+
+msgid "Jours restants"
+msgstr "Jou ki rete"
+
+msgid "Raison suspension"
+msgstr "Rezon sispann"
+
+msgid "Preuves de paiement"
+msgstr "Pouv peman"
+
+msgid "Export CSV"
+msgstr "Ekspòte CSV"
+
+msgid "Client, véhicule, immat, réf…"
+msgstr "Kliyan, vétikil, plak, ref…"
+
+msgid "30 derniers jours"
+msgstr "30 dènye jou yo"
+
+msgid "7 derniers jours"
+msgstr "7 dènye jou yo"
+
+msgid "Tout"
+msgstr "Tout"
+
+msgid "Personnalisé"
+msgstr "Pèsonalize"
+
+msgid "Méthode : toutes"
+msgstr "Metòd: tout yo"
+
+msgid "Espèces"
+msgstr "Kob"
+
+msgid "Terminal CB"
+msgstr "Tèminal kat"
+
+msgid "Virement"
+msgstr "Vireman"
+
+msgid "Statut : tous"
+msgstr "Eta: tout yo"
+
+msgid "Réussi"
+msgstr "Siksè"
+
+msgid "Remboursé"
+msgstr "Ranbouse"
+
+msgid "Échoué"
+msgstr "Echwe"
+
+msgid "Tri : Date"
+msgstr "Tri: Dat"
+
+msgid "Tri : Montant"
+msgstr "Tri: Montan"
+
+msgid "Tri : Client"
+msgstr "Tri: Kliyan"
+
+msgid "Filtrer"
+msgstr "Filtre"
+
+msgid "Réinitialiser"
+msgstr "Re-enisyaje"
+
+msgid "Montant"
+msgstr "Montan"
+
+msgid "Contrat"
+msgstr "Kontra"
+
+msgid "Réf"
+msgstr "Ref"
+
+msgid "paiement"
+msgstr "peman"
+
+msgid "Page"
+msgstr "Paj"
+
+msgid "Préc."
+msgstr "Pres."
+
+msgid "Suiv."
+msgstr "Swiv."
+
+msgid "Aucun paiement"
+msgstr "Okenn peman"
+
+msgid "Les paiements apparaîtront ici une fois enregistrés sur les contrats."
+msgstr "Peman yo ap parèt isit la yon fwa anrejistre sou kontra yo."
+
+msgid "Créer un contrat"
+msgstr "Kreye yon kontra"
+
+msgid "Supprimer véhicule"
+msgstr "Elimine vétikil"
+
+msgid "Supprimer ce véhicule ?"
+msgstr "Elimine vétikil sa a?"
+
+msgid "Retour à la liste"
+msgstr "Retounen nan lis la"
+
+msgid "Tu es sur le point de supprimer"
+msgstr "Ou ap elimine"
+
+msgid "Cette action est irréversible."
+msgstr "Aksyon sa a pa kapab anile."
+
+msgid "Confirmer la suppression"
+msgstr "Konfime eliminasyon an"
+
+msgid "Annuler"
+msgstr "Anile"
+
+msgid "Créer le membre"
+msgstr "Kreye manm la"
+
+msgid "Tous rôles"
+msgstr "Tout wòl yo"
+
+msgid "Tous statuts"
+msgstr "Tout eta yo"
+
+msgid "Actif"
+msgstr "Aktif"
+
+msgid "Désactivé"
+msgstr "Dezaktive"
+
+msgid "Membre"
+msgstr "Manm"
+
+msgid "Rôle"
+msgstr "Wòl"
+
+msgid "Statut"
+msgstr "Eta"
+
+msgid "Actions"
+msgstr "Aksyon"
+
+msgid "Rechercher nom ou email…"
+msgstr "Chache non oswa imèl…"
+
+msgid "Modifier"
+msgstr "Modifye"
+
+msgid "Activer"
+msgstr "Aktive"
+
+msgid "Désactiver"
+msgstr "Dezaktive"
+
+msgid "Supprimer"
+msgstr "Elimine"
+
+msgid "Aucun membre trouvé."
+msgstr "Okenn manm jwenn."
+
+msgid "Voir"
+msgstr "Wè"
+
+msgid "Équipe"
+msgstr "Ekip"
+
+msgid "Gérez les membres de votre agence"
+msgstr "Gere manm ajans ou"
+
+msgid "Sans titre"
+msgstr "San tit"

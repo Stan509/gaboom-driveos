@@ -1,0 +1,159 @@
+{% extends "dashboard/_layout.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "Clients" %} — Dashboard{% endblock %}
+{% block page_title %}{% trans "Clients" %}{% endblock %}
+{% block page_subtitle %}{{ clients|length }} {% trans "client" %}{{ clients|length|pluralize }}{% endblock %}
+
+{% block page_css %}
+<style>
+  @keyframes cardIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+  @media(max-width:767px){.desktop-table{display:none}.mobile-cards{display:block}}
+  @media(min-width:768px){.mobile-cards{display:none}}
+</style>
+{% endblock %}
+
+{% block page_actions %}
+  {% if can_edit %}
+  <a href="{% url 'dashboard:client_create' %}" class="rounded-xl bg-gaboomViolet text-white px-4 py-2.5 text-sm font-medium hover:opacity-95 transition inline-flex items-center gap-1.5">
+    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/></svg>
+    {% trans "Nouveau client" %}
+  </a>
+  {% endif %}
+{% endblock %}
+
+{% block content %}
+<!-- Filters -->
+<div class="rounded-2xl bg-white border border-slate-200 shadow-sm">
+  <div class="px-5 py-3 border-b border-slate-100 flex flex-wrap items-center gap-3">
+    <form method="get" class="flex flex-wrap items-center gap-3 flex-1">
+      <div class="relative flex-1 min-w-[180px] max-w-xs">
+        <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"/></svg>
+        <input type="text" name="q" value="{{ q }}" placeholder="{% trans "Rechercher nom, email, tél…" %}" class="w-full pl-9 pr-3 py-2 rounded-xl border border-slate-200 text-sm focus:border-violet-400 focus:ring-1 focus:ring-violet-400 outline-none">
+      </div>
+      <select name="status" onchange="this.form.submit()" class="rounded-xl border border-slate-200 px-3 py-2 text-sm focus:border-violet-400 focus:ring-1 focus:ring-violet-400 outline-none">
+        <option value="">{% trans "Tous statuts" %}</option>
+        <option value="active" {% if status_filter == "active" %}selected{% endif %}>{% trans "Actif" %}</option>
+        <option value="vip" {% if status_filter == "vip" %}selected{% endif %}>VIP</option>
+        <option value="blacklisted" {% if status_filter == "blacklisted" %}selected{% endif %}>{% trans "Blacklisté" %}</option>
+      </select>
+      <select name="license" onchange="this.form.submit()" class="rounded-xl border border-slate-200 px-3 py-2 text-sm focus:border-violet-400 focus:ring-1 focus:ring-violet-400 outline-none">
+        <option value="">{% trans "Permis : tous" %}</option>
+        <option value="valid" {% if license_filter == "valid" %}selected{% endif %}>{% trans "Valide" %}</option>
+        <option value="expired" {% if license_filter == "expired" %}selected{% endif %}>{% trans "Expiré" %}</option>
+        <option value="missing" {% if license_filter == "missing" %}selected{% endif %}>{% trans "Manquant" %}</option>
+      </select>
+      <select name="sort" onchange="this.form.submit()" class="rounded-xl border border-slate-200 px-3 py-2 text-sm focus:border-violet-400 focus:ring-1 focus:ring-violet-400 outline-none">
+        <option value="name" {% if sort_by == "name" %}selected{% endif %}>{% trans "Tri : Nom" %}</option>
+        <option value="date" {% if sort_by == "date" %}selected{% endif %}>{% trans "Tri : Date création" %}</option>
+      </select>
+      <button type="submit" class="rounded-xl bg-gaboomViolet text-white px-4 py-2 text-sm font-medium hover:opacity-95 transition">{% trans "Filtrer" %}</button>
+    </form>
+  </div>
+
+  <!-- Desktop table -->
+  <div class="desktop-table overflow-x-auto">
+    <table class="w-full text-sm">
+      <thead>
+        <tr class="border-b border-slate-200 text-left text-[11px] font-semibold text-slate-400 uppercase tracking-wider">
+          <th class="px-5 py-3">{% trans "Nom" %}</th>
+          <th class="px-3 py-3">{% trans "Contact" %}</th>
+          <th class="px-3 py-3">{% trans "Statut" %}</th>
+          <th class="px-3 py-3">{% trans "Permis" %}</th>
+          <th class="px-3 py-3">{% trans "Relance" %}</th>
+          <th class="px-3 py-3 text-right">{% trans "Actions" %}</th>
+        </tr>
+      </thead>
+      <tbody class="divide-y divide-slate-100">
+        {% for c in clients %}
+        <tr class="hover:bg-slate-50/60 transition {% if c.license_status == 'expired' %}bg-red-50/30{% endif %}">
+          <td class="px-5 py-3">
+            <div class="font-medium text-slate-800">{{ c.full_name }}</div>
+            {% if c.tags %}<div class="text-[11px] text-slate-400 mt-0.5">{{ c.tags }}</div>{% endif %}
+          </td>
+          <td class="px-3 py-3">
+            <div class="text-slate-600 text-xs">{{ c.email|default:"—" }}</div>
+            <div class="text-slate-500 text-xs">{{ c.phone|default:"" }}</div>
+          </td>
+          <td class="px-3 py-3">
+            {% if c.status == "vip" %}
+            <span class="inline-flex items-center gap-1 rounded-full bg-amber-100 text-amber-700 px-2.5 py-0.5 text-[11px] font-semibold"><span class="h-1.5 w-1.5 rounded-full bg-amber-500"></span>VIP</span>
+            {% elif c.status == "blacklisted" %}
+            <span class="inline-flex items-center gap-1 rounded-full bg-red-100 text-red-700 px-2.5 py-0.5 text-[11px] font-semibold"><span class="h-1.5 w-1.5 rounded-full bg-red-500"></span>{% trans "Blacklisté" %}</span>
+            {% else %}
+            <span class="inline-flex items-center gap-1 rounded-full bg-emerald-100 text-emerald-700 px-2.5 py-0.5 text-[11px] font-semibold"><span class="h-1.5 w-1.5 rounded-full bg-emerald-500"></span>{% trans "Actif" %}</span>
+            {% endif %}
+          </td>
+          <td class="px-3 py-3">
+            {% if c.license_status == "expired" %}
+            <span class="inline-flex items-center gap-1 rounded-full bg-red-100 text-red-700 px-2.5 py-0.5 text-[11px] font-semibold"><span class="h-1.5 w-1.5 rounded-full bg-red-500"></span>{% trans "Expiré" %}</span>
+            {% elif c.license_status == "valid" %}
+            <span class="inline-flex items-center gap-1 rounded-full bg-emerald-100 text-emerald-700 px-2.5 py-0.5 text-[11px] font-semibold"><span class="h-1.5 w-1.5 rounded-full bg-emerald-500"></span>{% trans "Valide" %}</span>
+            {% else %}
+            <span class="inline-flex items-center gap-1 rounded-full bg-slate-100 text-slate-500 px-2.5 py-0.5 text-[11px] font-semibold"><span class="h-1.5 w-1.5 rounded-full bg-slate-400"></span>{% trans "Manquant" %}</span>
+            {% endif %}
+          </td>
+          <td class="px-3 py-3 text-xs text-slate-500">{{ c.follow_up_at|date:"d/m/Y"|default:"—" }}</td>
+          <td class="px-3 py-3 text-right">
+            <div class="flex items-center justify-end gap-1">
+              <a href="{% url 'dashboard:client_detail' c.pk %}" class="rounded-lg border border-slate-200 px-3 py-1.5 text-[11px] font-medium text-slate-600 hover:bg-slate-50 transition">{% trans "Voir" %}</a>
+              {% if can_edit %}
+              <a href="{% url 'dashboard:client_edit' c.pk %}" class="rounded-lg bg-gaboomViolet text-white px-3 py-1.5 text-[11px] font-medium hover:opacity-95 transition">{% trans "Modifier" %}</a>
+              {% endif %}
+            </div>
+          </td>
+        </tr>
+        {% empty %}
+        <tr>
+          <td colspan="6" class="px-5 py-16 text-center">
+            <svg class="w-10 h-10 mx-auto text-slate-300 mb-3" fill="none" stroke="currentColor" stroke-width="1" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19.128a9.38 9.38 0 0 0 2.625.372 9.337 9.337 0 0 0 4.121-.952 4.125 4.125 0 0 0-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 0 1 8.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0 1 11.964-3.07M12 6.375a3.375 3.375 0 1 1-6.75 0 3.375 3.375 0 0 1 6.75 0Zm8.25 2.25a2.625 2.625 0 1 1-5.25 0 2.625 2.625 0 0 1 5.25 0Z"/></svg>
+            <h3 class="font-semibold text-slate-900">{% trans "Aucun client" %}</h3>
+            <p class="mt-1 text-sm text-slate-500">{% trans "Ajoutez votre premier client pour commencer." %}</p>
+            {% if can_edit %}
+            <a href="{% url 'dashboard:client_create' %}" class="mt-4 inline-block rounded-xl bg-gaboomViolet text-white px-5 py-2.5 text-sm font-medium hover:opacity-95 transition">+ {% trans "Nouveau client" %}</a>
+            {% endif %}
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Mobile cards -->
+  <div class="mobile-cards p-3 space-y-3">
+    {% for c in clients %}
+    <a href="{% url 'dashboard:client_detail' c.pk %}" class="block rounded-xl border bg-white p-4 hover:shadow-sm transition {% if c.license_status == 'expired' %}border-red-200 bg-red-50/30{% else %}border-slate-200{% endif %}" style="animation:cardIn .25s ease-out both;animation-delay:{{ forloop.counter0 }}00ms">
+      <div class="flex items-center justify-between mb-1.5">
+        <div class="font-semibold text-sm text-slate-800">{{ c.full_name }}</div>
+        {% if c.status == "vip" %}
+        <span class="inline-flex items-center gap-1 rounded-full bg-amber-100 text-amber-700 px-2 py-0.5 text-[10px] font-semibold">VIP</span>
+        {% elif c.status == "blacklisted" %}
+        <span class="inline-flex items-center gap-1 rounded-full bg-red-100 text-red-700 px-2 py-0.5 text-[10px] font-semibold">{% trans "Blacklisté" %}</span>
+        {% else %}
+        <span class="inline-flex items-center gap-1 rounded-full bg-emerald-100 text-emerald-700 px-2 py-0.5 text-[10px] font-semibold">{% trans "Actif" %}</span>
+        {% endif %}
+      </div>
+      <div class="text-xs text-slate-500 space-y-0.5">
+        {% if c.email %}<div>{{ c.email }}</div>{% endif %}
+        {% if c.phone %}<div>{{ c.phone }}</div>{% endif %}
+      </div>
+      <div class="flex items-center gap-3 mt-2">
+        {% if c.license_status == "expired" %}
+        <span class="inline-flex items-center gap-1 rounded-full bg-red-100 text-red-700 px-2 py-0.5 text-[10px] font-semibold">{% trans "Permis expiré" %}</span>
+        {% elif c.license_status == "valid" %}
+        <span class="inline-flex items-center gap-1 rounded-full bg-emerald-100 text-emerald-700 px-2 py-0.5 text-[10px] font-semibold">{% trans "Permis valide" %}</span>
+        {% elif c.license_status == "missing" %}
+        <span class="inline-flex items-center gap-1 rounded-full bg-slate-100 text-slate-500 px-2 py-0.5 text-[10px] font-semibold">{% trans "Permis manquant" %}</span>
+        {% endif %}
+        {% if c.follow_up_at %}<span class="text-[10px] text-slate-400">{% trans "Relance :" %} {{ c.follow_up_at|date:"d/m/Y" }}</span>{% endif %}
+      </div>
+    </a>
+    {% empty %}
+    <div class="text-center py-12">
+      <h3 class="font-semibold text-slate-900">{% trans "Aucun client" %}</h3>
+      <p class="mt-1 text-sm text-slate-500">{% trans "Ajoutez votre premier client pour commencer." %}</p>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}

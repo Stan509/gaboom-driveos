@@ -1,0 +1,88 @@
+{% extends "dashboard/_layout.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "Contrats" %} — Dashboard{% endblock %}
+{% block page_title %}{% trans "Contrats" %}{% endblock %}
+{% block page_subtitle %}{{ contracts|length }} {% trans "contrat" %}{{ contracts|length|pluralize }}{% endblock %}
+
+{% block page_actions %}
+  {% if can_edit %}
+  <a href="{% url 'dashboard:contract_create' %}" class="rounded-xl bg-gaboomViolet text-white px-4 py-2.5 text-sm font-medium hover:opacity-95 transition inline-flex items-center gap-1.5">
+    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/></svg>
+    {% trans "Nouveau contrat" %}
+  </a>
+  {% endif %}
+{% endblock %}
+
+{% block content %}
+  <form method="get" class="flex flex-wrap items-center gap-3 mb-6">
+    <select name="status" class="rounded-xl border border-slate-200 px-3 py-2 text-sm focus:border-violet-400 outline-none">
+      <option value="">{% trans "Tous statuts" %}</option>
+      <option value="draft" {% if status_filter == "draft" %}selected{% endif %}>{% trans "Brouillon" %}</option>
+      <option value="active" {% if status_filter == "active" %}selected{% endif %}>{% trans "Actif" %}</option>
+      <option value="closed" {% if status_filter == "closed" %}selected{% endif %}>{% trans "Clôturé" %}</option>
+    </select>
+    <select name="pay" class="rounded-xl border border-slate-200 px-3 py-2 text-sm focus:border-violet-400 outline-none">
+      <option value="">{% trans "Tous paiements" %}</option>
+      <option value="unpaid" {% if pay_filter == "unpaid" %}selected{% endif %}>{% trans "Impayé" %}</option>
+      <option value="partial" {% if pay_filter == "partial" %}selected{% endif %}>{% trans "Partiel" %}</option>
+      <option value="paid" {% if pay_filter == "paid" %}selected{% endif %}>{% trans "Payé" %}</option>
+    </select>
+    <button type="submit" class="rounded-xl bg-slate-100 px-4 py-2 text-sm font-medium hover:bg-slate-200 transition">{% trans "Filtrer" %}</button>
+  </form>
+
+  {% if contracts %}
+  <div class="overflow-x-auto">
+    <table class="w-full text-sm">
+      <thead>
+        <tr class="border-b border-slate-200 text-left text-xs font-semibold text-slate-400 uppercase tracking-wider">
+          <th class="pb-3 pr-4">#</th>
+          <th class="pb-3 pr-4">{% trans "Client" %}</th>
+          <th class="pb-3 pr-4">{% trans "Véhicule" %}</th>
+          <th class="pb-3 pr-4">{% trans "Période" %}</th>
+          <th class="pb-3 pr-4">{% trans "Statut" %}</th>
+          <th class="pb-3 pr-4">{% trans "Paiement" %}</th>
+          <th class="pb-3 text-right">{% trans "Montant" %}</th>
+        </tr>
+      </thead>
+      <tbody class="divide-y divide-slate-100">
+        {% for c in contracts %}
+        <tr class="hover:bg-slate-50/60 transition cursor-pointer" onclick="window.location='{% url 'dashboard:contract_detail' c.pk %}'">
+          <td class="py-3 pr-4 font-medium">{{ c.pk }}</td>
+          <td class="py-3 pr-4">{{ c.client.full_name }}</td>
+          <td class="py-3 pr-4 text-slate-600">{{ c.vehicle }}</td>
+          <td class="py-3 pr-4 text-slate-500 text-xs">{{ c.start_date|date:"d/m" }} → {{ c.end_date|date:"d/m" }}</td>
+          <td class="py-3 pr-4">
+            {% if c.status == "active" %}
+              <span class="inline-flex rounded-full bg-emerald-50 text-emerald-700 px-2.5 py-0.5 text-xs font-medium border border-emerald-200">{% trans "Actif" %}</span>
+            {% elif c.status == "closed" %}
+              <span class="inline-flex rounded-full bg-slate-100 text-slate-600 px-2.5 py-0.5 text-xs font-medium border border-slate-200">{% trans "Clôturé" %}</span>
+            {% else %}
+              <span class="inline-flex rounded-full bg-blue-50 text-blue-700 px-2.5 py-0.5 text-xs font-medium border border-blue-200">{% trans "Brouillon" %}</span>
+            {% endif %}
+          </td>
+          <td class="py-3 pr-4">
+            {% if c.payment_status == "paid" %}
+              <span class="text-xs font-medium text-emerald-600">{% trans "Payé" %}</span>
+            {% elif c.payment_status == "partial" %}
+              <span class="text-xs font-medium text-amber-600">{% trans "Partiel" %}</span>
+            {% else %}
+              <span class="text-xs font-medium text-red-600">{% trans "Impayé" %}</span>
+            {% endif %}
+          </td>
+          <td class="py-3 text-right font-medium">{{ c.montant_ttc }}{{ c.currency }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% else %}
+  <div class="text-center py-16">
+    <h3 class="font-semibold text-slate-900">{% trans "Aucun contrat" %}</h3>
+    <p class="mt-1 text-sm text-slate-500">{% trans "Créez votre premier contrat de location." %}</p>
+    {% if can_edit %}
+    <a href="{% url 'dashboard:contract_create' %}" class="mt-4 inline-block rounded-xl bg-gaboomViolet text-white px-5 py-2.5 text-sm font-medium hover:opacity-95 transition">+ {% trans "Nouveau contrat" %}</a>
+    {% endif %}
+  </div>
+  {% endif %}
+{% endblock %}

@@ -1,0 +1,138 @@
+{% extends "dashboard/_layout.html" %}
+{% load i18n %}
+
+{% block page_title %}{% trans "Thèmes" %}{% endblock %}
+{% block page_subtitle %}{% trans "Personnalisez l'apparence de votre dashboard" %}{% endblock %}
+
+{% block content %}
+<form method="post" class="space-y-8">
+  {% csrf_token %}
+
+  <!-- Theme selector -->
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+    {% for val, label in theme_choices %}
+    <label class="cursor-pointer group">
+      <input type="radio" name="theme_choice" value="{{ val }}" {% if ts.theme_choice == val %}checked{% endif %} class="peer hidden" />
+      <div class="d-card p-5 peer-checked:ring-2 peer-checked:ring-offset-2 transition-all
+        {% if val == 'dark' %}peer-checked:ring-amber-400
+        {% elif val == 'clear' %}peer-checked:ring-slate-800
+        {% else %}peer-checked:ring-violet-500{% endif %}">
+
+        <!-- Preview bar -->
+        <div class="rounded-xl overflow-hidden mb-4 h-32 relative
+          {% if val == 'dark' %}bg-[#0F0F0F]
+          {% elif val == 'clear' %}bg-[#F8F9FB]
+          {% else %}bg-[#FFFFFF]{% endif %}">
+          <div class="absolute inset-0 flex items-end p-3">
+            <div class="flex gap-2">
+              <div class="h-6 rounded-lg px-3 flex items-center text-[10px] font-bold
+                {% if val == 'dark' %}bg-[#F5B400] text-black
+                {% elif val == 'clear' %}bg-[#1A1A1A] text-white
+                {% else %}bg-[#6B46C1] text-white{% endif %}">{% trans "Bouton" %}</div>
+              <div class="h-6 rounded-lg px-3 flex items-center text-[10px]
+                {% if val == 'dark' %}bg-[#1A1A1A] text-[#F5B400] border border-[#2A2A2A]
+                {% elif val == 'clear' %}bg-white text-slate-800 border border-slate-200
+                {% else %}bg-[#F7F5FF] text-[#1A1A1A] border border-[#E6D9F7]{% endif %}">{% trans "Card" %}</div>
+            </div>
+          </div>
+          {% if val == 'dark' %}
+          <div class="absolute top-3 right-3 w-8 h-8 rounded-full bg-[#F5B400]/20 blur-xl"></div>
+          {% endif %}
+        </div>
+
+        <h3 class="font-bold text-sm">{{ label }}</h3>
+        <p class="text-xs opacity-50 mt-0.5">
+          {% if val == 'dark' %}{% trans "Fond sombre, contraste élevé" %}
+          {% elif val == 'clear' %}{% trans "Fond clair, lisibilité maximale, ombres douces" %}
+          {% else %}{% trans "Violet clair, accents jaunes, contraste AA" %}{% endif %}
+        </p>
+      </div>
+    </label>
+    {% endfor %}
+  </div>
+
+  <!-- Advanced settings -->
+  <div class="d-card p-6 space-y-5">
+    <h3 class="font-semibold text-sm flex items-center gap-2">
+      <svg class="w-4 h-4 opacity-50" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M10.5 6h9.75M10.5 6a1.5 1.5 0 1 1-3 0m3 0a1.5 1.5 0 1 0-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m-9.75 0h9.75"/></svg>
+      {% trans "Personnalisation avancée" %}
+    </h3>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div>
+        <label class="block text-xs font-medium mb-1.5">{% trans "Couleur primaire" %}</label>
+        <div class="flex items-center gap-2">
+        <input type="color" name="primary_color" value="{{ ts.primary_color|default:'#6B46C1' }}"
+            class="w-10 h-10 rounded-lg border border-slate-200 cursor-pointer" />
+          <input type="text" name="primary_color_text" value="{{ ts.primary_color }}" maxlength="20" placeholder="{% trans "Auto" %}"
+            class="flex-1 rounded-xl border border-slate-200 px-3 py-2 text-sm focus:ring-2 focus:ring-violet-300 outline-none"
+            oninput="this.form.primary_color.value=this.value" />
+        </div>
+      </div>
+      <div>
+        <label class="block text-xs font-medium mb-1.5">{% trans "Couleur secondaire" %}</label>
+        <div class="flex items-center gap-2">
+        <input type="color" name="secondary_color" value="{{ ts.secondary_color|default:'#FCD34D' }}"
+            class="w-10 h-10 rounded-lg border border-slate-200 cursor-pointer" />
+          <input type="text" name="secondary_color_text" value="{{ ts.secondary_color }}" maxlength="20" placeholder="{% trans "Auto" %}"
+            class="flex-1 rounded-xl border border-slate-200 px-3 py-2 text-sm focus:ring-2 focus:ring-violet-300 outline-none"
+            oninput="this.form.secondary_color.value=this.value" />
+        </div>
+      </div>
+      <div>
+        <label class="block text-xs font-medium mb-1.5">{% trans "Border radius (px)" %}</label>
+        <input type="range" name="border_radius" min="0" max="24" value="{{ ts.border_radius }}"
+          class="w-full accent-violet-600" oninput="document.getElementById('radiusVal').textContent=this.value+'px'" />
+        <span id="radiusVal" class="text-xs opacity-50">{{ ts.border_radius }}px</span>
+      </div>
+      <div class="space-y-3">
+        <label class="flex items-center gap-2 cursor-pointer">
+          <input type="checkbox" name="enable_animations" value="1" {% if ts.enable_animations %}checked{% endif %}
+            class="rounded border-slate-300 text-violet-600 focus:ring-violet-400 w-4 h-4" />
+          <span class="text-sm">{% trans "Animations" %}</span>
+        </label>
+        <label class="flex items-center gap-2 cursor-pointer">
+          <input type="checkbox" name="enable_glow_effect" value="1" {% if ts.enable_glow_effect %}checked{% endif %}
+            class="rounded border-slate-300 text-violet-600 focus:ring-violet-400 w-4 h-4" />
+          <span class="text-sm">{% trans "Effet glow" %}</span>
+        </label>
+      </div>
+    </div>
+  </div>
+
+  <div class="d-card p-6 space-y-4">
+    <h3 class="font-semibold text-sm">{% trans "Palette clair violet/jaune" %}</h3>
+    <div class="text-xs text-slate-600 space-y-2">
+      <div>{% trans "Violet principal : #6B46C1 — boutons primaires, liens actifs, focus" %}</div>
+      <div>{% trans "Blanc : #FFFFFF — fonds principaux et surfaces" %}</div>
+      <div>{% trans "Jaune accent : #FCD34D — badges d’alerte, messages d’erreur, états attention" %}</div>
+      <div>{% trans "Texte : #1A1A1A (normal), #3F3F3F (secondaire), #5C5C5C (tertiaire)" %}</div>
+      <div>{% trans "Contraste minimum : 4.5:1 pour texte normal, 3:1 pour texte large" %}</div>
+    </div>
+    <div class="text-xs text-slate-600 space-y-2">
+      <div>{% trans "Variables CSS : --g-accent, --g-accent-soft, --g-gold, --g-yellow, --g-text, --g-text-muted, --g-text-dim" %}</div>
+      <div>{% trans "Usages : fond = --g-bg, cartes = --g-card-bg, bordures = --g-surface-border" %}</div>
+      <div>{% trans "Hover : --g-surface-hover, accentuation via opacité modérée" %}</div>
+    </div>
+  </div>
+
+  <div class="flex justify-end">
+    <button type="submit" class="d-btn px-6 py-2.5 text-sm font-semibold transition hover:scale-[1.02]">
+      {% trans "Enregistrer le thème" %}
+    </button>
+  </div>
+</form>
+
+<script>
+document.querySelectorAll('input[name="primary_color"]').forEach(function(el){
+  if(el.type==='color'){el.addEventListener('input',function(){
+    var t=this.form.querySelector('[name="primary_color_text"]');if(t)t.value=this.value;
+  })}
+});
+document.querySelectorAll('input[name="secondary_color"]').forEach(function(el){
+  if(el.type==='color'){el.addEventListener('input',function(){
+    var t=this.form.querySelector('[name="secondary_color_text"]');if(t)t.value=this.value;
+  })}
+});
+</script>
+{% endblock %}

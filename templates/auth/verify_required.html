@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% load static i18n %}
+
+{% block title %}{% trans "Vérifie ton email" %} — Gaboom DriveOS{% endblock %}
+
+{% block body %}
+  <div class="min-h-screen flex items-center justify-center px-4 bg-slate-50">
+    <div class="w-full max-w-md text-center">
+      <a href="/"><img src="{% static 'brand/logo.png' %}" alt="Gaboom DriveOS" class="h-9 mx-auto" /></a>
+
+      <div class="mt-8 rounded-2xl bg-white border border-slate-200 shadow-sm p-8">
+        <!-- Icon -->
+        <div class="mx-auto h-14 w-14 rounded-full bg-violet-50 flex items-center justify-center">
+          <svg class="w-7 h-7 text-gaboomViolet" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 0 1-2.25 2.25h-15a2.25 2.25 0 0 1-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25m19.5 0v.243a2.25 2.25 0 0 1-1.07 1.916l-7.5 4.615a2.25 2.25 0 0 1-2.36 0L3.32 8.91a2.25 2.25 0 0 1-1.07-1.916V6.75"/></svg>
+        </div>
+
+        <h1 class="mt-5 text-xl font-bold text-slate-900">{% trans "Vérifie ton email" %}</h1>
+        <p class="mt-2 text-sm text-slate-500 leading-relaxed">
+          {% trans "Nous avons envoyé un lien de vérification à" %}<br/>
+          <strong class="text-slate-700">{{ user.email }}</strong>
+        </p>
+        <p class="mt-1 text-xs text-slate-400">{% trans "Vérifie aussi tes spams." %}</p>
+
+        {% if resent %}
+          <div class="mt-5 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-700 p-3 text-sm">
+            {% trans "Email renvoyé avec succès !" %}
+          </div>
+        {% endif %}
+
+        {% if cooldown %}
+          <div class="mt-5 rounded-xl bg-amber-50 border border-amber-200 text-amber-700 p-3 text-sm">
+            {% trans "Patiente encore" %} {{ cooldown }}s {% trans "avant de renvoyer." %}
+          </div>
+        {% endif %}
+
+        <form method="post" action="/resend-verification/" class="mt-6">
+          {% csrf_token %}
+          <button type="submit" class="w-full rounded-full bg-gaboomViolet text-white py-2.5 text-sm font-semibold shadow-lg shadow-violet-200 hover:bg-violet-700 transition-all">
+            {% trans "Renvoyer l'email" %}
+          </button>
+        </form>
+
+        <div class="mt-4 flex items-center justify-center gap-4 text-xs text-slate-400">
+          <form method="post" action="/logout/">
+            {% csrf_token %}
+            <button type="submit" class="hover:text-slate-600 transition">{% trans "Se déconnecter" %}</button>
+          </form>
+          <span>·</span>
+          <a href="mailto:support@gaboomdriveos.com" class="hover:text-slate-600 transition">{% trans "Support" %}</a>
+        </div>
+      </div>
+
+      <p class="mt-6 text-xs text-slate-400">
+        {% trans "En DEV, le lien apparaît dans la console du serveur." %}
+      </p>
+    </div>
+  </div>
+{% endblock %}

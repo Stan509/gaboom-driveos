@@ -1,0 +1,65 @@
+{% extends "dashboard/_layout.html" %}
+{% load i18n %}
+
+{% block page_title %}{% trans "Campagnes" %}{% endblock %}
+{% block page_subtitle %}{% trans "Campagnes email marketing" %}{% endblock %}
+
+{% block page_actions %}
+<a href="{% url 'dashboard:campaign_create' %}" class="d-btn px-4 py-2 text-sm font-semibold inline-flex items-center gap-1.5">
+  <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/></svg>
+  {% trans "Nouvelle campagne" %}
+</a>
+{% endblock %}
+
+{% block content %}
+{% if campaigns %}
+<div class="grid gap-3">
+  {% for c in campaigns %}
+  <div class="d-card p-5 flex flex-col sm:flex-row sm:items-center gap-4 d-fade-in" style="animation-delay:{{ forloop.counter0 }}50ms">
+    <div class="flex-1 min-w-0">
+      <div class="flex items-center gap-2">
+        <span class="font-semibold text-sm truncate">{{ c.title }}</span>
+        {% if c.status == 'sent' %}
+        <span class="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-700">{% trans "Envoyée" %}</span>
+        {% elif c.status == 'scheduled' %}
+        <span class="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-blue-100 text-blue-700">{% trans "Planifiée" %}</span>
+        {% else %}
+        <span class="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-slate-100 text-slate-600">{% trans "Brouillon" %}</span>
+        {% endif %}
+      </div>
+      <div class="text-xs opacity-50 mt-0.5">
+        {% trans "Cible :" %} {{ c.get_target_type_display }}
+        {% if c.sent_at %} · {% trans "Envoyée le" %} {{ c.sent_at|date:"d/m/Y H:i" }}{% endif %}
+        {% if c.scheduled_at and c.status == 'scheduled' %} · {% trans "Planifiée le" %} {{ c.scheduled_at|date:"d/m/Y H:i" }}{% endif %}
+      </div>
+      {% if c.status == 'sent' %}
+      {% with sent_count=c.logs.count %}
+      <div class="text-[11px] mt-1 opacity-40">{% blocktrans count count=sent_count %}{{ count }} email envoyé{% plural %}{{ count }} emails envoyés{% endblocktrans %}</div>
+      {% endwith %}
+      {% endif %}
+    </div>
+    <div class="flex items-center gap-2 shrink-0">
+      {% if c.status != 'sent' %}
+      <form method="post" action="{% url 'dashboard:campaign_send' pk=c.pk %}" onsubmit="return confirm('{% trans "Envoyer cette campagne maintenant ?" %}')">
+        {% csrf_token %}
+        <button type="submit" class="px-3 py-1.5 rounded-lg bg-emerald-50 text-emerald-700 text-xs font-semibold hover:bg-emerald-100 transition">{% trans "Envoyer" %}</button>
+      </form>
+      <a href="{% url 'dashboard:campaign_edit' pk=c.pk %}" class="px-3 py-1.5 rounded-lg border border-slate-200 text-xs font-medium hover:bg-slate-50 transition">{% trans "Modifier" %}</a>
+      {% endif %}
+      <form method="post" action="{% url 'dashboard:campaign_delete' pk=c.pk %}" onsubmit="return confirm('{% trans "Supprimer cette campagne ?" %}')">
+        {% csrf_token %}
+        <button type="submit" class="px-3 py-1.5 rounded-lg text-red-500 text-xs font-medium hover:bg-red-50 transition">{% trans "Supprimer" %}</button>
+      </form>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+{% else %}
+<div class="d-card p-12 text-center">
+  <div class="text-4xl mb-3">📧</div>
+  <div class="font-semibold">{% trans "Aucune campagne" %}</div>
+  <p class="text-sm opacity-50 mt-1">{% trans "Créez votre première campagne email pour engager vos clients." %}</p>
+  <a href="{% url 'dashboard:campaign_create' %}" class="d-btn px-5 py-2 text-sm font-semibold mt-4 inline-block">{% trans "Créer une campagne" %}</a>
+</div>
+{% endif %}
+{% endblock %}

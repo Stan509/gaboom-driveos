@@ -1,0 +1,41 @@
+{% extends "dashboard/_layout.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "Clôturer contrat" %} #{{ contract.pk }} — Dashboard{% endblock %}
+{% block page_title %}{% trans "Clôturer le contrat" %} #{{ contract.pk }}{% endblock %}
+{% block page_subtitle %}{{ contract.client.full_name }} — {{ contract.vehicle }}{% endblock %}
+
+{% block content %}
+<div class="max-w-xl">
+  <a href="{% url 'dashboard:contract_detail' contract.pk %}" class="inline-flex items-center gap-1.5 text-sm text-slate-500 hover:text-gaboomViolet transition mb-6">
+    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5"/></svg>
+    {% trans "Retour au contrat" %}
+  </a>
+
+  <div class="rounded-2xl bg-white border border-slate-200 shadow-sm p-6">
+    <h3 class="font-semibold text-slate-800 mb-4">{% trans "Informations de retour" %}</h3>
+    <form method="post" class="space-y-5">
+      {% csrf_token %}
+      <div class="grid sm:grid-cols-2 gap-5">
+        <div>
+          <label class="block text-sm font-medium text-slate-700 mb-1.5">{% trans "Km retour" %}</label>
+          <input type="number" name="km_retour" value="{{ contract.km_depart }}" class="w-full rounded-xl border border-slate-200 px-4 py-2.5 text-sm focus:border-violet-400 focus:ring-1 focus:ring-violet-400 outline-none" required>
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-slate-700 mb-1.5">{% trans "Jauge carburant retour (1-8)" %}</label>
+          <input type="number" name="fuel_retour" min="1" max="8" value="{{ contract.fuel_depart }}" class="w-full rounded-xl border border-slate-200 px-4 py-2.5 text-sm focus:border-violet-400 focus:ring-1 focus:ring-violet-400 outline-none">
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-slate-700 mb-1.5">{% trans "Frais dégâts (€)" %}</label>
+          <input type="number" name="frais_degats" value="0" step="0.01" class="w-full rounded-xl border border-slate-200 px-4 py-2.5 text-sm focus:border-violet-400 focus:ring-1 focus:ring-violet-400 outline-none">
+        </div>
+      </div>
+      <p class="text-xs text-slate-500">{% trans "Les frais km, carburant, retard et TVA seront calculés automatiquement." %}</p>
+      <div class="flex items-center gap-3 pt-2">
+        <button type="submit" class="rounded-xl bg-amber-500 text-white px-6 py-2.5 font-medium hover:bg-amber-600 transition text-sm">{% trans "Clôturer le contrat" %}</button>
+        <a href="{% url 'dashboard:contract_detail' contract.pk %}" class="rounded-xl border border-slate-200 px-6 py-2.5 font-medium text-slate-600 hover:bg-slate-50 transition text-sm">{% trans "Annuler" %}</a>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}

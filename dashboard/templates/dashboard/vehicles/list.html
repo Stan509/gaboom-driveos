@@ -1,0 +1,86 @@
+{% extends "dashboard/_layout.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "Véhicules" %} — Dashboard{% endblock %}
+{% block page_title %}{% trans "Véhicules" %}{% endblock %}
+{% block page_subtitle %}{{ vehicles|length }} {% trans "véhicule" %}{{ vehicles|length|pluralize }} {% trans "enregistré" %}{{ vehicles|length|pluralize }}{% endblock %}
+
+{% block page_actions %}
+  {% if can_edit %}
+  <a href="{% url 'dashboard:vehicle_create' %}" class="rounded-xl bg-gaboomViolet text-white px-4 py-2.5 text-sm font-medium hover:opacity-95 transition">+ {% trans "Ajouter un véhicule" %}</a>
+  {% endif %}
+{% endblock %}
+
+{% block content %}
+  {% if vehicles %}
+    <div class="overflow-x-auto">
+      <table class="w-full text-sm">
+        <thead>
+          <tr class="border-b border-slate-200 text-left text-xs font-semibold text-slate-400 uppercase tracking-wider">
+            <th class="pb-3 pr-4">{% trans "Véhicule" %}</th>
+            <th class="pb-3 pr-4">{% trans "Immatriculation" %}</th>
+            <th class="pb-3 pr-4">{% trans "Prix/jour" %}</th>
+            <th class="pb-3 pr-4">{% trans "Statut" %}</th>
+            <th class="pb-3 pr-4">{% trans "Visible" %}</th>
+            <th class="pb-3 text-right">{% trans "Actions" %}</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-slate-100">
+          {% for v in vehicles %}
+            <tr class="hover:bg-slate-50/60 transition">
+              <td class="py-4 pr-4">
+                <div class="flex items-center gap-3">
+                  {% if v.image %}
+                    <img src="{{ v.image.url }}" alt="" class="h-10 w-14 rounded-lg object-cover border border-slate-200" />
+                  {% else %}
+                    <div class="h-10 w-14 rounded-lg bg-slate-100 border border-slate-200 flex items-center justify-center">
+                      <svg class="w-5 h-5 text-slate-300" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 18.75a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 0 1-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m3 0H21M3.375 14.25h17.25M3.375 14.25V6.375c0-.621.504-1.125 1.125-1.125h9.75"/></svg>
+                    </div>
+                  {% endif %}
+                  <span class="font-medium text-slate-900">{{ v.make }} {{ v.model }}</span>
+                </div>
+              </td>
+              <td class="py-4 pr-4 font-mono text-slate-600">{{ v.plate_number }}</td>
+              <td class="py-4 pr-4 text-slate-700">{{ v.daily_price }}€</td>
+              <td class="py-4 pr-4">
+                {% if v.status == "available" %}
+                  <span class="inline-flex items-center rounded-full bg-emerald-50 text-emerald-700 px-2.5 py-0.5 text-xs font-medium border border-emerald-200">{% trans "Disponible" %}</span>
+                {% elif v.status == "rented" %}
+                  <span class="inline-flex items-center rounded-full bg-violet-50 text-gaboomViolet px-2.5 py-0.5 text-xs font-medium border border-violet-200">{% trans "En location" %}</span>
+                {% else %}
+                  <span class="inline-flex items-center rounded-full bg-amber-50 text-amber-700 px-2.5 py-0.5 text-xs font-medium border border-amber-200">{% trans "Maintenance" %}</span>
+                {% endif %}
+              </td>
+              <td class="py-4 pr-4">
+                {% if v.public_visible %}
+                  <span class="text-emerald-500 text-xs font-medium">{% trans "Oui" %}</span>
+                {% else %}
+                  <span class="text-slate-400 text-xs">{% trans "Non" %}</span>
+                {% endif %}
+              </td>
+              <td class="py-4 text-right">
+                <div class="flex items-center justify-end gap-2">
+                  {% if can_edit %}
+                  <a href="{% url 'dashboard:vehicle_edit' v.pk %}" class="rounded-lg border border-slate-200 px-3 py-1.5 text-xs font-medium text-slate-600 hover:bg-slate-50 transition">{% trans "Modifier" %}</a>
+                  <a href="{% url 'dashboard:vehicle_delete' v.pk %}" class="rounded-lg border border-red-200 px-3 py-1.5 text-xs font-medium text-red-600 hover:bg-red-50 transition">{% trans "Supprimer" %}</a>
+                  {% endif %}
+                </div>
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  {% else %}
+    <div class="mt-12 text-center py-16">
+      <div class="mx-auto h-16 w-16 rounded-2xl bg-slate-100 flex items-center justify-center">
+        <svg class="w-8 h-8 text-slate-300" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 18.75a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 0 1-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m3 0H21M3.375 14.25h17.25M3.375 14.25V6.375c0-.621.504-1.125 1.125-1.125h9.75"/></svg>
+      </div>
+      <h3 class="mt-4 font-semibold text-slate-900">{% trans "Aucun véhicule" %}</h3>
+      <p class="mt-1 text-sm text-slate-500">{% trans "Commence par ajouter ton premier véhicule." %}</p>
+      <a href="{% url 'dashboard:vehicle_create' %}" class="mt-6 inline-block rounded-xl bg-gaboomViolet text-white px-5 py-2.5 font-medium hover:opacity-95 transition text-sm">
+        + {% trans "Ajouter un véhicule" %}
+      </a>
+    </div>
+  {% endif %}
+{% endblock %}
