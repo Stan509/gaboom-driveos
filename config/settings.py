@@ -75,25 +75,32 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "config.wsgi.application"
 
-use_postgres = bool(os.environ.get("POSTGRES_HOST"))
-if use_postgres:
-    DATABASES = {
-        "default": {
-            "ENGINE": "django.db.backends.postgresql",
-            "NAME": os.environ.get("POSTGRES_DB", "gaboom_driveos"),
-            "USER": os.environ.get("POSTGRES_USER", "postgres"),
-            "PASSWORD": os.environ.get("POSTGRES_PASSWORD", ""),
-            "HOST": os.environ.get("POSTGRES_HOST", "localhost"),
-            "PORT": os.environ.get("POSTGRES_PORT", "5432"),
-        }
-    }
+# Database configuration using dj-database-url
+import dj_database_url
+
+if not DEBUG:
+    # Production: MUST use DATABASE_URL, no SQLite fallback
+    database_url = os.getenv("DATABASE_URL")
+    if not database_url:
+        from django.core.exceptions import ImproperlyConfigured
+        raise ImproperlyConfigured(
+            "DATABASE_URL environment variable is required in production (DEBUG=False). "
+            "Dokku provides this automatically when linking a database service."
+        )
+    DATABASES = {"default": dj_database_url.config(default=database_url, conn_max_age=600)}
 else:
-    DATABASES = {
-        "default": {
-            "ENGINE": "django.db.backends.sqlite3",
-            "NAME": BASE_DIR / "db.sqlite3",
+    # Development: Use DATABASE_URL if available, otherwise fallback to SQLite
+    database_url = os.getenv("DATABASE_URL")
+    if database_url:
+        DATABASES = {"default": dj_database_url.config(default=database_url, conn_max_age=600)}
+    else:
+        # SQLite fallback for development only
+        DATABASES = {
+            "default": {
+                "ENGINE": "django.db.backends.sqlite3",
+                "NAME": BASE_DIR / "db.sqlite3",
+            }
         }
-    }
 
 AUTH_PASSWORD_VALIDATORS = [
     {"NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator"},
