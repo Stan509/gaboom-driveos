@@ -11,8 +11,26 @@ load_dotenv(BASE_DIR / ".env")
 SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY", "dev-insecure-change-me")
 DEBUG = os.environ.get("DJANGO_DEBUG", "1") == "1"
 
-allowed_hosts_raw = os.environ.get("DJANGO_ALLOWED_HOSTS", "localhost,127.0.0.1")
-ALLOWED_HOSTS = [h.strip() for h in allowed_hosts_raw.split(",") if h.strip()]
+# Production ALLOWED_HOSTS configuration
+if DEBUG:
+    # Development hosts
+    allowed_hosts_raw = os.environ.get("DJANGO_ALLOWED_HOSTS", "localhost,127.0.0.1")
+    ALLOWED_HOSTS = [h.strip() for h in allowed_hosts_raw.split(",") if h.strip()]
+else:
+    # Production hosts - include environment variable + defaults
+    env_hosts = os.environ.get("DJANGO_ALLOWED_HOSTS", "")
+    if env_hosts:
+        additional_hosts = [h.strip() for h in env_hosts.split(",") if h.strip()]
+    else:
+        additional_hosts = []
+    
+    ALLOWED_HOSTS = [
+        "gaboomdriveos.gaboomholding.com",
+        "www.gaboomdriveos.gaboomholding.com",
+        "64.225.25.34",
+        "localhost",
+        "127.0.0.1",
+    ] + additional_hosts
 
 INSTALLED_APPS = [
     "django.contrib.admin",
@@ -36,6 +54,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
+    "whitenoise.middleware.WhiteNoiseMiddleware",  # Add WhiteNoise after SecurityMiddleware
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.locale.LocaleMiddleware",
     "django.middleware.common.CommonMiddleware",
@@ -249,12 +268,14 @@ if not DEBUG:
         )
 
 # ── Security — production hardening ─────────────────────────────────
+# Always set proxy header for Dokku/Nginx compatibility
+SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+
 if not DEBUG:
     SECURE_SSL_REDIRECT = True
     SECURE_HSTS_SECONDS = 31536000          # 1 year
     SECURE_HSTS_INCLUDE_SUBDOMAINS = True
     SECURE_HSTS_PRELOAD = True
-    SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
     SESSION_COOKIE_SECURE = True
     CSRF_COOKIE_SECURE = True
     SECURE_BROWSER_XSS_FILTER = True
@@ -264,6 +285,22 @@ if not DEBUG:
     SESSION_COOKIE_HTTPONLY = True
     SESSION_COOKIE_AGE = 86400              # 24 hours
     SESSION_EXPIRE_AT_BROWSER_CLOSE = False
+    
+    # Production CSRF trusted origins
+    env_origins = os.environ.get("CSRF_TRUSTED_ORIGINS", "")
+    if env_origins:
+        additional_origins = [o.strip() for o in env_origins.split(",") if o.strip()]
+    else:
+        additional_origins = []
+    
+    CSRF_TRUSTED_ORIGINS = [
+        "http://gaboomdriveos.gaboomholding.com",
+        "https://gaboomdriveos.gaboomholding.com",
+        "http://www.gaboomdriveos.gaboomholding.com",
+        "https://www.gaboomdriveos.gaboomholding.com",
+    ] + additional_origins
+else:
+    # Development CSRF settings
     CSRF_TRUSTED_ORIGINS = [
         o.strip() for o in os.environ.get("CSRF_TRUSTED_ORIGINS", "").split(",") if o.strip()
     ]

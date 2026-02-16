@@ -7,5 +7,6 @@ requests>=2.31
 python-dotenv>=1.0
 markdown>=3.5
 bleach>=6.0
+whitenoise>=6.0
 
 gunicorn==22.0.0
