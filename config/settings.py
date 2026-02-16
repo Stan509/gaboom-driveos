@@ -11,11 +11,10 @@ load_dotenv(BASE_DIR / ".env")
 SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY", "dev-insecure-change-me")
 DEBUG = os.environ.get("DJANGO_DEBUG", "1") == "1"
 
-ALLOWED_HOSTS = os.environ.get("ALLOWED_HOSTS", "").split(",") if os.environ.get("ALLOWED_HOSTS") else [
-    "gaboomdriveos.gaboomholding.com",
-    "www.gaboomdriveos.gaboomholding.com",
-    "64.225.25.34",
-]
+ALLOWED_HOSTS = os.getenv(
+    "DJANGO_ALLOWED_HOSTS",
+    "gaboomdriveos.gaboomholding.com,.gaboomholding.com,64.225.25.34,localhost,127.0.0.1"
+).split(",")
 
 INSTALLED_APPS = [
     "django.contrib.admin",
@@ -272,8 +271,7 @@ if not DEBUG:
     SESSION_EXPIRE_AT_BROWSER_CLOSE = False
 
 CSRF_TRUSTED_ORIGINS = [
-    "http://gaboomdriveos.gaboomholding.com",
-    "https://gaboomdriveos.gaboomholding.com",
+    "https://gaboomdriveos.gaboomholding.com"
 ]
 
 # ── File upload security ────────────────────────────────────────────
