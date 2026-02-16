@@ -1,5 +1,6 @@
 from pathlib import Path
 import os
+import time
 
 from dotenv import load_dotenv
 
@@ -7,6 +8,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # Load .env file from project root
 load_dotenv(BASE_DIR / ".env")
+
+# Application startup time for healthcheck metrics
+START_TIME = time.time()
+
+# Application version (can be overridden by environment)
+VERSION = os.environ.get("APP_VERSION", "1.0.0")
 
 SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY", "dev-insecure-change-me")
 DEBUG = os.environ.get("DJANGO_DEBUG", "1") == "1"

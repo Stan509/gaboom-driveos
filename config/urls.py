@@ -8,6 +8,7 @@ from django.contrib.auth import views as auth_views
 from agencies.paypal_webhooks import paypal_webhook
 from core.views import resend_verification, test_notif_admin, verify_email, verify_required
 from core.views_auth import RoleBasedLoginView
+from core.views_health import health_check, readiness_check, liveness_check
 
 
 # ── Superuser-only admin gate ──────────────────────────────────────────
@@ -40,6 +41,12 @@ def _offline(request):
 
 
 urlpatterns = [
+    # Healthcheck endpoints (no authentication required)
+    path("health/", health_check, name="health_check"),
+    path("health/ready/", readiness_check, name="readiness_check"),
+    path("health/live/", liveness_check, name="liveness_check"),
+    
+    # Application URLs
     path("offline/", _offline, name="offline"),
     path("i18n/", include("django.conf.urls.i18n")),
     path("admin/", admin.site.urls),
