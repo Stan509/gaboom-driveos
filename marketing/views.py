@@ -1,9 +1,11 @@
 from django.contrib.auth import login
+from django.contrib import messages
 from django.db import transaction
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import redirect, render
 
 from core.views import _send_verification_email
+from core.email import get_email_config
 from agencies.services import PLAN_CONFIGS
 from .forms import AgencySignupForm
 
@@ -26,8 +28,25 @@ def signup(request: HttpRequest) -> HttpResponse:
             with transaction.atomic():
                 _agency, user = form.save()
             login(request, user)
-            _send_verification_email(request, user)
-            return redirect("verify_required")
+            cfg = get_email_config()
+            if not cfg.email_verification_required:
+                user.email_verified = True
+                user.save(update_fields=["email_verified"])
+                return redirect("dashboard:home")
+
+            ok = _send_verification_email(request, user)
+            if ok:
+                return redirect("verify_required")
+
+            if cfg.email_fail_open:
+                request.session["_email_fail_open"] = True
+                messages.warning(
+                    request,
+                    "Email provider unavailable, user created (verification pending).",
+                )
+                return redirect("dashboard:home")
+
+            messages.error(request, "Impossible d'envoyer l'email de vérification.")
     else:
         form = AgencySignupForm()
 

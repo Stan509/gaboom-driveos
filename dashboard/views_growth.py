@@ -389,7 +389,7 @@ def campaign_edit(request: HttpRequest, pk: int) -> HttpResponse:
 
 @require_perm("marketing.edit")
 def campaign_send(request: HttpRequest, pk: int) -> HttpResponse:
-    """Send campaign emails via SMTP."""
+    """Send campaign emails via Brevo API wrapper."""
     if request.method != "POST":
         return HttpResponseForbidden()
     agency = _agency(request)
@@ -429,14 +429,11 @@ def campaign_send(request: HttpRequest, pk: int) -> HttpResponse:
     failed_count = 0
     for client in clients_qs:
         try:
-            from django.core.mail import send_mail
-            from django.conf import settings as django_settings
-            send_mail(
+            from core.email import send_email
+            send_email(
+                to_email=client.email,
                 subject=campaign.title,
-                message=campaign.content,
-                from_email=django_settings.DEFAULT_FROM_EMAIL,
-                recipient_list=[client.email],
-                fail_silently=False,
+                html_content=f"<pre>{campaign.content}</pre>",
             )
             CampaignLog.objects.create(campaign=campaign, client=client, status="sent")
             sent_count += 1

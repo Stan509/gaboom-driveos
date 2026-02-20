@@ -4,7 +4,6 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.tokens import default_token_generator
 from django.conf import settings
-from django.core.mail import mail_admins, EmailMultiAlternatives, get_connection
 from django.http import HttpRequest, HttpResponse, JsonResponse
 from django.shortcuts import redirect, render
 from django.utils.encoding import force_bytes, force_str
@@ -27,30 +26,10 @@ def _send_platform_email(
 ) -> bool:
     from core.models_platform import PlatformSettings, EmailSendLog
     from core.models_admin_alert import AdminAlert
+    from core.email import send_email
     ps = platform_settings or PlatformSettings.get()
-    provider = ps.smtp_provider or "brevo_api"
-    if provider == "smtp" and ps.smtp_host:
-        smtp_password = smtp_password_override or ps.smtp_password
-        connection = get_connection(
-            "django.core.mail.backends.smtp.EmailBackend",
-            host=ps.smtp_host,
-            port=ps.smtp_port or 587,
-            username=ps.smtp_username or "",
-            password=smtp_password or "",
-            use_tls=ps.smtp_use_tls,
-            use_ssl=ps.smtp_use_ssl,
-            timeout=10,
-        )
-    else:
-        api_key = smtp_api_key_override or ps.smtp_api_key or settings.ANYMAIL.get("BREVO_API_KEY", "")
-        if api_key:
-            settings.ANYMAIL["BREVO_API_KEY"] = api_key
-        if settings.EMAIL_BACKEND == "django.core.mail.backends.console.EmailBackend":
-            settings.EMAIL_BACKEND = "anymail.backends.brevo.EmailBackend"
-        connection = get_connection()
-        provider = "brevo_api"
     from_email = ps.smtp_from_email or settings.DEFAULT_FROM_EMAIL
-    reply_to = [ps.smtp_reply_to] if ps.smtp_reply_to else None
+    provider = "brevo_api"
     log = EmailSendLog.objects.create(
         template_key=template_key or "",
         to_email=to_email,
@@ -63,17 +42,17 @@ def _send_platform_email(
     last_error = ""
     for attempt in range(1, max_attempts + 1):
         try:
-            message = EmailMultiAlternatives(
+            html_content = body_html or f"<pre>{body_text}</pre>"
+            result = send_email(
+                to_email=to_email,
                 subject=subject,
-                body=body_text,
-                from_email=from_email,
-                to=[to_email],
-                reply_to=reply_to,
-                connection=connection,
+                html_content=html_content,
+                sender_email=from_email,
             )
-            if body_html:
-                message.attach_alternative(body_html, "text/html")
-            message.send(fail_silently=False)
+            if result.get("skipped"):
+                raise RuntimeError(result.get("message") or result.get("reason") or "email_send_skipped")
+            if not result.get("ok"):
+                raise RuntimeError(result.get("message") or result.get("reason") or "email_send_failed")
             log.attempts = attempt
             log.status = "sent"
             log.last_error = ""
@@ -93,7 +72,7 @@ def _send_platform_email(
     return False
 
 
-def _send_verification_email(request: HttpRequest, user) -> None:
+def _send_verification_email(request: HttpRequest, user) -> bool:
     from core.models_platform import EmailTemplate
     uid = urlsafe_base64_encode(force_bytes(user.pk))
     token = default_token_generator.make_token(user)
@@ -126,7 +105,7 @@ def _send_verification_email(request: HttpRequest, user) -> None:
             subject = default_subject
             body_text = default_body
             body_html = ""
-    _send_platform_email(
+    ok = _send_platform_email(
         to_email=user.email,
         subject=subject,
         body_text=body_text,
@@ -134,6 +113,7 @@ def _send_verification_email(request: HttpRequest, user) -> None:
         template_key="verify_email",
         agency=user.agency,
     )
+    return ok
 
 
 def verify_email(request: HttpRequest, uidb64: str, token: str) -> HttpResponse:
@@ -179,8 +159,10 @@ def resend_verification(request: HttpRequest) -> HttpResponse:
             "cooldown": remaining,
         })
 
-    _send_verification_email(request, request.user)
+    ok = _send_verification_email(request, request.user)
     request.session["_verify_last_sent"] = now
+    if not ok and getattr(settings, "EMAIL_FAIL_OPEN", True):
+        request.session["_email_fail_open"] = True
     return render(request, "auth/verify_required.html", {
         "user": request.user,
         "resent": True,
@@ -188,18 +170,22 @@ def resend_verification(request: HttpRequest) -> HttpResponse:
 
 
 def test_notif_admin(request: HttpRequest) -> JsonResponse:
-    """Vue de test — envoie un mail_admins() pour vérifier la config SMTP."""
     try:
-        mail_admins(
+        from core.email import send_email
+        if not settings.ADMINS:
+            return JsonResponse({"status": "error", "message": "ADMINS vide."}, status=500)
+        admin_email = settings.ADMINS[0][1]
+        result = send_email(
+            to_email=admin_email,
             subject="Test notification admin depuis Django",
-            message=(
-                "Ceci est un email de test envoyé depuis Gaboom DriveOS.\n\n"
-                "Si tu reçois ce message, la configuration SMTP Brevo fonctionne correctement.\n\n"
-                f"Utilisateur connecté : {request.user}\n"
-                f"Host : {request.get_host()}\n"
+            html_content=(
+                "<p>Ceci est un email de test envoyé depuis Gaboom DriveOS.</p>"
+                f"<p>Utilisateur connecté : {request.user}</p>"
+                f"<p>Host : {request.get_host()}</p>"
             ),
-            fail_silently=False,
         )
-        return JsonResponse({"status": "ok", "message": "Email envoyé aux ADMINS avec succès."})
+        if result.get("ok"):
+            return JsonResponse({"status": "ok", "message": "Email envoyé aux ADMINS avec succès."})
+        return JsonResponse({"status": "error", "message": result.get("message") or str(result)}, status=500)
     except Exception as e:
         return JsonResponse({"status": "error", "message": str(e)}, status=500)

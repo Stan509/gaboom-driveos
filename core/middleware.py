@@ -1,5 +1,6 @@
 from django.http import Http404
 from django.shortcuts import redirect
+import os
 
 from agencies.models import Agency
 
@@ -44,11 +45,21 @@ class EmailVerificationMiddleware:
         self.get_response = get_response
 
     def __call__(self, request):
+        verification_required = (os.environ.get("EMAIL_VERIFICATION_REQUIRED", "1") or "1").strip().lower() in {
+            "1", "true", "yes", "y", "on"
+        }
+        fail_open = (os.environ.get("EMAIL_FAIL_OPEN", "1") or "1").strip().lower() in {"1", "true", "yes", "y", "on"}
+
+        if not verification_required:
+            return self.get_response(request)
+
         if (
             request.user.is_authenticated
             and not request.user.email_verified
             and request.path_info.startswith("/dashboard/")
         ):
+            if fail_open and request.session.get("_email_fail_open", False):
+                return self.get_response(request)
             return redirect("verify_required")
 
         return self.get_response(request)

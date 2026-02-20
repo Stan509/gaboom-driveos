@@ -1,7 +1,6 @@
 Django>=5.0,<6.0
 psycopg[binary]>=3.1,<4.0
 Pillow>=9.0
-django-anymail[brevo]>=14.0
 cryptography>=42.0
 requests>=2.31
 python-dotenv>=1.0

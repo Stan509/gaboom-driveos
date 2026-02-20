@@ -506,7 +506,8 @@ def reservation_reject_counter(request: HttpRequest, slug: str, token: str) -> H
 def _notify_admin_new_reservation(reservation):
     """Send email to admins about a new reservation request."""
     try:
-        from django.core.mail import mail_admins
+        from django.conf import settings
+        from core.email import send_email
         subject = (
             f"Nouvelle demande de réservation — {reservation.full_name} "
             f"({reservation.vehicle})"
@@ -523,7 +524,14 @@ def _notify_admin_new_reservation(reservation):
             f"Message    : {reservation.message or '—'}\n\n"
             f"Connectez-vous au dashboard pour confirmer ou refuser."
         )
-        mail_admins(subject, body, fail_silently=True)
+        if not settings.ADMINS:
+            return
+        admin_email = settings.ADMINS[0][1]
+        send_email(
+            to_email=admin_email,
+            subject=subject,
+            html_content=f"<pre>{body}</pre>",
+        )
     except Exception:
         pass
 

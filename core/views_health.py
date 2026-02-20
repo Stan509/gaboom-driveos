@@ -24,5 +24,9 @@ def health_check(request):
     response_data = {
         "status": "ok"
     }
+
+    if (request.GET.get("brevo") or "").strip() in {"1", "true", "yes", "on"}:
+        from core.email import brevo_health
+        response_data["brevo"] = brevo_health()
     
     return JsonResponse(response_data, status=200)

@@ -1,5 +1,4 @@
 from django.conf import settings
-from django.core.mail import mail_admins
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 
@@ -28,4 +27,15 @@ def notify_admin_on_new_user(sender, instance, created, **kwargs):
         f"Email vérifié : {instance.email_verified}\n"
     )
 
-    mail_admins(subject, message, fail_silently=True)
+    try:
+        if not settings.ADMINS:
+            return
+        admin_email = settings.ADMINS[0][1]
+        from core.email import send_email
+        send_email(
+            to_email=admin_email,
+            subject=subject,
+            html_content=f"<pre>{message}</pre>",
+        )
+    except Exception:
+        return

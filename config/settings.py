@@ -33,7 +33,6 @@ INSTALLED_APPS = [
     "billing",
     "marketing",
     "superadmin",
-    "anymail",
 ]
 
 MIDDLEWARE = [
@@ -234,29 +233,19 @@ LOGIN_URL = "/login/"
 LOGIN_REDIRECT_URL = "/dashboard/"
 LOGOUT_REDIRECT_URL = "/"
 
-# ── Email — Brevo HTTP API (via django-anymail) ─────────────────────
-# ⚠ NE JAMAIS hardcoder les clés API ici. Utiliser les variables d'environnement.
-# Voir .env.example pour la liste complète des variables requises.
-ANYMAIL = {
-    "BREVO_API_KEY": os.environ.get("BREVO_API_KEY", ""),
-}
-EMAIL_BACKEND = "anymail.backends.brevo.EmailBackend"
-if DEBUG and not ANYMAIL["BREVO_API_KEY"]:
-    EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
-DEFAULT_FROM_EMAIL = os.environ.get("DEFAULT_FROM_EMAIL", "gaboom.hti@gmail.com")
-SERVER_EMAIL = os.environ.get("SERVER_EMAIL", "gaboom.hti@gmail.com")
+# ── Email — Brevo HTTP API (requests wrapper) ───────────────────────
+DEFAULT_FROM_EMAIL = os.getenv("DEFAULT_FROM_EMAIL", "no-reply@gaboomholding.com")
+SERVER_EMAIL = os.environ.get("SERVER_EMAIL", DEFAULT_FROM_EMAIL)
 ADMINS = [("Stanley", "stanleyMusic2000@gmail.com")]
 
-# ── Validation runtime : clés obligatoires en production ────────────
-if not DEBUG:
-    _brevo_key = ANYMAIL.get("BREVO_API_KEY", "")
-    if not _brevo_key:
-        from django.core.exceptions import ImproperlyConfigured
-        raise ImproperlyConfigured(
-            "BREVO_API_KEY est vide. En production (DEBUG=False), "
-            "cette variable d'environnement est obligatoire pour l'envoi d'emails. "
-            "Voir .env.example pour la configuration."
-        )
+EMAIL_VERIFICATION_REQUIRED = (os.environ.get("EMAIL_VERIFICATION_REQUIRED", "1") or "1").strip().lower() in {
+    "1", "true", "yes", "y", "on"
+}
+EMAIL_FAIL_OPEN = (os.environ.get("EMAIL_FAIL_OPEN", "1") or "1").strip().lower() in {"1", "true", "yes", "y", "on"}
+
+EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend" if DEBUG else "django.core.mail.backends.dummy.EmailBackend"
+
+ANYMAIL = {}
 
 # ── Security — production hardening ─────────────────────────────────
 # Always set proxy header for Dokku/Nginx compatibility

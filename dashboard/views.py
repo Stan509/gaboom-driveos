@@ -52,6 +52,12 @@ def home(request: HttpRequest) -> HttpResponse:
     agency = _agency(request)
     today = date.today()
 
+    if request.session.get("_email_fail_open", False):
+        messages.warning(
+            request,
+            "Email provider unavailable, user created (verification pending).",
+        )
+
     # ── Base querysets (all scoped) ──────────────────────────────
     vehicles_qs = Vehicle.objects.for_agency(agency).select_related("agency")
     clients_qs = Client.objects.for_agency(agency)
