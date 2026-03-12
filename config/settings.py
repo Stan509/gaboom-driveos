@@ -52,7 +52,7 @@ INSTALLED_APPS = [
     "billing",
     "marketing",
     "superadmin",
-    "portfolio",
+
 ]
 
 MIDDLEWARE = [
