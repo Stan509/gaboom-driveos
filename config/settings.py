@@ -17,7 +17,7 @@ def _parse_allowed_hosts(value: str) -> list[str]:
         return []
     if raw == "*":
         return ["*"]
-    parts: list[str] = []
+    parts = []
     for chunk in raw.split(","):
         chunk = (chunk or "").strip()
         if not chunk:
@@ -31,7 +31,7 @@ def _parse_allowed_hosts(value: str) -> list[str]:
 ALLOWED_HOSTS = _parse_allowed_hosts(
     os.getenv(
         "DJANGO_ALLOWED_HOSTS",
-        "gaboomdriveos.com,.gaboomdriveos.com,gaboomdriveos.com:443,www.gaboomdriveos.com,www.gaboomdriveos.com:443,gaboomdriveos.gaboomholding.com,.gaboomholding.com,64.225.25.34,localhost,127.0.0.1",
+        "gaboomdriveos.com,.gaboomdriveos.com,gaboomdriveos.com:443,www.gaboomdriveos.com,www.gaboomdriveos.com:443,64.225.25.34,localhost,127.0.0.1",
     )
 )
 
