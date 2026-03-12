@@ -1,7 +1,11 @@
 from pathlib import Path
 import os
+import ast
+import struct
 
+import dj_database_url
 from dotenv import load_dotenv
+from django.conf.locale import LANG_INFO
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -11,29 +15,12 @@ load_dotenv(BASE_DIR / ".env")
 SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY", "dev-insecure-change-me")
 DEBUG = os.environ.get("DJANGO_DEBUG", "1") == "1"
 
-def _parse_allowed_hosts(value: str) -> list[str]:
-    raw = (value or "").strip()
-    if not raw:
-        return []
-    if raw == "*":
-        return ["*"]
-    parts = []
-    for chunk in raw.split(","):
-        chunk = (chunk or "").strip()
-        if not chunk:
-            continue
-        for token in chunk.split():
-            token = (token or "").strip()
-            if token:
-                parts.append(token)
-    return parts
+APP_NAME = "Gaboom DriveOS"
 
-ALLOWED_HOSTS = _parse_allowed_hosts(
-    os.getenv(
-        "DJANGO_ALLOWED_HOSTS",
-        "gaboomdriveos.com,.gaboomdriveos.com,gaboomdriveos.com:443,www.gaboomdriveos.com,www.gaboomdriveos.com:443,64.225.25.34,localhost,127.0.0.1",
-    )
-)
+# TEMPORAIRE ET VOLONTAIRE :
+# on force tous les hosts pour sortir immédiatement du blocage DisallowedHost.
+# Quand le domaine sera stable, on remettra une liste stricte.
+ALLOWED_HOSTS = ["*"]
 
 INSTALLED_APPS = [
     "django.contrib.admin",
@@ -52,12 +39,11 @@ INSTALLED_APPS = [
     "billing",
     "marketing",
     "superadmin",
-
 ]
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
-    "whitenoise.middleware.WhiteNoiseMiddleware",  # Add WhiteNoise after SecurityMiddleware
+    "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.locale.LocaleMiddleware",
     "django.middleware.common.CommonMiddleware",
@@ -94,11 +80,8 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "config.wsgi.application"
 
-# Database configuration using dj-database-url
-import dj_database_url
-
+# Database
 if not DEBUG:
-    # Production: MUST use DATABASE_URL, no SQLite fallback
     database_url = os.getenv("DATABASE_URL")
     if not database_url:
         from django.core.exceptions import ImproperlyConfigured
@@ -106,14 +89,16 @@ if not DEBUG:
             "DATABASE_URL environment variable is required in production (DEBUG=False). "
             "Dokku provides this automatically when linking a database service."
         )
-    DATABASES = {"default": dj_database_url.config(default=database_url, conn_max_age=600)}
+    DATABASES = {
+        "default": dj_database_url.config(default=database_url, conn_max_age=600)
+    }
 else:
-    # Development: Use DATABASE_URL if available, otherwise fallback to SQLite
     database_url = os.getenv("DATABASE_URL")
     if database_url:
-        DATABASES = {"default": dj_database_url.config(default=database_url, conn_max_age=600)}
+        DATABASES = {
+            "default": dj_database_url.config(default=database_url, conn_max_age=600)
+        }
     else:
-        # SQLite fallback for development only
         DATABASES = {
             "default": {
                 "ENGINE": "django.db.backends.sqlite3",
@@ -135,28 +120,30 @@ LANGUAGES = [
     ("es", "Español"),
     ("ht", "Kreyòl"),
 ]
-from django.conf.locale import LANG_INFO
-LANG_INFO.update({
-    "ht": {
-        "bidi": False,
-        "code": "ht",
-        "name": "Haitian Creole",
-        "name_local": "Kreyòl",
+
+LANG_INFO.update(
+    {
+        "ht": {
+            "bidi": False,
+            "code": "ht",
+            "name": "Haitian Creole",
+            "name_local": "Kreyòl",
+        }
     }
-})
+)
+
 LOCALE_PATHS = [BASE_DIR / "locale"]
 LANGUAGE_COOKIE_NAME = "gaboom_lang"
-def _compile_po_to_mo(po_path, mo_path):
-    import ast
-    import struct
-    from pathlib import Path
 
+
+def _compile_po_to_mo(po_path, mo_path):
     data = Path(po_path).read_text(encoding="utf-8").splitlines()
     messages = {}
     msgid = None
     msgstr = None
     state = None
     fuzzy = False
+
     for line in data:
         line = line.strip()
         if line.startswith("#,") and "fuzzy" in line:
@@ -184,24 +171,28 @@ def _compile_po_to_mo(po_path, mo_path):
             msgstr = None
             state = None
             fuzzy = False
+
     if msgid is not None and msgstr is not None and not fuzzy:
         messages[msgid] = msgstr
 
     keys = sorted(messages.keys())
     ids = b"\x00".join(k.encode("utf-8") for k in keys) + b"\x00"
     strs = b"\x00".join(messages[k].encode("utf-8") for k in keys) + b"\x00"
+
     n = len(keys)
     o1 = 7 * 4
     o2 = o1 + n * 8
     o3 = o2 + n * 8
     ids_start = o3
     strs_start = o3 + len(ids)
+
     offsets_ids = []
     offset = 0
     for k in keys:
         b = k.encode("utf-8")
         offsets_ids.append((len(b), ids_start + offset))
         offset += len(b) + 1
+
     offsets_strs = []
     offset = 0
     for k in keys:
@@ -209,18 +200,18 @@ def _compile_po_to_mo(po_path, mo_path):
         offsets_strs.append((len(b), strs_start + offset))
         offset += len(b) + 1
 
-    output = struct.pack("Iiiiiii", 0x950412de, 0, n, o1, o2, 0, 0)
+    output = struct.pack("Iiiiiii", 0x950412DE, 0, n, o1, o2, 0, 0)
     for length, off in offsets_ids:
         output += struct.pack("II", length, off)
     for length, off in offsets_strs:
         output += struct.pack("II", length, off)
     output += ids
     output += strs
+
     Path(mo_path).write_bytes(output)
 
+
 def _ensure_mo():
-    import os
-    from pathlib import Path
     for base in LOCALE_PATHS:
         base = Path(base)
         if not base.exists():
@@ -230,10 +221,12 @@ def _ensure_mo():
             if not mo.exists() or os.path.getmtime(po) > os.path.getmtime(mo):
                 _compile_po_to_mo(po, mo)
 
+
 try:
     _ensure_mo()
 except Exception:
     pass
+
 TIME_ZONE = "UTC"
 USE_I18N = True
 USE_TZ = True
@@ -241,64 +234,76 @@ USE_TZ = True
 STATIC_URL = "/static/"
 STATIC_ROOT = BASE_DIR / "staticfiles"
 STATICFILES_DIRS = [BASE_DIR / "static"]
+
 MEDIA_URL = "/media/"
 MEDIA_ROOT = BASE_DIR / "media"
-FILE_UPLOAD_MAX_MEMORY_SIZE = 10 * 1024 * 1024   # 10 MB
-DATA_UPLOAD_MAX_MEMORY_SIZE = 10 * 1024 * 1024    # 10 MB
-DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
+FILE_UPLOAD_MAX_MEMORY_SIZE = 10 * 1024 * 1024
+DATA_UPLOAD_MAX_MEMORY_SIZE = 10 * 1024 * 1024
+
+DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 AUTH_USER_MODEL = "core.User"
 
 LOGIN_URL = "/login/"
 LOGIN_REDIRECT_URL = "/dashboard/"
 LOGOUT_REDIRECT_URL = "/"
 
-# ── Email — Brevo HTTP API (requests wrapper) ───────────────────────
+# Email — Brevo HTTP API wrapper
 DEFAULT_FROM_EMAIL = os.getenv("DEFAULT_FROM_EMAIL", "no-reply@gaboomdriveos.com")
 SERVER_EMAIL = os.environ.get("SERVER_EMAIL", DEFAULT_FROM_EMAIL)
 ADMINS = [("Stanley", "stanleyMusic2000@gmail.com")]
 
-EMAIL_VERIFICATION_REQUIRED = (os.environ.get("EMAIL_VERIFICATION_REQUIRED", "1") or "1").strip().lower() in {
-    "1", "true", "yes", "y", "on"
-}
-EMAIL_FAIL_OPEN = (os.environ.get("EMAIL_FAIL_OPEN", "1") or "1").strip().lower() in {"1", "true", "yes", "y", "on"}
+EMAIL_VERIFICATION_REQUIRED = (
+    (os.environ.get("EMAIL_VERIFICATION_REQUIRED", "1") or "1").strip().lower()
+    in {"1", "true", "yes", "y", "on"}
+)
+EMAIL_FAIL_OPEN = (
+    (os.environ.get("EMAIL_FAIL_OPEN", "1") or "1").strip().lower()
+    in {"1", "true", "yes", "y", "on"}
+)
 
-EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend" if DEBUG else "django.core.mail.backends.dummy.EmailBackend"
+EMAIL_BACKEND = (
+    "django.core.mail.backends.console.EmailBackend"
+    if DEBUG
+    else "django.core.mail.backends.dummy.EmailBackend"
+)
 
 ANYMAIL = {}
 
-# ── Security — production hardening ─────────────────────────────────
-# Always set proxy header for Dokku/Nginx compatibility
+# Security
 SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 
 if not DEBUG:
     SECURE_SSL_REDIRECT = True
-    SECURE_HSTS_SECONDS = 31536000          # 1 year
+    SECURE_HSTS_SECONDS = 31536000
     SECURE_HSTS_INCLUDE_SUBDOMAINS = True
     SECURE_HSTS_PRELOAD = True
     SESSION_COOKIE_SECURE = True
     CSRF_COOKIE_SECURE = True
-    SECURE_BROWSER_XSS_FILTER = True
     SECURE_CONTENT_TYPE_NOSNIFF = True
     X_FRAME_OPTIONS = "DENY"
     CSRF_COOKIE_HTTPONLY = True
     SESSION_COOKIE_HTTPONLY = True
-    SESSION_COOKIE_AGE = 86400              # 24 hours
+    SESSION_COOKIE_AGE = 86400
     SESSION_EXPIRE_AT_BROWSER_CLOSE = False
 
 CSRF_TRUSTED_ORIGINS = [
     "https://gaboomdriveos.com",
-    "https://gaboomdriveos.gaboomholding.com"
+    "https://www.gaboomdriveos.com",
 ]
 
-# ── File upload security ────────────────────────────────────────────
+# File upload security
 ALLOWED_UPLOAD_EXTENSIONS = {".jpg", ".jpeg", ".png", ".gif", ".webp", ".svg", ".pdf"}
 ALLOWED_UPLOAD_MIME_TYPES = {
-    "image/jpeg", "image/png", "image/gif", "image/webp", "image/svg+xml",
+    "image/jpeg",
+    "image/png",
+    "image/gif",
+    "image/webp",
+    "image/svg+xml",
     "application/pdf",
 }
 
-# ── Logging ─────────────────────────────────────────────────────────
+# Logging
 LOGGING = {
     "version": 1,
     "disable_existing_loggers": False,
