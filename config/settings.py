@@ -11,10 +11,29 @@ load_dotenv(BASE_DIR / ".env")
 SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY", "dev-insecure-change-me")
 DEBUG = os.environ.get("DJANGO_DEBUG", "1") == "1"
 
-ALLOWED_HOSTS = os.getenv(
-    "DJANGO_ALLOWED_HOSTS",
-    "gaboomdriveos.gaboomholding.com,.gaboomholding.com,64.225.25.34,localhost,127.0.0.1"
-).split(",")
+def _parse_allowed_hosts(value: str) -> list[str]:
+    raw = (value or "").strip()
+    if not raw:
+        return []
+    if raw == "*":
+        return ["*"]
+    parts: list[str] = []
+    for chunk in raw.split(","):
+        chunk = (chunk or "").strip()
+        if not chunk:
+            continue
+        for token in chunk.split():
+            token = (token or "").strip()
+            if token:
+                parts.append(token)
+    return parts
+
+ALLOWED_HOSTS = _parse_allowed_hosts(
+    os.getenv(
+        "DJANGO_ALLOWED_HOSTS",
+        "gaboomdriveos.com,.gaboomdriveos.com,gaboomdriveos.com:443,www.gaboomdriveos.com,www.gaboomdriveos.com:443,gaboomdriveos.gaboomholding.com,.gaboomholding.com,64.225.25.34,localhost,127.0.0.1",
+    )
+)
 
 INSTALLED_APPS = [
     "django.contrib.admin",
@@ -33,6 +52,7 @@ INSTALLED_APPS = [
     "billing",
     "marketing",
     "superadmin",
+    "portfolio",
 ]
 
 MIDDLEWARE = [
@@ -234,7 +254,7 @@ LOGIN_REDIRECT_URL = "/dashboard/"
 LOGOUT_REDIRECT_URL = "/"
 
 # ── Email — Brevo HTTP API (requests wrapper) ───────────────────────
-DEFAULT_FROM_EMAIL = os.getenv("DEFAULT_FROM_EMAIL", "no-reply@gaboomholding.com")
+DEFAULT_FROM_EMAIL = os.getenv("DEFAULT_FROM_EMAIL", "no-reply@gaboomdriveos.com")
 SERVER_EMAIL = os.environ.get("SERVER_EMAIL", DEFAULT_FROM_EMAIL)
 ADMINS = [("Stanley", "stanleyMusic2000@gmail.com")]
 
@@ -267,6 +287,7 @@ if not DEBUG:
     SESSION_EXPIRE_AT_BROWSER_CLOSE = False
 
 CSRF_TRUSTED_ORIGINS = [
+    "https://gaboomdriveos.com",
     "https://gaboomdriveos.gaboomholding.com"
 ]
 
