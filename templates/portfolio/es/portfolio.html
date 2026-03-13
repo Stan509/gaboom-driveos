@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portfolio - Gaboom DriveOS</title>
+</head>
+<body>
+    <h1>Portfolio</h1>
+    
+    <section class="section">
+        <div class="container">
+            <div class="grid">
+                <div class="col-12">
+                    <div class="item">
+                        <h3>📸 Galerie de projets</h3>
+                        <div class="hr"></div>
+                        {% if projects %}
+                            {% for project in projects %}
+                                <div class="item project-block{% if project.featured %} project-block-featured{% endif %}">
+                                    {% if project.featured %}
+                                        <div class="featured-header">
+                                            <div class="featured-badge">Destacado</div>
+                                            <div class="featured-title">{{ project.title }}</div>
+                                            <div class="featured-subtitle">{{ project.description }}</div>
+                                        </div>
+                                    {% else %}
+                                        <h4 style="margin-bottom: 6px;">{{ project.title }}</h4>
+                                        <p>{{ project.description }}</p>
+                                    {% endif %}
+                                </div>
+                            {% endfor %}
+                        {% else %}
+                            <p>Aucun projet pour le moment.</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</body>
+</html>
