@@ -1,11 +1,13 @@
 from django.contrib.auth.views import LoginView
 
 from agencies.services import get_agency_access, sync_access
+from core.forms_auth import EmailOrUsernameAuthenticationForm
 
 
 class RoleBasedLoginView(LoginView):
     template_name = "registration/login.html"
     redirect_authenticated_user = True
+    authentication_form = EmailOrUsernameAuthenticationForm
 
     def get_success_url(self):
         user = self.request.user

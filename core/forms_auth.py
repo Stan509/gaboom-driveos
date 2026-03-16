@@ -24,6 +24,6 @@ class EmailOrUsernameAuthenticationForm(AuthenticationForm):
             try:
                 user = User.objects.get(email__iexact=username)
                 self.cleaned_data["username"] = user.get_username()
-            except User.DoesNotExist:
+            except (User.DoesNotExist, User.MultipleObjectsReturned):
                 pass
         return super().clean()
