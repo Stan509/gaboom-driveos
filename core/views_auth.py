@@ -14,7 +14,10 @@ class RoleBasedLoginView(LoginView):
         # D) Login intelligent
         if user.is_superuser:
             return "/saas/"
-        agency = getattr(user, "agency", None)
+        try:
+            agency = getattr(user, "agency", None)
+        except Exception:
+            agency = None
         if agency:
             try:
                 access = get_agency_access(agency)
