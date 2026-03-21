@@ -101,7 +101,7 @@
             <div class="text-[10px]" style="color:var(--g-text-muted)">
               {% blocktrans count count=vehicles_with_pos|length %}
                 {{ count }} véhicule
-              {% pluralize %}
+              {% plural %}
                 {{ count }} véhicules
               {% endblocktrans %}
             </div>
@@ -187,7 +187,7 @@
     <span class="text-xs font-bold" style="color:#fff">
       {% blocktrans count count=alerts_unresolved %}
         {{ count }} alerte
-      {% pluralize %}
+      {% plural %}
         {{ count }} alertes
       {% endblocktrans %}
     </span>

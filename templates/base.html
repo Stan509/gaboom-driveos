@@ -46,6 +46,17 @@
     {% block extra_head %}{% endblock %}
   </head>
   <body class="min-h-screen bg-white text-slate-900 antialiased">
+    {% get_available_languages as LANGUAGES %}
+    {% get_language_info_list for LANGUAGES as languages %}
+    <form action="{% url 'set_language' %}" method="post" class="fixed top-3 right-3 z-50">
+      {% csrf_token %}
+      <input type="hidden" name="next" value="{{ request.get_full_path }}">
+      <select name="language" onchange="this.form.submit()" class="rounded-lg border border-slate-200 px-2 py-1 text-[11px] bg-white/90">
+        {% for lang in languages %}
+          <option value="{{ lang.code }}" {% if lang.code == LANGUAGE_CODE %}selected{% endif %}>{{ lang.name_local }}</option>
+        {% endfor %}
+      </select>
+    </form>
     {% block body %}{% endblock %}
     <script>
       if('serviceWorker' in navigator){

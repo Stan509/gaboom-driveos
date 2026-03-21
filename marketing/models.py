@@ -1,10 +1,11 @@
 """
 Marketing Engine 2.0 — Models
-All campaign, variant, send tracking, automation, template, and bandit models.
+Campaigns, variants, sends, templates, automation rules, bandit arms, WhatsApp outbox.
 """
 import uuid
 
 from django.db import models
+from django.utils.translation import gettext_lazy as _
 from django.utils import timezone
 
 from agencies.models import Agency
@@ -21,16 +22,16 @@ class MktCampaign(models.Model):
         ("lancement", "Lancement"),
     ]
     STATUS_CHOICES = [
-        ("draft", "Brouillon"),
-        ("scheduled", "Planifiée"),
-        ("running", "En cours"),
-        ("done", "Terminée"),
+        ("draft", _("Brouillon")),
+        ("scheduled", _("Planifiée")),
+        ("running", _("En cours")),
+        ("done", _("Terminée")),
     ]
     TARGET_CHOICES = [
-        ("all_clients", "Tous les clients"),
-        ("active_clients", "Clients actifs"),
-        ("inactive_30d", "Inactifs 30 jours"),
-        ("custom_tag", "Tag personnalisé"),
+        ("all_clients", _("Tous les clients")),
+        ("active_clients", _("Clients actifs")),
+        ("inactive_30d", _("Inactifs 30 jours")),
+        ("custom_tag", _("Tag personnalisé")),
     ]
 
     agency = models.ForeignKey(Agency, on_delete=models.CASCADE, related_name="mkt_campaigns")
@@ -208,9 +209,9 @@ class BanditArm(models.Model):
 
 class WhatsAppOutbox(models.Model):
     STATUS_CHOICES = [
-        ("pending", "À envoyer"),
-        ("sent", "Envoyé"),
-        ("failed", "Échoué"),
+        ("pending", _("À envoyer")),
+        ("sent", _("Envoyé")),
+        ("failed", _("Échoué")),
     ]
 
     agency = models.ForeignKey(Agency, on_delete=models.CASCADE, related_name="wa_outbox")

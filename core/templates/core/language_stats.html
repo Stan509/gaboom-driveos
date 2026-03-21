@@ -1,0 +1,128 @@
+{% extends "dashboard/_layout.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "Détection de langue" %} — Dashboard{% endblock %}
+{% block page_title %}{% trans "Détection automatique de langue" %}{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl">
+  <div class="bg-white rounded-xl border border-slate-200 p-6 mb-6">
+    <h2 class="text-lg font-semibold text-slate-800 mb-4">{% trans "Comment ça fonctionne ?" %}</h2>
+    <div class="space-y-3 text-sm text-slate-600">
+      <p>✅ {% trans "Le système détecte automatiquement votre langue préférée" %}</p>
+      <p>✅ {% trans "Basé sur vos habitudes d'utilisation précédentes" %}</p>
+      <p>✅ {% trans "Prend en compte les préférences de votre agence" %}</p>
+      <p>✅ {% trans "Analyse les paramètres de votre navigateur" %}</p>
+      <p>✅ {% trans "S'adapte et apprend de vos choix" %}</p>
+    </div>
+  </div>
+
+  <!-- Langue actuelle -->
+  <div class="grid md:grid-cols-2 gap-6 mb-6">
+    <div class="bg-white rounded-xl border border-slate-200 p-6">
+      <h3 class="text-lg font-semibold text-slate-800 mb-4">{% trans "Langue actuelle" %}</h3>
+      <div class="space-y-2">
+        <div class="flex items-center justify-between">
+          <span class="text-sm text-slate-600">{% trans "Détectée" %}:</span>
+          <span class="font-medium text-slate-800">{{ current_language|upper }}</span>
+        </div>
+        <div class="flex items-center justify-between">
+          <span class="text-sm text-slate-600">{% trans "Navigateur" %}:</span>
+          <span class="font-medium text-slate-800">{{ browser_language|default:"Non détectée"|upper }}</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="bg-white rounded-xl border border-slate-200 p-6">
+      <h3 class="text-lg font-semibold text-slate-800 mb-4">{% trans "Forcer une langue" %}</h3>
+      <form id="languageForm" class="space-y-3">
+        {% for lang in supported_languages %}
+        <label class="flex items-center gap-3 cursor-pointer">
+          <input type="radio" name="language" value="{{ lang.code }}" 
+                 {% if lang.code == current_language %}checked{% endif %} 
+                 class="text-gaboomViolet focus:ring-gaboomViolet">
+          <span class="text-sm font-medium text-slate-700">{{ lang.name }}</span>
+          <span class="text-xs text-slate-500">({{ lang.code|upper }})</span>
+        </label>
+        {% endfor %}
+        <button type="submit" class="w-full rounded-lg bg-gaboomViolet text-white px-4 py-2 text-sm font-medium hover:opacity-95 transition">
+          {% trans "Appliquer" %}
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Statistiques d'utilisation -->
+  <div class="bg-white rounded-xl border border-slate-200 p-6 mb-6">
+    <h3 class="text-lg font-semibold text-slate-800 mb-4">{% trans "Vos habitudes linguistiques" %}</h3>
+    
+    {% if language_stats %}
+    <div class="grid md:grid-cols-3 gap-4 mb-4">
+      {% for stat in language_stats %}
+      <div class="bg-slate-50 rounded-lg p-4">
+        <div class="text-2xl font-bold text-slate-800">{{ stat.language|upper }}</div>
+        <div class="text-sm text-slate-600">{{ stat.count }} utilisations</div>
+        <div class="text-xs text-slate-500">Confiance: {{ stat.avg_confidence|floatformat:2 }}</div>
+      </div>
+      {% endfor %}
+    </div>
+    {% else %}
+    <p class="text-sm text-slate-500">{% trans "Pas encore d'historique d'utilisation" %}</p>
+    {% endif %}
+  </div>
+
+  <!-- Historique récent -->
+  {% if user_preferences %}
+  <div class="bg-white rounded-xl border border-slate-200 p-6">
+    <h3 class="text-lg font-semibold text-slate-800 mb-4">{% trans "Détections récentes" %}</h3>
+    <div class="space-y-2">
+      {% for pref in user_preferences %}
+      <div class="flex items-center justify-between py-2 border-b border-slate-100">
+        <div class="flex items-center gap-3">
+          <span class="font-medium text-slate-800">{{ pref.get_language_display }}</span>
+          <span class="text-xs px-2 py-1 rounded-full bg-slate-100 text-slate-600">
+            {{ pref.get_source_display }}
+          </span>
+        </div>
+        <div class="text-xs text-slate-500">
+          {{ pref.created_at|date:"d/m H:i" }}
+          <span class="ml-2">({{ pref.confidence|floatformat:2 }})</span>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+  {% endif %}
+</div>
+
+<script>
+document.getElementById('languageForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  
+  const formData = new FormData(e.target);
+  const language = formData.get('language');
+  
+  try {
+    const response = await fetch('{% url "core:override_language" %}', {
+      method: 'POST',
+      headers: {
+        'X-CSRFToken': '{{ csrf_token }}',
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      body: `language=${language}`
+    });
+    
+    const data = await response.json();
+    
+    if (data.success) {
+      // Recharger la page pour voir les changements
+      window.location.reload();
+    } else {
+      alert(data.error || 'Erreur lors du changement de langue');
+    }
+  } catch (error) {
+    alert('Erreur réseau');
+  }
+});
+</script>
+{% endblock %}

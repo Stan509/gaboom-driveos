@@ -1,35 +1,36 @@
 {% extends "superadmin/_layout.html" %}
+{% load i18n %}
 
 {% block page_title %}Webhooks PayPal{% endblock %}
-{% block page_subtitle %}Journal des evenements recus depuis PayPal{% endblock %}
+{% block page_subtitle %}{% trans "Journal des evenements recus depuis PayPal" %}{% endblock %}
 
 {% block content %}
 <!-- Filters -->
 <div class="bg-white rounded-2xl border border-slate-200 p-4 mb-6">
   <form method="get" class="flex flex-wrap items-end gap-3">
     <div class="flex-1 min-w-[160px]">
-      <label class="block text-[11px] font-semibold text-slate-400 uppercase tracking-wider mb-1">Recherche</label>
-      <input type="text" name="q" value="{{ search }}" placeholder="Subscription ID, agence, event ID..."
+      <label class="block text-[11px] font-semibold text-slate-400 uppercase tracking-wider mb-1">{% trans "Recherche" %}</label>
+      <input type="text" name="q" value="{{ search }}" placeholder="{% trans "Subscription ID, agence, event ID..." %}"
         class="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm focus:border-sa-400 outline-none" />
     </div>
     <div class="w-52">
-      <label class="block text-[11px] font-semibold text-slate-400 uppercase tracking-wider mb-1">Type</label>
+      <label class="block text-[11px] font-semibold text-slate-400 uppercase tracking-wider mb-1">{% trans "Type" %}</label>
       <select name="type" class="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm focus:border-sa-400 outline-none">
-        <option value="">Tous</option>
+        <option value="">{% trans "Tous" %}</option>
         {% for et in event_types %}
         <option value="{{ et }}" {% if event_filter == et %}selected{% endif %}>{{ et }}</option>
         {% endfor %}
       </select>
     </div>
     <div class="w-36">
-      <label class="block text-[11px] font-semibold text-slate-400 uppercase tracking-wider mb-1">Du</label>
+      <label class="block text-[11px] font-semibold text-slate-400 uppercase tracking-wider mb-1">{% trans "Du" %}</label>
       <input type="date" name="from" value="{{ date_from }}" class="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm focus:border-sa-400 outline-none" />
     </div>
     <div class="w-36">
-      <label class="block text-[11px] font-semibold text-slate-400 uppercase tracking-wider mb-1">Au</label>
+      <label class="block text-[11px] font-semibold text-slate-400 uppercase tracking-wider mb-1">{% trans "Au" %}</label>
       <input type="date" name="to" value="{{ date_to }}" class="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm focus:border-sa-400 outline-none" />
     </div>
-    <button type="submit" class="px-5 py-2 rounded-xl bg-sa-500 text-white text-sm font-semibold hover:bg-sa-600 transition">Filtrer</button>
+    <button type="submit" class="px-5 py-2 rounded-xl bg-sa-500 text-white text-sm font-semibold hover:bg-sa-600 transition">{% trans "Filtrer" %}</button>
   </form>
 </div>
 
@@ -38,12 +39,12 @@
   <table class="w-full text-sm">
     <thead>
       <tr class="border-b border-slate-100 text-left text-[10px] font-bold text-slate-400 uppercase tracking-wider">
-        <th class="px-5 py-3">Date</th>
-        <th class="px-5 py-3">Type</th>
-        <th class="px-5 py-3">Subscription ID</th>
-        <th class="px-5 py-3">Agence</th>
-        <th class="px-5 py-3">Event ID</th>
-        <th class="px-5 py-3 text-right">Payload</th>
+        <th class="px-5 py-3">{% trans "Date" %}</th>
+        <th class="px-5 py-3">{% trans "Type" %}</th>
+        <th class="px-5 py-3">{% trans "Subscription ID" %}</th>
+        <th class="px-5 py-3">{% trans "Agence" %}</th>
+        <th class="px-5 py-3">{% trans "Event ID" %}</th>
+        <th class="px-5 py-3 text-right">{% trans "Payload" %}</th>
       </tr>
     </thead>
     <tbody class="divide-y divide-slate-50">
@@ -69,7 +70,7 @@
         </td>
       </tr>
       {% empty %}
-      <tr><td colspan="6" class="px-5 py-12 text-center text-slate-400">Aucun evenement PayPal enregistre.</td></tr>
+      <tr><td colspan="6" class="px-5 py-12 text-center text-slate-400">{% trans "Aucun evenement PayPal enregistre." %}</td></tr>
       {% endfor %}
     </tbody>
   </table>
@@ -97,10 +98,10 @@
       <div>Sub: <span class="font-mono">{{ ev.subscription_id|default:"—" }}</span></div>
       <div>Agence: {{ ev.agency_name|default:"—" }}</div>
     </div>
-    <button type="button" onclick="showPayload({{ ev.pk }})" class="mt-2 px-3 py-1 rounded-lg bg-slate-100 text-slate-500 text-xs font-semibold hover:bg-slate-200 transition">Voir JSON</button>
+    <button type="button" onclick="showPayload({{ ev.pk }})" class="mt-2 px-3 py-1 rounded-lg bg-slate-100 text-slate-500 text-xs font-semibold hover:bg-slate-200 transition">{% trans "Voir JSON" %}</button>
   </div>
   {% empty %}
-  <div class="text-center text-slate-400 py-12">Aucun evenement.</div>
+  <div class="text-center text-slate-400 py-12">{% trans "Aucun evenement." %}</div>
   {% endfor %}
 </div>
 
@@ -108,7 +109,7 @@
 <div id="jsonModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/40 backdrop-blur-sm p-4" onclick="closeModal(event)">
   <div class="bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[80vh] flex flex-col" onclick="event.stopPropagation()">
     <div class="px-5 py-3 border-b border-slate-100 flex items-center justify-between">
-      <h3 class="text-sm font-bold text-slate-700">Payload JSON</h3>
+      <h3 class="text-sm font-bold text-slate-700">{% trans "Payload JSON" %}</h3>
       <button onclick="document.getElementById('jsonModal').classList.add('hidden');document.getElementById('jsonModal').classList.remove('flex')" class="p-1 rounded-lg hover:bg-slate-100 transition">
         <svg class="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12"/></svg>
       </button>

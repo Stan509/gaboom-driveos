@@ -12,15 +12,27 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # Load .env file from project root
 load_dotenv(BASE_DIR / ".env")
 
-SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY", "dev-insecure-change-me")
-DEBUG = os.environ.get("DJANGO_DEBUG", "0") == "1"
+DEBUG = os.environ.get("DJANGO_DEBUG", "1") == "1"
+
+if DEBUG:
+    SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY", "dev-insecure-change-me")
+else:
+    SECRET_KEY = os.environ["DJANGO_SECRET_KEY"]
 
 APP_NAME = "Gaboom DriveOS"
 
-# TEMPORAIRE ET VOLONTAIRE :
-# on force tous les hosts pour sortir immédiatement du blocage DisallowedHost.
-# Quand le domaine sera stable, on remettra une liste stricte.
-ALLOWED_HOSTS = ["*"]
+if DEBUG:
+    ALLOWED_HOSTS = [
+        "localhost",
+        "127.0.0.1",
+        "0.0.0.0",
+        "[::1]",
+    ]
+else:
+    ALLOWED_HOSTS = [
+        "gaboomdriveos.com",
+        "www.gaboomdriveos.com",
+    ]
 
 INSTALLED_APPS = [
     "django.contrib.admin",
@@ -45,15 +57,15 @@ MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
-    "django.middleware.locale.LocaleMiddleware",
+    "core.middleware_auto_locale.AutoLocaleMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
+    "django.contrib.messages.middleware.MessageMiddleware",
     "core.middleware.SuperAdminOnlyMiddleware",
     "core.middleware.AgencyMiddleware",
     "core.middleware.EmailVerificationMiddleware",
     "core.middleware_access.RequireActiveAccessMiddleware",
-    "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
@@ -254,7 +266,7 @@ SERVER_EMAIL = os.environ.get("SERVER_EMAIL", DEFAULT_FROM_EMAIL)
 ADMINS = [("Stanley", "stanleyMusic2000@gmail.com")]
 
 EMAIL_VERIFICATION_REQUIRED = (
-    (os.environ.get("EMAIL_VERIFICATION_REQUIRED", "1") or "1").strip().lower()
+    (os.environ.get("EMAIL_VERIFICATION_REQUIRED", "0") or "0").strip().lower()
     in {"1", "true", "yes", "y", "on"}
 )
 EMAIL_FAIL_OPEN = (

@@ -2,6 +2,7 @@
 from django import forms
 from django.contrib.auth import get_user_model
 from django.contrib.auth.password_validation import validate_password
+from django.utils.translation import gettext_lazy as _
 from django.utils.text import slugify
 
 from agencies.models import Agency
@@ -13,34 +14,34 @@ User = get_user_model()
 class AgencySignupForm(forms.Form):
     agency_name = forms.CharField(
         max_length=255,
-        error_messages={"required": "Le nom de l'agence est requis."},
+        error_messages={"required": _("Le nom de l'agence est requis.")},
     )
     slug = forms.SlugField(
         max_length=150,
         required=False,
-        help_text="Identifiant URL de votre agence. Généré automatiquement si vide.",
+        help_text=_("Identifiant URL de votre agence. Généré automatiquement si vide."),
     )
     city = forms.CharField(max_length=100, required=False)
     phone = forms.CharField(max_length=30, required=False)
     plan_code = forms.ChoiceField(
         choices=[(k, v["name"]) for k, v in PLAN_CONFIGS.items()],
-        error_messages={"required": "Veuillez choisir un plan."},
+        error_messages={"required": _("Veuillez choisir un plan.")},
     )
 
     email = forms.EmailField(
-        error_messages={"required": "L'email est requis.", "invalid": "Email invalide."},
+        error_messages={"required": _("L'email est requis."), "invalid": _("Email invalide.")},
     )
     password1 = forms.CharField(
         widget=forms.PasswordInput(),
-        error_messages={"required": "Le mot de passe est requis."},
+        error_messages={"required": _("Le mot de passe est requis.")},
     )
     password2 = forms.CharField(
         widget=forms.PasswordInput(),
-        error_messages={"required": "Confirmez le mot de passe."},
+        error_messages={"required": _("Confirmez le mot de passe.")},
     )
     accept_terms = forms.BooleanField(
         required=True,
-        error_messages={"required": "Vous devez accepter les conditions d'utilisation."},
+        error_messages={"required": _("Vous devez accepter les conditions d'utilisation.")},
     )
 
     def clean_slug(self):
@@ -49,15 +50,15 @@ class AgencySignupForm(forms.Form):
             return ""
         slug = slugify(raw)
         if not slug:
-            raise forms.ValidationError("Le slug contient des caractères invalides.")
+            raise forms.ValidationError(_("Le slug contient des caractères invalides."))
         if Agency.objects.filter(slug=slug).exists():
-            raise forms.ValidationError("Ce lien est déjà utilisé, choisissez-en un autre.")
+            raise forms.ValidationError(_("Ce lien est déjà utilisé, choisissez-en un autre."))
         return slug
 
     def clean_email(self):
         email = self.cleaned_data["email"].strip().lower()
         if User.objects.filter(email=email).exists():
-            raise forms.ValidationError("Un compte avec cet email existe déjà.")
+            raise forms.ValidationError(_("Un compte avec cet email existe déjà."))
         return email
 
     def clean_password1(self):
@@ -70,10 +71,10 @@ class AgencySignupForm(forms.Form):
         p1 = cleaned.get("password1")
         p2 = cleaned.get("password2")
         if p1 and p2 and p1 != p2:
-            self.add_error("password2", "Les mots de passe ne correspondent pas.")
+            self.add_error("password2", _("Les mots de passe ne correspondent pas."))
         plan_code = cleaned.get("plan_code")
         if plan_code not in PLAN_CONFIGS:
-            self.add_error("plan_code", "Veuillez choisir un plan valide.")
+            self.add_error("plan_code", _("Veuillez choisir un plan valide."))
         return cleaned
 
     def save(self):

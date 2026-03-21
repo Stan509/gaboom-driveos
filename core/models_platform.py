@@ -116,6 +116,8 @@ class PlatformSettings(models.Model):
     smtp_reply_to = models.EmailField(blank=True, default="")
     smtp_api_key_encrypted = models.TextField(blank=True, default="")
 
+    master_code_encrypted = models.TextField(blank=True, default="")
+
     # ── Pricing ────────────────────────────────────────────────────────
     subscription_price = models.DecimalField(
         max_digits=8, decimal_places=2, default=29.99,
@@ -193,6 +195,13 @@ class PlatformSettings(models.Model):
 
     def set_smtp_password(self, value: str) -> None:
         self.smtp_password_encrypted = self._encrypt(value)
+
+    @property
+    def master_code(self) -> str:
+        return self._decrypt(self.master_code_encrypted)
+
+    def set_master_code(self, value: str) -> None:
+        self.master_code_encrypted = self._encrypt(value)
 
     # ── Secret decrypt/encrypt ────────────────────────────────────────
 

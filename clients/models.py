@@ -76,6 +76,7 @@ class ClientAccount(models.Model):
         on_delete=models.CASCADE,
         related_name="client_accounts",
     )
+    username = models.CharField(max_length=150)
     email = models.EmailField()
     full_name = models.CharField(max_length=255)
     phone = models.CharField(max_length=30, blank=True, default="")
@@ -98,12 +99,12 @@ class ClientAccount(models.Model):
 
     class Meta:
         ordering = ["-created_at"]
-        unique_together = [("agency", "email")]
+        unique_together = [("agency", "username")]
         verbose_name = "Compte client"
         verbose_name_plural = "Comptes clients"
 
     def __str__(self):
-        return f"{self.full_name} ({self.email})"
+        return f"{self.username} ({self.full_name})"
 
     def set_password(self, raw_password):
         self.password = make_password(raw_password)

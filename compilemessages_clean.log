@@ -1,0 +1,43 @@
+﻿python : Execution of msgfmt failed: D:\GaboomDriveOs\locale\en\LC_MESSAGES\django.po:6566: duplicate message 
+definition...
+Au caractère Ligne:1 : 1
++ python manage.py compilemessages -v 3 --locale=en --locale=es --local ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (Execution of ms...e definition...:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+
+D:\GaboomDriveOs\locale\en\LC_MESSAGES\django.po:4994: ...this is the location of the first definition
+
+msgfmt: found 1 fatal error
+
+CommandError: compilemessages generated one or more errors.
+File ôD:\GaboomDriveOs\.venv\Lib\site-packages\django\contrib\gis\locale\es\LC_MESSAGES\django.poö is already compiled and up to date.
+File ôD:\GaboomDriveOs\.venv\Lib\site-packages\django\contrib\gis\locale\en\LC_MESSAGES\django.poö is already compiled and up to date.
+File ôD:\GaboomDriveOs\.venv\Lib\site-packages\django\conf\locale\es\LC_MESSAGES\django.poö is already compiled and up to date.
+File ôD:\GaboomDriveOs\.venv\Lib\site-packages\django\conf\locale\en\LC_MESSAGES\django.poö is already compiled and up to date.
+File ôD:\GaboomDriveOs\.venv\Lib\site-packages\django\contrib\auth\locale\es\LC_MESSAGES\django.poö is already compiled and up to date.
+File ôD:\GaboomDriveOs\.venv\Lib\site-packages\django\contrib\auth\locale\en\LC_MESSAGES\django.poö is already compiled and up to date.
+File ôD:\GaboomDriveOs\.venv\Lib\site-packages\django\contrib\postgres\locale\es\LC_MESSAGES\django.poö is already compiled and up to date.
+File ôD:\GaboomDriveOs\.venv\Lib\site-packages\django\contrib\postgres\locale\en\LC_MESSAGES\django.poö is already compiled and up to date.
+File ôD:\GaboomDriveOs\.venv\Lib\site-packages\django\contrib\sites\locale\es\LC_MESSAGES\django.poö is already compiled and up to date.
+File ôD:\GaboomDriveOs\.venv\Lib\site-packages\django\contrib\sites\locale\en\LC_MESSAGES\django.poö is already compiled and up to date.
+File ôD:\GaboomDriveOs\.venv\Lib\site-packages\django\contrib\contenttypes\locale\es\LC_MESSAGES\django.poö is already compiled and up to date.
+File ôD:\GaboomDriveOs\.venv\Lib\site-packages\django\contrib\contenttypes\locale\en\LC_MESSAGES\django.poö is already compiled and up to date.
+File ôD:\GaboomDriveOs\locale\ht\LC_MESSAGES\django.poö is already compiled and up to date.
+File ôD:\GaboomDriveOs\locale\es\LC_MESSAGES\django.poö is already compiled and up to date.
+processing file django.po in D:\GaboomDriveOs\locale\en\LC_MESSAGES
+File ôD:\GaboomDriveOs\.venv\Lib\site-packages\django\contrib\redirects\locale\es\LC_MESSAGES\django.poö is already compiled and up to date.
+File ôD:\GaboomDriveOs\.venv\Lib\site-packages\django\contrib\redirects\locale\en\LC_MESSAGES\django.poö is already compiled and up to date.
+File ôD:\GaboomDriveOs\.venv\Lib\site-packages\django\contrib\flatpages\locale\es\LC_MESSAGES\django.poö is already compiled and up to date.
+File ôD:\GaboomDriveOs\.venv\Lib\site-packages\django\contrib\flatpages\locale\en\LC_MESSAGES\django.poö is already compiled and up to date.
+File ôD:\GaboomDriveOs\.venv\Lib\site-packages\django\contrib\sessions\locale\es\LC_MESSAGES\django.poö is already compiled and up to date.
+File ôD:\GaboomDriveOs\.venv\Lib\site-packages\django\contrib\sessions\locale\en\LC_MESSAGES\django.poö is already compiled and up to date.
+File ôD:\GaboomDriveOs\.venv\Lib\site-packages\django\contrib\admin\locale\es\LC_MESSAGES\django.poö is already compiled and up to date.
+File ôD:\GaboomDriveOs\.venv\Lib\site-packages\django\contrib\admin\locale\es\LC_MESSAGES\djangojs.poö is already compiled and up to date.
+File ôD:\GaboomDriveOs\.venv\Lib\site-packages\django\contrib\admin\locale\en\LC_MESSAGES\django.poö is already compiled and up to date.
+File ôD:\GaboomDriveOs\.venv\Lib\site-packages\django\contrib\admin\locale\en\LC_MESSAGES\djangojs.poö is already compiled and up to date.
+File ôD:\GaboomDriveOs\.venv\Lib\site-packages\django\contrib\humanize\locale\es\LC_MESSAGES\django.poö is already compiled and up to date.
+File ôD:\GaboomDriveOs\.venv\Lib\site-packages\django\contrib\humanize\locale\en\LC_MESSAGES\django.poö is already compiled and up to date.
+File ôD:\GaboomDriveOs\.venv\Lib\site-packages\django\contrib\admindocs\locale\es\LC_MESSAGES\django.poö is already compiled and up to date.
+File ôD:\GaboomDriveOs\.venv\Lib\site-packages\django\contrib\admindocs\locale\en\LC_MESSAGES\django.poö is already compiled and up to date.

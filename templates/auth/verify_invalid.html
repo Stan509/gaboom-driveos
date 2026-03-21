@@ -1,7 +1,7 @@
 {% extends "base.html" %}
-{% load static %}
+{% load static i18n %}
 
-{% block title %}Lien invalide — Gaboom DriveOS{% endblock %}
+{% block title %}{% trans "Lien invalide" %} — Gaboom DriveOS{% endblock %}
 
 {% block body %}
   <div class="min-h-screen flex items-center justify-center px-4 bg-slate-50">
@@ -13,13 +13,13 @@
           <svg class="w-7 h-7 text-red-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m9-.75a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 3.75h.008v.008H12v-.008Z"/></svg>
         </div>
 
-        <h1 class="mt-5 text-xl font-bold text-slate-900">Lien invalide ou expiré</h1>
+        <h1 class="mt-5 text-xl font-bold text-slate-900">{% trans "Lien invalide ou expiré" %}</h1>
         <p class="mt-2 text-sm text-slate-500 leading-relaxed">
-          Ce lien de vérification n'est plus valide. Connecte-toi et demande un nouveau lien.
+          {% trans "Ce lien de vérification n'est plus valide. Connecte-toi et demande un nouveau lien." %}
         </p>
 
         <a href="/login/" class="mt-6 inline-flex w-full items-center justify-center rounded-full bg-gaboomViolet text-white py-2.5 text-sm font-semibold shadow-lg shadow-violet-200 hover:bg-violet-700 transition-all">
-          Se connecter
+          {% trans "Se connecter" %}
         </a>
       </div>
     </div>

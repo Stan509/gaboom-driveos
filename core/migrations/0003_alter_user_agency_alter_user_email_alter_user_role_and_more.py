@@ -30,6 +30,6 @@ class Migration(migrations.Migration):
         ),
         migrations.AddConstraint(
             model_name='user',
-            constraint=models.CheckConstraint(condition=models.Q(('is_superuser', True), models.Q(('agency__isnull', True), _negated=True), _connector='OR'), name='non_superuser_must_have_agency'),
+            constraint=models.CheckConstraint(check=models.Q(('is_superuser', True), models.Q(('agency__isnull', True), _negated=True), _connector='OR'), name='non_superuser_must_have_agency'),
         ),
     ]

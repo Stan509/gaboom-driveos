@@ -11,7 +11,7 @@
       <p class="text-sm mt-1" style="color:var(--g-text-muted)">
         {% blocktrans count count=unresolved_count %}
           {{ count }} alerte non résolue
-        {% pluralize %}
+        {% plural %}
           {{ count }} alertes non résolues
         {% endblocktrans %}
       </p>

@@ -199,27 +199,33 @@ class TeamMemberEditForm(forms.ModelForm):
 
 class VehicleForm(forms.ModelForm):
     STATUS_CHOICES = [
-        ("available", "Disponible"),
-        ("rented", "En location"),
-        ("maintenance", "Maintenance"),
+        ("available", _("Disponible")),
+        ("rented", _("En location")),
+        ("maintenance", _("Maintenance")),
     ]
 
     class Meta:
         model = Vehicle
         fields = ["make", "model", "plate_number", "daily_price", "status",
                   "public_visible", "allow_negotiation", "image", "current_km",
-                  "gps_imei", "gps_ip", "gps_source", "gps_enabled"]
+                  "gps_imei", "gps_ip", "gps_source", "gps_enabled", "last_lat", "last_lng", "last_gps_speed"]
         labels = {
-            "make": "Marque", "model": "Modèle", "plate_number": "Immatriculation",
-            "daily_price": "Prix / jour (€)", "status": "Statut",
-            "public_visible": "Visible sur le site public",
-            "allow_negotiation": "Autoriser négociation prix",
-            "image": "Photo",
-            "current_km": "Kilométrage actuel",
-            "gps_imei": "IMEI GPS",
-            "gps_ip": "IP du tracker GPS",
-            "gps_source": "Source GPS",
-            "gps_enabled": "GPS activé",
+            "make": _("Marque"),
+            "model": _("Modèle"),
+            "plate_number": _("Immatriculation"),
+            "daily_price": _("Prix / jour (€)"),
+            "status": _("Statut"),
+            "public_visible": _("Visible sur le site public"),
+            "allow_negotiation": _("Autoriser négociation prix"),
+            "image": _("Photo"),
+            "current_km": _("Kilométrage actuel"),
+            "gps_imei": _("IMEI GPS"),
+            "gps_ip": _("IP du tracker GPS"),
+            "gps_source": _("Source GPS"),
+            "gps_enabled": _("GPS activé"),
+            "last_lat": _("Dernière latitude"),
+            "last_lng": _("Dernière longitude"),
+            "last_gps_speed": _("Dernière vitesse (km/h)"),
         }
 
     def __init__(self, *args, **kwargs):
@@ -240,9 +246,9 @@ class VehicleForm(forms.ModelForm):
         image = self.cleaned_data.get("image")
         if image and hasattr(image, "content_type"):
             if image.content_type not in _ALLOWED_IMAGE_TYPES:
-                raise ValidationError("Format accepté : PNG, JPG ou WebP.")
+                raise ValidationError(_("Format accepté : PNG, JPG ou WebP."))
             if image.size > _MAX_IMAGE_SIZE:
-                raise ValidationError("L'image ne doit pas dépasser 5 Mo.")
+                raise ValidationError(_("L'image ne doit pas dépasser 5 Mo."))
         return image
 
 
@@ -255,13 +261,19 @@ class ClientForm(forms.ModelForm):
                   "driving_license_number", "driving_license_expiry", "id_document",
                   "notes", "tags", "status", "follow_up_at", "follow_up_note"]
         labels = {
-            "full_name": "Nom complet", "email": "Email", "phone": "Téléphone",
-            "whatsapp": "WhatsApp", "address": "Adresse", "notes": "Notes",
-            "driving_license_number": "N° permis de conduire",
-            "driving_license_expiry": "Expiration permis",
-            "id_document": "Pièce d'identité (photo)",
-            "tags": "Tags (séparés par virgule)", "status": "Statut",
-            "follow_up_at": "Prochaine relance", "follow_up_note": "Note relance",
+            "full_name": _("Nom complet"),
+            "email": _("Email"),
+            "phone": _("Téléphone"),
+            "whatsapp": _("WhatsApp"),
+            "address": _("Adresse"),
+            "notes": _("Notes"),
+            "driving_license_number": _("N° permis de conduire"),
+            "driving_license_expiry": _("Expiration permis"),
+            "id_document": _("Pièce d'identité (photo)"),
+            "tags": _("Tags (séparés par virgule)"),
+            "status": _("Statut"),
+            "follow_up_at": _("Prochaine relance"),
+            "follow_up_note": _("Note relance"),
         }
         widgets = {
             "follow_up_at": forms.DateInput(attrs={"type": "date"}),
@@ -288,10 +300,10 @@ class ClientForm(forms.ModelForm):
         f = self.cleaned_data.get("id_document")
         if f and hasattr(f, "size"):
             if f.size > 5 * 1024 * 1024:
-                raise ValidationError("Le fichier ne doit pas dépasser 5 Mo.")
+                raise ValidationError(_("Le fichier ne doit pas dépasser 5 Mo."))
             ext = f.name.rsplit(".", 1)[-1].lower() if "." in f.name else ""
             if ext not in ("png", "jpg", "jpeg", "webp"):
-                raise ValidationError("Formats acceptés : PNG, JPG, WebP.")
+                raise ValidationError(_("Formats acceptés : PNG, JPG, WebP."))
         return f
 
 
@@ -309,19 +321,25 @@ class ContractForm(forms.ModelForm):
             "notes",
         ]
         labels = {
-            "client": "Client", "vehicle": "Véhicule",
-            "start_date": "Date début", "end_date": "Date fin",
-            "status": "Statut",
-            "price_per_day": "Prix / jour", "deposit": "Caution",
-            "km_depart": "Km départ", "fuel_depart": "Jauge carburant (1-8)",
-            "km_included": "Km inclus", "km_price": "Prix km sup.",
-            "fuel_fee": "Frais carburant", "late_fee": "Frais retard / jour",
-            "pickup_datetime": "Date/heure de remise",
-            "return_datetime": "Date/heure de retour prévue",
-            "contract_clause": "Clause du contrat",
-            "penalty_clause": "Clause de pénalité",
-            "gps_clause": "Clause GPS / géolocalisation",
-            "notes": "Notes",
+            "client": _("Client"),
+            "vehicle": _("Véhicule"),
+            "start_date": _("Date début"),
+            "end_date": _("Date fin"),
+            "status": _("Statut"),
+            "price_per_day": _("Prix / jour"),
+            "deposit": _("Caution"),
+            "km_depart": _("Km départ"),
+            "fuel_depart": _("Jauge carburant (1-8)"),
+            "km_included": _("Km inclus"),
+            "km_price": _("Prix km sup."),
+            "fuel_fee": _("Frais carburant"),
+            "late_fee": _("Frais retard / jour"),
+            "pickup_datetime": _("Date/heure de remise"),
+            "return_datetime": _("Date/heure de retour prévue"),
+            "contract_clause": _("Clause du contrat"),
+            "penalty_clause": _("Clause de pénalité"),
+            "gps_clause": _("Clause GPS / géolocalisation"),
+            "notes": _("Notes"),
         }
         widgets = {
             "start_date": forms.DateInput(attrs={"type": "date"}),
@@ -368,14 +386,19 @@ class ContractForm(forms.ModelForm):
         if self.instance and self.instance.pk:
             self.fields["status"].widget = forms.Select(
                 choices=[
-                    ("draft", "Brouillon"), ("pending_signature", "En attente de signature"),
-                    ("active", "Actif"), ("pending_return", "Retour en cours"),
+                    ("draft", _("Brouillon")),
+                    ("pending_signature", _("En attente de signature")),
+                    ("active", _("Actif")),
+                    ("pending_return", _("Retour en cours")),
                 ],
                 attrs={"class": _INPUT},
             )
         else:
             self.fields["status"].widget = forms.Select(
-                choices=[("draft", "Brouillon"), ("pending_signature", "En attente de signature")],
+                choices=[
+                    ("draft", _("Brouillon")),
+                    ("pending_signature", _("En attente de signature")),
+                ],
                 attrs={"class": _INPUT},
             )
         for name, field in self.fields.items():
@@ -393,7 +416,7 @@ class ContractForm(forms.ModelForm):
         vehicle = cleaned.get("vehicle")
 
         if start and end and end < start:
-            self.add_error("end_date", "La date de fin doit être après la date de début.")
+            self.add_error("end_date", _("La date de fin doit être après la date de début."))
 
         # Overlap check: no active/draft contract for same vehicle on overlapping dates
         if start and end and vehicle:
@@ -410,7 +433,7 @@ class ContractForm(forms.ModelForm):
             if overlap_qs.exists():
                 self.add_error(
                     "vehicle",
-                    "Ce véhicule est déjà réservé sur cette période.",
+                    _("Ce véhicule est déjà réservé sur cette période."),
                 )
         return cleaned
 
@@ -422,8 +445,10 @@ class PaymentForm(forms.ModelForm):
         model = Payment
         fields = ["amount", "method", "reference", "note"]
         labels = {
-            "amount": "Montant", "method": "Méthode",
-            "reference": "Référence", "note": "Note",
+            "amount": _("Montant"),
+            "method": _("Méthode"),
+            "reference": _("Référence"),
+            "note": _("Note"),
         }
 
     def __init__(self, *args, **kwargs):
@@ -443,55 +468,55 @@ class BusinessSettingsForm(forms.ModelForm):
         exclude = ["agency"]
         labels = {
             # Widget 1
-            "km_included": "Km inclus",
-            "km_type": "Type km inclus",
-            "km_unlimited": "Km illimité",
-            "km_extra_price": "Prix km supplémentaire",
-            "late_tolerance_minutes": "Tolérance retard (min)",
-            "late_billing_mode": "Facturation retard",
-            "late_fee_per_day": "Frais retard / jour",
-            "fuel_policy": "Politique carburant",
-            "fuel_fee": "Frais carburant",
-            "vat_percent": "TVA (%)",
-            "currency": "Devise",
-            "invoice_rounding": "Arrondi facturation",
+            "km_included": _("Km inclus"),
+            "km_type": _("Type km inclus"),
+            "km_unlimited": _("Km illimité"),
+            "km_extra_price": _("Prix km supplémentaire"),
+            "late_tolerance_minutes": _("Tolérance retard (min)"),
+            "late_billing_mode": _("Facturation retard"),
+            "late_fee_per_day": _("Frais retard / jour"),
+            "fuel_policy": _("Politique carburant"),
+            "fuel_fee": _("Frais carburant"),
+            "vat_percent": _("TVA (%)"),
+            "currency": _("Devise"),
+            "invoice_rounding": _("Arrondi facturation"),
             # Widget 2
-            "deposit_default": "Dépôt de garantie",
-            "deposit_mode": "Mode dépôt",
-            "insurance_franchise": "Franchise assurance",
-            "insurance_included": "Assurance incluse",
-            "franchise_buyback": "Rachat de franchise possible",
-            "franchise_buyback_price": "Prix rachat franchise / jour",
+            "deposit_default": _("Dépôt de garantie"),
+            "deposit_mode": _("Mode dépôt"),
+            "insurance_franchise": _("Franchise assurance"),
+            "insurance_included": _("Assurance incluse"),
+            "franchise_buyback": _("Rachat de franchise possible"),
+            "franchise_buyback_price": _("Prix rachat franchise / jour"),
             # Widget 3
-            "auto_number_contracts": "Numérotation auto contrats",
-            "auto_number_invoices": "Numérotation auto factures",
-            "contract_prefix": "Préfixe contrat",
-            "invoice_prefix": "Préfixe facture",
-            "pay_cash": "Espèce",
-            "pay_card": "Carte bancaire",
-            "pay_transfer": "Virement",
-            "pay_mobile_money": "Mobile money",
-            "partial_payment_allowed": "Paiement partiel autorisé",
-            "invoice_due_days": "Délai paiement facture (jours)",
+            "auto_number_contracts": _("Numérotation auto contrats"),
+            "auto_number_invoices": _("Numérotation auto factures"),
+            "contract_prefix": _("Préfixe contrat"),
+            "invoice_prefix": _("Préfixe facture"),
+            "pay_cash": _("Espèce"),
+            "pay_card": _("Carte bancaire"),
+            "pay_transfer": _("Virement"),
+            "pay_mobile_money": _("Mobile money"),
+            "partial_payment_allowed": _("Paiement partiel autorisé"),
+            "invoice_due_days": _("Délai paiement facture (jours)"),
             # Widget 4
-            "maintenance_interval_km": "Intervalle maintenance (km)",
-            "maintenance_interval_months": "Intervalle maintenance (mois)",
-            "maintenance_alert_km": "Alerte maintenance X km avant",
-            "maintenance_alert_days": "Alerte maintenance X jours avant",
-            "maintenance_grace_km": "Tolérance dépassement (km)",
-            "maintenance_email_alert": "Email alerte automatique",
-            "maintenance_disable_vehicle": "Désactiver véhicule si maintenance dépassée",
+            "maintenance_interval_km": _("Intervalle maintenance (km)"),
+            "maintenance_interval_months": _("Intervalle maintenance (mois)"),
+            "maintenance_alert_km": _("Alerte maintenance X km avant"),
+            "maintenance_alert_days": _("Alerte maintenance X jours avant"),
+            "maintenance_grace_km": _("Tolérance dépassement (km)"),
+            "maintenance_email_alert": _("Email alerte automatique"),
+            "maintenance_disable_vehicle": _("Désactiver véhicule si maintenance dépassée"),
             # Widget 5
-            "allow_price_negotiation": "Activer la négociation de prix",
-            "negotiation_min_percent": "Offre minimum (% du prix)",
+            "allow_price_negotiation": _("Activer la négociation de prix"),
+            "negotiation_min_percent": _("Offre minimum (% du prix)"),
             # Widget 6
-            "default_contract_clause": "Clause de contrat par défaut",
-            "default_penalty_clause": "Clause de pénalité par défaut",
+            "default_contract_clause": _("Clause de contrat par défaut"),
+            "default_penalty_clause": _("Clause de pénalité par défaut"),
             # Widget 7 — GPS
-            "gps_tracking_enabled": "Activer le suivi GPS",
-            "gps_speed_limit": "Limite de vitesse (km/h)",
-            "gps_offline_alert_minutes": "Alerte GPS hors ligne (minutes)",
-            "default_gps_clause": "Clause GPS par défaut",
+            "gps_tracking_enabled": _("Activer le suivi GPS"),
+            "gps_speed_limit": _("Limite de vitesse (km/h)"),
+            "gps_offline_alert_minutes": _("Alerte GPS hors ligne (minutes)"),
+            "default_gps_clause": _("Clause GPS par défaut"),
         }
         widgets = {
             "default_contract_clause": forms.Textarea(attrs={"rows": 6}),
@@ -561,7 +586,7 @@ class BusinessSettingsForm(forms.ModelForm):
         for fname in numeric_fields:
             val = cleaned.get(fname)
             if val is not None and val < 0:
-                self.add_error(fname, "La valeur doit être positive.")
+                self.add_error(fname, _("La valeur doit être positive."))
         return cleaned
 
     @property

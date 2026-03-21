@@ -527,8 +527,8 @@
       <div class="mx-auto w-16 h-16 rounded-2xl bg-violet-50 flex items-center justify-center mb-4">
         <svg class="w-8 h-8 text-gaboomViolet" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z"/></svg>
       </div>
-      <h3 class="font-semibold text-slate-800">Aucun contrat ou paiement</h3>
-      <p class="text-sm text-slate-400 mt-1">Créez votre premier contrat via le formulaire ci-contre.</p>
+      <h3 class="font-semibold text-slate-800">{% trans "Aucun contrat ou paiement" %}</h3>
+      <p class="text-sm text-slate-400 mt-1">{% trans "Créez votre premier contrat via le formulaire ci-contre." %}</p>
     </div>
     {% endif %}
   </div>
@@ -567,7 +567,7 @@
       {% endif %}
 
       <!-- Section: Sélection -->
-      <div class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">Sélection</div>
+      <div class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">{% trans "Sélection" %}</div>
       <div>
         <label class="block text-xs font-medium text-slate-600 mb-1">{{ form.client.label }}</label>
         {{ form.client }}
@@ -598,7 +598,7 @@
       </div>
 
       <!-- Section: Tarification -->
-      <div class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider pt-2">Tarification</div>
+      <div class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider pt-2">{% trans "Tarification" %}</div>
       <div class="grid grid-cols-2 gap-3">
         <div>
           <label class="block text-xs font-medium text-slate-600 mb-1">{{ form.price_per_day.label }}</label>
@@ -631,7 +631,7 @@
         </div>
       </div>
 
-      <div class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider pt-2">Départ véhicule</div>
+      <div class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider pt-2">{% trans "Départ véhicule" %}</div>
       <div class="grid grid-cols-2 gap-3">
         <div>
           <label class="block text-xs font-medium text-slate-600 mb-1">{{ form.km_depart.label }}</label>
@@ -693,7 +693,7 @@
       <!-- Buttons -->
       <div class="flex items-center gap-2 pt-3">
         <button type="submit" class="flex-1 rounded-xl bg-gaboomViolet text-white px-4 py-2.5 text-sm font-medium hover:opacity-95 transition">
-          {% if editing %}Enregistrer{% else %}Créer{% endif %}
+          {% if editing %}{% trans "Enregistrer" %}{% else %}{% trans "Créer" %}{% endif %}
         </button>
         {% if editing %}
         <a href="{% url 'dashboard:contract_hub' %}?q={{ q }}&status={{ status_filter }}&pay={{ pay_filter }}&sort={{ sort_by }}" class="rounded-xl border border-slate-200 px-4 py-2.5 text-sm font-medium text-slate-600 hover:bg-slate-50 transition">Annuler</a>
@@ -719,7 +719,7 @@
       <div class="pt-2">
         <button type="button" disabled class="w-full rounded-xl border border-slate-200 px-3 py-2 text-xs font-medium text-slate-400 cursor-not-allowed flex items-center justify-center gap-1.5">
           <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m.75 12 3 3m0 0 3-3m-3 3v-6m-1.5-9H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z"/></svg>
-          Générer PDF (bientôt)
+          {% trans "Générer PDF (bientôt)" %}
         </button>
       </div>
     </form>
@@ -746,7 +746,7 @@
     </div>
     {% endif %}
 
-    <div class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">Sélection</div>
+    <div class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">{% trans "Sélection" %}</div>
     <div>
       <label class="block text-xs font-medium text-slate-600 mb-1">{{ form.client.label }}</label>
       {{ form.client }}
@@ -768,7 +768,7 @@
       </div>
     </div>
 
-    <div class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider pt-2">Tarification</div>
+    <div class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider pt-2">{% trans "Tarification" %}</div>
     <div class="grid grid-cols-2 gap-3">
       <div>
         <label class="block text-xs font-medium text-slate-600 mb-1">{{ form.price_per_day.label }}</label>
@@ -800,7 +800,7 @@
       </div>
     </div>
 
-    <div class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider pt-2">Départ véhicule</div>
+    <div class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider pt-2">{% trans "Départ véhicule" %}</div>
     <div class="grid grid-cols-2 gap-3">
       <div>
         <label class="block text-xs font-medium text-slate-600 mb-1">{{ form.km_depart.label }}</label>
@@ -855,7 +855,7 @@
 
     <div class="flex items-center gap-2 pt-3">
       <button type="submit" class="flex-1 rounded-xl bg-gaboomViolet text-white px-4 py-2.5 text-sm font-medium hover:opacity-95 transition">
-        {% if editing %}Enregistrer{% else %}Créer{% endif %}
+        {% if editing %}{% trans "Enregistrer" %}{% else %}{% trans "Créer" %}{% endif %}
       </button>
       <button type="button" onclick="closeDrawer()" class="rounded-xl border border-slate-200 px-4 py-2.5 text-sm font-medium text-slate-600 hover:bg-slate-50 transition">Annuler</button>
     </div>
@@ -908,7 +908,7 @@
           <dd class="font-medium mt-0.5" id="mdMethodBadge"></dd>
         </div>
         <div>
-          <dt class="text-slate-400 text-[11px] uppercase tracking-wider">Référence</dt>
+          <dt class="text-slate-400 text-[11px] uppercase tracking-wider">{% trans "Référence" %}</dt>
           <dd class="font-medium mt-0.5" id="mdRef"></dd>
         </div>
         <div>

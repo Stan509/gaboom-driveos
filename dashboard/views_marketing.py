@@ -18,6 +18,7 @@ from django.db.models import Count, Q
 from django.http import HttpRequest, HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils import timezone
+from django.utils.translation import gettext_lazy as _
 from django.views.decorators.http import require_POST
 
 from agencies.models import Vehicle
@@ -148,7 +149,7 @@ def marketing_settings_update(request: HttpRequest) -> HttpResponse:
         agency.set_marketing_whatsapp_api_key(wa_key)
         update_fields.append("marketing_whatsapp_api_key_encrypted")
     agency.save(update_fields=update_fields)
-    messages.success(request, "Clés API marketing enregistrées.")
+    messages.success(request, _("Clés API marketing enregistrées."))
     return redirect("dashboard:mkt_campaign_list")
 
 
@@ -175,7 +176,7 @@ def campaign_create(request: HttpRequest) -> HttpResponse:
     if request.method == "POST":
         name = request.POST.get("name", "").strip()[:200]
         if not name:
-            messages.error(request, "Le nom est requis.")
+            messages.error(request, _("Le nom est requis."))
             return redirect("dashboard:mkt_campaign_create")
 
         objective = request.POST.get("objective", "promo")
@@ -217,10 +218,10 @@ def campaign_create(request: HttpRequest) -> HttpResponse:
                 style=style_b, score=score_b,
             )
 
-        messages.success(request, "Campagne créée.")
+        messages.success(request, _("Campagne créée."))
         return redirect("dashboard:mkt_campaign_list")
 
-    ctx = {"page_id": "mkt_campaigns", "breadcrumb": "Nouvelle campagne", "editing": False}
+    ctx = {"page_id": "mkt_campaigns", "breadcrumb": _("Nouvelle campagne"), "editing": False}
     ctx.update(_campaign_ctx(request))
     return render(request, "dashboard/marketing/campaign_form.html", ctx)
 
@@ -261,14 +262,14 @@ def campaign_edit(request: HttpRequest, pk: int) -> HttpResponse:
             var_b.score = score_message(var_b.body_text)["total"] if var_b.body_text else 0
             var_b.save()
 
-        messages.success(request, "Campagne mise à jour.")
+        messages.success(request, _("Campagne mise à jour."))
         return redirect("dashboard:mkt_campaign_list")
 
     variant_a = campaign.variants.filter(variant="A").first()
     variant_b = campaign.variants.filter(variant="B").first()
 
     ctx = {
-        "page_id": "mkt_campaigns", "breadcrumb": "Modifier campagne",
+        "page_id": "mkt_campaigns", "breadcrumb": _("Modifier campagne"),
         "campaign": campaign, "editing": True,
         "variant_a": variant_a, "variant_b": variant_b,
     }
@@ -284,7 +285,7 @@ def campaign_delete(request: HttpRequest, pk: int) -> HttpResponse:
     agency = _agency(request)
     campaign = get_object_or_404(MktCampaign, pk=pk, agency=agency)
     campaign.delete()
-    messages.success(request, "Campagne supprimée.")
+    messages.success(request, _("Campagne supprimée."))
     return redirect("dashboard:mkt_campaign_list")
 
 
@@ -300,16 +301,16 @@ def campaign_send(request: HttpRequest, pk: int) -> HttpResponse:
     clients = _get_target_clients(campaign, agency)
     variants = list(campaign.variants.filter(is_active=True))
     if not variants:
-        messages.error(request, "Aucune variante active.")
+        messages.error(request, _("Aucune variante active."))
         return redirect("dashboard:mkt_campaign_list")
     if campaign.channel_email and not agency.marketing_email_api_key:
-        messages.error(request, "Ajoutez une clé API Email avant d'envoyer.")
+        messages.error(request, _("Ajoutez une clé API Email avant d'envoyer."))
         return redirect("dashboard:mkt_campaign_list")
     if campaign.channel_whatsapp and (
         not agency.marketing_whatsapp_api_key
         or not agency.marketing_whatsapp_phone_id
     ):
-        messages.error(request, "Ajoutez la clé API WhatsApp et le Phone ID avant d'envoyer.")
+        messages.error(request, _("Ajoutez la clé API WhatsApp et le Phone ID avant d'envoyer."))
         return redirect("dashboard:mkt_campaign_list")
 
     sent_count = 0
@@ -375,11 +376,17 @@ def campaign_send(request: HttpRequest, pk: int) -> HttpResponse:
     campaign.status = "running"
     campaign.save(update_fields=["status"])
 
-    msg = f"{sent_count} email(s) envoyé(s)"
+    label_emails_sent = _("email(s) envoyé(s)")
+    label_wa_sent = _("WhatsApp envoyés")
+    label_emails_failed = _("email(s) échoués")
+    label_wa_failed = _("WhatsApp échoués")
+
+    parts = [f"{sent_count} {label_emails_sent}"]
     if wa_count:
-        msg += f", {wa_count} WhatsApp envoyés"
+        parts.append(f"{wa_count} {label_wa_sent}")
+    msg = ", ".join(parts)
     if email_fail or wa_fail:
-        msg += f" — {email_fail} email(s) échoués, {wa_fail} WhatsApp échoués"
+        msg += f" - {email_fail} {label_emails_failed}, {wa_fail} {label_wa_failed}"
     messages.success(request, msg)
     return redirect("dashboard:mkt_campaign_list")
 
@@ -436,7 +443,7 @@ def automation_create(request: HttpRequest) -> HttpResponse:
         template_key=str(template_pk),
         custom_content=message_body,
     )
-    messages.success(request, f"Règle '{name or rule.get_key_display()}' créée.")
+    messages.success(request, _("Règle '%(rule)s' créée.") % {'rule': name or rule.get_key_display()})
     return redirect("dashboard:mkt_automations")
 
 
@@ -446,7 +453,7 @@ def automation_delete(request: HttpRequest, pk: int) -> HttpResponse:
     agency = _agency(request)
     rule = get_object_or_404(AutomationRule, pk=pk, agency=agency)
     rule.delete()
-    messages.success(request, "Règle supprimée.")
+    messages.success(request, _("Règle supprimée."))
     return redirect("dashboard:mkt_automations")
 
 
@@ -458,7 +465,7 @@ def automation_toggle(request: HttpRequest, pk: int) -> HttpResponse:
     val = request.POST.get("enabled", "")
     rule.enabled = val == "1"
     rule.save(update_fields=["enabled"])
-    messages.success(request, f"Règle {'activée' if rule.enabled else 'désactivée'}.")
+    messages.success(request, _("Règle %(status)s.") % {'status': _('activée') if rule.enabled else _('désactivée')})
     return redirect("dashboard:mkt_automations")
 
 
@@ -473,7 +480,7 @@ def automation_update(request: HttpRequest, pk: int) -> HttpResponse:
     rule.template_key = request.POST.get("template_key", rule.template_key)
     rule.custom_content = request.POST.get("custom_content", rule.custom_content)
     rule.save()
-    messages.success(request, "Règle mise à jour.")
+    messages.success(request, _("Règle mise à jour."))
     return redirect("dashboard:mkt_automations")
 
 

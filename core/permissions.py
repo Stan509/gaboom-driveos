@@ -133,8 +133,8 @@ ROLE_PERMISSIONS: dict[str, list[str]] = {
 
     "agency_accountant": [
         "dashboard.view",
-        "vehicles.view",
-        "clients.view",
+        "vehicles.view", "vehicles.create", "vehicles.edit",
+        "clients.view", "clients.create", "clients.edit",
         "contracts.view", "contracts.create", "contracts.edit", "contracts.cancel", "contracts.export",
         "billing.view", "billing.create", "billing.refund", "billing.export",
         "reservations.view",
@@ -144,8 +144,8 @@ ROLE_PERMISSIONS: dict[str, list[str]] = {
 
     "agency_staff": [
         "dashboard.view",
-        "vehicles.view",
-        "clients.view",
+        "vehicles.view", "vehicles.create", "vehicles.edit",
+        "clients.view", "clients.create", "clients.edit",
         "contracts.view",
         "reservations.view",
         "maintenance.view",

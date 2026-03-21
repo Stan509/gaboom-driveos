@@ -1,0 +1,2486 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Gaboom DriveOS\n"
+"POT-Creation-Date: 2026-02-13 00:00+0000\n"
+"PO-Revision-Date: 2026-02-13 00:00+0000\n"
+"Language: en\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "Gaboom DriveOS"
+msgstr "Gaboom DriveOS"
+
+msgid "Gaboom DriveOS — Le cockpit tout-en-un pour piloter une agence de location."
+msgstr "Gaboom DriveOS — The all‑in‑one cockpit to run a car rental agency."
+
+msgid "Catalogue"
+msgstr "Catalog"
+
+msgid "Appeler"
+msgstr "Call"
+
+msgid "Mon espace"
+msgstr "My space"
+
+msgid "Déconnexion"
+msgstr "Logout"
+
+msgid "Connexion"
+msgstr "Login"
+
+msgid "Créer un compte"
+msgstr "Create an account"
+
+msgid "Vue d'ensemble de votre agence"
+msgstr "Overview of your agency"
+
+msgid "Gestion de votre flotte"
+msgstr "Manage your fleet"
+
+msgid "Propulsé par"
+msgstr "Powered by"
+
+msgid "Tableau de bord"
+msgstr "Dashboard"
+
+msgid "Mes réservations"
+msgstr "My bookings"
+
+msgid "Mes contrats"
+msgstr "My contracts"
+
+msgid "Conduite IA"
+msgstr "AI Driving"
+
+msgid "Profil"
+msgstr "Profile"
+
+msgid "Notifications"
+msgstr "Notifications"
+
+msgid "Gaboom DriveOS — Le système d'exploitation pour agences de location"
+msgstr "Gaboom DriveOS — The operating system for car rental agencies"
+
+msgid "Fonctionnalités"
+msgstr "Features"
+
+msgid "Tarifs"
+msgstr "Pricing"
+
+msgid "Démo"
+msgstr "Demo"
+
+msgid "Créer mon agence"
+msgstr "Create my agency"
+
+msgid "Simple, transparent, sans surprise"
+msgstr "Simple, transparent, no surprises"
+
+msgid "Essai gratuit sur tous les plans. Aucune carte requise."
+msgstr "Free trial on all plans. No card required."
+
+msgid "Populaire"
+msgstr "Popular"
+
+msgid "Business"
+msgstr "Business"
+
+msgid "Entreprise"
+msgstr "Enterprise"
+
+msgid "Essai gratuit"
+msgstr "Free trial"
+
+msgid "Starter"
+msgstr "Starter"
+
+msgid "/mois"
+msgstr "/month"
+
+msgid "Pour démarrer avec une agence."
+msgstr "To get started with one agency."
+
+msgid "Dashboard"
+msgstr "Dashboard"
+
+msgid "Changer de thème"
+msgstr "Change theme"
+
+msgid "Principal"
+msgstr "Main"
+
+msgid "ce mois"
+msgstr "this month"
+
+msgid "Clients"
+msgstr "Clients"
+
+msgid "Contrat et Paiement"
+msgstr "Contract & Payment"
+
+msgid "Réservations"
+msgstr "Reservations"
+
+msgid "Suivi GPS"
+msgstr "GPS Tracking"
+
+msgid "Visibilité : tous"
+msgstr "Visibility: all"
+
+msgid "Administration"
+msgstr "Administration"
+
+msgid "Configuration globale de votre agence"
+msgstr "Global configuration of your agency"
+
+msgid "Paramètres métier"
+msgstr "Business settings"
+
+msgid "Site public"
+msgstr "Public site"
+
+msgid "Croissance"
+msgstr "Growth"
+
+msgid "Marketing"
+msgstr "Marketing"
+
+msgid "Promotions"
+msgstr "Promotions"
+
+msgid "Campagnes"
+msgstr "Campaigns"
+
+msgid "Bannières"
+msgstr "Banners"
+
+msgid "Marketing Engine"
+msgstr "Marketing Engine"
+
+msgid "Campagnes IA"
+msgstr "AI Campaigns"
+
+msgid "Automatisations"
+msgstr "Automations"
+
+msgid "Analytics"
+msgstr "Analytics"
+
+msgid "WhatsApp"
+msgstr "WhatsApp"
+
+msgid "Dernière mise à jour"
+msgstr "Last updated"
+
+msgid "Compte"
+msgstr "Account"
+
+msgid "Abonnement"
+msgstr "Subscription"
+
+msgid "Mon compte"
+msgstr "My account"
+
+msgid "SuperAdmin"
+msgstr "SuperAdmin"
+
+msgid "Multi-agence natif"
+msgstr "Native multi-agency"
+
+msgid "Client retention intégré"
+msgstr "Built-in client retention"
+
+msgid "Le système d'exploitation pour agences de location modernes."
+msgstr "The operating system for modern rental agencies."
+
+msgid "Gérez votre flotte, automatisez vos contrats, encaissez en ligne et fidélisez vos clients — le tout depuis un seul dashboard."
+msgstr "Manage your fleet, automate contracts, take payments online, and retain customers — all from one dashboard."
+
+msgid "Voir la démo"
+msgstr "See the demo"
+
+msgid "Aucune carte bancaire requise. Activation immédiate."
+msgstr "No credit card required. Instant activation."
+
+msgid "En location"
+msgstr "On rent"
+
+msgid "En location"
+msgstr "Rented"
+
+msgid "Opérationnel"
+msgstr "Operational"
+
+msgid "Mis à jour il y a 2 min"
+msgstr "Updated 2 minutes ago"
+
+msgid "Problème"
+msgstr "Problem"
+
+msgid "Gestion papier, pertes, retards"
+msgstr "Paper-based management, losses, delays"
+
+msgid "Tableurs dispersés, données incohérentes"
+msgstr "Scattered spreadsheets, inconsistent data"
+
+msgid "Véhicules mal suivis, inspections oubliées"
+msgstr "Poorly tracked vehicles, missed inspections"
+
+msgid "Aucune visibilité sur la rentabilité réelle"
+msgstr "No visibility on real profitability"
+
+msgid "Communication WhatsApp, zéro traçabilité"
+msgstr "WhatsApp communication, zero traceability"
+
+msgid "Solution"
+msgstr "Solution"
+
+msgid "Tout centralisé, en temps réel"
+msgstr "Everything centralized, in real time"
+
+msgid "Un cockpit unique pour toute la flotte"
+msgstr "A single cockpit for the entire fleet"
+
+msgid "Tracking, inspections, maintenance planifiée"
+msgstr "Tracking, inspections, scheduled maintenance"
+
+msgid "Analytics et KPIs orientés décision"
+msgstr "Analytics and KPI-driven decisions"
+
+msgid "Équipe structurée, rôles, permissions"
+msgstr "Structured team, roles, permissions"
+
+msgid "Augmente tes revenus sans augmenter ta flotte"
+msgstr "Increase revenue without increasing fleet size"
+
+msgid "Optimise chaque véhicule, chaque client, chaque euro."
+msgstr "Optimize every vehicle, every client, every euro."
+
+msgid "Optimisation taux d'occupation"
+msgstr "Occupancy rate optimization"
+
+msgid "Maximise le temps de location de chaque véhicule."
+msgstr "Maximize rental time for every vehicle."
+
+msgid "Recommandations intelligentes"
+msgstr "Smart recommendations"
+
+msgid "Suggestions basées sur l'historique et la saisonnalité."
+msgstr "Suggestions based on history and seasonality."
+
+msgid "Rappels de retour"
+msgstr "Return reminders"
+
+msgid "Notifications automatiques pour réduire les retards."
+msgstr "Automatic notifications to reduce delays."
+
+msgid "Relances clients inactifs"
+msgstr "Inactive client re-engagements"
+
+msgid "Réactive les anciens clients avec des offres ciblées."
+msgstr "Re-engage past clients with targeted offers."
+
+msgid "Tout ce qu'il faut pour scaler"
+msgstr "Everything you need to scale"
+
+msgid "Chaque module est pensé pour fonctionner seul et s'intégrer au reste."
+msgstr "Each module is designed to work alone and integrate with the rest."
+
+msgid "Contrats & réservations"
+msgstr "Contracts & reservations"
+
+msgid "Crée, signe et archive tes contrats. Suivi du cycle complet de chaque location."
+msgstr "Create, sign, and archive contracts. Track the full lifecycle of each rental."
+
+msgid "Inspection & photos"
+msgstr "Inspections & photos"
+
+msgid "Checklists visuelles, photos avant/après, historique complet de l'état véhicule."
+msgstr "Visual checklists, before/after photos, complete vehicle condition history."
+
+msgid "Maintenance intelligente"
+msgstr "Smart maintenance"
+
+msgid "Planifie les entretiens, reçois des alertes, réduis les immobilisations."
+msgstr "Schedule maintenance, receive alerts, reduce downtime."
+
+msgid "GPS tracking & géofencing"
+msgstr "GPS tracking & geofencing"
+
+msgid "Localise ta flotte, définis des zones, reçois des alertes de sortie en temps réel."
+msgstr "Locate your fleet, define zones, receive real-time exit alerts."
+
+msgid "Analytics rentabilité"
+msgstr "Profitability analytics"
+
+msgid "KPIs par véhicule, taux d'occupation, revenus. Décide avec de la data, pas au feeling."
+msgstr "KPIs per vehicle, occupancy rate, revenue. Decide with data, not gut feeling."
+
+msgid "Équipe & permissions"
+msgstr "Team & permissions"
+
+msgid "Owner, Admin, Staff — chaque rôle a ses droits. Multi-agence natif."
+msgstr "Owner, Admin, Staff — each role has its rights. Native multi-agency."
+
+msgid "Fidélise tes clients automatiquement"
+msgstr "Retain your customers automatically"
+
+msgid "Ne perds plus jamais un ancien client. Gaboom DriveOS t'aide à garder le contact et à maximiser la valeur de chaque location."
+msgstr "Never lose a past client again. Gaboom DriveOS helps you stay in touch and maximize the value of each rental."
+
+msgid "Historique client complet"
+msgstr "Complete customer history"
+
+msgid "Fiche client avec historique des locations, préférences et notes."
+msgstr "Customer profile with rental history, preferences, and notes."
+
+msgid "Relances automatiques"
+msgstr "Automatic follow-ups"
+
+msgid "Relance automatique après restitution pour rebooker rapidement."
+msgstr "Automatic follow-up after return to rebook quickly."
+
+msgid "Notifications promotions"
+msgstr "Promotion notifications"
+
+msgid "Offres spéciales ciblées pour anciens clients et périodes creuses."
+msgstr "Targeted special offers for past clients and slow periods."
+
+msgid "Base CRM intégrée"
+msgstr "Integrated CRM database"
+
+msgid "Base de données centralisée de tous vos clients et interactions."
+msgstr "Centralized database of all your customers and interactions."
+
+msgid "Ta flotte est protégée"
+msgstr "Your fleet is protected"
+
+msgid "Isolation stricte des données par agence. Architecture multi-tenant sécurisée. Logs d'audit prêts pour conformité."
+msgstr "Strict data isolation per agency. Secure multi-tenant architecture. Audit logs ready for compliance."
+
+msgid "Isolation par agence"
+msgstr "Agency isolation"
+
+msgid "Chaque agence est un silo étanche. Aucun accès croisé possible entre les données."
+msgstr "Each agency is an isolated silo. No cross-access possible between data."
+
+msgid "Architecture multi-tenant"
+msgstr "Multi-tenant architecture"
+
+msgid "Séparation stricte au niveau base de données, middleware et permissions."
+msgstr "Strict separation at database, middleware, and permissions levels."
+
+msgid "Logs d'audit"
+msgstr "Audit logs"
+
+msgid "Traçabilité complète des actions. Prêt pour conformité et audits."
+msgstr "Full action traceability. Ready for compliance and audits."
+
+msgid "Multi-agence, équipe complète."
+msgstr "Multi-agency, full team."
+
+msgid "Multi-agence"
+msgstr "Multi-agency"
+
+msgid "15 utilisateurs"
+msgstr "15 users"
+
+msgid "Véhicules illimités"
+msgstr "Unlimited vehicles"
+
+msgid "Support prioritaire"
+msgstr "Priority support"
+
+msgid "Sur mesure, accompagnement dédié."
+msgstr "Tailor-made, dedicated support."
+
+msgid "Tout Pro inclus"
+msgstr "All Pro features included"
+
+msgid "Workflows custom"
+msgstr "Custom workflows"
+
+msgid "Intégrations avancées"
+msgstr "Advanced integrations"
+
+msgid "Onboarding personnalisé"
+msgstr "Personalized onboarding"
+
+msgid "SLA garanti"
+msgstr "Guaranteed SLA"
+
+msgid "Questions fréquentes"
+msgstr "Frequently asked questions"
+
+msgid "Tout ce que tu dois savoir avant de commencer."
+msgstr "Everything you need to know before getting started."
+
+msgid "Est-ce vraiment multi-agence ?"
+msgstr "Is it really multi-agency?"
+
+msgid "Oui. Chaque utilisateur est rattaché à une agence. Les données sont strictement séparées. Tu peux gérer plusieurs agences depuis un seul compte owner."
+msgstr "Yes. Each user is linked to an agency. Data is strictly separated. You can manage multiple agencies from one owner account."
+
+msgid "Puis-je essayer gratuitement ?"
+msgstr "Can I try for free?"
+
+msgid "Absolument. Tous les plans incluent un essai gratuit sans carte bancaire. Tu testes, tu décides."
+msgstr "Absolutely. All plans include a free trial with no credit card. You test, you decide."
+
+msgid "Le paiement Stripe est-il inclus ?"
+msgstr "Is Stripe payment included?"
+
+msgid "Oui. Stripe est intégré pour permettre à vos clients de payer leurs réservations en ligne directement sur votre site public. Vous connectez votre compte Stripe et recevez les paiements directement. Gaboom DriveOS ne prend pas le contrôle de vos fonds."
+msgstr "Yes. Stripe is integrated so your customers can pay online directly on your public site. You connect your Stripe account and receive payments directly. Gaboom DriveOS does not control your funds."
+
+msgid "Mes clients peuvent-ils réserver en ligne ?"
+msgstr "Can my customers book online?"
+
+msgid "Oui. Chaque agence dispose d'un site public avec catalogue et formulaire de réservation, activable en un clic."
+msgstr "Yes. Each agency has a public site with a catalog and booking form, activated in one click."
+
+msgid "Le GPS est-il intégré ?"
+msgstr "Is GPS included?"
+
+msgid "Le module GPS tracking avec géofencing est prévu dans le plan Pro. L'architecture supporte déjà les fournisseurs tiers."
+msgstr "GPS tracking with geofencing is included in the Pro plan. The architecture already supports third-party providers."
+
+msgid "Puis-je personnaliser le site de mon agence ?"
+msgstr "Can I customize my agency site?"
+
+msgid "Oui. Couleurs, thème, activation/désactivation, mode maintenance — tout est configurable depuis le dashboard."
+msgstr "Yes. Colors, theme, enable/disable, maintenance mode — everything is configurable from the dashboard."
+
+msgid "Prêt à piloter ta flotte ?"
+msgstr "Ready to run your fleet?"
+
+msgid "Rejoins les agences qui passent au niveau supérieur."
+msgstr "Join agencies that level up."
+
+msgid "Démarrer maintenant"
+msgstr "Start now"
+
+msgid "Gratuit · Sans engagement · En 30 secondes"
+msgstr "Free · No commitment · In 30 seconds"
+
+msgid "Produit"
+msgstr "Product"
+
+msgid "Créer une agence"
+msgstr "Create an agency"
+
+msgid "Légal"
+msgstr "Legal"
+
+msgid "CGU (bientôt)"
+msgstr "Terms (coming soon)"
+
+msgid "Confidentialité (bientôt)"
+msgstr "Privacy (coming soon)"
+
+msgid "Tous les systèmes opérationnels"
+msgstr "All systems operational"
+
+msgid "1 agence"
+msgstr "1 agency"
+
+msgid "3 utilisateurs"
+msgstr "3 users"
+
+msgid "20 véhicules"
+msgstr "20 vehicles"
+
+msgid "Dernière mise à jour :"
+msgstr "Last updated:"
+
+msgid "Réservez un véhicule en quelques clics."
+msgstr "Book a vehicle in just a few clicks."
+
+msgid "Voir le catalogue"
+msgstr "View catalog"
+
+msgid "Véhicules disponibles"
+msgstr "Available vehicles"
+
+msgid "/jour"
+msgstr "/day"
+
+msgid "Détails"
+msgstr "Details"
+
+msgid "Aucun véhicule disponible"
+msgstr "No vehicles available"
+
+msgid "Les véhicules seront affichés ici dès qu'ils seront publiés."
+msgstr "Vehicles will appear here as soon as they are published."
+
+msgid "Pourquoi nous choisir"
+msgstr "Why choose us"
+
+msgid "Véhicules vérifiés"
+msgstr "Verified vehicles"
+
+msgid "Tous nos véhicules sont inspectés et entretenus régulièrement."
+msgstr "All our vehicles are inspected and maintained regularly."
+
+msgid "Réservation rapide"
+msgstr "Fast booking"
+
+msgid "Réservez en quelques minutes, sans paperasse inutile."
+msgstr "Book in minutes, without unnecessary paperwork."
+
+msgid "Prix transparents"
+msgstr "Transparent pricing"
+
+msgid "Aucun frais caché. Le prix affiché est le prix final."
+msgstr "No hidden fees. The displayed price is the final price."
+
+msgid "Comment ça marche"
+msgstr "How it works"
+
+msgid "Choisissez"
+msgstr "Choose"
+
+msgid "Parcourez notre catalogue et sélectionnez le véhicule idéal."
+msgstr "Browse our catalog and select the ideal vehicle."
+
+msgid "Réservez"
+msgstr "Book"
+
+msgid "Contactez-nous par téléphone ou WhatsApp pour confirmer."
+msgstr "Contact us by phone or WhatsApp to confirm."
+
+msgid "Roulez"
+msgstr "Drive"
+
+msgid "Récupérez votre véhicule et profitez de la route !"
+msgstr "Pick up your vehicle and enjoy the road!"
+
+msgid "Besoin d'aide ?"
+msgstr "Need help?"
+
+msgid "Contactez-nous, nous sommes disponibles pour vous."
+msgstr "Contact us, we are available to help you."
+
+msgid "Email"
+msgstr "Email"
+
+msgid "Tous les véhicules disponibles à la location."
+msgstr "All vehicles available for rent."
+
+msgid "Négociable"
+msgstr "Negotiable"
+
+msgid "Modifier"
+msgstr "Edit"
+
+msgid "Tarif journalier"
+msgstr "Daily rate"
+
+msgid "Prix négociable"
+msgstr "Negotiable price"
+
+msgid "Réserver"
+msgstr "Reserve"
+
+msgid "Informations"
+msgstr "Information"
+
+msgid "Marque"
+msgstr "Make"
+
+msgid "Modèle"
+msgstr "Model"
+
+msgid "Plaque"
+msgstr "Plate"
+
+msgid "Véhicule"
+msgstr "Vehicle"
+
+msgid "Retour au catalogue"
+msgstr "Back to catalog"
+
+msgid "Retour au véhicule"
+msgstr "Back to vehicle"
+
+msgid "Ce véhicule n'est plus disponible"
+msgstr "This vehicle is no longer available"
+
+msgid "Ce véhicule est actuellement en location ou en maintenance. Veuillez choisir un autre véhicule."
+msgstr "This vehicle is currently rented or in maintenance. Please choose another vehicle."
+
+msgid "Voir les véhicules disponibles"
+msgstr "See available vehicles"
+
+msgid "Ce véhicule n'est plus disponible pour ces dates"
+msgstr "This vehicle is not available for these dates"
+
+msgid "Une réservation confirmée existe déjà pour cette période. Choisissez d'autres dates ou un autre véhicule."
+msgstr "A confirmed booking already exists for this period. Choose other dates or another vehicle."
+
+msgid "Véhicules disponibles :"
+msgstr "Available vehicles:"
+
+msgid "Demande de réservation"
+msgstr "Reservation request"
+
+msgid "Remplissez le formulaire ci-dessous."
+msgstr "Fill out the form below."
+
+msgid "Créez un compte pour négocier le prix."
+msgstr "Create an account to negotiate the price."
+
+msgid "Connecté en tant que"
+msgstr "Logged in as"
+
+msgid "Téléphone"
+msgstr "Phone"
+
+msgid "Date de début"
+msgstr "Start date"
+
+msgid "Date de fin"
+msgstr "End date"
+
+msgid "Message"
+msgstr "Message"
+
+msgid "optionnel"
+msgstr "optional"
+
+msgid "Code promo"
+msgstr "Promo code"
+
+msgid "Proposez votre prix"
+msgstr "Propose your price"
+
+msgid "Prix affiché :"
+msgstr "Displayed price:"
+
+msgid "Offre minimum :"
+msgstr "Minimum offer:"
+
+msgid "Votre prix par jour"
+msgstr "Your price per day"
+
+msgid "Les échanges de négociation se feront via la messagerie interne de votre espace client."
+msgstr "Negotiation exchanges will take place via your client portal messaging."
+
+msgid "Ce véhicule est négociable"
+msgstr "This vehicle is negotiable"
+
+msgid "Vous pouvez proposer votre prix pour ce véhicule ! Pour négocier, créez un compte gratuit ou connectez-vous. Les échanges se feront via la messagerie interne."
+msgstr "You can propose your price for this vehicle! To negotiate, create a free account or log in. Exchanges will take place via internal messaging."
+
+msgid "Se connecter"
+msgstr "Log in"
+
+msgid "Envoyer la demande"
+msgstr "Send request"
+
+msgid "Votre demande sera traitée par l'agence. Vous recevrez un lien de suivi."
+msgstr "Your request will be handled by the agency. You will receive a tracking link."
+
+msgid "Contre-offre reçue — Répondez !"
+msgstr "Counter-offer received — Reply now!"
+
+msgid "En attente de confirmation"
+msgstr "Awaiting confirmation"
+
+msgid "Réservation confirmée"
+msgstr "Reservation confirmed"
+
+msgid "Réservation refusée"
+msgstr "Reservation rejected"
+
+msgid "Offre expirée"
+msgstr "Offer expired"
+
+msgid "Suivi de votre demande"
+msgstr "Track your request"
+
+msgid "Référence :"
+msgstr "Reference:"
+
+msgid "Dates"
+msgstr "Dates"
+
+msgid "Durée"
+msgstr "Duration"
+
+msgid "Estimation"
+msgstr "Estimate"
+
+msgid "Négociation"
+msgstr "Negotiation"
+
+msgid "Votre offre :"
+msgstr "Your offer:"
+
+msgid "Contre-offre de l'agence"
+msgstr "Agency counter-offer"
+
+msgid "par jour"
+msgstr "per day"
+
+msgid "Total estimé :"
+msgstr "Estimated total:"
+
+msgid "Message de l'agence :"
+msgstr "Agency message:"
+
+msgid "Accepter"
+msgstr "Accept"
+
+msgid "min restants"
+msgstr "minutes remaining"
+
+msgid "Refuser"
+msgstr "Reject"
+
+msgid "Accord trouvé :"
+msgstr "Agreement reached:"
+
+msgid "Négociation refusée"
+msgstr "Negotiation refused"
+
+msgid "Offre envoyée — en attente de réponse de l'agence"
+msgstr "Offer sent — awaiting agency response"
+
+msgid "Messages"
+msgstr "Messages"
+
+msgid "Historique"
+msgstr "History"
+
+msgid "Demande envoyée"
+msgstr "Request sent"
+
+msgid "Offre de %(price)s/jour envoyée"
+msgstr "Offer of %(price)s/day sent"
+
+msgid "Contre-offre de l'agence : %(price)s/jour"
+msgstr "Agency counter-offer: %(price)s/day"
+
+msgid "Contre-offre acceptée — accord à %(price)s/jour"
+msgstr "Counter-offer accepted — agreement at %(price)s/day"
+
+msgid "Connectez-vous"
+msgstr "Log in"
+
+msgid "pour envoyer un message à l'agence."
+msgstr "to send a message to the agency."
+
+msgid "Voir les véhicules disponibles"
+msgstr "See available vehicles"
+
+msgid "Contacter via WhatsApp"
+msgstr "Contact via WhatsApp"
+
+msgid "Conservez ce lien pour suivre votre demande."
+msgstr "Keep this link to track your request."
+
+msgid "Maintenance en cours"
+msgstr "Maintenance in progress"
+
+msgid "Le site de <strong>{{ agency.name }}</strong> est temporairement indisponible pour amélioration. Revenez bientôt !"
+msgstr "The site for <strong>{{ agency.name }}</strong> is temporarily unavailable for improvements. Check back soon!"
+
+msgid "Appeler"
+msgstr "Call"
+
+msgid "Vous"
+msgstr "You"
+
+msgid "Aucun message pour le moment. Envoyez un message à l'agence."
+msgstr "No messages yet. Send a message to the agency."
+
+msgid "Réserver un véhicule"
+msgstr "Reserve a vehicle"
+
+msgid "Remplis le formulaire et nous te recontactons rapidement."
+msgstr "Fill out the form and we will get back to you quickly."
+
+msgid "Ton email"
+msgstr "Your email"
+
+msgid "Véhicule souhaité"
+msgstr "Desired vehicle"
+
+msgid "Formulaire de contact — l'intégration paiement arrive bientôt."
+msgstr "Contact form — payment integration coming soon."
+
+msgid "Portail client non disponible"
+msgstr "Client portal not available"
+
+msgid "Cette fonctionnalité n'est pas incluse dans votre plan actuel."
+msgstr "This feature is not included in your current plan."
+
+msgid "Le portail client permet à vos clients de suivre leurs réservations, signer leurs contrats et gérer leur profil en toute autonomie."
+msgstr "The client portal allows your customers to track their bookings, sign their contracts and manage their profile autonomously."
+
+msgid "Avec le portail client, vos clients peuvent :"
+msgstr "With the client portal, your customers can:"
+
+msgid "Suivre leurs réservations en temps réel"
+msgstr "Track their bookings in real time"
+
+msgid "Signer numériquement leurs contrats"
+msgstr "Sign their contracts digitally"
+
+msgid "Consulter leurs documents"
+msgstr "View their documents"
+
+msgid "Communiquer directement avec vous"
+msgstr "Communicate directly with you"
+
+msgid "L'équipe Gaboom s'excuse pour la gêne occasionnée."
+msgstr "The Gaboom team apologizes for the inconvenience."
+
+msgid "Contactez-nous pour mettre à niveau votre abonnement et débloquer cette fonctionnalité."
+msgstr "Contact us to upgrade your subscription and unlock this feature."
+
+msgid "Retour à l'accueil"
+msgstr "Back to home"
+
+msgid "Contacter le support"
+msgstr "Contact support"
+
+msgid "Mon compte"
+msgstr "My account"
+
+msgid "Gérez votre profil et les informations de votre agence"
+msgstr "Manage your profile and agency information"
+
+msgid "Profil utilisateur"
+msgstr "User profile"
+
+msgid "Vos informations personnelles"
+msgstr "Your personal information"
+
+msgid "Compte"
+msgstr "Account"
+
+msgid "Email"
+msgstr "Email"
+
+msgid "Vérifié"
+msgstr "Verified"
+
+msgid "Non vérifié"
+msgstr "Not verified"
+
+msgid "Rôle"
+msgstr "Role"
+
+msgid "Agence"
+msgstr "Agency"
+
+msgid "Identité agence"
+msgstr "Agency identity"
+
+msgid "Nom, slogan et logo"
+msgstr "Name, slogan and logo"
+
+msgid "Logo"
+msgstr "Logo"
+
+msgid "PNG, JPG ou WebP — max 5 Mo"
+msgstr "PNG, JPG or WebP — max 5 MB"
+
+msgid "Contact & adresse"
+msgstr "Contact & address"
+
+msgid "Coordonnées de l'agence"
+msgstr "Agency contact information"
+
+msgid "Documents & facturation"
+msgstr "Documents & billing"
+
+msgid "Infos légales pour contrats et factures"
+msgstr "Legal information for contracts and invoices"
+
+msgid "Affiché en bas des factures et devis"
+msgstr "Displayed at the bottom of invoices and quotes"
+
+msgid "Enregistrer"
+msgstr "Save"
+
+msgid "Nom complet"
+msgstr "Full name"
+
+msgid "Téléphone"
+msgstr "Phone"
+
+msgid "WhatsApp"
+msgstr "WhatsApp"
+
+msgid "Nom commercial"
+msgstr "Business name"
+
+msgid "Slogan"
+msgstr "Slogan"
+
+msgid "Email de contact"
+msgstr "Contact email"
+
+msgid "Adresse ligne 1"
+msgstr "Address line 1"
+
+msgid "Adresse ligne 2"
+msgstr "Address line 2"
+
+msgid "Ville"
+msgstr "City"
+
+msgid "Pays"
+msgstr "Country"
+
+msgid "Site web"
+msgstr "Website"
+
+msgid "Raison sociale"
+msgstr "Legal name"
+
+msgid "N° TVA / SIRET"
+msgstr "VAT / SIRET number"
+
+msgid "Devise"
+msgstr "Currency"
+
+msgid "Pied de facture"
+msgstr "Invoice footer"
+
+msgid "Pages CMS"
+msgstr "CMS Pages"
+
+msgid "Gérez les pages publiques de votre site"
+msgstr "Manage your public site pages"
+
+msgid "Nouvelle page"
+msgstr "New page"
+
+msgid "Site public"
+msgstr "Public site"
+
+msgid "Website Builder"
+msgstr "Website Builder"
+
+msgid "Personnalisez votre vitrine en ligne"
+msgstr "Customize your online storefront"
+
+msgid "Publié"
+msgstr "Published"
+
+msgid "Brouillon"
+msgstr "Draft"
+
+msgid "Voir le site"
+msgstr "View site"
+
+msgid "Prévisualiser"
+msgstr "Preview"
+
+msgid "Publier"
+msgstr "Publish"
+
+msgid "Abonnement"
+msgstr "Subscription"
+
+msgid "Gérez votre abonnement Gaboom DriveOS"
+msgstr "Manage your Gaboom DriveOS subscription"
+
+msgid "Instructions PDF"
+msgstr "PDF Instructions"
+
+msgid "Modifier les informations du membre"
+msgstr "Edit member information"
+
+msgid "Créer un nouveau membre de l'équipe"
+msgstr "Create a new team member"
+
+msgid "Retour"
+msgstr "Back"
+
+msgid "Créer le membre"
+msgstr "Create member"
+
+msgid "Gestion accès agences"
+msgstr "Agency access management"
+
+msgid "Administration des abonnements et accès"
+msgstr "Subscription and access administration"
+
+msgid "Total"
+msgstr "Total"
+
+msgid "Essais"
+msgstr "Trials"
+
+msgid "Actives"
+msgstr "Active"
+
+msgid "Suspendues"
+msgstr "Suspended"
+
+msgid "Preuves pending"
+msgstr "Proofs pending"
+
+msgid "Recherche"
+msgstr "Search"
+
+msgid "Nom agence, email owner…"
+msgstr "Agency name, owner email…"
+
+msgid "Tous"
+msgstr "All"
+
+msgid "Essai"
+msgstr "Trial"
+
+msgid "Actif"
+msgstr "Active"
+
+msgid "Suspendu"
+msgstr "Suspended"
+
+msgid "Tri"
+msgstr "Sort"
+
+msgid "Plus urgent"
+msgstr "Most urgent"
+
+msgid "Nom"
+msgstr "Name"
+
+msgid "Plus récent"
+msgstr "Most recent"
+
+msgid "Filtrer"
+msgstr "Filter"
+
+msgid "Agence"
+msgstr "Agency"
+
+msgid "Owner"
+msgstr "Owner"
+
+msgid "Expire le"
+msgstr "Expires on"
+
+msgid "Restant"
+msgstr "Remaining"
+
+msgid "Preuve"
+msgstr "Proof"
+
+msgid "Actions"
+msgstr "Actions"
+
+msgid "En attente de votre décision"
+msgstr "Awaiting your decision"
+
+msgid "Réservation confirmée — en attente du client"
+msgstr "Reservation confirmed — awaiting client"
+
+msgid "Sous contrat — cette réservation est devenue un contrat"
+msgstr "Under contract — this reservation became a contract"
+
+msgid "Réservation refusée"
+msgstr "Reservation refused"
+
+msgid "Créer le contrat"
+msgstr "Create contract"
+
+msgid "Voir le contrat"
+msgstr "View contract"
+
+msgid "Client"
+msgstr "Client"
+
+msgid "Message du client"
+msgstr "Client message"
+
+msgid "Offre client"
+msgstr "Client offer"
+
+msgid "Date début"
+msgstr "Start date"
+
+msgid "Date fin"
+msgstr "End date"
+
+msgid "Durée"
+msgstr "Duration"
+
+msgid "Estimation"
+msgstr "Estimate"
+
+msgid "Source"
+msgstr "Source"
+
+msgid "Créée le"
+msgstr "Created on"
+
+msgid "Modifier"
+msgstr "Edit"
+
+msgid "Nouvelle"
+msgstr "New"
+
+msgid "campagne"
+msgstr "campaign"
+
+msgid "Modifier la campagne"
+msgstr "Edit campaign"
+
+msgid "Nouvelle campagne IA"
+msgstr "New AI campaign"
+
+msgid "Assistant IA embarqué — génération, scoring et optimisation locale"
+msgstr "Built-in AI assistant — generation, scoring and local optimization"
+
+msgid "Informations"
+msgstr "Information"
+
+msgid "Nom de la campagne"
+msgstr "Campaign name"
+
+msgid "Ex: Promo été 2026"
+msgstr "Ex: Summer 2026 Promo"
+
+msgid "Objectif"
+msgstr "Objective"
+
+msgid "Cible"
+msgstr "Target"
+
+msgid "Tous les clients"
+msgstr "All clients"
+
+msgid "Clients actifs"
+msgstr "Active clients"
+
+msgid "Inactifs 30 jours"
+msgstr "Inactive 30 days"
+
+msgid "Tag personnalisé"
+msgstr "Custom tag"
+
+msgid "Planifier l'envoi"
+msgstr "Schedule sending"
+
+msgid "Lien de réservation"
+msgstr "Booking link"
+
+msgid "Paiements"
+msgstr "Payments"
+
+msgid "Historique et suivi des encaissements"
+msgstr "Payment history and tracking"
+
+msgid "Total encaissé"
+msgstr "Total collected"
+
+msgid "Aujourd'hui"
+msgstr "Today"
+
+msgid "Méthode principale"
+msgstr "Main method"
+
+msgid "Accès"
+msgstr "Access"
+
+msgid "Détails accès"
+msgstr "Access details"
+
+msgid "Deadline"
+msgstr "Deadline"
+
+msgid "Countdown"
+msgstr "Countdown"
+
+msgid "Jours restants"
+msgstr "Days remaining"
+
+msgid "Raison suspension"
+msgstr "Suspension reason"
+
+msgid "Preuves de paiement"
+msgstr "Payment proofs"
+
+msgid "Export CSV"
+msgstr "Export CSV"
+
+msgid "Client, véhicule, immat, réf…"
+msgstr "Client, vehicle, plate, ref…"
+
+msgid "30 derniers jours"
+msgstr "Last 30 days"
+
+msgid "7 derniers jours"
+msgstr "Last 7 days"
+
+msgid "Tout"
+msgstr "All"
+
+msgid "Personnalisé"
+msgstr "Custom"
+
+msgid "Méthode : toutes"
+msgstr "Method: all"
+
+msgid "Espèces"
+msgstr "Cash"
+
+msgid "Terminal CB"
+msgstr "Card terminal"
+
+msgid "Virement"
+msgstr "Bank transfer"
+
+msgid "Statut : tous"
+msgstr "Status: all"
+
+msgid "Réussi"
+msgstr "Successful"
+
+msgid "Remboursé"
+msgstr "Refunded"
+
+msgid "Échoué"
+msgstr "Failed"
+
+msgid "Tri : Date"
+msgstr "Sort: Date"
+
+msgid "Tri : Montant"
+msgstr "Sort: Amount"
+
+msgid "Tri : Client"
+msgstr "Sort: Client"
+
+msgid "Filtrer"
+msgstr "Filter"
+
+msgid "Réinitialiser"
+msgstr "Reset"
+
+msgid "Montant"
+msgstr "Amount"
+
+msgid "Contrat"
+msgstr "Contract"
+
+msgid "Réf"
+msgstr "Ref"
+
+msgid "paiement"
+msgstr "payment"
+
+msgid "Page"
+msgstr "Page"
+
+msgid "Préc."
+msgstr "Prev"
+
+msgid "Suiv."
+msgstr "Next"
+
+msgid "Aucun paiement"
+msgstr "No payment"
+
+msgid "Les paiements apparaîtront ici une fois enregistrés sur les contrats."
+msgstr "Payments will appear here once recorded on contracts."
+
+msgid "Créer un contrat"
+msgstr "Create a contract"
+
+msgid "Supprimer véhicule"
+msgstr "Delete vehicle"
+
+msgid "Supprimer ce véhicule ?"
+msgstr "Delete this vehicle?"
+
+msgid "Retour à la liste"
+msgstr "Back to list"
+
+msgid "Tu es sur le point de supprimer"
+msgstr "You are about to delete"
+
+msgid "Cette action est irréversible."
+msgstr "This action is irreversible."
+
+msgid "Confirmer la suppression"
+msgstr "Confirm deletion"
+
+msgid "Annuler"
+msgstr "Cancel"
+
+msgid "Créer le membre"
+msgstr "Create member"
+
+msgid "Tous rôles"
+msgstr "All roles"
+
+msgid "Tous statuts"
+msgstr "All statuses"
+
+msgid "Actif"
+msgstr "Active"
+
+msgid "Désactivé"
+msgstr "Inactive"
+
+msgid "Membre"
+msgstr "Member"
+
+msgid "Rôle"
+msgstr "Role"
+
+msgid "Statut"
+msgstr "Status"
+
+msgid "Actions"
+msgstr "Actions"
+
+msgid "Rechercher nom ou email…"
+msgstr "Search name or email…"
+
+msgid "Modifier"
+msgstr "Edit"
+
+msgid "Activer"
+msgstr "Activate"
+
+msgid "Désactiver"
+msgstr "Deactivate"
+
+msgid "Supprimer"
+msgstr "Delete"
+
+msgid "Aucun membre trouvé."
+msgstr "No member found."
+
+msgid "Voir"
+msgstr "View"
+
+msgid "Équipe"
+msgstr "Team"
+
+msgid "Gérez les membres de votre agence"
+msgstr "Manage your agency members"
+
+msgid "Sans titre"
+msgstr "Untitled"
+
+msgid "Lance ton agence"
+msgstr "Launch your agency"
+
+msgid "en 30 secondes."
+msgstr "in 30 seconds."
+
+msgid "Dashboard, site public, gestion d'équipe — tout est prêt."
+msgstr "Dashboard, public site, team management — everything is ready."
+
+msgid "Essai gratuit, sans carte bancaire"
+msgstr "Free trial, no credit card"
+
+msgid "Site public personnalisable"
+msgstr "Customizable public site"
+
+msgid "12 thèmes premium inclus"
+msgstr "12 premium themes included"
+
+msgid "Crée ton espace et accède au dashboard en quelques secondes."
+msgstr "Create your space and access the dashboard in seconds."
+
+msgid "Agence"
+msgstr "Agency"
+
+msgid "Nom de l'agence"
+msgstr "Agency name"
+
+msgid "Mon Agence Premium"
+msgstr "My Premium Agency"
+
+msgid "Slug (URL)"
+msgstr "Slug (URL)"
+
+msgid "mon-agence-premium"
+msgstr "my-premium-agency"
+
+msgid "Votre site :"
+msgstr "Your site:"
+
+msgid "Ville"
+msgstr "City"
+
+msgid "optionnel"
+msgstr "optional"
+
+msgid "Paris"
+msgstr "Paris"
+
+msgid "Téléphone"
+msgstr "Phone"
+
+msgid "+33 6 12 34 56 78"
+msgstr "+33 6 12 34 56 78"
+
+msgid "Compte propriétaire"
+msgstr "Owner account"
+
+msgid "Mot de passe"
+msgstr "Password"
+
+msgid "8 caractères min."
+msgstr "8 characters min."
+
+msgid "Confirmation"
+msgstr "Confirmation"
+
+msgid "Retapez le mot de passe"
+msgstr "Re-enter the password"
+
+msgid "Plan"
+msgstr "Plan"
+
+msgid "Agences illimitées"
+msgstr "Unlimited agencies"
+
+msgid "agence"
+msgstr "agency"
+
+msgid "Utilisateurs illimités"
+msgstr "Unlimited users"
+
+msgid "utilisateur"
+msgstr "user"
+
+msgid "Véhicules illimités"
+msgstr "Unlimited vehicles"
+
+msgid "véhicule"
+msgstr "vehicle"
+
+msgid "J'accepte les"
+msgstr "I accept the"
+
+msgid "Conditions d'utilisation"
+msgstr "Terms of Use"
+
+msgid "et la"
+msgstr "and the"
+
+msgid "Politique de confidentialité"
+msgstr "Privacy Policy"
+
+msgid "Essai gratuit · Sans carte bancaire"
+msgstr "Free trial · No credit card"
+
+msgid "Déjà un compte ?"
+msgstr "Already have an account?"
+
+msgid "Création…"
+msgstr "Creating…"
+
+msgid "Le nom de l'agence est requis."
+msgstr "Agency name is required."
+
+msgid "Identifiant URL de votre agence. Généré automatiquement si vide."
+msgstr "URL identifier for your agency. Generated automatically if left blank."
+
+msgid "Veuillez choisir un plan."
+msgstr "Please choose a plan."
+
+msgid "L'email est requis."
+msgstr "Email is required."
+
+msgid "Email invalide."
+msgstr "Invalid email."
+
+msgid "Le mot de passe est requis."
+msgstr "Password is required."
+
+msgid "Confirmez le mot de passe."
+msgstr "Confirm the password."
+
+msgid "Vous devez accepter les conditions d'utilisation."
+msgstr "You must accept the Terms of Use."
+
+msgid "Le slug contient des caractères invalides."
+msgstr "The slug contains invalid characters."
+
+msgid "Ce lien est déjà utilisé, choisissez-en un autre."
+msgstr "This link is already taken, choose another one."
+
+msgid "Un compte avec cet email existe déjà."
+msgstr "An account with this email already exists."
+
+msgid "Les mots de passe ne correspondent pas."
+msgstr "Passwords do not match."
+
+msgid "Veuillez choisir un plan valide."
+msgstr "Please choose a valid plan."
+
+msgid "Plus récentes"
+msgstr "Most recent"
+
+msgid "Véhicules"
+msgstr "Vehicles"
+
+msgid "Gestion de votre flotte"
+msgstr "Manage your fleet"
+
+msgid "Propulsé par"
+msgstr "Powered by"
+
+msgid "Tableau de bord"
+msgstr "Dashboard"
+
+msgid "Mes réservations"
+msgstr "My bookings"
+
+msgid "Équipe"
+msgstr "Team"
+
+msgid "Conduite IA"
+msgstr "AI Driving"
+
+msgid "Tri : KM"
+msgstr "Sort: KM"
+
+msgid "Notifications"
+msgstr "Notifications"
+
+msgid "Gaboom DriveOS — Le système d'exploitation pour agences de location"
+msgstr "Gaboom DriveOS — The operating system for car rental agencies"
+
+msgid "Fonctionnalités"
+msgstr "Features"
+
+msgid "Tri : Statut"
+msgstr "Sort: Status"
+
+msgid "Actions"
+msgstr "Actions"
+
+msgid "Créer mon agence"
+msgstr "Create my agency"
+
+msgid "Simple, transparent, sans surprise"
+msgstr "Simple, transparent, no surprises"
+
+msgid "Filtrer"
+msgstr "Filter"
+
+msgid "Statut : tous"
+msgstr "Status: all"
+
+msgid "/mois"
+msgstr "/month"
+
+msgid "Pour démarrer avec une agence."
+msgstr "To get started with one agency."
+
+msgid "Principal"
+msgstr "Main"
+
+msgid "Contrats actifs"
+msgstr "Active contracts"
+
+msgid "Date début"
+msgstr "Start date"
+
+msgid "Caution, franchise, rachat"
+msgstr "Deposit, deductible, buyback"
+
+msgid "Réservations"
+msgstr "Reservations"
+
+msgid "Suivi GPS"
+msgstr "GPS Tracking"
+
+msgid "Visible"
+msgstr "Visible"
+
+msgid "Administration"
+msgstr "Administration"
+
+msgid "Contrats & kilométrage"
+msgstr "Contracts & mileage"
+
+msgid "Paramètres métier"
+msgstr "Business settings"
+
+msgid "Site public"
+msgstr "Public site"
+
+msgid "Sous contrat"
+msgstr "Under contract"
+
+msgid "Marketing Engine"
+msgstr "Marketing Engine"
+
+msgid "Campagnes IA"
+msgstr "AI Campaigns"
+
+msgid "En location"
+msgstr "On rent"
+
+msgid "Maintenance"
+msgstr "Maintenance"
+
+msgid "Opérationnel"
+msgstr "Operational"
+
+msgid "Mis à jour il y a 2 min"
+msgstr "Updated 2 minutes ago"
+
+msgid "Km, retard, carburant, TVA"
+msgstr "Km, delay, fuel, VAT"
+
+msgid "Crée, signe et archive tes contrats. Suivi du cycle complet de chaque location."
+msgstr "Create, sign, and archive contracts. Track the full lifecycle of each rental."
+
+msgid "Inspection & photos"
+msgstr "Inspections & photos"
+
+msgid "Assurance & dépôt"
+msgstr "Insurance & deposit"
+
+msgid "Chaque agence est un silo étanche. Aucun accès croisé possible entre les données."
+msgstr "Each agency is an isolated silo. No cross-access possible between data."
+
+msgid "Architecture multi-tenant"
+msgstr "Multi-tenant architecture"
+
+msgid "Voir le catalogue"
+msgstr "View catalog"
+
+msgid "Véhicule"
+msgstr "Vehicle"
+
+msgid "Recherche"
+msgstr "Search"
+
+msgid "Détails"
+msgstr "Details"
+
+msgid "Aucun véhicule disponible"
+msgstr "No vehicles available"
+
+msgid "disponible"
+msgstr "available"
+
+msgid "Manquant"
+msgstr "Missing"
+
+msgid "Tous les véhicules disponibles à la location."
+msgstr "All vehicles available for rent."
+
+msgid "Négociable"
+msgstr "Negotiable"
+
+msgid "Aucun client"
+msgstr "No client"
+
+msgid "Tarif journalier"
+msgstr "Daily rate"
+
+msgid "Prix négociable"
+msgstr "Negotiable price"
+
+msgid "Réserver"
+msgstr "Reserve"
+
+msgid "Informations"
+msgstr "Information"
+
+msgid "véhicule"
+msgstr "vehicle"
+
+msgid "Modèle"
+msgstr "Model"
+
+msgid "Prix/j"
+msgstr "Price/day"
+
+msgid "Rechercher…"
+msgstr "Search…"
+
+msgid "Retour au catalogue"
+msgstr "Back to catalog"
+
+msgid "Retour au véhicule"
+msgstr "Back to vehicle"
+
+msgid "Véhicules disponibles :"
+msgstr "Available vehicles:"
+
+msgid "En attente"
+msgstr "Pending"
+
+msgid "Demandes de réservation depuis le site public"
+msgstr "Reservation requests from the public site"
+
+msgid "Client"
+msgstr "Client"
+
+msgid "Date de fin"
+msgstr "End date"
+
+msgid "Message"
+msgstr "Message"
+
+msgid "Code promo"
+msgstr "Promo code"
+
+msgid "Proposez votre prix"
+msgstr "Propose your price"
+
+msgid "Nouveau"
+msgstr "New"
+
+msgid "Référence :"
+msgstr "Reference:"
+
+msgid "Contact"
+msgstr "Contact"
+
+msgid "Durée"
+msgstr "Duration"
+
+msgid "Tri : Prix"
+msgstr "Sort: Price"
+
+msgid "Négociation"
+msgstr "Negotiation"
+
+msgid "Votre offre :"
+msgstr "Your offer:"
+
+msgid "Aujourd'hui"
+msgstr "Today"
+
+msgid "Accord trouvé :"
+msgstr "Agreement reached:"
+
+msgid "Négociation refusée"
+msgstr "Negotiation refused"
+
+msgid "Offre envoyée — en attente de réponse de l'agence"
+msgstr "Offer sent — awaiting agency response"
+
+msgid "Actif"
+msgstr "Active"
+
+msgid "Historique"
+msgstr "History"
+
+msgid "Demande envoyée"
+msgstr "Request sent"
+
+msgid "Contacter via WhatsApp"
+msgstr "Contact via WhatsApp"
+
+msgid "Conservez ce lien pour suivre votre demande."
+msgstr "Keep this link to track your request."
+
+msgid "masqué"
+msgstr "hidden"
+
+msgid "Appeler"
+msgstr "Call"
+
+msgid "Vous"
+msgstr "You"
+
+msgid "Aucun message pour le moment. Envoyez un message à l'agence."
+msgstr "No messages yet. Send a message to the agency."
+
+msgid "Tous statuts"
+msgstr "All statuses"
+
+msgid "Remplis le formulaire et nous te recontactons rapidement."
+msgstr "Fill out the form and we will get back to you quickly."
+
+msgid "Statut"
+msgstr "Status"
+
+msgid "À signer"
+msgstr "To sign"
+
+msgid "Actif"
+msgstr "Active"
+
+msgid "Clôturé"
+msgstr "Closed"
+
+msgid "Brouillon"
+msgstr "Draft"
+
+msgid "Retour en cours"
+msgstr "Return in progress"
+
+msgid "Annulé"
+msgstr "Cancelled"
+
+msgid "Aucun contrat pour le moment."
+msgstr "No contracts at the moment."
+
+msgid "Nouvelle réservation"
+msgstr "New booking"
+
+msgid "Toutes"
+msgstr "All"
+
+msgid "Prix"
+msgstr "Price"
+
+msgid "Offre"
+msgstr "Offer"
+
+msgid "Contre-offre"
+msgstr "Counter-offer"
+
+msgid "Accepté"
+msgstr "Accepted"
+
+msgid "Total"
+msgstr "Total"
+
+msgid "Agence"
+msgstr "Agency"
+
+msgid "Accepter"
+msgstr "Accept"
+
+msgid "Refuser"
+msgstr "Refuse"
+
+msgid "Choisir un autre véhicule"
+msgstr "Choose another vehicle"
+
+msgid "Aucune réservation"
+msgstr "No bookings"
+
+msgid "Parcourez notre catalogue pour réserver un véhicule."
+msgstr "Browse our catalog to book a vehicle."
+
+msgid "Voir le catalogue"
+msgstr "View catalog"
+
+msgid "Du"
+msgstr "From"
+
+msgid "au"
+msgstr "to"
+
+msgid "jour"
+msgid_plural "jours"
+msgstr[0] "day"
+msgstr[1] "days"
+
+msgid "Pilote ta flotte"
+msgstr "Pilot your fleet"
+
+msgid "depuis un seul cockpit."
+msgstr "from a single cockpit."
+
+msgid "Véhicules, contrats, équipe, analytics — tout centralisé."
+msgstr "Vehicles, contracts, team, analytics — all centralized."
+
+msgid "Tous les systèmes opérationnels"
+msgstr "All systems operational"
+
+msgid "Accède à ton dashboard."
+msgstr "Access your dashboard."
+
+msgid "Nom d'utilisateur"
+msgstr "Username"
+
+msgid "Mot de passe"
+msgstr "Password"
+
+msgid "Se connecter"
+msgstr "Sign in"
+
+msgid "Pas encore de compte ?"
+msgstr "No account yet?"
+
+msgid "Créer une agence"
+msgstr "Create an agency"
+
+msgid "Véhicule souhaité"
+msgstr "Desired vehicle"
+
+msgid "Formulaire de contact — l'intégration paiement arrive bientôt."
+msgstr "Contact form — payment integration coming soon."
+
+msgid "Portail client non disponible"
+msgstr "Client portal not available"
+
+msgid "Cette fonctionnalité n'est pas incluse dans votre plan actuel."
+msgstr "This feature is not included in your current plan."
+
+msgid "Le portail client permet à vos clients de suivre leurs réservations, signer leurs contrats et gérer leur profil en toute autonomie."
+msgstr "The client portal allows your customers to track their bookings, sign their contracts and manage their profile autonomously."
+
+msgid "Avec le portail client, vos clients peuvent :"
+msgstr "With the client portal, your customers can:"
+
+msgid "Suivre leurs réservations en temps réel"
+msgstr "Track their bookings in real time"
+
+msgid "Signer numériquement leurs contrats"
+msgstr "Sign their contracts digitally"
+
+msgid "Consulter leurs documents"
+msgstr "View their documents"
+
+msgid "Communiquer directement avec vous"
+msgstr "Communicate directly with you"
+
+msgid "L'équipe Gaboom s'excuse pour la gêne occasionnée."
+msgstr "The Gaboom team apologizes for the inconvenience."
+
+msgid "Contactez-nous pour mettre à niveau votre abonnement et débloquer cette fonctionnalité."
+msgstr "Contact us to upgrade your subscription and unlock this feature."
+
+msgid "Retour à l'accueil"
+msgstr "Back to home"
+
+msgid "Contacter le support"
+msgstr "Contact support"
+
+msgid "Mon compte"
+msgstr "My account"
+
+msgid "Gérez votre profil et les informations de votre agence"
+msgstr "Manage your profile and agency information"
+
+msgid "Profil utilisateur"
+msgstr "User profile"
+
+msgid "Vos informations personnelles"
+msgstr "Your personal information"
+
+msgid "Compte"
+msgstr "Account"
+
+msgid "Email"
+msgstr "Email"
+
+msgid "Vérifié"
+msgstr "Verified"
+
+msgid "Non vérifié"
+msgstr "Not verified"
+
+msgid "Rôle"
+msgstr "Role"
+
+msgid "Agence"
+msgstr "Agency"
+
+msgid "Identité agence"
+msgstr "Agency identity"
+
+msgid "Nom, slogan et logo"
+msgstr "Name, slogan and logo"
+
+msgid "Logo"
+msgstr "Logo"
+
+msgid "PNG, JPG ou WebP — max 5 Mo"
+msgstr "PNG, JPG or WebP — max 5 MB"
+
+msgid "Contact & adresse"
+msgstr "Contact & address"
+
+msgid "Coordonnées de l'agence"
+msgstr "Agency contact information"
+
+msgid "Documents & facturation"
+msgstr "Documents & billing"
+
+msgid "Infos légales pour contrats et factures"
+msgstr "Legal information for contracts and invoices"
+
+msgid "Affiché en bas des factures et devis"
+msgstr "Displayed at the bottom of invoices and quotes"
+
+msgid "Enregistrer"
+msgstr "Save"
+
+msgid "Nom complet"
+msgstr "Full name"
+
+msgid "Téléphone"
+msgstr "Phone"
+
+msgid "WhatsApp"
+msgstr "WhatsApp"
+
+msgid "Nom commercial"
+msgstr "Business name"
+
+msgid "Slogan"
+msgstr "Slogan"
+
+msgid "Email de contact"
+msgstr "Contact email"
+
+msgid "Adresse ligne 1"
+msgstr "Address line 1"
+
+msgid "Adresse ligne 2"
+msgstr "Address line 2"
+
+msgid "Ville"
+msgstr "City"
+
+msgid "Pays"
+msgstr "Country"
+
+msgid "Site web"
+msgstr "Website"
+
+msgid "Raison sociale"
+msgstr "Legal name"
+
+msgid "N° TVA / SIRET"
+msgstr "VAT / SIRET number"
+
+msgid "Devise"
+msgstr "Currency"
+
+msgid "Pied de facture"
+msgstr "Invoice footer"
+
+msgid "Pages CMS"
+msgstr "CMS Pages"
+
+msgid "Gérez les pages publiques de votre site"
+msgstr "Manage your public site pages"
+
+msgid "Nouvelle page"
+msgstr "New page"
+
+msgid "Site public"
+msgstr "Public site"
+
+msgid "Website Builder"
+msgstr "Website Builder"
+
+msgid "Personnalisez votre vitrine en ligne"
+msgstr "Customize your online storefront"
+
+msgid "Publié"
+msgstr "Published"
+
+msgid "Brouillon"
+msgstr "Draft"
+
+msgid "Voir le site"
+msgstr "View site"
+
+msgid "Prévisualiser"
+msgstr "Preview"
+
+msgid "Publier"
+msgstr "Publish"
+
+msgid "Abonnement"
+msgstr "Subscription"
+
+msgid "Gérez votre abonnement Gaboom DriveOS"
+msgstr "Manage your Gaboom DriveOS subscription"
+
+msgid "Instructions PDF"
+msgstr "PDF Instructions"
+
+msgid "Modifier les informations du membre"
+msgstr "Edit member information"
+
+msgid "Créer un nouveau membre de l'équipe"
+msgstr "Create a new team member"
+
+msgid "Retour"
+msgstr "Back"
+
+msgid "Créer le membre"
+msgstr "Create member"
+
+msgid "Gestion accès agences"
+msgstr "Agency access management"
+
+msgid "Administration des abonnements et accès"
+msgstr "Subscription and access administration"
+
+msgid "Total"
+msgstr "Total"
+
+msgid "Essais"
+msgstr "Trials"
+
+msgid "Actives"
+msgstr "Active"
+
+msgid "Suspendues"
+msgstr "Suspended"
+
+msgid "Preuves pending"
+msgstr "Proofs pending"
+
+msgid "Recherche"
+msgstr "Search"
+
+msgid "Nom agence, email owner…"
+msgstr "Agency name, owner email…"
+
+msgid "Tous"
+msgstr "All"
+
+msgid "Essai"
+msgstr "Trial"
+
+msgid "Actif"
+msgstr "Active"
+
+msgid "Suspendu"
+msgstr "Suspended"
+
+msgid "Tri"
+msgstr "Sort"
+
+msgid "Plus urgent"
+msgstr "Most urgent"
+
+msgid "Nom"
+msgstr "Name"
+
+msgid "Plus récent"
+msgstr "Most recent"
+
+msgid "Filtrer"
+msgstr "Filter"
+
+msgid "Agence"
+msgstr "Agency"
+
+msgid "Owner"
+msgstr "Owner"
+
+msgid "Expire le"
+msgstr "Expires on"
+
+msgid "Restant"
+msgstr "Remaining"
+
+msgid "Preuve"
+msgstr "Proof"
+
+msgid "Actions"
+msgstr "Actions"
+
+msgid "En attente de votre décision"
+msgstr "Awaiting your decision"
+
+msgid "Réservation confirmée — en attente du client"
+msgstr "Reservation confirmed — awaiting client"
+
+msgid "Sous contrat — cette réservation est devenue un contrat"
+msgstr "Under contract — this reservation became a contract"
+
+msgid "Réservation refusée"
+msgstr "Reservation refused"
+
+msgid "Créer le contrat"
+msgstr "Create contract"
+
+msgid "Voir le contrat"
+msgstr "View contract"
+
+msgid "Client"
+msgstr "Client"
+
+msgid "Message du client"
+msgstr "Client message"
+
+msgid "Offre client"
+msgstr "Client offer"
+
+msgid "Date début"
+msgstr "Start date"
+
+msgid "Date fin"
+msgstr "End date"
+
+msgid "Durée"
+msgstr "Duration"
+
+msgid "Estimation"
+msgstr "Estimate"
+
+msgid "Source"
+msgstr "Source"
+
+msgid "Créée le"
+msgstr "Created on"
+
+msgid "Modifier"
+msgstr "Edit"
+
+msgid "Nouvelle"
+msgstr "New"
+
+msgid "campagne"
+msgstr "campaign"
+
+msgid "Modifier la campagne"
+msgstr "Edit campaign"
+
+msgid "Nouvelle campagne IA"
+msgstr "New AI campaign"
+
+msgid "Assistant IA embarqué — génération, scoring et optimisation locale"
+msgstr "Built-in AI assistant — generation, scoring and local optimization"
+
+msgid "Informations"
+msgstr "Information"
+
+msgid "Nom de la campagne"
+msgstr "Campaign name"
+
+msgid "Ex: Promo été 2026"
+msgstr "Ex: Summer 2026 Promo"
+
+msgid "Objectif"
+msgstr "Objective"
+
+msgid "Cible"
+msgstr "Target"
+
+msgid "Tous les clients"
+msgstr "All clients"
+
+msgid "Clients actifs"
+msgstr "Active clients"
+
+msgid "Inactifs 30 jours"
+msgstr "Inactive 30 days"
+
+msgid "Tag personnalisé"
+msgstr "Custom tag"
+
+msgid "Planifier l'envoi"
+msgstr "Schedule sending"
+
+msgid "Lien de réservation"
+msgstr "Booking link"
+
+msgid "Paiements"
+msgstr "Payments"
+
+msgid "Historique et suivi des encaissements"
+msgstr "Payment history and tracking"
+
+msgid "Total encaissé"
+msgstr "Total collected"
+
+msgid "Aujourd'hui"
+msgstr "Today"
+
+msgid "Méthode principale"
+msgstr "Main method"
+
+msgid "Accès"
+msgstr "Access"
+
+msgid "Détails accès"
+msgstr "Access details"
+
+msgid "Deadline"
+msgstr "Deadline"
+
+msgid "Countdown"
+msgstr "Countdown"
+
+msgid "Jours restants"
+msgstr "Days remaining"
+
+msgid "Raison suspension"
+msgstr "Suspension reason"
+
+msgid "Preuves de paiement"
+msgstr "Payment proofs"
+
+msgid "Export CSV"
+msgstr "Export CSV"
+
+msgid "Client, véhicule, immat, réf…"
+msgstr "Client, vehicle, plate, ref…"
+
+msgid "30 derniers jours"
+msgstr "Last 30 days"
+
+msgid "7 derniers jours"
+msgstr "Last 7 days"
+
+msgid "Tout"
+msgstr "All"
+
+msgid "Personnalisé"
+msgstr "Custom"
+
+msgid "Méthode : toutes"
+msgstr "Method: all"
+
+msgid "Espèces"
+msgstr "Cash"
+
+msgid "Terminal CB"
+msgstr "Card terminal"
+
+msgid "Virement"
+msgstr "Bank transfer"
+
+msgid "Statut : tous"
+msgstr "Status: all"
+
+msgid "Réussi"
+msgstr "Successful"
+
+msgid "Remboursé"
+msgstr "Refunded"
+
+msgid "Échoué"
+msgstr "Failed"
+
+msgid "Tri : Date"
+msgstr "Sort: Date"
+
+msgid "Tri : Montant"
+msgstr "Sort: Amount"
+
+msgid "Tri : Client"
+msgstr "Sort: Client"
+
+msgid "Filtrer"
+msgstr "Filter"
+
+msgid "Réinitialiser"
+msgstr "Reset"
+
+msgid "Montant"
+msgstr "Amount"
+
+msgid "Contrat"
+msgstr "Contract"
+
+msgid "Réf"
+msgstr "Ref"
+
+msgid "paiement"
+msgstr "payment"
+
+msgid "Page"
+msgstr "Page"
+
+msgid "Préc."
+msgstr "Prev"
+
+msgid "Suiv."
+msgstr "Next"
+
+msgid "Aucun paiement"
+msgstr "No payment"
+
+msgid "Les paiements apparaîtront ici une fois enregistrés sur les contrats."
+msgstr "Payments will appear here once recorded on contracts."
+
+msgid "Créer un contrat"
+msgstr "Create a contract"
+
+msgid "Supprimer véhicule"
+msgstr "Delete vehicle"
+
+msgid "Supprimer ce véhicule ?"
+msgstr "Delete this vehicle?"
+
+msgid "Retour à la liste"
+msgstr "Back to list"
+
+msgid "Tu es sur le point de supprimer"
+msgstr "You are about to delete"
+
+msgid "Cette action est irréversible."
+msgstr "This action is irreversible."
+
+msgid "Confirmer la suppression"
+msgstr "Confirm deletion"
+
+msgid "Annuler"
+msgstr "Cancel"
+
+msgid "Créer le membre"
+msgstr "Create member"
+
+msgid "Tous rôles"
+msgstr "All roles"
+
+msgid "Tous statuts"
+msgstr "All statuses"
+
+msgid "Actif"
+msgstr "Active"
+
+msgid "Désactivé"
+msgstr "Inactive"
+
+msgid "Membre"
+msgstr "Member"
+
+msgid "Rôle"
+msgstr "Role"
+
+msgid "Statut"
+msgstr "Status"
+
+msgid "Actions"
+msgstr "Actions"
+
+msgid "Rechercher nom ou email…"
+msgstr "Search name or email…"
+
+msgid "Modifier"
+msgstr "Edit"
+
+msgid "Activer"
+msgstr "Activate"
+
+msgid "Désactiver"
+msgstr "Deactivate"
+
+msgid "Supprimer"
+msgstr "Delete"
+
+msgid "Aucun membre trouvé."
+msgstr "No member found."
+
+msgid "Voir"
+msgstr "View"
+
+msgid "Équipe"
+msgstr "Team"
+
+msgid "Gérez les membres de votre agence"
+msgstr "Manage your agency members"
+
+msgid "Sans titre"
+msgstr "Untitled"

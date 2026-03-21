@@ -9,6 +9,7 @@ from django.db.models.functions import TruncDate
 from django.http import HttpRequest, HttpResponse, HttpResponseForbidden, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils import timezone
+from django.utils.translation import gettext_lazy as _
 
 from agencies.models import Agency, AgencySiteSection, AgencySiteSettings, BusinessSettings, DEFAULT_HOME_SECTIONS, MaintenanceRecord, ReservationRequest, Vehicle, has_date_conflict
 from agencies.models_access import AgencyAccess, PaymentProof
@@ -215,7 +216,9 @@ def home(request: HttpRequest) -> HttpResponse:
 def vehicle_hub(request: HttpRequest) -> HttpResponse:
     """Single-page vehicle list + create/edit form (query param ?edit=<id>)."""
     agency = _agency(request)
-    can_edit = _is_admin(request)
+    can_create = _has_perm(request, "vehicles.create") or _is_admin(request)
+    can_update = _has_perm(request, "vehicles.edit") or _is_admin(request)
+    can_edit = can_create or can_update
 
     # ── Filters ──────────────────────────────────────────────────
     q = request.GET.get("q", "").strip()
@@ -274,6 +277,8 @@ def vehicle_hub(request: HttpRequest) -> HttpResponse:
     if request.method == "POST" and can_edit:
         vehicle_id = request.POST.get("vehicle_id", "").strip()
         if vehicle_id:
+            if not can_update:
+                return HttpResponseForbidden()
             instance = get_object_or_404(Vehicle.objects.for_agency(agency), pk=int(vehicle_id))
             form = VehicleForm(request.POST, request.FILES, instance=instance)
             if form.is_valid():
@@ -281,6 +286,8 @@ def vehicle_hub(request: HttpRequest) -> HttpResponse:
                 messages.success(request, "Véhicule mis à jour.")
                 return redirect(f"/dashboard/vehicles/?edit={instance.pk}&{_qs_keep(request)}")
         else:
+            if not can_create:
+                return HttpResponseForbidden()
             form = VehicleForm(request.POST, request.FILES)
             if form.is_valid():
                 access = get_agency_access(agency)
@@ -301,6 +308,13 @@ def vehicle_hub(request: HttpRequest) -> HttpResponse:
         from dashboard.services import compute_recommended_price
         smart_pricing = compute_recommended_price(editing)
 
+    # Get plan features safely
+    plan_features = {}
+    try:
+        plan_features = get_agency_access(agency).plan_features
+    except Exception:
+        plan_features = {}
+
     return render(request, "dashboard/vehicles/hub.html", {
         "page_id": "vehicles", "breadcrumb": "Véhicules",
         "vehicles": vehicles, "can_edit": can_edit,
@@ -311,6 +325,7 @@ def vehicle_hub(request: HttpRequest) -> HttpResponse:
         "page_num": page_num, "total_pages": total_pages,
         "has_prev": page_num > 1, "has_next": page_num < total_pages,
         "total_count": len(vehicles_all),
+        "plan_features": plan_features,
     })
 
 
@@ -408,7 +423,9 @@ def _days_until_expiry(client):
 def client_hub(request: HttpRequest) -> HttpResponse:
     """Single-page client list + create/edit form (query param ?edit=<id>)."""
     agency = _agency(request)
-    can_edit = _is_admin(request)
+    can_create = _has_perm(request, "clients.create") or _is_admin(request)
+    can_update = _has_perm(request, "clients.edit") or _is_admin(request)
+    can_edit = can_create or can_update
 
     # ── Filters ──────────────────────────────────────────────────
     q = request.GET.get("q", "").strip()
@@ -469,6 +486,8 @@ def client_hub(request: HttpRequest) -> HttpResponse:
     if request.method == "POST" and can_edit:
         client_id = request.POST.get("client_id", "").strip()
         if client_id:
+            if not can_update:
+                return HttpResponseForbidden()
             instance = get_object_or_404(Client.objects.for_agency(agency), pk=int(client_id))
             form = ClientForm(request.POST, request.FILES, instance=instance)
             if form.is_valid():
@@ -476,6 +495,8 @@ def client_hub(request: HttpRequest) -> HttpResponse:
                 messages.success(request, "Client mis à jour.")
                 return redirect(f"/dashboard/clients/?edit={instance.pk}&{_client_qs_keep(request)}")
         else:
+            if not can_create:
+                return HttpResponseForbidden()
             form = ClientForm(request.POST, request.FILES)
             if form.is_valid():
                 c = form.save(commit=False)
@@ -682,7 +703,11 @@ def contract_hub(request: HttpRequest) -> HttpResponse:
     for p in succeeded_qs:
         method_counts[p.method] = method_counts.get(p.method, 0) + 1
     dominant_method = max(method_counts, key=method_counts.get) if method_counts else None
-    METHOD_LABELS = {"cash": "Espèces", "card_terminal": "Terminal CB", "bank_transfer": "Virement"}
+    METHOD_LABELS = {
+        "cash": _("Espèces"),
+        "card_terminal": _("Terminal CB"),
+        "bank_transfer": _("Virement"),
+    }
     dominant_label = METHOD_LABELS.get(dominant_method, "-") if dominant_method else "-"
 
     payment_kpi = {
@@ -730,14 +755,16 @@ def contract_hub(request: HttpRequest) -> HttpResponse:
                     if existing:
                         messages.error(
                             request,
-                            f"Ce véhicule est déjà lié au contrat #{existing.pk} "
-                            f"({existing.get_status_display()}). "
-                            f"Clôturez ou annulez-le d'abord.",
+                            _(
+                                "Ce véhicule est déjà lié au contrat #%(pk)s (%(status)s). "
+                                "Clôturez ou annulez-le d'abord."
+                            )
+                            % {"pk": existing.pk, "status": existing.get_status_display()},
                         )
                         return redirect(f"/dashboard/contracts/?edit={instance.pk}&{_contract_qs_keep(request)}")
                 obj.save()
                 form.save_m2m()
-                messages.success(request, "Contrat mis à jour.")
+                messages.success(request, _("Contrat mis à jour."))
                 return redirect(
                     f"/dashboard/contracts/?edit={instance.pk}&{_contract_qs_keep(request)}"
                 )
@@ -747,7 +774,7 @@ def contract_hub(request: HttpRequest) -> HttpResponse:
             if form.is_valid() and pay_form.is_valid():
                 amount = pay_form.cleaned_data.get("amount") or Decimal(0)
                 if amount <= 0:
-                    pay_form.add_error("amount", "Montant requis.")
+                    pay_form.add_error("amount", _("Montant requis."))
                 else:
                     c = form.save(commit=False)
                     c.agency = agency
@@ -756,9 +783,11 @@ def contract_hub(request: HttpRequest) -> HttpResponse:
                     if existing:
                         messages.error(
                             request,
-                            f"Ce véhicule est déjà lié au contrat #{existing.pk} "
-                            f"({existing.get_status_display()}). "
-                            f"Clôturez ou annulez-le d'abord.",
+                            _(
+                                "Ce véhicule est déjà lié au contrat #%(pk)s (%(status)s). "
+                                "Clôturez ou annulez-le d'abord."
+                            )
+                            % {"pk": existing.pk, "status": existing.get_status_display()},
                         )
                         return redirect(f"/dashboard/contracts/?{_contract_qs_keep(request)}")
                     c.vat_percent = agency.vat_percent
@@ -780,7 +809,7 @@ def contract_hub(request: HttpRequest) -> HttpResponse:
                     p.save()
                     c.recalc_payments()
                     c.save(update_fields=["amount_paid", "amount_due", "payment_status"])
-                    messages.success(request, "Contrat et paiement enregistrés.")
+                    messages.success(request, _("Contrat et paiement enregistrés."))
                     return redirect(
                         f"/dashboard/contracts/?edit={c.pk}&{_contract_qs_keep(request)}"
                     )

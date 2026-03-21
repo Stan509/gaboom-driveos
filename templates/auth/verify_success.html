@@ -1,7 +1,7 @@
 {% extends "base.html" %}
-{% load static %}
+{% load static i18n %}
 
-{% block title %}Email vérifié — Gaboom DriveOS{% endblock %}
+{% block title %}{% trans "Email vérifié" %} — Gaboom DriveOS{% endblock %}
 
 {% block body %}
   <div class="min-h-screen flex items-center justify-center px-4 bg-slate-50">
@@ -13,11 +13,11 @@
           <svg class="w-7 h-7 text-emerald-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/></svg>
         </div>
 
-        <h1 class="mt-5 text-xl font-bold text-slate-900">Email vérifié !</h1>
-        <p class="mt-2 text-sm text-slate-500">Ton compte et ton agence sont maintenant actifs.</p>
+        <h1 class="mt-5 text-xl font-bold text-slate-900">{% trans "Email vérifié !" %}</h1>
+        <p class="mt-2 text-sm text-slate-500">{% trans "Ton compte et ton agence sont maintenant actifs." %}</p>
 
         <a href="/dashboard/" class="mt-6 inline-flex w-full items-center justify-center rounded-full bg-gaboomViolet text-white py-2.5 text-sm font-semibold shadow-lg shadow-violet-200 hover:bg-violet-700 transition-all">
-          Accéder au dashboard
+          {% trans "Accéder au dashboard" %}
         </a>
       </div>
     </div>

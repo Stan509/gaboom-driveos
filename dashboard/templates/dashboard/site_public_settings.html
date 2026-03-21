@@ -74,35 +74,35 @@
 <div class="lg:col-span-3">
   <div class="card-in sp-card rounded-2xl border border-slate-200 bg-white shadow-sm overflow-hidden lg:sticky lg:top-24">
     <div class="px-4 py-3 border-b border-slate-100">
-      <h3 class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Outils</h3>
+      <h3 class="text-xs font-semibold text-slate-400 uppercase tracking-wider">{% trans "Outils" %}</h3>
     </div>
     <nav class="p-2 space-y-0.5">
       <button type="button" data-panel="branding" class="nav-btn w-full flex items-center gap-2.5 rounded-xl px-3 py-2.5 text-[13px] text-slate-600 text-left border border-transparent {% if active_panel == 'branding' %}active{% endif %}">
         <svg class="w-4 h-4 text-slate-400 shrink-0" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Z"/></svg>
-        Branding
+        {% trans "Branding" %}
       </button>
       <button type="button" data-panel="theme" class="nav-btn w-full flex items-center gap-2.5 rounded-xl px-3 py-2.5 text-[13px] text-slate-600 text-left border border-transparent {% if active_panel == 'theme' %}active{% endif %}">
         <svg class="w-4 h-4 text-slate-400 shrink-0" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4.098 19.902a3.75 3.75 0 0 0 5.304 0l6.401-6.402M6.75 21A3.75 3.75 0 0 1 3 17.25V4.125C3 3.504 3.504 3 4.125 3h5.25c.621 0 1.125.504 1.125 1.125v4.072M6.75 21a3.75 3.75 0 0 0 3.75-3.75V8.197"/></svg>
-        Thème
+        {% trans "Thème" %}
       </button>
       <button type="button" data-panel="sections" class="nav-btn w-full flex items-center gap-2.5 rounded-xl px-3 py-2.5 text-[13px] text-slate-600 text-left border border-transparent {% if active_panel == 'sections' %}active{% endif %}">
         <svg class="w-4 h-4 text-slate-400 shrink-0" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6A2.25 2.25 0 0 1 6 3.75h2.25A2.25 2.25 0 0 1 10.5 6v2.25a2.25 2.25 0 0 1-2.25 2.25H6a2.25 2.25 0 0 1-2.25-2.25V6ZM3.75 15.75A2.25 2.25 0 0 1 6 13.5h2.25a2.25 2.25 0 0 1 2.25 2.25V18a2.25 2.25 0 0 1-2.25 2.25H6A2.25 2.25 0 0 1 3.75 18v-2.25ZM13.5 6a2.25 2.25 0 0 1 2.25-2.25H18A2.25 2.25 0 0 1 20.25 6v2.25A2.25 2.25 0 0 1 18 10.5h-2.25a2.25 2.25 0 0 1-2.25-2.25V6ZM13.5 15.75a2.25 2.25 0 0 1 2.25-2.25H18a2.25 2.25 0 0 1 2.25 2.25V18A2.25 2.25 0 0 1 18 20.25h-2.25a2.25 2.25 0 0 1-2.25-2.25v-2.25Z"/></svg>
-        Sections
+        {% trans "Sections" %}
       </button>
       <button type="button" data-panel="seo" class="nav-btn w-full flex items-center gap-2.5 rounded-xl px-3 py-2.5 text-[13px] text-slate-600 text-left border border-transparent {% if active_panel == 'seo' %}active{% endif %}">
         <svg class="w-4 h-4 text-slate-400 shrink-0" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"/></svg>
-        SEO
+        {% trans "SEO" %}
       </button>
       <button type="button" data-open-pages-modal="1" aria-controls="pagesModal" class="nav-btn w-full flex items-center gap-2.5 rounded-xl px-3 py-2.5 text-[13px] text-slate-600 text-left border border-transparent">
         <svg class="w-4 h-4 text-slate-400 shrink-0" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z"/></svg>
-        Pages
+        {% trans "Pages" %}
       </button>
     </nav>
     <!-- Site URL -->
     <div class="px-4 py-3 border-t border-slate-100">
-      <div class="text-[10px] text-slate-400 uppercase tracking-wider font-semibold mb-1.5">URL du site</div>
+      <div class="text-[10px] text-slate-400 uppercase tracking-wider font-semibold mb-1.5">{% trans "URL du site" %}</div>
       <div class="rounded-lg bg-slate-50 border border-slate-200 px-2.5 py-1.5 font-mono text-[11px] text-slate-600 truncate" id="siteUrl">{{ request.scheme }}://{{ request.get_host }}/a/{{ agency.slug }}/</div>
-      <button type="button" onclick="navigator.clipboard.writeText(document.getElementById('siteUrl').textContent.trim());this.textContent='Copié !';setTimeout(()=>this.textContent='Copier le lien',1500)" class="mt-1.5 w-full text-center rounded-lg border border-slate-200 px-2 py-1.5 text-[11px] font-medium text-slate-500 hover:bg-slate-50 transition">Copier le lien</button>
+      <button type="button" onclick="navigator.clipboard.writeText(document.getElementById('siteUrl').textContent.trim());this.textContent='{% trans "Copié !" %}';setTimeout(()=>this.textContent='{% trans "Copier le lien" %}',1500)" class="mt-1.5 w-full text-center rounded-lg border border-slate-200 px-2 py-1.5 text-[11px] font-medium text-slate-500 hover:bg-slate-50 transition">{% trans "Copier le lien" %}</button>
     </div>
   </div>
 </div>
@@ -118,12 +118,12 @@
         <div class="h-7 w-7 rounded-lg bg-violet-50 flex items-center justify-center">
           <svg class="w-3.5 h-3.5 text-gaboomViolet" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Z"/></svg>
         </div>
-        <h3 class="text-sm font-semibold text-slate-800">Branding & Contenu</h3>
+        <h3 class="text-sm font-semibold text-slate-800">{% trans "Branding & Contenu" %}</h3>
       </div>
 
       <!-- Logo -->
       <div>
-        <label class="block text-xs font-medium text-slate-500 mb-1.5">Logo</label>
+        <label class="block text-xs font-medium text-slate-500 mb-1.5">{% trans "Logo" %}</label>
         <div class="flex items-center gap-3">
           {% if ss.logo %}
           <img src="{{ ss.logo.url }}" alt="Logo" class="h-12 w-12 rounded-xl object-cover border border-slate-200" />
@@ -150,7 +150,7 @@
 
       <!-- Contact -->
       <div class="pt-3 border-t border-slate-100">
-        <div class="text-[10px] text-slate-400 uppercase tracking-wider font-semibold mb-2">Contact</div>
+        <div class="text-[10px] text-slate-400 uppercase tracking-wider font-semibold mb-2">{% trans "Contact" %}</div>
         <div class="grid grid-cols-2 gap-3">
           <div>
             <label class="block text-xs font-medium text-slate-500 mb-1">{{ form.contact_phone.label }}</label>
@@ -175,8 +175,8 @@
       <div class="pt-3 border-t border-slate-100 space-y-3">
         <label class="flex items-center justify-between gap-3 cursor-pointer">
           <div>
-            <div class="text-sm font-medium text-slate-700">Site public</div>
-            <div class="text-xs text-slate-400">Accessible aux visiteurs</div>
+            <div class="text-sm font-medium text-slate-700">{% trans "Site public" %}</div>
+            <div class="text-xs text-slate-400">{% trans "Accessible aux visiteurs" %}</div>
           </div>
           <div class="relative shrink-0">
             <input type="checkbox" name="is_public_enabled" class="sr-only peer" {% if ss.is_public_enabled %}checked{% endif %} {% if not can_edit %}disabled{% endif %} />
@@ -186,8 +186,8 @@
         </label>
         <label class="flex items-center justify-between gap-3 cursor-pointer">
           <div>
-            <div class="text-sm font-medium text-slate-700">Mode maintenance</div>
-            <div class="text-xs text-slate-400">Page temporaire</div>
+            <div class="text-sm font-medium text-slate-700">{% trans "Mode maintenance" %}</div>
+            <div class="text-xs text-slate-400">{% trans "Page temporaire" %}</div>
           </div>
           <div class="relative shrink-0">
             <input type="checkbox" name="is_maintenance_enabled" class="sr-only peer" {% if ss.is_maintenance_enabled %}checked{% endif %} {% if not can_edit %}disabled{% endif %} />
@@ -206,7 +206,7 @@
         <div class="h-7 w-7 rounded-lg bg-amber-50 flex items-center justify-center">
           <svg class="w-3.5 h-3.5 text-amber-600" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4.098 19.902a3.75 3.75 0 0 0 5.304 0l6.401-6.402M6.75 21A3.75 3.75 0 0 1 3 17.25V4.125C3 3.504 3.504 3 4.125 3h5.25c.621 0 1.125.504 1.125 1.125v4.072M6.75 21a3.75 3.75 0 0 0 3.75-3.75V8.197"/></svg>
         </div>
-        <h3 class="text-sm font-semibold text-slate-800">Thème</h3>
+        <h3 class="text-sm font-semibold text-slate-800">{% trans "Thème" %}</h3>
       </div>
 
       {{ form.theme_key.as_hidden }}
@@ -226,7 +226,7 @@
           </div>
           <span class="tl-badge items-center gap-0.5 shrink-0 text-[9px] font-semibold text-gaboomViolet bg-violet-50 border border-violet-200 rounded-full px-1.5 py-0.5">
             <svg class="w-2.5 h-2.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5"/></svg>
-            Actif
+            {% trans "Actif" %}
           </span>
         </label>
         {% endfor %}
@@ -234,15 +234,15 @@
 
       <!-- Color overrides -->
       <div class="mt-4 pt-3 border-t border-slate-100">
-        <div class="text-[10px] text-slate-400 uppercase tracking-wider font-semibold mb-2">Couleurs personnalisées</div>
+        <div class="text-[10px] text-slate-400 uppercase tracking-wider font-semibold mb-2">{% trans "Couleurs personnalisées" %}</div>
         <div class="flex flex-wrap items-center gap-4">
           <div class="flex items-center gap-2">
-            <label class="text-xs font-medium text-slate-600">Primaire</label>
+            <label class="text-xs font-medium text-slate-600">{% trans "Primaire" %}</label>
             {{ form.primary_color }}
             <span class="text-[10px] text-slate-400 font-mono" id="primaryHex">{{ ss.primary_color }}</span>
           </div>
           <div class="flex items-center gap-2">
-            <label class="text-xs font-medium text-slate-600">Secondaire</label>
+            <label class="text-xs font-medium text-slate-600">{% trans "Secondaire" %}</label>
             {{ form.secondary_color }}
             <span class="text-[10px] text-slate-400 font-mono" id="secondaryHex">{{ ss.secondary_color }}</span>
           </div>
@@ -264,7 +264,7 @@
         <div class="h-7 w-7 rounded-lg bg-blue-50 flex items-center justify-center">
           <svg class="w-3.5 h-3.5 text-blue-600" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6A2.25 2.25 0 0 1 6 3.75h2.25A2.25 2.25 0 0 1 10.5 6v2.25a2.25 2.25 0 0 1-2.25 2.25H6a2.25 2.25 0 0 1-2.25-2.25V6Z"/></svg>
         </div>
-        <h3 class="text-sm font-semibold text-slate-800">Sections de la page</h3>
+        <h3 class="text-sm font-semibold text-slate-800">{% trans "Sections de la page" %}</h3>
       </div>
       <div class="space-y-1">
         {% for sec in sections %}
@@ -291,7 +291,7 @@
         <div class="h-7 w-7 rounded-lg bg-emerald-50 flex items-center justify-center">
           <svg class="w-3.5 h-3.5 text-emerald-600" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"/></svg>
         </div>
-        <h3 class="text-sm font-semibold text-slate-800">SEO</h3>
+        <h3 class="text-sm font-semibold text-slate-800">{% trans "SEO" %}</h3>
       </div>
       <div>
         <div class="flex items-center justify-between mb-1">
@@ -310,7 +310,7 @@
       <!-- SEO Score -->
       <div class="pt-3 border-t border-slate-100">
         <div class="flex items-center justify-between mb-1.5">
-          <span class="text-xs font-medium text-slate-600">Score SEO</span>
+          <span class="text-xs font-medium text-slate-600">{% trans "Score SEO" %}</span>
           <span class="text-xs font-bold" id="seoScoreLabel">0%</span>
         </div>
         <div class="h-2 rounded-full bg-slate-100 overflow-hidden">
@@ -360,15 +360,15 @@
             <svg class="w-4 h-4 text-indigo-600" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z"/></svg>
           </div>
           <div>
-            <div id="pagesModalTitle" class="text-sm font-semibold text-slate-800">Pages publiques</div>
-            <div class="text-xs text-slate-400">Contenu et navigation du site public</div>
+            <div id="pagesModalTitle" class="text-sm font-semibold text-slate-800">{% trans "Pages publiques" %}</div>
+            <div class="text-xs text-slate-400">{% trans "Contenu et navigation du site public" %}</div>
           </div>
         </div>
         <div class="flex items-center gap-2">
           {% if is_admin and not cms_creating and not cms_editing %}
-          <a href="{% url 'dashboard:site_public_settings' %}?panel=pages&cms_create=1" class="px-4 py-2 rounded-xl bg-gaboomViolet text-white text-xs font-semibold hover:opacity-90 transition">+ Nouvelle page</a>
+          <a href="{% url 'dashboard:site_public_settings' %}?panel=pages&cms_create=1" class="px-4 py-2 rounded-xl bg-gaboomViolet text-white text-xs font-semibold hover:opacity-90 transition">+ {% trans "Nouvelle page" %}</a>
           {% endif %}
-          <button type="button" data-close-pages-modal="1" class="p-2 rounded-lg hover:bg-slate-100 text-slate-400 hover:text-slate-600 transition" aria-label="Fermer la fenêtre">
+          <button type="button" data-close-pages-modal="1" class="p-2 rounded-lg hover:bg-slate-100 text-slate-400 hover:text-slate-600 transition" aria-label="{% trans "Fermer la fenêtre" %}">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
           </button>
         </div>
@@ -381,56 +381,56 @@
               {% csrf_token %}
               <input type="hidden" name="next" value="{% url 'dashboard:site_public_settings' %}?panel=pages" />
               <div class="px-5 py-3 border-b border-slate-100 flex items-center justify-between">
-                <h2 class="text-sm font-bold text-slate-700">{% if cms_editing %}Modifier « {{ cms_editing.title }} »{% else %}Nouvelle page{% endif %}</h2>
-                <a href="{% url 'dashboard:site_public_settings' %}?panel=pages" class="text-xs text-slate-400 hover:text-slate-600 transition">Annuler</a>
+                <h2 class="text-sm font-bold text-slate-700">{% if cms_editing %}{% trans "Modifier" %} « {{ cms_editing.title }} »{% else %}{% trans "Nouvelle page" %}{% endif %}</h2>
+                <a href="{% url 'dashboard:site_public_settings' %}?panel=pages" class="text-xs text-slate-400 hover:text-slate-600 transition">{% trans "Annuler" %}</a>
               </div>
               <div class="p-5 space-y-4">
                 <div>
-                  <label class="block text-[11px] font-semibold text-slate-400 uppercase tracking-wider mb-1">Titre</label>
+                  <label class="block text-[11px] font-semibold text-slate-400 uppercase tracking-wider mb-1">{% trans "Titre" %}</label>
                   <input type="text" name="title" required value="{{ cms_editing.title|default:'' }}" class="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm focus:border-gaboomViolet outline-none" oninput="autoSlug(this)" />
                 </div>
                 <div>
-                  <label class="block text-[11px] font-semibold text-slate-400 uppercase tracking-wider mb-1">Slug (URL)</label>
+                  <label class="block text-[11px] font-semibold text-slate-400 uppercase tracking-wider mb-1">{% trans "Slug (URL)" %}</label>
                   <input type="text" name="slug" id="slugInput" value="{{ cms_editing.slug|default:'' }}" class="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm font-mono focus:border-gaboomViolet outline-none" />
-                  <p class="text-[11px] text-slate-400 mt-1">Auto-généré depuis le titre si vide.</p>
+                  <p class="text-[11px] text-slate-400 mt-1">{% trans "Auto-généré depuis le titre si vide." %}</p>
                 </div>
                 <div>
-                  <label class="block text-[11px] font-semibold text-slate-400 uppercase tracking-wider mb-1">Contenu</label>
+                  <label class="block text-[11px] font-semibold text-slate-400 uppercase tracking-wider mb-1">{% trans "Contenu" %}</label>
                   <textarea name="content" rows="10" class="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm focus:border-gaboomViolet outline-none font-mono">{{ cms_editing.content|default:'' }}</textarea>
-                  <p class="text-[11px] text-slate-400 mt-1">Markdown supporté. Pour la FAQ, utilisez <code class="bg-slate-100 px-1 rounded">## Question</code> pour chaque question.</p>
+                  <p class="text-[11px] text-slate-400 mt-1">{% trans "Markdown supporté. Pour la FAQ, utilisez" %} <code class="bg-slate-100 px-1 rounded">## {% trans "Question" %}</code> {% trans "pour chaque question." %}</p>
                 </div>
                 <div class="grid grid-cols-2 gap-4">
                   <div>
-                    <label class="block text-[11px] font-semibold text-slate-400 uppercase tracking-wider mb-1">Template</label>
+                    <label class="block text-[11px] font-semibold text-slate-400 uppercase tracking-wider mb-1">{% trans "Template" %}</label>
                     <select name="template_variant" class="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm focus:border-gaboomViolet outline-none">
-                      <option value="default" {% if cms_editing.template_variant == 'default' %}selected{% endif %}>Par défaut</option>
-                      <option value="about" {% if cms_editing.template_variant == 'about' %}selected{% endif %}>À propos</option>
+                      <option value="default" {% if cms_editing.template_variant == 'default' %}selected{% endif %}>{% trans "Par défaut" %}</option>
+                      <option value="about" {% if cms_editing.template_variant == 'about' %}selected{% endif %}>{% trans "À propos" %}</option>
                       <option value="faq" {% if cms_editing.template_variant == 'faq' %}selected{% endif %}>FAQ</option>
-                      <option value="contact" {% if cms_editing.template_variant == 'contact' %}selected{% endif %}>Contact</option>
-                      <option value="legal" {% if cms_editing.template_variant == 'legal' %}selected{% endif %}>Mentions légales</option>
-                      <option value="promo" {% if cms_editing.template_variant == 'promo' %}selected{% endif %}>Promo / Landing</option>
+                      <option value="contact" {% if cms_editing.template_variant == 'contact' %}selected{% endif %}>{% trans "Contact" %}</option>
+                      <option value="legal" {% if cms_editing.template_variant == 'legal' %}selected{% endif %}>{% trans "Mentions légales" %}</option>
+                      <option value="promo" {% if cms_editing.template_variant == 'promo' %}selected{% endif %}>{% trans "Promo / Landing" %}</option>
                     </select>
                   </div>
                   <div>
-                    <label class="block text-[11px] font-semibold text-slate-400 uppercase tracking-wider mb-1">Ordre nav</label>
+                    <label class="block text-[11px] font-semibold text-slate-400 uppercase tracking-wider mb-1">{% trans "Ordre nav" %}</label>
                     <input type="number" name="nav_order" value="{{ cms_editing.nav_order|default:'0' }}" min="0" class="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm focus:border-gaboomViolet outline-none" />
                   </div>
                 </div>
                 <div class="flex flex-wrap items-center gap-6">
                   <label class="flex items-center gap-2 text-sm text-slate-700 cursor-pointer">
                     <input type="checkbox" name="is_published" class="rounded border-slate-300 text-gaboomViolet focus:ring-gaboomViolet" {% if cms_editing.is_published %}checked{% endif %} />
-                    <span>Publiée</span>
+                    <span>{% trans "Publiée" %}</span>
                   </label>
                   <label class="flex items-center gap-2 text-sm text-slate-700 cursor-pointer">
                     <input type="checkbox" name="show_in_nav" class="rounded border-slate-300 text-gaboomViolet focus:ring-gaboomViolet" {% if cms_editing.show_in_nav %}checked{% endif %} />
-                    <span>Afficher dans la navigation</span>
+                    <span>{% trans "Afficher dans la navigation" %}</span>
                   </label>
                 </div>
                 <details class="mt-2" open>
-                  <summary class="text-xs font-bold text-gaboomViolet cursor-pointer hover:underline">CTA & SEO (optionnel)</summary>
+                  <summary class="text-xs font-bold text-gaboomViolet cursor-pointer hover:underline">{% trans "CTA & SEO (optionnel)" %}</summary>
                   <div class="mt-3 grid grid-cols-2 gap-3">
                     <div>
-                      <label class="block text-[11px] font-semibold text-slate-400 uppercase tracking-wider mb-1">Bouton CTA (label)</label>
+                      <label class="block text-[11px] font-semibold text-slate-400 uppercase tracking-wider mb-1">{% trans "Bouton CTA (label)" %}</label>
                       <input type="text" name="cta_label" value="{{ cms_editing.cta_label|default:'' }}" placeholder="Ex: Réserver maintenant" class="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm focus:border-gaboomViolet outline-none" />
                     </div>
                     <div>
@@ -440,20 +440,20 @@
                   </div>
                   <div class="mt-3 space-y-3">
                     <div>
-                      <label class="block text-[11px] font-semibold text-slate-400 uppercase tracking-wider mb-1">Titre SEO</label>
+                      <label class="block text-[11px] font-semibold text-slate-400 uppercase tracking-wider mb-1">{% trans "Titre SEO" %}</label>
                       <input type="text" name="seo_title" value="{{ cms_editing.seo_title|default:'' }}" class="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm focus:border-gaboomViolet outline-none" />
                     </div>
                     <div>
-                      <label class="block text-[11px] font-semibold text-slate-400 uppercase tracking-wider mb-1">Description SEO</label>
+                      <label class="block text-[11px] font-semibold text-slate-400 uppercase tracking-wider mb-1">{% trans "Description SEO" %}</label>
                       <textarea name="seo_description" rows="2" class="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm focus:border-gaboomViolet outline-none">{{ cms_editing.seo_description|default:'' }}</textarea>
                     </div>
                   </div>
                 </details>
               </div>
               <div class="px-5 py-3 border-t border-slate-100 flex items-center gap-3">
-                <button type="submit" class="px-5 py-2 rounded-xl bg-gaboomViolet text-white text-sm font-semibold hover:opacity-90 transition">{% if cms_editing %}Mettre à jour{% else %}Créer la page{% endif %}</button>
+                <button type="submit" class="px-5 py-2 rounded-xl bg-gaboomViolet text-white text-sm font-semibold hover:opacity-90 transition">{% if cms_editing %}{% trans "Mettre à jour" %}{% else %}{% trans "Créer la page" %}{% endif %}</button>
                 {% if cms_editing and request.user.agency %}
-                <a href="/a/{{ request.user.agency.slug }}/p/{{ cms_editing.slug }}/" target="_blank" class="px-4 py-2 rounded-xl border border-slate-200 text-sm font-medium text-slate-600 hover:bg-slate-50 transition">Prévisualiser ↗</a>
+                <a href="/a/{{ request.user.agency.slug }}/p/{{ cms_editing.slug }}/" target="_blank" class="px-4 py-2 rounded-xl border border-slate-200 text-sm font-medium text-slate-600 hover:bg-slate-50 transition">{% trans "Prévisualiser" %} ↗</a>
                 {% endif %}
               </div>
             </form>
@@ -464,12 +464,12 @@
               <div class="px-5 py-3 border-b border-slate-100">
                 <form method="get" class="flex-1 flex items-center gap-2">
                   <input type="hidden" name="panel" value="pages" />
-                  <input type="text" name="q" value="{{ q }}" placeholder="Rechercher..." class="flex-1 rounded-xl border border-slate-200 px-3 py-1.5 text-xs focus:border-gaboomViolet outline-none" />
+                  <input type="text" name="q" value="{{ q }}" placeholder="{% trans "Rechercher..." %}" class="flex-1 rounded-xl border border-slate-200 px-3 py-1.5 text-xs focus:border-gaboomViolet outline-none" />
                   <select name="filter" onchange="this.form.submit()" class="rounded-xl border border-slate-200 px-2 py-1.5 text-xs focus:border-gaboomViolet outline-none">
-                    <option value="">Toutes</option>
-                    <option value="published" {% if filter == 'published' %}selected{% endif %}>Publiées</option>
-                    <option value="draft" {% if filter == 'draft' %}selected{% endif %}>Brouillons</option>
-                    <option value="nav" {% if filter == 'nav' %}selected{% endif %}>Dans la nav</option>
+                    <option value="">{% trans "Toutes" %}</option>
+                    <option value="published" {% if filter == 'published' %}selected{% endif %}>{% trans "Publiées" %}</option>
+                    <option value="draft" {% if filter == 'draft' %}selected{% endif %}>{% trans "Brouillons" %}</option>
+                    <option value="nav" {% if filter == 'nav' %}selected{% endif %}>{% trans "Dans la nav" %}</option>
                   </select>
                 </form>
               </div>
@@ -481,9 +481,9 @@
                     <div class="flex items-center gap-2">
                       <span class="font-medium text-sm text-slate-800 truncate">{{ p.title }}</span>
                       {% if p.is_published %}
-                      <span class="shrink-0 w-2 h-2 rounded-full bg-emerald-500" title="Publiée"></span>
+                      <span class="shrink-0 w-2 h-2 rounded-full bg-emerald-500" title="{% trans "Publiée" %}"></span>
                       {% else %}
-                      <span class="shrink-0 w-2 h-2 rounded-full bg-slate-300" title="Brouillon"></span>
+                      <span class="shrink-0 w-2 h-2 rounded-full bg-slate-300" title="{% trans "Brouillon" %}"></span>
                       {% endif %}
                       {% if p.show_in_nav %}
                       <span class="shrink-0 text-[10px] font-semibold text-blue-600 bg-blue-50 px-1.5 py-0.5 rounded">NAV</span>
@@ -493,13 +493,13 @@
                   </div>
                   {% if is_admin %}
                   <div class="flex items-center gap-1 shrink-0">
-                    <a href="{% url 'dashboard:site_public_settings' %}?panel=pages&cms_edit={{ p.pk }}" class="p-1.5 rounded-lg hover:bg-slate-100 text-slate-400 hover:text-gaboomViolet transition" title="Modifier">
+                    <a href="{% url 'dashboard:site_public_settings' %}?panel=pages&cms_edit={{ p.pk }}" class="p-1.5 rounded-lg hover:bg-slate-100 text-slate-400 hover:text-gaboomViolet transition" title="{% trans "Modifier" %}">
                       <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125"/></svg>
                     </a>
-                    <form method="post" action="{% url 'dashboard:cms_page_delete' pk=p.pk %}" class="inline" onsubmit="return confirm('Supprimer « {{ p.title }} » ?')">
+                    <form method="post" action="{% url 'dashboard:cms_page_delete' pk=p.pk %}" class="inline" onsubmit="return confirm('{% trans "Supprimer" %} « {{ p.title }} » ?')">
                       {% csrf_token %}
                       <input type="hidden" name="next" value="{% url 'dashboard:site_public_settings' %}?panel=pages" />
-                      <button type="submit" class="p-1.5 rounded-lg hover:bg-red-50 text-slate-400 hover:text-red-500 transition" title="Supprimer">
+                      <button type="submit" class="p-1.5 rounded-lg hover:bg-red-50 text-slate-400 hover:text-red-500 transition" title="{% trans "Supprimer" %}">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0"/></svg>
                       </button>
                     </form>
@@ -510,9 +510,9 @@
               </div>
               {% else %}
               <div class="px-5 py-12 text-center text-sm text-slate-400">
-                Aucune page trouvée.
+                {% trans "Aucune page trouvée." %}
                 {% if is_admin %}
-                <a href="{% url 'dashboard:site_public_settings' %}?panel=pages&cms_create=1" class="text-gaboomViolet font-semibold hover:underline block mt-1">Créer votre première page</a>
+                <a href="{% url 'dashboard:site_public_settings' %}?panel=pages&cms_create=1" class="text-gaboomViolet font-semibold hover:underline block mt-1">{% trans "Créer votre première page" %}</a>
                 {% endif %}
               </div>
               {% endif %}

@@ -4,8 +4,8 @@
 {% block portal_content %}
 <div class="space-y-6">
   <div>
-    <h1 class="text-xl font-bold">Bonjour, {{ client_account.full_name }} 👋</h1>
-    <p class="text-sm opacity-60 mt-1">Bienvenue dans votre espace client chez {{ agency.name }}</p>
+    <h1 class="text-xl font-bold">{% trans "Bonjour" %}, {{ client_account.full_name }} 👋</h1>
+    <p class="text-sm opacity-60 mt-1">{% trans "Bienvenue dans votre espace client chez" %} {{ agency.name }}</p>
   </div>
 
   <!-- Loyalty card -->
@@ -20,7 +20,7 @@
     </div>
     <div class="flex-1 min-w-0">
       <div class="font-bold text-sm">{{ loyalty.get_rank_display }}</div>
-      <div class="text-xs opacity-50">{{ loyalty.points }} points · {{ loyalty.credit_available }}$ de crédit disponible</div>
+      <div class="text-xs opacity-50">{{ loyalty.points }} {% trans "points" %} · {{ loyalty.credit_available }}$ {% trans "de crédit disponible" %}</div>
     </div>
   </div>
   {% endif %}
@@ -29,23 +29,23 @@
   <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
     <div class="ps-card rounded-2xl border p-5" style="border-color: color-mix(in srgb, var(--text) 10%, transparent);">
       <div class="text-2xl font-bold ps-primary">{{ reservations_pending }}</div>
-      <div class="text-xs opacity-50 mt-1 font-medium">En attente</div>
+      <div class="text-xs opacity-50 mt-1 font-medium">{% trans "En attente" %}</div>
     </div>
     <div class="ps-card rounded-2xl border p-5" style="border-color: color-mix(in srgb, var(--text) 10%, transparent);">
       <div class="text-2xl font-bold" style="color: #10b981;">{{ reservations_confirmed }}</div>
-      <div class="text-xs opacity-50 mt-1 font-medium">Confirmées</div>
+      <div class="text-xs opacity-50 mt-1 font-medium">{% trans "Confirmées" %}</div>
     </div>
     <div class="ps-card rounded-2xl border p-5" style="border-color: color-mix(in srgb, var(--text) 10%, transparent);">
       <div class="text-2xl font-bold" style="color: #f59e0b;">{{ unread_notifs }}</div>
-      <div class="text-xs opacity-50 mt-1 font-medium">Notifications non lues</div>
+      <div class="text-xs opacity-50 mt-1 font-medium">{% trans "Notifications non lues" %}</div>
     </div>
   </div>
 
   <!-- Recent reservations -->
   <div class="ps-card rounded-2xl border overflow-hidden" style="border-color: color-mix(in srgb, var(--text) 10%, transparent);">
     <div class="px-5 py-3 border-b flex items-center justify-between" style="border-color: color-mix(in srgb, var(--text) 8%, transparent);">
-      <h2 class="text-sm font-bold">Dernières réservations</h2>
-      <a href="{% url 'public_site:client_bookings' slug=agency.slug %}" class="text-xs ps-primary font-semibold hover:underline">Voir tout</a>
+      <h2 class="text-sm font-bold">{% trans "Dernières réservations" %}</h2>
+      <a href="{% url 'public_site:client_bookings' slug=agency.slug %}" class="text-xs ps-primary font-semibold hover:underline">{% trans "Voir tout" %}</a>
     </div>
     {% if reservations_recent %}
     <div class="divide-y" style="--tw-divide-opacity: 0.08;">
@@ -67,8 +67,8 @@
     </div>
     {% else %}
     <div class="px-5 py-8 text-center text-sm opacity-40">
-      Aucune réservation pour le moment.
-      <a href="{% url 'public_site:agency_catalog' slug=agency.slug %}" class="ps-primary font-semibold hover:underline block mt-1">Parcourir le catalogue</a>
+      {% trans "Aucune réservation pour le moment." %}
+      <a href="{% url 'public_site:agency_catalog' slug=agency.slug %}" class="ps-primary font-semibold hover:underline block mt-1">{% trans "Parcourir le catalogue" %}</a>
     </div>
     {% endif %}
   </div>

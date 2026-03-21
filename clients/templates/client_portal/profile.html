@@ -3,7 +3,7 @@
 
 {% block portal_content %}
 <div class="max-w-lg space-y-6">
-  <h1 class="text-xl font-bold">Mon profil</h1>
+  <h1 class="text-xl font-bold">{% trans "Mon profil" %}</h1>
 
   {% if success %}
   <div class="rounded-xl bg-emerald-50 border border-emerald-200 p-3 text-sm text-emerald-700 flex items-center gap-2">
@@ -22,20 +22,20 @@
   <form method="post" class="ps-card rounded-2xl border p-6 space-y-4" style="border-color: color-mix(in srgb, var(--text) 10%, transparent);">
     {% csrf_token %}
     <div>
-      <label class="block text-xs font-semibold opacity-50 uppercase tracking-wider mb-1">Nom complet</label>
+      <label class="block text-xs font-semibold opacity-50 uppercase tracking-wider mb-1">{% trans "Nom complet" %}</label>
       <input type="text" name="full_name" value="{{ client_account.full_name }}" required
              class="w-full rounded-xl border px-4 py-2.5 text-sm outline-none focus:ring-2"
              style="border-color: color-mix(in srgb, var(--text) 15%, transparent); --tw-ring-color: var(--primary);" />
     </div>
     <div>
-      <label class="block text-xs font-semibold opacity-50 uppercase tracking-wider mb-1">Email</label>
+      <label class="block text-xs font-semibold opacity-50 uppercase tracking-wider mb-1">{% trans "Email" %}</label>
       <input type="email" value="{{ client_account.email }}" disabled
              class="w-full rounded-xl border px-4 py-2.5 text-sm opacity-50 cursor-not-allowed"
              style="border-color: color-mix(in srgb, var(--text) 10%, transparent);" />
-      <p class="text-[11px] opacity-40 mt-1">L'email ne peut pas être modifié.</p>
+      <p class="text-[11px] opacity-40 mt-1">{% trans "L'email ne peut pas être modifié." %}</p>
     </div>
     <div>
-      <label class="block text-xs font-semibold opacity-50 uppercase tracking-wider mb-1">Téléphone</label>
+      <label class="block text-xs font-semibold opacity-50 uppercase tracking-wider mb-1">{% trans "Téléphone" %}</label>
       <input type="tel" name="phone" value="{{ client_account.phone }}"
              class="w-full rounded-xl border px-4 py-2.5 text-sm outline-none focus:ring-2"
              style="border-color: color-mix(in srgb, var(--text) 15%, transparent); --tw-ring-color: var(--primary);" />
@@ -44,13 +44,13 @@
     <hr style="border-color: color-mix(in srgb, var(--text) 8%, transparent);" />
 
     <div>
-      <label class="block text-xs font-semibold opacity-50 uppercase tracking-wider mb-1">Nouveau mot de passe <span class="opacity-40">(laisser vide pour ne pas changer)</span></label>
+      <label class="block text-xs font-semibold opacity-50 uppercase tracking-wider mb-1">{% trans "Nouveau mot de passe" %} <span class="opacity-40">({% trans "laisser vide pour ne pas changer" %})</span></label>
       <input type="password" name="new_password" minlength="6"
              class="w-full rounded-xl border px-4 py-2.5 text-sm outline-none focus:ring-2"
              style="border-color: color-mix(in srgb, var(--text) 15%, transparent); --tw-ring-color: var(--primary);" />
     </div>
 
-    <button type="submit" class="ps-btn !rounded-xl !py-2.5">Enregistrer</button>
+    <button type="submit" class="ps-btn !rounded-xl !py-2.5">{% trans "Enregistrer" %}</button>
   </form>
 </div>
 {% endblock %}

@@ -86,7 +86,7 @@
 
     {% if vehicles %}
     <!-- Desktop Table -->
-    <div class="hidden md:block overflow-x-auto">
+    <div class="overflow-x-auto">
       <table class="w-full text-sm">
         <thead>
           <tr class="border-b border-slate-100 text-left text-[11px] font-semibold text-slate-400 uppercase tracking-wider">
@@ -240,7 +240,7 @@
 <!-- ═══════ RIGHT: FORM PANEL ═══════ -->
 {% if can_edit %}
 <!-- Desktop panel -->
-<div class="hidden lg:block lg:col-span-5">
+<div class="lg:col-span-5">
   <div class="card-in rounded-2xl bg-white border border-slate-200 shadow-sm lg:sticky lg:top-24" style="animation-delay:100ms">
     <!-- Form header -->
     <div class="px-5 py-4 border-b border-slate-100 flex items-center justify-between">
@@ -357,6 +357,49 @@
       </div>
       {% if form.image.errors %}<p class="mt-0.5 text-[11px] text-red-600">{{ form.image.errors.0 }}</p>{% endif %}
 
+      <!-- Section: GPS & Géolocalisation -->
+      <div class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider pt-3">{% trans "GPS & Géolocalisation" %}</div>
+      <div class="space-y-3">
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-medium text-slate-600 mb-1">{{ form.gps_imei.label }}</label>
+            {{ form.gps_imei }}
+            {% if form.gps_imei.errors %}<p class="mt-0.5 text-[11px] text-red-600">{{ form.gps_imei.errors.0 }}</p>{% endif %}
+          </div>
+          <div>
+            <label class="block text-xs font-medium text-slate-600 mb-1">{{ form.gps_ip.label }}</label>
+            {{ form.gps_ip }}
+            {% if form.gps_ip.errors %}<p class="mt-0.5 text-[11px] text-red-600">{{ form.gps_ip.errors.0 }}</p>{% endif %}
+          </div>
+        </div>
+        <div>
+          <label class="block text-xs font-medium text-slate-600 mb-1">{{ form.gps_source.label }}</label>
+          {{ form.gps_source }}
+          {% if form.gps_source.errors %}<p class="mt-0.5 text-[11px] text-red-600">{{ form.gps_source.errors.0 }}</p>{% endif %}
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-medium text-slate-600 mb-1">{{ form.last_lat.label }}</label>
+            {{ form.last_lat }}
+            {% if form.last_lat.errors %}<p class="mt-0.5 text-[11px] text-red-600">{{ form.last_lat.errors.0 }}</p>{% endif %}
+          </div>
+          <div>
+            <label class="block text-xs font-medium text-slate-600 mb-1">{{ form.last_lng.label }}</label>
+            {{ form.last_lng }}
+            {% if form.last_lng.errors %}<p class="mt-0.5 text-[11px] text-red-600">{{ form.last_lng.errors.0 }}</p>{% endif %}
+          </div>
+        </div>
+        <div>
+          <label class="block text-xs font-medium text-slate-600 mb-1">{{ form.last_gps_speed.label }}</label>
+          {{ form.last_gps_speed }}
+          {% if form.last_gps_speed.errors %}<p class="mt-0.5 text-[11px] text-red-600">{{ form.last_gps_speed.errors.0 }}</p>{% endif %}
+        </div>
+        <div class="flex items-center gap-2">
+          {{ form.gps_enabled }}
+          <label class="text-xs text-slate-600">{{ form.gps_enabled.label }}</label>
+        </div>
+      </div>
+
       <!-- Buttons -->
       <div class="flex items-center gap-2 pt-3">
         <button type="submit" class="flex-1 rounded-xl bg-gaboomViolet text-white px-4 py-2.5 text-sm font-medium hover:opacity-95 transition">
@@ -462,6 +505,43 @@
         <p class="text-xs text-slate-400">{% trans "Glissez ou cliquez — max 5 Mo" %}</p>
       </div>
       <img id="imagePreviewMobile" class="hidden mx-auto rounded-lg max-h-32 object-contain" alt="{% trans 'Aperçu' %}">
+    </div>
+
+    <!-- Section: GPS & Géolocalisation -->
+    <div class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider pt-3">{% trans "GPS & Géolocalisation" %}</div>
+    <div class="space-y-3">
+      <div class="grid grid-cols-2 gap-3">
+        <div>
+          <label class="block text-xs font-medium text-slate-600 mb-1">{{ form.gps_imei.label }}</label>
+          {{ form.gps_imei }}
+        </div>
+        <div>
+          <label class="block text-xs font-medium text-slate-600 mb-1">{{ form.gps_ip.label }}</label>
+          {{ form.gps_ip }}
+        </div>
+      </div>
+      <div>
+        <label class="block text-xs font-medium text-slate-600 mb-1">{{ form.gps_source.label }}</label>
+        {{ form.gps_source }}
+      </div>
+      <div class="grid grid-cols-2 gap-3">
+        <div>
+          <label class="block text-xs font-medium text-slate-600 mb-1">{{ form.last_lat.label }}</label>
+          {{ form.last_lat }}
+        </div>
+        <div>
+          <label class="block text-xs font-medium text-slate-600 mb-1">{{ form.last_lng.label }}</label>
+          {{ form.last_lng }}
+        </div>
+      </div>
+      <div>
+        <label class="block text-xs font-medium text-slate-600 mb-1">{{ form.last_gps_speed.label }}</label>
+          {{ form.last_gps_speed }}
+      </div>
+      <div class="flex items-center gap-2">
+        {{ form.gps_enabled }}
+        <label class="text-xs text-slate-600">{{ form.gps_enabled.label }}</label>
+      </div>
     </div>
 
     <div class="flex items-center gap-2 pt-3">

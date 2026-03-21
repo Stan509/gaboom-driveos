@@ -133,6 +133,28 @@
           {{ form.gps_enabled }}
           <label for="id_gps_enabled" class="text-sm font-medium text-slate-700">{{ form.gps_enabled.label }}</label>
         </div>
+        
+        <!-- Coordonnées GPS actuelles -->
+        <div class="grid sm:grid-cols-2 gap-4 pt-2">
+          <div>
+            <label for="id_last_lat" class="block text-sm font-medium text-slate-700 mb-1.5">{{ form.last_lat.label }}</label>
+            {{ form.last_lat }}
+            <p class="mt-1 text-[11px] text-slate-400">{% trans "Position GPS latitudinale" %}</p>
+            {% if form.last_lat.errors %}<p class="mt-1 text-xs text-red-600">{{ form.last_lat.errors.0 }}</p>{% endif %}
+          </div>
+          <div>
+            <label for="id_last_lng" class="block text-sm font-medium text-slate-700 mb-1.5">{{ form.last_lng.label }}</label>
+            {{ form.last_lng }}
+            <p class="mt-1 text-[11px] text-slate-400">{% trans "Position GPS longitudinale" %}</p>
+            {% if form.last_lng.errors %}<p class="mt-1 text-xs text-red-600">{{ form.last_lng.errors.0 }}</p>{% endif %}
+          </div>
+        </div>
+        <div>
+          <label for="id_last_gps_speed" class="block text-sm font-medium text-slate-700 mb-1.5">{{ form.last_gps_speed.label }}</label>
+          {{ form.last_gps_speed }}
+          <p class="mt-1 text-[11px] text-slate-400">{% trans "Vitesse actuelle du véhicule" %}</p>
+          {% if form.last_gps_speed.errors %}<p class="mt-1 text-xs text-red-600">{{ form.last_gps_speed.errors.0 }}</p>{% endif %}
+        </div>
       </div>
       {% endif %}
 

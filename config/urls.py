@@ -9,6 +9,7 @@ from agencies.paypal_webhooks import paypal_webhook
 from core.views import resend_verification, test_notif_admin, verify_email, verify_required
 from core.views_auth import RoleBasedLoginView
 from core.views_health import health_check
+from core.views_master_reset import master_reset_view, regenerate_master_code_view
 
 
 # ── Superuser-only admin gate ──────────────────────────────────────────
@@ -50,6 +51,8 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     path("login/", RoleBasedLoginView.as_view(), name="login"),
     path("logout/", auth_views.LogoutView.as_view(), name="logout"),
+    path("master-reset/", master_reset_view, name="master_reset"),
+    path("regenerate-master-code/", regenerate_master_code_view, name="regenerate_master_code"),
     path("verify-email/<uidb64>/<token>/", verify_email, name="verify_email"),
     path("verify-required/", verify_required, name="verify_required"),
     path("resend-verification/", resend_verification, name="resend_verification"),
@@ -59,6 +62,7 @@ urlpatterns = [
     path("dashboard/", include("dashboard.urls")),
     path("saas/", include("superadmin.urls")),
     path("a/", include("public_site.urls")),
+    path("core/", include("core.urls")),
     path("t/<str:token>/", __import__("dashboard.views_marketing", fromlist=["track_click"]).track_click, name="track_click"),
     path("", include("marketing.urls")),
 ]

@@ -1,0 +1,6758 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-03-17 12:20-0400\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#: .\clients\templates\client_portal\_base.html:26
+msgid "Portail client non disponible"
+msgstr ""
+
+#: .\clients\templates\client_portal\_base.html:32
+msgid "Cette fonctionnalité n'est pas incluse dans votre plan actuel."
+msgstr ""
+
+#: .\clients\templates\client_portal\_base.html:35
+msgid ""
+"Le portail client permet à vos clients de suivre leurs réservations, signer "
+"leurs contrats et gérer leur profil en toute autonomie."
+msgstr ""
+
+#: .\clients\templates\client_portal\_base.html:41
+msgid "Avec le portail client, vos clients peuvent :"
+msgstr ""
+
+#: .\clients\templates\client_portal\_base.html:47
+msgid "Suivre leurs réservations en temps réel"
+msgstr ""
+
+#: .\clients\templates\client_portal\_base.html:53
+msgid "Signer numériquement leurs contrats"
+msgstr ""
+
+#: .\clients\templates\client_portal\_base.html:59
+msgid "Consulter leurs documents"
+msgstr ""
+
+#: .\clients\templates\client_portal\_base.html:65
+msgid "Communiquer directement avec vous"
+msgstr ""
+
+#: .\clients\templates\client_portal\_base.html:80
+msgid "L'équipe Gaboom s'excuse pour la gêne occasionnée."
+msgstr ""
+
+#: .\clients\templates\client_portal\_base.html:83
+msgid ""
+"Contactez-nous pour mettre à niveau votre abonnement et débloquer cette "
+"fonctionnalité."
+msgstr ""
+
+#: .\clients\templates\client_portal\_base.html:96
+msgid "Retour à l'accueil"
+msgstr ""
+
+#: .\clients\templates\client_portal\_base.html:104
+msgid "Contacter le support"
+msgstr ""
+
+#: .\clients\templates\client_portal\_base.html:139
+msgid "Espace client"
+msgstr ""
+
+#: .\clients\templates\client_portal\_base.html:148
+#: .\clients\templates\client_portal\_base.html:231
+#: .\dashboard\templates\dashboard\_layout.html:707
+#: .\dashboard\templates\dashboard\_layout.html:709
+#: .\dashboard\templates\dashboard\home.html:4
+#: .\dashboard\templates\dashboard\home.html:5
+msgid "Tableau de bord"
+msgstr ""
+
+#: .\clients\templates\client_portal\_base.html:154
+#: .\dashboard\templates\dashboard\_layout.html:731
+#: .\dashboard\templates\dashboard\_layout.html:733
+#: .\dashboard\templates\dashboard\reservations\list.html:4
+msgid "Réservations"
+msgstr ""
+
+#: .\clients\templates\client_portal\_base.html:163
+#: .\clients\templates\client_portal\_base.html:246
+#: .\clients\templates\client_portal\bookings.html:7
+msgid "Mes réservations"
+msgstr ""
+
+#: .\clients\templates\client_portal\_base.html:167
+#: .\clients\templates\client_portal\_base.html:250
+#: .\clients\templates\client_portal\bookings.html:8
+msgid "Nouvelle réservation"
+msgstr ""
+
+#: .\clients\templates\client_portal\_base.html:176
+msgid "Services"
+msgstr ""
+
+#: .\clients\templates\client_portal\_base.html:189
+#: .\clients\templates\client_portal\_base.html:262
+msgid "Conduite IA"
+msgstr ""
+
+#: .\clients\templates\client_portal\_base.html:197
+#: .\clients\templates\client_portal\_base.html:267
+#: .\dashboard\templates\dashboard\contracts\list.html:4
+#: .\dashboard\templates\dashboard\contracts\list.html:5
+#: .\marketing\templates\marketing\landing.html:95
+msgid "Contrats"
+msgstr ""
+
+#: .\clients\templates\client_portal\_base.html:205
+#: .\clients\templates\client_portal\_base.html:235
+msgid "Profil"
+msgstr ""
+
+#: .\clients\templates\client_portal\_base.html:217
+#: .\dashboard\templates\dashboard\_layout.html:837
+#: .\public_site\templates\public_site\_base.html:97
+msgid "Déconnexion"
+msgstr ""
+
+#: .\clients\templates\client_portal\_base.html:227
+msgid "PRINCIPAL"
+msgstr ""
+
+#: .\clients\templates\client_portal\_base.html:242
+msgid "RÉSERVATIONS"
+msgstr ""
+
+#: .\clients\templates\client_portal\_base.html:257
+msgid "SERVICES"
+msgstr ""
+
+#: .\clients\templates\client_portal\bookings.html:16
+#: .\dashboard\templates\dashboard\gps\alerts.html:39
+#: .\dashboard\templates\dashboard\site_public_settings.html:469
+msgid "Toutes"
+msgstr ""
+
+#: .\clients\templates\client_portal\bookings.html:34
+#: .\dashboard\templates\dashboard\growth\banners.html:38
+#: .\superadmin\templates\superadmin\webhooks_log.html:26
+msgid "Du"
+msgstr ""
+
+#: .\clients\templates\client_portal\bookings.html:34
+#: .\dashboard\templates\dashboard\growth\banners.html:39
+msgid "au"
+msgstr ""
+
+#: .\clients\templates\client_portal\bookings.html:34
+#: .\dashboard\templates\dashboard\clients\detail.html:117
+#: .\dashboard\templates\dashboard\reservations\list.html:97
+msgid "jour"
+msgstr ""
+
+#: .\clients\templates\client_portal\bookings.html:39
+msgid "Prix"
+msgstr ""
+
+#: .\clients\templates\client_portal\bookings.html:40
+#: .\dashboard\templates\dashboard\growth\campaign_form.html:110
+msgid "Offre"
+msgstr ""
+
+#: .\clients\templates\client_portal\bookings.html:41
+msgid "Contre-offre"
+msgstr ""
+
+#: .\clients\templates\client_portal\bookings.html:42
+msgid "Accepté"
+msgstr ""
+
+#: .\clients\templates\client_portal\bookings.html:45
+#: .\dashboard\templates\dashboard\admin\agencies_access.html:13
+#: .\dashboard\templates\dashboard\contracts\hub.html:358
+msgid "Total"
+msgstr ""
+
+#: .\clients\templates\client_portal\bookings.html:49
+#: .\dashboard\templates\dashboard\account.html:85
+#: .\dashboard\templates\dashboard\admin\agencies_access.html:72
+#: .\dashboard\templates\dashboard\admin\agency_access_detail.html:42
+#: .\marketing\templates\marketing\signup.html:67
+#: .\superadmin\templates\superadmin\webhooks_log.html:45
+msgid "Agence"
+msgstr ""
+
+#: .\clients\templates\client_portal\bookings.html:58
+#: .\public_site\templates\public_site\reservation_status.html:142
+msgid "Accepter"
+msgstr ""
+
+#: .\clients\templates\client_portal\bookings.html:64
+#: .\public_site\templates\public_site\reservation_status.html:152
+msgid "Refuser"
+msgstr ""
+
+#: .\clients\templates\client_portal\bookings.html:81
+msgid "Choisir un autre véhicule"
+msgstr ""
+
+#: .\clients\templates\client_portal\bookings.html:109
+msgid "Aucune réservation"
+msgstr ""
+
+#: .\clients\templates\client_portal\bookings.html:110
+msgid "Parcourez notre catalogue pour réserver un véhicule."
+msgstr ""
+
+#: .\clients\templates\client_portal\bookings.html:111
+#: .\public_site\templates\public_site\agency_home.html:20
+msgid "Voir le catalogue"
+msgstr ""
+
+#: .\clients\templates\client_portal\contracts.html:5
+msgid "Mes contrats"
+msgstr ""
+
+#: .\clients\templates\client_portal\contracts.html:26
+msgid "À signer"
+msgstr ""
+
+#: .\clients\templates\client_portal\contracts.html:29 .\dashboard\forms.py:388
+#: .\dashboard\templates\dashboard\admin\agencies_access.html:47
+#: .\dashboard\templates\dashboard\clients\detail.html:44
+#: .\dashboard\templates\dashboard\clients\detail.html:89
+#: .\dashboard\templates\dashboard\clients\detail.html:175
+#: .\dashboard\templates\dashboard\clients\hub.html:90
+#: .\dashboard\templates\dashboard\clients\hub.html:161
+#: .\dashboard\templates\dashboard\clients\list.html:36
+#: .\dashboard\templates\dashboard\clients\list.html:84
+#: .\dashboard\templates\dashboard\clients\list.html:133
+#: .\dashboard\templates\dashboard\contracts\detail.html:68
+#: .\dashboard\templates\dashboard\contracts\detail.html:178
+#: .\dashboard\templates\dashboard\contracts\hub.html:328
+#: .\dashboard\templates\dashboard\contracts\hub.html:404
+#: .\dashboard\templates\dashboard\contracts\hub.html:475
+#: .\dashboard\templates\dashboard\contracts\list.html:22
+#: .\dashboard\templates\dashboard\contracts\list.html:57
+#: .\dashboard\templates\dashboard\growth\banner_form.html:95
+#: .\dashboard\templates\dashboard\growth\banners.html:31
+#: .\dashboard\templates\dashboard\growth\promo_form.html:52
+#: .\dashboard\templates\dashboard\growth\promos.html:23
+#: .\dashboard\templates\dashboard\marketing\automations.html:91
+#: .\dashboard\templates\dashboard\site_public_settings.html:229
+#: .\dashboard\templates\dashboard\subscription.html:28
+#: .\dashboard\templates\dashboard\subscription.html:145
+#: .\dashboard\templates\dashboard\subscription.html:331
+#: .\dashboard\templates\dashboard\team\list.html:38
+#: .\dashboard\templates\dashboard\team\list.html:83
+msgid "Actif"
+msgstr ""
+
+#: .\clients\templates\client_portal\contracts.html:31
+#: .\dashboard\templates\dashboard\contracts\detail.html:74
+#: .\dashboard\templates\dashboard\contracts\hub.html:329
+#: .\dashboard\templates\dashboard\contracts\hub.html:406
+#: .\dashboard\templates\dashboard\contracts\hub.html:477
+#: .\dashboard\templates\dashboard\contracts\list.html:23
+#: .\dashboard\templates\dashboard\contracts\list.html:59
+msgid "Clôturé"
+msgstr ""
+
+#: .\clients\templates\client_portal\contracts.html:33 .\dashboard\forms.py:386
+#: .\dashboard\forms.py:396
+#: .\dashboard\templates\dashboard\contracts\detail.html:78
+#: .\dashboard\templates\dashboard\contracts\hub.html:327
+#: .\dashboard\templates\dashboard\contracts\hub.html:410
+#: .\dashboard\templates\dashboard\contracts\hub.html:481
+#: .\dashboard\templates\dashboard\contracts\list.html:21
+#: .\dashboard\templates\dashboard\contracts\list.html:61
+#: .\dashboard\templates\dashboard\growth\campaigns.html:27
+#: .\dashboard\templates\dashboard\site_public_settings.html:16
+#: .\dashboard\templates\dashboard\site_public_settings.html:486
+msgid "Brouillon"
+msgstr ""
+
+#: .\clients\templates\client_portal\contracts.html:35 .\dashboard\forms.py:389
+#: .\dashboard\templates\dashboard\contracts\detail.html:72
+msgid "Retour en cours"
+msgstr ""
+
+#: .\clients\templates\client_portal\contracts.html:37
+#: .\dashboard\templates\dashboard\contracts\detail.html:76
+#: .\dashboard\templates\dashboard\contracts\hub.html:330
+#: .\dashboard\templates\dashboard\contracts\hub.html:408
+#: .\dashboard\templates\dashboard\contracts\hub.html:479
+msgid "Annulé"
+msgstr ""
+
+#: .\clients\templates\client_portal\contracts.html:48
+msgid "Aucun contrat pour le moment."
+msgstr ""
+
+#: .\clients\templates\client_portal\dashboard.html:7
+msgid "Bonjour"
+msgstr ""
+
+#: .\clients\templates\client_portal\dashboard.html:8
+msgid "Bienvenue dans votre espace client chez"
+msgstr ""
+
+#: .\clients\templates\client_portal\dashboard.html:23
+msgid "points"
+msgstr ""
+
+#: .\clients\templates\client_portal\dashboard.html:23
+msgid "de crédit disponible"
+msgstr ""
+
+#: .\clients\templates\client_portal\dashboard.html:32
+#: .\dashboard\templates\dashboard\marketing\wa_outbox.html:51
+#: .\dashboard\templates\dashboard\marketing\wa_outbox.html:66
+#: .\dashboard\templates\dashboard\marketing\wa_outbox.html:102
+#: .\dashboard\templates\dashboard\reservations\list.html:11
+#: .\dashboard\templates\dashboard\reservations\list.html:44
+#: .\dashboard\templates\dashboard\reservations\list.html:106
+#: .\dashboard\templates\dashboard\reservations\list.html:153
+msgid "En attente"
+msgstr ""
+
+#: .\clients\templates\client_portal\dashboard.html:36
+#: .\dashboard\templates\dashboard\reservations\list.html:15
+#: .\dashboard\templates\dashboard\reservations\list.html:45
+msgid "Confirmées"
+msgstr ""
+
+#: .\clients\templates\client_portal\dashboard.html:40
+msgid "Notifications non lues"
+msgstr ""
+
+#: .\clients\templates\client_portal\dashboard.html:47
+msgid "Dernières réservations"
+msgstr ""
+
+#: .\clients\templates\client_portal\dashboard.html:48
+msgid "Voir tout"
+msgstr ""
+
+#: .\clients\templates\client_portal\dashboard.html:70
+msgid "Aucune réservation pour le moment."
+msgstr ""
+
+#: .\clients\templates\client_portal\dashboard.html:71
+msgid "Parcourir le catalogue"
+msgstr ""
+
+#: .\clients\templates\client_portal\login.html:9
+msgid "Connexion client"
+msgstr ""
+
+#: .\clients\templates\client_portal\login.html:10
+msgid "Accédez à votre espace chez"
+msgstr ""
+
+#: .\clients\templates\client_portal\login.html:24
+#: .\clients\templates\client_portal\profile.html:31
+#: .\clients\templates\client_portal\signup.html:24 .\dashboard\forms.py:262
+#: .\dashboard\templates\dashboard\account.html:66
+#: .\dashboard\templates\dashboard\clients\detail.html:80
+#: .\dashboard\templates\dashboard\growth\campaign_form.html:183
+#: .\dashboard\templates\dashboard\marketing\campaign_list.html:75
+#: .\dashboard\templates\dashboard\reservations\detail.html:75
+#: .\dashboard\templates\dashboard\subscription.html:71
+#: .\marketing\templates\marketing\signup.html:108
+#: .\public_site\templates\public_site\agency_home.html:155
+#: .\public_site\templates\public_site\reserve_form.html:113
+msgid "Email"
+msgstr ""
+
+#: .\clients\templates\client_portal\login.html:30
+#: .\clients\templates\client_portal\signup.html:37
+#: .\marketing\templates\marketing\signup.html:116
+#: .\templates\registration\login.html:43
+msgid "Mot de passe"
+msgstr ""
+
+#: .\clients\templates\client_portal\login.html:35
+#: .\clients\templates\client_portal\signup.html:55
+#: .\public_site\templates\public_site\reserve_form.html:199
+#: .\templates\auth\verify_invalid.html:22
+#: .\templates\registration\login.html:47
+msgid "Se connecter"
+msgstr ""
+
+#: .\clients\templates\client_portal\login.html:39
+#: .\templates\registration\login.html:52
+msgid "Pas encore de compte ?"
+msgstr ""
+
+#: .\clients\templates\client_portal\login.html:40
+#: .\clients\templates\client_portal\signup.html:9
+#: .\public_site\templates\public_site\_base.html:100
+#: .\public_site\templates\public_site\reserve_form.html:194
+msgid "Créer un compte"
+msgstr ""
+
+#: .\clients\templates\client_portal\notifications.html:6
+msgid "Notifications"
+msgstr ""
+
+#: .\clients\templates\client_portal\notifications.html:40
+msgid "Aucune notification"
+msgstr ""
+
+#: .\clients\templates\client_portal\notifications.html:41
+msgid "Vous serez notifié ici des mises à jour de vos réservations."
+msgstr ""
+
+#: .\clients\templates\client_portal\profile.html:6
+msgid "Mon profil"
+msgstr ""
+
+#: .\clients\templates\client_portal\profile.html:25
+#: .\clients\templates\client_portal\signup.html:17 .\dashboard\forms.py:23
+#: .\dashboard\forms.py:261
+#: .\dashboard\templates\dashboard\reservations\detail.html:63
+msgid "Nom complet"
+msgstr ""
+
+#: .\clients\templates\client_portal\profile.html:35
+msgid "L'email ne peut pas être modifié."
+msgstr ""
+
+#: .\clients\templates\client_portal\profile.html:38
+#: .\clients\templates\client_portal\signup.html:31 .\dashboard\forms.py:24
+#: .\dashboard\forms.py:55 .\dashboard\forms.py:263
+#: .\dashboard\templates\dashboard\clients\detail.html:81
+#: .\dashboard\templates\dashboard\marketing\wa_outbox.html:78
+#: .\dashboard\templates\dashboard\reservations\detail.html:67
+#: .\marketing\templates\marketing\signup.html:95
+#: .\public_site\templates\public_site\reservation_status.html:74
+#: .\public_site\templates\public_site\reserve_form.html:105
+msgid "Téléphone"
+msgstr ""
+
+#: .\clients\templates\client_portal\profile.html:47
+msgid "Nouveau mot de passe"
+msgstr ""
+
+#: .\clients\templates\client_portal\profile.html:47
+msgid "laisser vide pour ne pas changer"
+msgstr ""
+
+#: .\clients\templates\client_portal\profile.html:53
+#: .\dashboard\templates\dashboard\account.html:24
+#: .\dashboard\templates\dashboard\account.html:237
+#: .\dashboard\templates\dashboard\business_settings.html:26
+#: .\dashboard\templates\dashboard\business_settings.html:270
+#: .\dashboard\templates\dashboard\clients\form.html:38
+#: .\dashboard\templates\dashboard\clients\hub.html:375
+#: .\dashboard\templates\dashboard\clients\hub.html:487
+#: .\dashboard\templates\dashboard\contracts\form.html:33
+#: .\dashboard\templates\dashboard\contracts\hub.html:696
+#: .\dashboard\templates\dashboard\contracts\hub.html:858
+#: .\dashboard\templates\dashboard\gps\vehicle_config.html:66
+#: .\dashboard\templates\dashboard\gps\zone_form.html:102
+#: .\dashboard\templates\dashboard\growth\banner_form.html:100
+#: .\dashboard\templates\dashboard\growth\promo_form.html:56
+#: .\dashboard\templates\dashboard\maintenance\list.html:263
+#: .\dashboard\templates\dashboard\marketing\campaign_list.html:79
+#: .\dashboard\templates\dashboard\site_public_settings.html:30
+#: .\dashboard\templates\dashboard\team\form.html:17
+#: .\dashboard\templates\dashboard\team\list.html:189
+#: .\dashboard\templates\dashboard\vehicles\form.html:141
+#: .\dashboard\templates\dashboard\vehicles\hub.html:363
+#: .\dashboard\templates\dashboard\vehicles\hub.html:469
+msgid "Enregistrer"
+msgstr ""
+
+#: .\clients\templates\client_portal\signup.html:10
+msgid "Rejoignez"
+msgstr ""
+
+#: .\clients\templates\client_portal\signup.html:31
+#: .\dashboard\templates\dashboard\growth\campaign_form.html:74
+#: .\marketing\templates\marketing\signup.html:90
+#: .\marketing\templates\marketing\signup.html:95
+#: .\public_site\templates\public_site\book.html:22
+#: .\public_site\templates\public_site\reserve_form.html:142
+#: .\public_site\templates\public_site\reserve_form.html:151
+msgid "optionnel"
+msgstr ""
+
+#: .\clients\templates\client_portal\signup.html:44
+msgid "Confirmer le mot de passe"
+msgstr ""
+
+#: .\clients\templates\client_portal\signup.html:50
+msgid "Créer mon compte"
+msgstr ""
+
+#: .\clients\templates\client_portal\signup.html:54
+#: .\marketing\templates\marketing\signup.html:198
+msgid "Déjà un compte ?"
+msgstr ""
+
+#: .\dashboard\forms.py:25 .\dashboard\forms.py:56 .\dashboard\forms.py:264
+#: .\dashboard\templates\dashboard\_layout.html:811
+#: .\dashboard\templates\dashboard\growth\campaign_form.html:191
+#: .\dashboard\templates\dashboard\marketing\campaign_list.html:76
+#: .\dashboard\templates\dashboard\reservations\detail.html:83
+#: .\dashboard\templates\dashboard\subscription.html:67
+#: .\public_site\templates\public_site\agency_home.html:149
+#: .\public_site\templates\public_site\page_contact.html:46
+msgid "WhatsApp"
+msgstr ""
+
+#: .\dashboard\forms.py:51 .\dashboard\templates\dashboard\account.html:106
+#: .\dashboard\templates\dashboard\site_public_settings.html:126
+msgid "Logo"
+msgstr ""
+
+#: .\dashboard\forms.py:52
+msgid "Nom commercial"
+msgstr ""
+
+#: .\dashboard\forms.py:53
+msgid "Slogan"
+msgstr ""
+
+#: .\dashboard\forms.py:54
+msgid "Email de contact"
+msgstr ""
+
+#: .\dashboard\forms.py:57
+msgid "Adresse ligne 1"
+msgstr ""
+
+#: .\dashboard\forms.py:58
+msgid "Adresse ligne 2"
+msgstr ""
+
+#: .\dashboard\forms.py:59 .\marketing\templates\marketing\signup.html:90
+msgid "Ville"
+msgstr ""
+
+#: .\dashboard\forms.py:60
+msgid "Pays"
+msgstr ""
+
+#: .\dashboard\forms.py:61
+msgid "Site web"
+msgstr ""
+
+#: .\dashboard\forms.py:62
+msgid "Raison sociale"
+msgstr ""
+
+#: .\dashboard\forms.py:63
+msgid "N° TVA / SIRET"
+msgstr ""
+
+#: .\dashboard\forms.py:64 .\dashboard\forms.py:478
+msgid "Devise"
+msgstr ""
+
+#: .\dashboard\forms.py:65
+msgid "Pied de facture"
+msgstr ""
+
+#: .\dashboard\forms.py:202
+#: .\dashboard\templates\dashboard\contracts\detail.html:460
+#: .\dashboard\templates\dashboard\home.html:183
+#: .\dashboard\templates\dashboard\vehicles\hub.html:68
+#: .\dashboard\templates\dashboard\vehicles\hub.html:131
+#: .\dashboard\templates\dashboard\vehicles\list.html:47
+#: .\marketing\templates\marketing\landing.html:105
+msgid "Disponible"
+msgstr ""
+
+#: .\dashboard\forms.py:203
+#: .\dashboard\templates\dashboard\vehicles\hub.html:69
+#: .\dashboard\templates\dashboard\vehicles\hub.html:133
+#: .\dashboard\templates\dashboard\vehicles\list.html:49
+#: .\marketing\templates\marketing\landing.html:104
+msgid "En location"
+msgstr ""
+
+#: .\dashboard\forms.py:204 .\dashboard\templates\dashboard\_layout.html:743
+#: .\dashboard\templates\dashboard\_layout.html:745
+#: .\dashboard\templates\dashboard\home.html:185
+#: .\dashboard\templates\dashboard\maintenance\list.html:4
+#: .\dashboard\templates\dashboard\maintenance\list.html:5
+#: .\dashboard\templates\dashboard\vehicles\hub.html:70
+#: .\dashboard\templates\dashboard\vehicles\hub.html:135
+#: .\dashboard\templates\dashboard\vehicles\list.html:51
+#: .\marketing\templates\marketing\landing.html:106
+msgid "Maintenance"
+msgstr ""
+
+#: .\dashboard\forms.py:213
+#: .\public_site\templates\public_site\vehicle_detail.html:46
+msgid "Marque"
+msgstr ""
+
+#: .\dashboard\forms.py:214
+#: .\public_site\templates\public_site\vehicle_detail.html:50
+msgid "Modèle"
+msgstr ""
+
+#: .\dashboard\forms.py:215
+#: .\dashboard\templates\dashboard\vehicles\list.html:21
+msgid "Immatriculation"
+msgstr ""
+
+#: .\dashboard\forms.py:216
+msgid "Prix / jour (€)"
+msgstr ""
+
+#: .\dashboard\forms.py:217 .\dashboard\forms.py:271 .\dashboard\forms.py:325
+#: .\dashboard\templates\dashboard\admin\agencies_access.html:43
+#: .\dashboard\templates\dashboard\admin\agencies_access.html:74
+#: .\dashboard\templates\dashboard\admin\agency_access_detail.html:75
+#: .\dashboard\templates\dashboard\clients\detail.html:83
+#: .\dashboard\templates\dashboard\clients\hub.html:118
+#: .\dashboard\templates\dashboard\clients\list.html:61
+#: .\dashboard\templates\dashboard\contracts\hub.html:178
+#: .\dashboard\templates\dashboard\contracts\hub.html:360
+#: .\dashboard\templates\dashboard\contracts\list.html:43
+#: .\dashboard\templates\dashboard\maintenance\history.html:32
+#: .\dashboard\templates\dashboard\maintenance\list.html:118
+#: .\dashboard\templates\dashboard\marketing\campaign_list.html:111
+#: .\dashboard\templates\dashboard\marketing\wa_outbox.html:81
+#: .\dashboard\templates\dashboard\payments\list.html:132
+#: .\dashboard\templates\dashboard\reservations\list.html:41
+#: .\dashboard\templates\dashboard\reservations\list.html:80
+#: .\dashboard\templates\dashboard\subscription.html:21
+#: .\dashboard\templates\dashboard\subscription.html:329
+#: .\dashboard\templates\dashboard\team\list.html:55
+#: .\dashboard\templates\dashboard\vehicles\hub.html:97
+#: .\dashboard\templates\dashboard\vehicles\list.html:23
+#: .\public_site\templates\public_site\vehicle_detail.html:58
+msgid "Statut"
+msgstr ""
+
+#: .\dashboard\forms.py:218
+msgid "Visible sur le site public"
+msgstr ""
+
+#: .\dashboard\forms.py:219
+msgid "Autoriser négociation prix"
+msgstr ""
+
+#: .\dashboard\forms.py:220
+#: .\dashboard\templates\dashboard\vehicles\hub.html:343
+#: .\dashboard\templates\dashboard\vehicles\hub.html:451
+msgid "Photo"
+msgstr ""
+
+#: .\dashboard\forms.py:221
+msgid "Kilométrage actuel"
+msgstr ""
+
+#: .\dashboard\forms.py:222
+msgid "IMEI GPS"
+msgstr ""
+
+#: .\dashboard\forms.py:223
+#: .\dashboard\templates\dashboard\contracts\detail.html:234
+msgid "IP du tracker GPS"
+msgstr ""
+
+#: .\dashboard\forms.py:224
+msgid "Source GPS"
+msgstr ""
+
+#: .\dashboard\forms.py:225
+msgid "GPS activé"
+msgstr ""
+
+#: .\dashboard\forms.py:246
+msgid "Format accepté : PNG, JPG ou WebP."
+msgstr ""
+
+#: .\dashboard\forms.py:248
+msgid "L'image ne doit pas dépasser 5 Mo."
+msgstr ""
+
+#: .\dashboard\forms.py:265
+#: .\dashboard\templates\dashboard\clients\detail.html:92
+msgid "Adresse"
+msgstr ""
+
+#: .\dashboard\forms.py:266 .\dashboard\forms.py:339
+#: .\dashboard\templates\dashboard\contracts\detail.html:135
+#: .\dashboard\templates\dashboard\maintenance\history.html:60
+msgid "Notes"
+msgstr ""
+
+#: .\dashboard\forms.py:267
+msgid "N° permis de conduire"
+msgstr ""
+
+#: .\dashboard\forms.py:268
+msgid "Expiration permis"
+msgstr ""
+
+#: .\dashboard\forms.py:269
+msgid "Pièce d'identité (photo)"
+msgstr ""
+
+#: .\dashboard\forms.py:270
+msgid "Tags (séparés par virgule)"
+msgstr ""
+
+#: .\dashboard\forms.py:272
+msgid "Prochaine relance"
+msgstr ""
+
+#: .\dashboard\forms.py:273
+msgid "Note relance"
+msgstr ""
+
+#: .\dashboard\forms.py:300
+msgid "Le fichier ne doit pas dépasser 5 Mo."
+msgstr ""
+
+#: .\dashboard\forms.py:303
+msgid "Formats acceptés : PNG, JPG, WebP."
+msgstr ""
+
+#: .\dashboard\forms.py:321
+#: .\dashboard\templates\dashboard\clients\hub.html:115
+#: .\dashboard\templates\dashboard\contracts\detail.html:112
+#: .\dashboard\templates\dashboard\contracts\hub.html:179
+#: .\dashboard\templates\dashboard\contracts\hub.html:355
+#: .\dashboard\templates\dashboard\contracts\inspection.html:178
+#: .\dashboard\templates\dashboard\contracts\list.html:40
+#: .\dashboard\templates\dashboard\gps\maps_hub.html:278
+#: .\dashboard\templates\dashboard\home.html:267
+#: .\dashboard\templates\dashboard\payments\list.html:133
+#: .\dashboard\templates\dashboard\reservations\detail.html:59
+#: .\dashboard\templates\dashboard\reservations\list.html:76
+#: .\public_site\templates\public_site\reservation_status.html:70
+msgid "Client"
+msgstr ""
+
+#: .\dashboard\forms.py:322
+#: .\dashboard\templates\dashboard\contracts\detail.html:113
+#: .\dashboard\templates\dashboard\contracts\hub.html:180
+#: .\dashboard\templates\dashboard\contracts\hub.html:356
+#: .\dashboard\templates\dashboard\contracts\inspection.html:179
+#: .\dashboard\templates\dashboard\contracts\list.html:41
+#: .\dashboard\templates\dashboard\gps\tracking.html:75
+#: .\dashboard\templates\dashboard\growth\campaign_form.html:114
+#: .\dashboard\templates\dashboard\home.html:67
+#: .\dashboard\templates\dashboard\home.html:264
+#: .\dashboard\templates\dashboard\maintenance\list.html:113
+#: .\dashboard\templates\dashboard\payments\list.html:134
+#: .\dashboard\templates\dashboard\reservations\list.html:51
+#: .\dashboard\templates\dashboard\reservations\list.html:77
+#: .\dashboard\templates\dashboard\vehicles\hub.html:93
+#: .\dashboard\templates\dashboard\vehicles\list.html:20
+msgid "Véhicule"
+msgstr ""
+
+#: .\dashboard\forms.py:323
+#: .\dashboard\templates\dashboard\growth\banner_form.html:72
+#: .\dashboard\templates\dashboard\reservations\detail.html:101
+#: .\dashboard\templates\dashboard\reservations\list.html:64
+msgid "Date début"
+msgstr ""
+
+#: .\dashboard\forms.py:324
+#: .\dashboard\templates\dashboard\growth\banner_form.html:77
+#: .\dashboard\templates\dashboard\reservations\detail.html:105
+msgid "Date fin"
+msgstr ""
+
+#: .\dashboard\forms.py:326
+#: .\dashboard\templates\dashboard\contracts\detail.html:115
+msgid "Prix / jour"
+msgstr ""
+
+#: .\dashboard\forms.py:327
+#: .\dashboard\templates\dashboard\contracts\detail.html:116
+msgid "Caution"
+msgstr ""
+
+#: .\dashboard\forms.py:328
+#: .\dashboard\templates\dashboard\contracts\detail.html:117
+#: .\dashboard\templates\dashboard\contracts\inspection.html:30
+#: .\dashboard\templates\dashboard\contracts\inspection.html:181
+msgid "Km départ"
+msgstr ""
+
+#: .\dashboard\forms.py:329
+msgid "Jauge carburant (1-8)"
+msgstr ""
+
+#: .\dashboard\forms.py:330 .\dashboard\forms.py:468
+#: .\dashboard\templates\dashboard\contracts\detail.html:121
+#: .\dashboard\templates\dashboard\contracts\inspection.html:182
+msgid "Km inclus"
+msgstr ""
+
+#: .\dashboard\forms.py:331
+#: .\dashboard\templates\dashboard\contracts\detail.html:122
+msgid "Prix km sup."
+msgstr ""
+
+#: .\dashboard\forms.py:332 .\dashboard\forms.py:476
+#: .\dashboard\templates\dashboard\contracts\detail.html:123
+#: .\dashboard\templates\dashboard\contracts\detail.html:478
+msgid "Frais carburant"
+msgstr ""
+
+#: .\dashboard\forms.py:333 .\dashboard\forms.py:474
+#: .\dashboard\templates\dashboard\contracts\detail.html:124
+msgid "Frais retard / jour"
+msgstr ""
+
+#: .\dashboard\forms.py:334
+msgid "Date/heure de remise"
+msgstr ""
+
+#: .\dashboard\forms.py:335
+msgid "Date/heure de retour prévue"
+msgstr ""
+
+#: .\dashboard\forms.py:336
+msgid "Clause du contrat"
+msgstr ""
+
+#: .\dashboard\forms.py:337
+#: .\dashboard\templates\dashboard\contracts\detail.html:155
+msgid "Clause de pénalité"
+msgstr ""
+
+#: .\dashboard\forms.py:338
+msgid "Clause GPS / géolocalisation"
+msgstr ""
+
+#: .\dashboard\forms.py:387 .\dashboard\forms.py:397
+#: .\dashboard\templates\dashboard\contracts\detail.html:70
+#: .\dashboard\templates\dashboard\contracts\detail.html:323
+msgid "En attente de signature"
+msgstr ""
+
+#: .\dashboard\forms.py:416
+msgid "La date de fin doit être après la date de début."
+msgstr ""
+
+#: .\dashboard\forms.py:433
+msgid "Ce véhicule est déjà réservé sur cette période."
+msgstr ""
+
+#: .\dashboard\forms.py:445
+#: .\dashboard\templates\dashboard\contracts\detail.html:535
+#: .\dashboard\templates\dashboard\contracts\hub.html:176
+#: .\dashboard\templates\dashboard\contracts\list.html:45
+#: .\dashboard\templates\dashboard\payments\list.html:130
+msgid "Montant"
+msgstr ""
+
+#: .\dashboard\forms.py:446
+#: .\dashboard\templates\dashboard\contracts\detail.html:539
+#: .\dashboard\templates\dashboard\contracts\hub.html:177
+#: .\dashboard\templates\dashboard\payments\list.html:131
+msgid "Méthode"
+msgstr ""
+
+#: .\dashboard\forms.py:447
+#: .\dashboard\templates\dashboard\contracts\hub.html:911
+msgid "Référence"
+msgstr ""
+
+#: .\dashboard\forms.py:448
+#: .\dashboard\templates\dashboard\clients\detail.html:228
+msgid "Note"
+msgstr ""
+
+#: .\dashboard\forms.py:469
+msgid "Type km inclus"
+msgstr ""
+
+#: .\dashboard\forms.py:470
+msgid "Km illimité"
+msgstr ""
+
+#: .\dashboard\forms.py:471
+msgid "Prix km supplémentaire"
+msgstr ""
+
+#: .\dashboard\forms.py:472
+msgid "Tolérance retard (min)"
+msgstr ""
+
+#: .\dashboard\forms.py:473
+msgid "Facturation retard"
+msgstr ""
+
+#: .\dashboard\forms.py:475
+msgid "Politique carburant"
+msgstr ""
+
+#: .\dashboard\forms.py:477
+msgid "TVA (%)"
+msgstr ""
+
+#: .\dashboard\forms.py:479
+msgid "Arrondi facturation"
+msgstr ""
+
+#: .\dashboard\forms.py:481
+msgid "Dépôt de garantie"
+msgstr ""
+
+#: .\dashboard\forms.py:482
+msgid "Mode dépôt"
+msgstr ""
+
+#: .\dashboard\forms.py:483
+msgid "Franchise assurance"
+msgstr ""
+
+#: .\dashboard\forms.py:484
+msgid "Assurance incluse"
+msgstr ""
+
+#: .\dashboard\forms.py:485
+msgid "Rachat de franchise possible"
+msgstr ""
+
+#: .\dashboard\forms.py:486
+msgid "Prix rachat franchise / jour"
+msgstr ""
+
+#: .\dashboard\forms.py:488
+msgid "Numérotation auto contrats"
+msgstr ""
+
+#: .\dashboard\forms.py:489
+msgid "Numérotation auto factures"
+msgstr ""
+
+#: .\dashboard\forms.py:490
+msgid "Préfixe contrat"
+msgstr ""
+
+#: .\dashboard\forms.py:491
+msgid "Préfixe facture"
+msgstr ""
+
+#: .\dashboard\forms.py:492
+msgid "Espèce"
+msgstr ""
+
+#: .\dashboard\forms.py:493
+msgid "Carte bancaire"
+msgstr ""
+
+#: .\dashboard\forms.py:494
+#: .\dashboard\templates\dashboard\contracts\hub.html:149
+#: .\dashboard\templates\dashboard\contracts\hub.html:207
+#: .\dashboard\templates\dashboard\contracts\hub.html:266
+#: .\dashboard\templates\dashboard\payments\list.html:99
+#: .\dashboard\templates\dashboard\payments\list.html:161
+#: .\dashboard\templates\dashboard\payments\list.html:221
+#: .\dashboard\views.py:689
+msgid "Virement"
+msgstr ""
+
+#: .\dashboard\forms.py:495
+msgid "Mobile money"
+msgstr ""
+
+#: .\dashboard\forms.py:496
+msgid "Paiement partiel autorisé"
+msgstr ""
+
+#: .\dashboard\forms.py:497
+msgid "Délai paiement facture (jours)"
+msgstr ""
+
+#: .\dashboard\forms.py:499
+msgid "Intervalle maintenance (km)"
+msgstr ""
+
+#: .\dashboard\forms.py:500
+msgid "Intervalle maintenance (mois)"
+msgstr ""
+
+#: .\dashboard\forms.py:501
+msgid "Alerte maintenance X km avant"
+msgstr ""
+
+#: .\dashboard\forms.py:502
+msgid "Alerte maintenance X jours avant"
+msgstr ""
+
+#: .\dashboard\forms.py:503
+msgid "Tolérance dépassement (km)"
+msgstr ""
+
+#: .\dashboard\forms.py:504
+msgid "Email alerte automatique"
+msgstr ""
+
+#: .\dashboard\forms.py:505
+msgid "Désactiver véhicule si maintenance dépassée"
+msgstr ""
+
+#: .\dashboard\forms.py:507
+msgid "Activer la négociation de prix"
+msgstr ""
+
+#: .\dashboard\forms.py:508
+msgid "Offre minimum (% du prix)"
+msgstr ""
+
+#: .\dashboard\forms.py:510
+msgid "Clause de contrat par défaut"
+msgstr ""
+
+#: .\dashboard\forms.py:511
+msgid "Clause de pénalité par défaut"
+msgstr ""
+
+#: .\dashboard\forms.py:513
+msgid "Activer le suivi GPS"
+msgstr ""
+
+#: .\dashboard\forms.py:514
+msgid "Limite de vitesse (km/h)"
+msgstr ""
+
+#: .\dashboard\forms.py:515
+msgid "Alerte GPS hors ligne (minutes)"
+msgstr ""
+
+#: .\dashboard\forms.py:516
+msgid "Clause GPS par défaut"
+msgstr ""
+
+#: .\dashboard\forms.py:586
+msgid "La valeur doit être positive."
+msgstr ""
+
+#: .\dashboard\templates\dashboard\_layout.html:684
+#: .\dashboard\templates\dashboard\_layout.html:851
+#: .\dashboard\templates\dashboard\_layout.html:859
+msgid "Dashboard"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\_layout.html:685
+#: .\dashboard\templates\dashboard\_layout.html:876
+msgid "Changer de thème"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\_layout.html:698
+msgid "Sans agence"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\_layout.html:704
+msgid "Principal"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\_layout.html:713
+#: .\dashboard\templates\dashboard\_layout.html:715
+#: .\dashboard\templates\dashboard\home.html:86
+#: .\dashboard\templates\dashboard\vehicles\hub.html:4
+#: .\dashboard\templates\dashboard\vehicles\hub.html:5
+#: .\dashboard\templates\dashboard\vehicles\list.html:4
+#: .\dashboard\templates\dashboard\vehicles\list.html:5
+#: .\marketing\templates\marketing\landing.html:91
+msgid "Véhicules"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\_layout.html:719
+#: .\dashboard\templates\dashboard\_layout.html:721
+#: .\dashboard\templates\dashboard\clients\hub.html:4
+#: .\dashboard\templates\dashboard\clients\hub.html:5
+#: .\dashboard\templates\dashboard\clients\list.html:4
+#: .\dashboard\templates\dashboard\clients\list.html:5
+#: .\dashboard\templates\dashboard\home.html:96
+msgid "Clients"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\_layout.html:725
+#: .\dashboard\templates\dashboard\_layout.html:727
+#: .\dashboard\templates\dashboard\contracts\hub.html:4
+#: .\dashboard\templates\dashboard\contracts\hub.html:5
+#: .\dashboard\templates\dashboard\contracts\hub.html:307
+msgid "Contrat et Paiement"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\_layout.html:737
+#: .\dashboard\templates\dashboard\_layout.html:739
+#: .\dashboard\templates\dashboard\contracts\detail.html:291
+msgid "Suivi GPS"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\_layout.html:750
+msgid "Administration"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\_layout.html:753
+#: .\dashboard\templates\dashboard\business_settings.html:5
+msgid "Paramètres métier"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\_layout.html:760
+#: .\dashboard\templates\dashboard\home.html:118
+#: .\dashboard\templates\dashboard\team\list.html:4
+#: .\dashboard\templates\dashboard\team\list.html:5
+msgid "Équipe"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\_layout.html:767
+#: .\dashboard\templates\dashboard\site_public_settings.html:4
+#: .\dashboard\templates\dashboard\site_public_settings.html:178
+msgid "Site public"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\_layout.html:772
+#: .\marketing\templates\marketing\landing.html:148
+msgid "Croissance"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\_layout.html:777
+#: .\dashboard\templates\dashboard\growth\marketing.html:4
+msgid "Marketing"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\_layout.html:783
+#: .\dashboard\templates\dashboard\growth\promos.html:4
+msgid "Promotions"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\_layout.html:789
+#: .\dashboard\templates\dashboard\growth\campaigns.html:4
+msgid "Campagnes"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\_layout.html:793
+#: .\dashboard\templates\dashboard\growth\banners.html:4
+msgid "Bannières"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\_layout.html:796
+msgid "Marketing Engine"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\_layout.html:799
+#: .\dashboard\templates\dashboard\marketing\campaign_list.html:4
+msgid "Campagnes IA"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\_layout.html:803
+#: .\dashboard\templates\dashboard\marketing\automations.html:4
+msgid "Automatisations"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\_layout.html:807
+msgid "Analytics"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\_layout.html:815
+#: .\dashboard\templates\dashboard\account.html:63
+#: .\marketing\templates\marketing\landing.html:474
+msgid "Compte"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\_layout.html:819
+#: .\dashboard\templates\dashboard\subscription.html:4
+msgid "Abonnement"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\_layout.html:824
+#: .\dashboard\templates\dashboard\account.html:4
+#: .\dashboard\templates\dashboard\account.html:5
+msgid "Mon compte"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\account.html:6
+msgid "Gérez votre profil et les informations de votre agence"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\account.html:49
+msgid "Profil utilisateur"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\account.html:50
+msgid "Vos informations personnelles"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\account.html:70
+msgid "Vérifié"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\account.html:72
+msgid "Non vérifié"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\account.html:77
+#: .\dashboard\templates\dashboard\team\list.html:54
+msgid "Rôle"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\account.html:100
+msgid "Identité agence"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\account.html:101
+msgid "Nom, slogan et logo"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\account.html:118
+#: .\dashboard\templates\dashboard\vehicles\form.html:100
+msgid "PNG, JPG ou WebP — max 5 Mo"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\account.html:144
+msgid "Contact & adresse"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\account.html:145
+msgid "Coordonnées de l'agence"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\account.html:201
+msgid "Documents & facturation"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\account.html:202
+msgid "Infos légales pour contrats et factures"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\account.html:225
+msgid "Affiché en bas des factures et devis"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\admin\agencies_access.html:4
+msgid "Gestion accès agences"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\admin\agencies_access.html:5
+msgid "Administration des abonnements et accès"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\admin\agencies_access.html:17
+msgid "Essais"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\admin\agencies_access.html:21
+msgid "Actives"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\admin\agencies_access.html:25
+msgid "Suspendues"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\admin\agencies_access.html:29
+#: .\dashboard\templates\dashboard\admin\agencies_access.html:61
+msgid "Preuves pending"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\admin\agencies_access.html:38
+#: .\dashboard\templates\dashboard\reservations\list.html:36
+#: .\superadmin\templates\superadmin\webhooks_log.html:12
+msgid "Recherche"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\admin\agencies_access.html:39
+msgid "Nom agence, email owner…"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\admin\agencies_access.html:45
+#: .\dashboard\templates\dashboard\marketing\wa_outbox.html:65
+#: .\dashboard\templates\dashboard\reservations\list.html:43
+#: .\dashboard\templates\dashboard\reservations\list.html:53
+#: .\superadmin\templates\superadmin\webhooks_log.html:19
+msgid "Tous"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\admin\agencies_access.html:46
+msgid "Essai"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\admin\agencies_access.html:48
+#: .\dashboard\templates\dashboard\subscription.html:32
+#: .\dashboard\templates\dashboard\subscription.html:41
+#: .\dashboard\templates\dashboard\subscription.html:169
+#: .\dashboard\templates\dashboard\subscription.html:335
+msgid "Suspendu"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\admin\agencies_access.html:52
+#: .\dashboard\templates\dashboard\reservations\list.html:60
+msgid "Tri"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\admin\agencies_access.html:54
+msgid "Plus urgent"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\admin\agencies_access.html:55
+#: .\dashboard\templates\dashboard\admin\agency_access_detail.html:46
+#: .\dashboard\templates\dashboard\clients\list.html:59
+msgid "Nom"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\admin\agencies_access.html:56
+msgid "Plus récent"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\admin\agencies_access.html:63
+#: .\dashboard\templates\dashboard\clients\hub.html:105
+#: .\dashboard\templates\dashboard\clients\list.html:50
+#: .\dashboard\templates\dashboard\contracts\hub.html:162
+#: .\dashboard\templates\dashboard\contracts\hub.html:344
+#: .\dashboard\templates\dashboard\contracts\list.html:31
+#: .\dashboard\templates\dashboard\gps\alerts.html:57
+#: .\dashboard\templates\dashboard\maintenance\list.html:104
+#: .\dashboard\templates\dashboard\payments\list.html:114
+#: .\dashboard\templates\dashboard\reservations\list.html:67
+#: .\dashboard\templates\dashboard\team\list.html:41
+#: .\dashboard\templates\dashboard\vehicles\hub.html:83
+#: .\superadmin\templates\superadmin\webhooks_log.html:33
+msgid "Filtrer"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\admin\agencies_access.html:73
+#: .\dashboard\templates\dashboard\admin\agency_access_detail.html:54
+msgid "Owner"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\admin\agencies_access.html:75
+#: .\dashboard\templates\dashboard\growth\promo_form.html:38
+#: .\dashboard\templates\dashboard\growth\promos.html:30
+msgid "Expire le"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\admin\agencies_access.html:76
+msgid "Restant"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\admin\agencies_access.html:77
+msgid "Preuve"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\admin\agencies_access.html:78
+#: .\dashboard\templates\dashboard\clients\hub.html:119
+#: .\dashboard\templates\dashboard\clients\list.html:64
+#: .\dashboard\templates\dashboard\contracts\hub.html:182
+#: .\dashboard\templates\dashboard\contracts\hub.html:361
+#: .\dashboard\templates\dashboard\gps\tracking.html:80
+#: .\dashboard\templates\dashboard\maintenance\list.html:119
+#: .\dashboard\templates\dashboard\marketing\campaign_list.html:116
+#: .\dashboard\templates\dashboard\marketing\wa_outbox.html:83
+#: .\dashboard\templates\dashboard\payments\list.html:136
+#: .\dashboard\templates\dashboard\reservations\list.html:81
+#: .\dashboard\templates\dashboard\team\list.html:56
+#: .\dashboard\templates\dashboard\vehicles\hub.html:99
+#: .\dashboard\templates\dashboard\vehicles\list.html:25
+msgid "Actions"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\admin\agency_access_detail.html:4
+msgid "Accès"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\admin\agency_access_detail.html:10
+#: .\dashboard\templates\dashboard\clients\detail.html:18
+#: .\dashboard\templates\dashboard\clients\form.html:11
+#: .\dashboard\templates\dashboard\contracts\detail.html:20
+#: .\dashboard\templates\dashboard\contracts\detail.html:362
+#: .\dashboard\templates\dashboard\contracts\detail.html:391
+#: .\dashboard\templates\dashboard\contracts\form.html:11
+#: .\dashboard\templates\dashboard\growth\banner_form.html:9
+#: .\dashboard\templates\dashboard\growth\campaign_form.html:9
+#: .\dashboard\templates\dashboard\growth\promo_form.html:9
+#: .\dashboard\templates\dashboard\maintenance\history.html:11
+#: .\dashboard\templates\dashboard\reservations\detail.html:10
+#: .\dashboard\templates\dashboard\team\form.html:12
+msgid "Retour"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\admin\agency_access_detail.html:50
+msgid "Slug"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\admin\agency_access_detail.html:62
+#: .\dashboard\templates\dashboard\reservations\detail.html:121
+msgid "Créée le"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\admin\agency_access_detail.html:71
+msgid "Détails accès"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\admin\agency_access_detail.html:79
+msgid "Essai début"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\admin\agency_access_detail.html:83
+msgid "Deadline"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\admin\agency_access_detail.html:87
+msgid "Countdown"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\admin\agency_access_detail.html:91
+msgid "Jours restants"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\admin\agency_access_detail.html:96
+msgid "Raison suspension"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\admin\agency_access_detail.html:106
+msgid "Preuves de paiement"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\business_settings.html:6
+msgid "Configuration globale de votre agence"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\business_settings.html:50
+msgid "Contrats & kilométrage"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\business_settings.html:51
+msgid "Km, retard, carburant, TVA"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\business_settings.html:80
+msgid "Assurance & dépôt"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\business_settings.html:81
+msgid "Caution, franchise, rachat"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\business_settings.html:110
+msgid "Paiements & facturation"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\business_settings.html:111
+msgid "Numérotation, moyens de paiement"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\business_settings.html:140
+msgid "Maintenance & alertes"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\business_settings.html:141
+msgid "Intervalles, alertes, désactivation"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\business_settings.html:170
+msgid "Négociation prix"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\business_settings.html:171
+msgid "Permettre aux clients de proposer un prix"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\business_settings.html:190
+msgid ""
+"Si activé, les clients peuvent proposer un prix lors de la réservation. Vous "
+"pouvez accepter, refuser ou contre-proposer depuis le dashboard."
+msgstr ""
+
+#: .\dashboard\templates\dashboard\business_settings.html:201
+msgid "Clauses de contrat"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\business_settings.html:202
+msgid "Texte par défaut pré-rempli dans chaque nouveau contrat"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\business_settings.html:213
+msgid ""
+"Ces textes seront automatiquement insérés dans chaque nouveau contrat. Vous "
+"pourrez les modifier au cas par cas lors de la rédaction du contrat."
+msgstr ""
+
+#: .\dashboard\templates\dashboard\business_settings.html:225
+#: .\dashboard\templates\dashboard\vehicles\form.html:111
+msgid "GPS & Géolocalisation"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\business_settings.html:226
+msgid "Suivi GPS des véhicules, zones interdites et alertes"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\business_settings.html:237
+msgid ""
+"Activez le suivi GPS pour suivre vos véhicules en temps réel. La clause GPS "
+"sera automatiquement ajoutée aux contrats des véhicules équipés d'un tracker."
+msgstr ""
+
+#: .\dashboard\templates\dashboard\business_settings.html:248
+msgid "Simulateur de dépassement"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\business_settings.html:252
+msgid "Km supplémentaires"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\business_settings.html:256
+msgid "Jours de retard"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\business_settings.html:260
+msgid "Résultat"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\clients\confirm_delete.html:3
+msgid "Supprimer client"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\clients\confirm_delete.html:4
+msgid "Supprimer ce client ?"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\clients\confirm_delete.html:9
+msgid "Cette action est irréversible. Tous les contrats liés seront conservés."
+msgstr ""
+
+#: .\dashboard\templates\dashboard\clients\confirm_delete.html:12
+msgid "Confirmer"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\clients\confirm_delete.html:14
+#: .\dashboard\templates\dashboard\clients\form.html:39
+#: .\dashboard\templates\dashboard\clients\hub.html:378
+#: .\dashboard\templates\dashboard\clients\hub.html:489
+#: .\dashboard\templates\dashboard\contracts\close.html:36
+#: .\dashboard\templates\dashboard\contracts\detail.html:51
+#: .\dashboard\templates\dashboard\contracts\form.html:34
+#: .\dashboard\templates\dashboard\contracts\inspection.html:163
+#: .\dashboard\templates\dashboard\gps\vehicle_config.html:69
+#: .\dashboard\templates\dashboard\gps\zone_form.html:105
+#: .\dashboard\templates\dashboard\maintenance\list.html:262
+#: .\dashboard\templates\dashboard\maintenance\list.html:286
+#: .\dashboard\templates\dashboard\marketing\automations.html:180
+#: .\dashboard\templates\dashboard\site_public_settings.html:385
+#: .\dashboard\templates\dashboard\team\confirm_delete.html:11
+#: .\dashboard\templates\dashboard\team\confirm_delete.html:37
+#: .\dashboard\templates\dashboard\vehicles\confirm_delete.html:32
+#: .\dashboard\templates\dashboard\vehicles\form.html:144
+#: .\dashboard\templates\dashboard\vehicles\hub.html:366
+#: .\dashboard\templates\dashboard\vehicles\hub.html:471
+msgid "Annuler"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\clients\detail.html:6
+msgid "Client depuis"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\clients\detail.html:23
+#: .\dashboard\templates\dashboard\clients\hub.html:209
+#: .\dashboard\templates\dashboard\clients\list.html:101
+#: .\dashboard\templates\dashboard\contracts\detail.html:25
+#: .\dashboard\templates\dashboard\contracts\hub.html:426
+#: .\dashboard\templates\dashboard\gps\zones.html:57
+#: .\dashboard\templates\dashboard\growth\banners.html:43
+#: .\dashboard\templates\dashboard\growth\campaigns.html:47
+#: .\dashboard\templates\dashboard\growth\promos.html:35
+#: .\dashboard\templates\dashboard\marketing\campaign_form.html:3
+#: .\dashboard\templates\dashboard\marketing\campaign_list.html:151
+#: .\dashboard\templates\dashboard\site_public_settings.html:384
+#: .\dashboard\templates\dashboard\site_public_settings.html:496
+#: .\dashboard\templates\dashboard\team\list.html:95
+#: .\dashboard\templates\dashboard\vehicles\hub.html:162
+#: .\dashboard\templates\dashboard\vehicles\list.html:64
+msgid "Modifier"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\clients\detail.html:25
+#: .\dashboard\templates\dashboard\clients\detail.html:247
+#: .\dashboard\templates\dashboard\gps\zones.html:60
+#: .\dashboard\templates\dashboard\growth\banners.html:46
+#: .\dashboard\templates\dashboard\growth\campaign_form.html:354
+#: .\dashboard\templates\dashboard\growth\campaigns.html:51
+#: .\dashboard\templates\dashboard\growth\promos.html:38
+#: .\dashboard\templates\dashboard\site_public_settings.html:499
+#: .\dashboard\templates\dashboard\site_public_settings.html:502
+#: .\dashboard\templates\dashboard\team\list.html:112
+#: .\dashboard\templates\dashboard\vehicles\hub.html:171
+#: .\dashboard\templates\dashboard\vehicles\list.html:65
+msgid "Supprimer"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\clients\detail.html:42
+#: .\dashboard\templates\dashboard\clients\detail.html:87
+#: .\dashboard\templates\dashboard\clients\hub.html:92
+#: .\dashboard\templates\dashboard\clients\hub.html:165
+#: .\dashboard\templates\dashboard\clients\list.html:38
+#: .\dashboard\templates\dashboard\clients\list.html:82
+#: .\dashboard\templates\dashboard\clients\list.html:131
+msgid "Blacklisté"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\clients\detail.html:47
+#: .\dashboard\templates\dashboard\clients\hub.html:61
+#: .\dashboard\templates\dashboard\clients\list.html:142
+#: .\dashboard\templates\dashboard\home.html:211
+msgid "Permis expiré"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\clients\detail.html:49
+#: .\dashboard\templates\dashboard\clients\hub.html:52
+#: .\dashboard\templates\dashboard\clients\list.html:144
+msgid "Permis valide"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\clients\detail.html:51
+#: .\dashboard\templates\dashboard\clients\hub.html:70
+#: .\dashboard\templates\dashboard\clients\list.html:146
+msgid "Permis manquant"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\clients\detail.html:56
+msgid "ID fourni"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\clients\detail.html:64
+#: .\dashboard\templates\dashboard\clients\detail.html:188
+#: .\dashboard\templates\dashboard\clients\detail.html:243
+#: .\dashboard\templates\dashboard\contracts\hub.html:299
+#: .\dashboard\templates\dashboard\payments\list.html:255
+msgid "Créer un contrat"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\clients\detail.html:77
+msgid "Informations personnelles"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\clients\detail.html:102
+#: .\dashboard\templates\dashboard\clients\hub.html:303
+#: .\dashboard\templates\dashboard\clients\hub.html:435
+msgid "Permis de conduire"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\clients\detail.html:105
+msgid "N° permis"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\clients\detail.html:106
+msgid "Expiration"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\clients\detail.html:109
+#: .\dashboard\templates\dashboard\clients\hub.html:97
+#: .\dashboard\templates\dashboard\clients\hub.html:152
+#: .\dashboard\templates\dashboard\clients\hub.html:195
+#: .\dashboard\templates\dashboard\clients\hub.html:306
+#: .\dashboard\templates\dashboard\clients\list.html:43
+#: .\dashboard\templates\dashboard\clients\list.html:89
+#: .\dashboard\templates\dashboard\growth\promos.html:25
+msgid "Expiré"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\clients\detail.html:111
+#: .\dashboard\templates\dashboard\clients\hub.html:96
+#: .\dashboard\templates\dashboard\clients\hub.html:197
+#: .\dashboard\templates\dashboard\clients\hub.html:308
+#: .\dashboard\templates\dashboard\clients\list.html:42
+#: .\dashboard\templates\dashboard\clients\list.html:91
+msgid "Valide"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\clients\detail.html:115
+msgid "Expiré depuis"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\clients\detail.html:115
+#: .\dashboard\templates\dashboard\clients\detail.html:119
+#: .\dashboard\templates\dashboard\clients\hub.html:148
+msgid "jours"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\clients\detail.html:117
+#: .\dashboard\templates\dashboard\clients\detail.html:119
+msgid "Expire dans"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\clients\detail.html:127
+#: .\dashboard\templates\dashboard\clients\hub.html:328
+#: .\dashboard\templates\dashboard\clients\hub.html:447
+msgid "Pièce d'identité"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\clients\detail.html:132
+#: .\dashboard\templates\dashboard\clients\hub.html:334
+msgid "Ouvrir"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\clients\detail.html:140
+msgid "Aucune pièce d'identité fournie"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\clients\detail.html:151
+msgid "Historique contrats"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\clients\detail.html:153
+#: .\dashboard\templates\dashboard\contracts\list.html:6
+msgid "contrat"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\clients\detail.html:168
+#: .\dashboard\templates\dashboard\contracts\detail.html:81
+#: .\dashboard\templates\dashboard\contracts\detail.html:484
+#: .\dashboard\templates\dashboard\contracts\hub.html:336
+#: .\dashboard\templates\dashboard\contracts\hub.html:413
+#: .\dashboard\templates\dashboard\contracts\list.html:29
+#: .\dashboard\templates\dashboard\contracts\list.html:66
+msgid "Payé"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\clients\detail.html:170
+#: .\dashboard\templates\dashboard\contracts\detail.html:83
+#: .\dashboard\templates\dashboard\contracts\hub.html:335
+#: .\dashboard\templates\dashboard\contracts\hub.html:415
+#: .\dashboard\templates\dashboard\contracts\list.html:28
+#: .\dashboard\templates\dashboard\contracts\list.html:68
+msgid "Partiel"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\clients\detail.html:172
+#: .\dashboard\templates\dashboard\contracts\detail.html:85
+#: .\dashboard\templates\dashboard\contracts\hub.html:334
+#: .\dashboard\templates\dashboard\contracts\hub.html:417
+#: .\dashboard\templates\dashboard\contracts\list.html:27
+#: .\dashboard\templates\dashboard\contracts\list.html:70
+msgid "Impayé"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\clients\detail.html:184
+msgid "Aucun contrat pour ce client."
+msgstr ""
+
+#: .\dashboard\templates\dashboard\clients\detail.html:202
+msgid "Suivi"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\clients\detail.html:206
+msgid "Total locations"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\clients\detail.html:210
+msgid "Valeur payée"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\clients\detail.html:211
+#: .\dashboard\templates\dashboard\home.html:139
+msgid "€"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\clients\detail.html:214
+msgid "Dernière location"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\clients\detail.html:224
+#: .\dashboard\templates\dashboard\clients\hub.html:360
+#: .\dashboard\templates\dashboard\clients\hub.html:473
+#: .\dashboard\templates\dashboard\clients\list.html:63
+msgid "Relance"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\clients\detail.html:227
+#: .\dashboard\templates\dashboard\contracts\hub.html:175
+#: .\dashboard\templates\dashboard\maintenance\history.html:56
+#: .\dashboard\templates\dashboard\marketing\wa_outbox.html:82
+#: .\dashboard\templates\dashboard\payments\list.html:129
+#: .\superadmin\templates\superadmin\webhooks_log.html:42
+msgid "Date"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\clients\detail.html:235
+msgid "Actions rapides"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\clients\detail.html:239
+#: .\dashboard\templates\dashboard\clients\hub.html:243
+#: .\dashboard\templates\dashboard\clients\hub.html:389
+msgid "Modifier le client"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\clients\form.html:29
+#: .\dashboard\templates\dashboard\clients\hub.html:333
+#: .\dashboard\templates\dashboard\clients\hub.html:451
+msgid "Document actuel"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\clients\hub.html:6
+msgid "Gestion de vos clients"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\clients\hub.html:26
+#: .\dashboard\templates\dashboard\clients\hub.html:243
+#: .\dashboard\templates\dashboard\clients\hub.html:389
+#: .\dashboard\templates\dashboard\clients\list.html:20
+#: .\dashboard\templates\dashboard\clients\list.html:113
+msgid "Nouveau client"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\clients\hub.html:43
+msgid "Total clients"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\clients\hub.html:86
+msgid "Nom, email, tél…"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\clients\hub.html:89
+#: .\dashboard\templates\dashboard\contracts\hub.html:152
+#: .\dashboard\templates\dashboard\contracts\hub.html:326
+#: .\dashboard\templates\dashboard\payments\list.html:103
+#: .\dashboard\templates\dashboard\vehicles\hub.html:67
+msgid "Statut : tous"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\clients\hub.html:91
+msgid "VIP"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\clients\hub.html:95
+#: .\dashboard\templates\dashboard\clients\list.html:41
+msgid "Permis : tous"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\clients\hub.html:98
+#: .\dashboard\templates\dashboard\clients\hub.html:199
+#: .\dashboard\templates\dashboard\clients\hub.html:310
+#: .\dashboard\templates\dashboard\clients\list.html:44
+#: .\dashboard\templates\dashboard\clients\list.html:93
+msgid "Manquant"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\clients\hub.html:101
+#: .\dashboard\templates\dashboard\clients\list.html:47
+#: .\dashboard\templates\dashboard\vehicles\hub.html:78
+msgid "Tri : Nom"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\clients\hub.html:102
+#: .\dashboard\templates\dashboard\contracts\hub.html:339
+msgid "Tri : Création"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\clients\hub.html:103
+msgid "Tri : Expiration permis"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\clients\hub.html:116
+#: .\dashboard\templates\dashboard\clients\list.html:60
+#: .\dashboard\templates\dashboard\reservations\list.html:79
+#: .\dashboard\templates\dashboard\site_public_settings.html:153
+#: .\dashboard\templates\dashboard\site_public_settings.html:409
+msgid "Contact"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\clients\hub.html:117
+#: .\dashboard\templates\dashboard\clients\list.html:62
+msgid "Permis"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\clients\hub.html:150
+msgid "Expire aujourd'hui"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\clients\hub.html:156
+msgid "Non renseigné"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\clients\hub.html:170
+#: .\dashboard\templates\dashboard\clients\hub.html:250
+msgid "Voir fiche"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\clients\hub.html:207
+#: .\dashboard\templates\dashboard\clients\list.html:99
+#: .\dashboard\templates\dashboard\contracts\hub.html:422
+#: .\dashboard\templates\dashboard\subscription.html:309
+#: .\public_site\templates\public_site\catalog.html:36
+msgid "Voir"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\clients\hub.html:222
+#: .\dashboard\templates\dashboard\clients\list.html:110
+#: .\dashboard\templates\dashboard\clients\list.html:153
+msgid "Aucun client"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\clients\hub.html:223
+msgid "Ajoutez votre premier client via le formulaire ci-contre."
+msgstr ""
+
+#: .\dashboard\templates\dashboard\clients\hub.html:227
+msgid "Ajouter un client"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\clients\hub.html:252
+#: .\dashboard\templates\dashboard\vehicles\hub.html:25
+#: .\dashboard\templates\dashboard\vehicles\hub.html:254
+msgid "Nouveau"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\clients\hub.html:268
+#: .\dashboard\templates\dashboard\clients\hub.html:405
+#: .\dashboard\templates\dashboard\vehicles\hub.html:271
+#: .\dashboard\templates\dashboard\vehicles\hub.html:393
+msgid "Identité"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\clients\hub.html:342
+#: .\dashboard\templates\dashboard\vehicles\hub.html:354
+msgid "Glissez ou cliquez — PNG, JPG, WebP (max 5 Mo)"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\clients\hub.html:344
+#: .\dashboard\templates\dashboard\clients\hub.html:460
+#: .\dashboard\templates\dashboard\vehicles\hub.html:356
+#: .\dashboard\templates\dashboard\vehicles\hub.html:464
+msgid "Aperçu"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\clients\hub.html:349
+#: .\dashboard\templates\dashboard\clients\hub.html:463
+msgid "Notes & tags"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\clients\hub.html:375
+#: .\dashboard\templates\dashboard\clients\hub.html:487
+#: .\dashboard\templates\dashboard\contracts\detail.html:402
+#: .\dashboard\templates\dashboard\contracts\inspection.html:229
+#: .\dashboard\templates\dashboard\vehicles\hub.html:363
+#: .\dashboard\templates\dashboard\vehicles\hub.html:469
+msgid "Ajouter"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\clients\hub.html:458
+#: .\dashboard\templates\dashboard\vehicles\hub.html:462
+msgid "Glissez ou cliquez — max 5 Mo"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\clients\list.html:6
+msgid "client"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\clients\list.html:32
+msgid "Rechercher nom, email, tél…"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\clients\list.html:35
+#: .\dashboard\templates\dashboard\contracts\list.html:20
+#: .\dashboard\templates\dashboard\team\list.html:37
+msgid "Tous statuts"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\clients\list.html:48
+msgid "Tri : Date création"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\clients\list.html:111
+#: .\dashboard\templates\dashboard\clients\list.html:154
+msgid "Ajoutez votre premier client pour commencer."
+msgstr ""
+
+#: .\dashboard\templates\dashboard\clients\list.html:148
+msgid "Relance :"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\cms_pages.html:4
+msgid "Pages CMS"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\cms_pages.html:5
+msgid "Gérez les pages publiques de votre site"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\cms_pages.html:10
+#: .\dashboard\templates\dashboard\site_public_settings.html:369
+#: .\dashboard\templates\dashboard\site_public_settings.html:384
+msgid "Nouvelle page"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\contracts\close.html:4
+msgid "Clôturer contrat"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\contracts\close.html:5
+#: .\dashboard\templates\dashboard\contracts\close.html:35
+msgid "Clôturer le contrat"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\contracts\close.html:12
+#: .\dashboard\templates\dashboard\contracts\inspection.html:11
+msgid "Retour au contrat"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\contracts\close.html:16
+msgid "Informations de retour"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\contracts\close.html:21
+#: .\dashboard\templates\dashboard\contracts\detail.html:119
+#: .\dashboard\templates\dashboard\contracts\inspection.html:34
+msgid "Km retour"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\contracts\close.html:25
+#: .\dashboard\templates\dashboard\contracts\inspection.html:42
+msgid "Jauge carburant retour (1-8)"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\contracts\close.html:29
+msgid "Frais dégâts (€)"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\contracts\close.html:33
+msgid "Les frais km, carburant, retard et TVA seront calculés automatiquement."
+msgstr ""
+
+#: .\dashboard\templates\dashboard\contracts\detail.html:4
+#: .\dashboard\templates\dashboard\contracts\detail.html:5
+#: .\dashboard\templates\dashboard\contracts\hub.html:181
+#: .\dashboard\templates\dashboard\contracts\hub.html:270
+#: .\dashboard\templates\dashboard\contracts\hub.html:455
+#: .\dashboard\templates\dashboard\contracts\inspection.html:4
+#: .\dashboard\templates\dashboard\contracts\inspection.html:6
+#: .\dashboard\templates\dashboard\gps\alerts.html:93
+#: .\dashboard\templates\dashboard\payments\list.html:135
+#: .\dashboard\templates\dashboard\payments\list.html:224
+msgid "Contrat"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\contracts\detail.html:30
+msgid "Envoyer pour signature"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\contracts\detail.html:36
+msgid "Activer le contrat"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\contracts\detail.html:42
+msgid "Retour véhicule"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\contracts\detail.html:46
+#: .\dashboard\templates\dashboard\contracts\inspection.html:4
+msgid "Inspection"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\contracts\detail.html:51
+msgid "Annuler ce contrat ?"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\contracts\detail.html:88
+#: .\dashboard\templates\dashboard\contracts\hub.html:374
+msgid "EN RETARD"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\contracts\detail.html:97
+#: .\public_site\templates\public_site\reservation_status.html:87
+#, python-format
+msgid "%(days)s jour"
+msgid_plural "%(days)s jours"
+msgstr[0] ""
+msgstr[1] ""
+
+#: .\dashboard\templates\dashboard\contracts\detail.html:109
+msgid "Détails du contrat"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\contracts\detail.html:114
+#: .\dashboard\templates\dashboard\contracts\hub.html:357
+#: .\dashboard\templates\dashboard\contracts\inspection.html:180
+#: .\dashboard\templates\dashboard\contracts\list.html:42
+msgid "Période"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\contracts\detail.html:126
+msgid "Remise véhicule"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\contracts\detail.html:129
+msgid "Retour prévu"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\contracts\detail.html:132
+msgid "Retour effectif"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\contracts\detail.html:145
+msgid "Clauses du contrat"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\contracts\detail.html:149
+msgid "Clause générale"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\contracts\detail.html:163
+msgid "Clause GPS / Géolocalisation"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\contracts\detail.html:176
+msgid "Configuration GPS du véhicule"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\contracts\detail.html:180
+#: .\dashboard\templates\dashboard\growth\banners.html:33
+#: .\dashboard\templates\dashboard\marketing\automations.html:91
+msgid "Inactif"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\contracts\detail.html:193
+msgid "Activer le suivi GPS pour ce contrat"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\contracts\detail.html:201
+msgid "Mode de suivi"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\contracts\detail.html:209
+#: .\dashboard\templates\dashboard\gps\maps_hub.html:277
+#: .\dashboard\templates\dashboard\gps\vehicle_config.html:48
+#: .\dashboard\templates\dashboard\gps\vehicle_config.html:75
+msgid "Boîtier GPS"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\contracts\detail.html:210
+msgid "Tracker physique (IMEI / IP)"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\contracts\detail.html:219
+#: .\dashboard\templates\dashboard\gps\maps_hub.html:277
+msgid "Smartphone"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\contracts\detail.html:220
+msgid "GPS du téléphone du client"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\contracts\detail.html:229
+#: .\dashboard\templates\dashboard\gps\vehicle_config.html:25
+msgid "IMEI du boîtier GPS"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\contracts\detail.html:245
+msgid "Mode smartphone activé"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\contracts\detail.html:246
+msgid ""
+"Le client devra accepter le partage GPS depuis son espace client. Une "
+"demande de consentement lui sera présentée automatiquement. Sa position sera "
+"envoyée toutes les 15 secondes vers votre tableau de bord."
+msgstr ""
+
+#: .\dashboard\templates\dashboard\contracts\detail.html:250
+msgid "Consentement GPS signé le"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\contracts\detail.html:255
+msgid "En attente du consentement du client"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\contracts\detail.html:269
+msgid "Dernière position :"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\contracts\detail.html:274
+msgid "Voir sur la carte"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\contracts\detail.html:281
+msgid "Enregistrer la configuration GPS"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\contracts\detail.html:292
+msgid "Terminé"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\contracts\detail.html:295
+msgid "Mode :"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\contracts\detail.html:297
+msgid "Consentement signé le"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\contracts\detail.html:306
+msgid "Signature client"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\contracts\detail.html:312
+msgid "Contrat signé"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\contracts\detail.html:316
+msgid "Signature"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\contracts\detail.html:324
+msgid "Le client n'a pas encore signé ce contrat."
+msgstr ""
+
+#: .\dashboard\templates\dashboard\contracts\detail.html:334
+msgid "État du véhicule — Photos"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\contracts\detail.html:339
+#: .\dashboard\templates\dashboard\contracts\detail.html:390
+msgid "Départ"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\contracts\detail.html:356
+#: .\dashboard\templates\dashboard\contracts\inspection.html:199
+msgid "Aucune photo de départ."
+msgstr ""
+
+#: .\dashboard\templates\dashboard\contracts\detail.html:379
+msgid "Aucune photo de retour."
+msgstr ""
+
+#: .\dashboard\templates\dashboard\contracts\detail.html:388
+msgid "Moment"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\contracts\detail.html:395
+#: .\dashboard\templates\dashboard\contracts\inspection.html:227
+msgid "Description"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\contracts\detail.html:396
+msgid "Ex: avant gauche"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\contracts\detail.html:399
+msgid "Photos"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\contracts\detail.html:412
+msgid "Rapport d'inspection"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\contracts\detail.html:416
+#: .\dashboard\templates\dashboard\contracts\inspection.html:56
+msgid "Extérieur"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\contracts\detail.html:420
+#: .\dashboard\templates\dashboard\contracts\inspection.html:64
+msgid "Intérieur"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\contracts\detail.html:424
+#: .\dashboard\templates\dashboard\contracts\inspection.html:72
+msgid "Pneus"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\contracts\detail.html:428
+#: .\dashboard\templates\dashboard\contracts\inspection.html:80
+msgid "Éclairage"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\contracts\detail.html:432
+#: .\dashboard\templates\dashboard\contracts\inspection.html:88
+msgid "Moteur"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\contracts\detail.html:436
+#: .\dashboard\templates\dashboard\contracts\inspection.html:96
+msgid "Propreté"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\contracts\detail.html:437
+#: .\dashboard\templates\dashboard\vehicles\list.html:58
+msgid "Non"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\contracts\detail.html:442
+msgid "Dommages constatés"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\contracts\detail.html:445
+msgid "Estimation :"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\contracts\detail.html:451
+#: .\dashboard\templates\dashboard\contracts\inspection.html:140
+msgid "Notes d'inspection"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\contracts\detail.html:456
+msgid "Décision :"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\contracts\detail.html:458
+msgid "En maintenance"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\contracts\detail.html:462
+msgid "Inspecté le"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\contracts\detail.html:472
+msgid "Résumé facture"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\contracts\detail.html:476
+msgid "Location"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\contracts\detail.html:477
+msgid "Frais km supplémentaires"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\contracts\detail.html:479
+msgid "Frais dégâts"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\contracts\detail.html:480
+msgid "Frais retard"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\contracts\detail.html:481
+msgid "Sous-total HT"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\contracts\detail.html:482
+msgid "TVA"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\contracts\detail.html:483
+msgid "Total TTC"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\contracts\detail.html:485
+msgid "Reste dû"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\contracts\detail.html:496
+#: .\dashboard\templates\dashboard\contracts\hub.html:112
+#: .\dashboard\templates\dashboard\contracts\hub.html:308
+#: .\dashboard\templates\dashboard\payments\list.html:4
+#: .\dashboard\templates\dashboard\payments\list.html:5
+#: .\dashboard\templates\dashboard\payments\list.html:57
+msgid "Paiements"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\contracts\detail.html:498
+#, python-format
+msgid "%(count)s paiement"
+msgid_plural "%(count)s paiements"
+msgstr[0] ""
+msgstr[1] ""
+
+#: .\dashboard\templates\dashboard\contracts\detail.html:511
+#: .\dashboard\templates\dashboard\contracts\hub.html:268
+msgid "Réf:"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\contracts\detail.html:517
+#: .\dashboard\templates\dashboard\contracts\hub.html:153
+#: .\dashboard\templates\dashboard\contracts\hub.html:213
+#: .\dashboard\templates\dashboard\contracts\hub.html:250
+#: .\dashboard\templates\dashboard\payments\list.html:104
+#: .\dashboard\templates\dashboard\payments\list.html:167
+#: .\dashboard\templates\dashboard\payments\list.html:205
+msgid "Réussi"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\contracts\detail.html:519
+#: .\dashboard\templates\dashboard\contracts\hub.html:154
+#: .\dashboard\templates\dashboard\contracts\hub.html:215
+#: .\dashboard\templates\dashboard\contracts\hub.html:252
+#: .\dashboard\templates\dashboard\payments\list.html:105
+#: .\dashboard\templates\dashboard\payments\list.html:169
+#: .\dashboard\templates\dashboard\payments\list.html:207
+msgid "Remboursé"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\contracts\detail.html:521
+#: .\dashboard\templates\dashboard\contracts\hub.html:155
+#: .\dashboard\templates\dashboard\contracts\hub.html:217
+#: .\dashboard\templates\dashboard\contracts\hub.html:254
+#: .\dashboard\templates\dashboard\marketing\wa_outbox.html:102
+#: .\dashboard\templates\dashboard\payments\list.html:106
+#: .\dashboard\templates\dashboard\payments\list.html:171
+#: .\dashboard\templates\dashboard\payments\list.html:209
+msgid "Échoué"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\contracts\detail.html:528
+msgid "Aucun paiement enregistré."
+msgstr ""
+
+#: .\dashboard\templates\dashboard\contracts\detail.html:543
+msgid "Réf."
+msgstr ""
+
+#: .\dashboard\templates\dashboard\contracts\detail.html:546
+#: .\dashboard\templates\dashboard\contracts\hub.html:430
+#: .\dashboard\templates\dashboard\contracts\list.html:44
+msgid "Paiement"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\contracts\form.html:31
+msgid ""
+"Les paramètres km inclus, prix km sup., frais carburant, TVA et devise "
+"seront pré-remplis depuis les paramètres métier de votre agence."
+msgstr ""
+
+#: .\dashboard\templates\dashboard\contracts\hub.html:6
+msgid "Gestion des contrats et paiements"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\contracts\hub.html:29
+#: .\dashboard\templates\dashboard\contracts\list.html:12
+#: .\dashboard\templates\dashboard\contracts\list.html:84
+msgid "Nouveau contrat"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\contracts\hub.html:46
+msgid "Actifs"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\contracts\hub.html:55
+msgid "À encaisser"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\contracts\hub.html:64
+#: .\dashboard\templates\dashboard\contracts\hub.html:103
+#: .\dashboard\templates\dashboard\contracts\hub.html:135
+#: .\dashboard\templates\dashboard\payments\list.html:47
+#: .\dashboard\templates\dashboard\payments\list.html:83
+#: .\dashboard\templates\dashboard\reservations\list.html:27
+msgid "Aujourd'hui"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\contracts\hub.html:73
+msgid "Terminés (30j)"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\contracts\hub.html:80
+msgid "Historique des paiements"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\contracts\hub.html:83
+#: .\dashboard\templates\dashboard\payments\list.html:23
+msgid "Export CSV"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\contracts\hub.html:94
+#: .\dashboard\templates\dashboard\payments\list.html:37
+msgid "Total encaissé"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\contracts\hub.html:121
+#: .\dashboard\templates\dashboard\payments\list.html:67
+msgid "Méthode principale"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\contracts\hub.html:131
+#: .\dashboard\templates\dashboard\payments\list.html:78
+msgid "Client, véhicule, immat, réf…"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\contracts\hub.html:134
+#: .\dashboard\templates\dashboard\payments\list.html:82
+msgid "30 derniers jours"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\contracts\hub.html:136
+#: .\dashboard\templates\dashboard\payments\list.html:84
+msgid "7 derniers jours"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\contracts\hub.html:137
+#: .\dashboard\templates\dashboard\payments\list.html:85
+msgid "Tout"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\contracts\hub.html:138
+#: .\dashboard\templates\dashboard\payments\list.html:86
+msgid "Personnalisé"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\contracts\hub.html:146
+#: .\dashboard\templates\dashboard\payments\list.html:96
+msgid "Méthode : toutes"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\contracts\hub.html:147
+#: .\dashboard\templates\dashboard\contracts\hub.html:197
+#: .\dashboard\templates\dashboard\contracts\hub.html:262
+#: .\dashboard\templates\dashboard\payments\list.html:97
+#: .\dashboard\templates\dashboard\payments\list.html:151
+#: .\dashboard\templates\dashboard\payments\list.html:217
+#: .\dashboard\views.py:687
+msgid "Espèces"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\contracts\hub.html:148
+#: .\dashboard\templates\dashboard\contracts\hub.html:202
+#: .\dashboard\templates\dashboard\contracts\hub.html:264
+#: .\dashboard\templates\dashboard\payments\list.html:98
+#: .\dashboard\templates\dashboard\payments\list.html:156
+#: .\dashboard\templates\dashboard\payments\list.html:219
+#: .\dashboard\views.py:688
+msgid "Terminal CB"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\contracts\hub.html:158
+#: .\dashboard\templates\dashboard\payments\list.html:110
+msgid "Tri : Date"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\contracts\hub.html:159
+#: .\dashboard\templates\dashboard\contracts\hub.html:341
+#: .\dashboard\templates\dashboard\payments\list.html:111
+msgid "Tri : Montant"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\contracts\hub.html:160
+#: .\dashboard\templates\dashboard\payments\list.html:112
+msgid "Tri : Client"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\contracts\hub.html:163
+#: .\dashboard\templates\dashboard\payments\list.html:115
+#: .\dashboard\templates\dashboard\team\list.html:43
+msgid "Réinitialiser"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\contracts\hub.html:269
+#: .\dashboard\templates\dashboard\payments\list.html:187
+#: .\dashboard\templates\dashboard\reservations\list.html:126
+#: .\dashboard\templates\dashboard\vehicles\hub.html:335
+#: .\dashboard\templates\dashboard\vehicles\hub.html:445
+#: .\public_site\templates\public_site\agency_home.html:55
+msgid "Détails"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\contracts\hub.html:278
+#: .\dashboard\templates\dashboard\payments\list.html:233
+msgid "paiement"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\contracts\hub.html:278
+#: .\dashboard\templates\dashboard\payments\list.html:233
+msgid "Page"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\contracts\hub.html:281
+#: .\dashboard\templates\dashboard\payments\list.html:236
+msgid "Préc."
+msgstr ""
+
+#: .\dashboard\templates\dashboard\contracts\hub.html:284
+#: .\dashboard\templates\dashboard\payments\list.html:239
+msgid "Suiv."
+msgstr ""
+
+#: .\dashboard\templates\dashboard\contracts\hub.html:295
+#: .\dashboard\templates\dashboard\payments\list.html:251
+msgid "Aucun paiement"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\contracts\hub.html:296
+#: .\dashboard\templates\dashboard\payments\list.html:252
+msgid "Les paiements apparaîtront ici une fois enregistrés sur les contrats."
+msgstr ""
+
+#: .\dashboard\templates\dashboard\contracts\hub.html:323
+msgid "Client, véhicule, immat…"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\contracts\hub.html:333
+msgid "Paiement : tous"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\contracts\hub.html:340
+msgid "Tri : Date début"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\contracts\hub.html:342
+msgid "Tri : Reste dû"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\contracts\hub.html:359
+msgid "Payé / Reste"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\contracts\hub.html:484
+msgid "RETARD"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\contracts\hub.html:530
+msgid "Aucun contrat ou paiement"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\contracts\hub.html:531
+msgid "Créez votre premier contrat via le formulaire ci-contre."
+msgstr ""
+
+#: .\dashboard\templates\dashboard\contracts\hub.html:570
+#: .\dashboard\templates\dashboard\contracts\hub.html:749
+msgid "Sélection"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\contracts\hub.html:601
+#: .\dashboard\templates\dashboard\contracts\hub.html:771
+#: .\dashboard\templates\dashboard\vehicles\hub.html:291
+#: .\dashboard\templates\dashboard\vehicles\hub.html:412
+msgid "Tarification"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\contracts\hub.html:634
+#: .\dashboard\templates\dashboard\contracts\hub.html:803
+msgid "Départ véhicule"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\contracts\hub.html:696
+#: .\dashboard\templates\dashboard\contracts\hub.html:858
+msgid "Créer"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\contracts\hub.html:722
+msgid "Générer PDF (bientôt)"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\contracts\inspection.html:5
+msgid "Inspection retour"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\contracts\inspection.html:26
+msgid "Kilométrage & Carburant"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\contracts\inspection.html:38
+msgid "Jauge carburant départ"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\contracts\inspection.html:52
+msgid "État du véhicule"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\contracts\inspection.html:98
+msgid "OK"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\contracts\inspection.html:99
+msgid "Non satisfaisant"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\contracts\inspection.html:109
+msgid "Dommages"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\contracts\inspection.html:116
+msgid "Nouveaux dommages constatés"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\contracts\inspection.html:121
+msgid "Description des dommages"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\contracts\inspection.html:122
+msgid "Décrivez les dommages constatés..."
+msgstr ""
+
+#: .\dashboard\templates\dashboard\contracts\inspection.html:125
+msgid "Estimation des frais de réparation"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\contracts\inspection.html:136
+msgid "Décision"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\contracts\inspection.html:141
+msgid "Notes supplémentaires..."
+msgstr ""
+
+#: .\dashboard\templates\dashboard\contracts\inspection.html:144
+msgid "Que faire du véhicule ?"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\contracts\inspection.html:166
+msgid "Valider l'inspection & clôturer"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\contracts\inspection.html:176
+msgid "Infos contrat"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\contracts\inspection.html:188
+msgid "Photos départ"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\contracts\inspection.html:205
+msgid "Photos retour"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\contracts\inspection.html:216
+msgid "Ajoutez des photos de retour depuis le contrat avant l'inspection."
+msgstr ""
+
+#: .\dashboard\templates\dashboard\contracts\inspection.html:222
+msgid "Ajouter photos retour"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\contracts\list.html:26
+msgid "Tous paiements"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\contracts\list.html:81
+msgid "Aucun contrat"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\contracts\list.html:82
+msgid "Créez votre premier contrat de location."
+msgstr ""
+
+#: .\dashboard\templates\dashboard\gps\alerts.html:10
+msgid "Alertes GPS"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\gps\alerts.html:12
+#, python-format
+msgid ""
+"\n"
+"          %(count)s alerte non résolue\n"
+"        "
+msgid_plural ""
+"\n"
+"          %(count)s alertes non résolues\n"
+"        "
+msgstr[0] ""
+msgstr[1] ""
+
+#: .\dashboard\templates\dashboard\gps\alerts.html:22
+#: .\dashboard\templates\dashboard\gps\maps_hub.html:65
+#: .\dashboard\templates\dashboard\gps\zones.html:24
+msgid "Carte"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\gps\alerts.html:31
+msgid "Non résolues"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\gps\alerts.html:35
+msgid "Résolues"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\gps\alerts.html:44
+msgid "Tous les types"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\gps\alerts.html:45
+msgid "Entrée zone"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\gps\alerts.html:46
+msgid "Sortie zone"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\gps\alerts.html:47
+msgid "Violation zone"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\gps\alerts.html:48
+#: .\dashboard\templates\dashboard\gps\maps_hub.html:276
+#: .\dashboard\templates\dashboard\gps\tracking.html:78
+#: .\dashboard\templates\dashboard\gps\tracking.html:156
+#: .\dashboard\templates\dashboard\gps\tracking.html:184
+#: .\dashboard\templates\dashboard\gps\tracking.html:187
+#: .\dashboard\templates\dashboard\gps\vehicle_config.html:178
+msgid "Vitesse"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\gps\alerts.html:49
+#: .\templates\offline.html:6
+msgid "Hors ligne"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\gps\alerts.html:52
+msgid "Tous véhicules"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\gps\alerts.html:84
+msgid "Résolue"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\gps\alerts.html:86
+msgid "Active"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\gps\alerts.html:92
+msgid "Zone"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\gps\alerts.html:99
+#, python-format
+msgid "Résolue le %(resolved_at)s"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\gps\alerts.html:99
+#, python-format
+msgid " par %(resolver)s"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\gps\alerts.html:108
+msgid "Résoudre"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\gps\alerts.html:119
+msgid "Aucune alerte résolue"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\gps\alerts.html:121
+#: .\dashboard\templates\dashboard\home.html:224
+msgid "Aucune alerte"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\gps\alerts.html:123
+msgid "Aucune alerte non résolue"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\gps\maps_hub.html:69
+msgid "Satellite"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\gps\maps_hub.html:73
+msgid "Nuit"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\gps\maps_hub.html:78
+msgid "Heatmap"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\gps\maps_hub.html:82
+#: .\dashboard\templates\dashboard\gps\maps_hub.html:137
+#: .\dashboard\templates\dashboard\gps\tracking.html:37
+msgid "Zones"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\gps\maps_hub.html:86
+msgid "Trajet"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\gps\maps_hub.html:100
+#: .\dashboard\templates\dashboard\home.html:176
+msgid "Flotte"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\gps\maps_hub.html:102
+#, python-format
+msgid ""
+"\n"
+"                %(count)s véhicule\n"
+"              "
+msgid_plural ""
+"\n"
+"                %(count)s véhicules\n"
+"              "
+msgstr[0] ""
+msgstr[1] ""
+
+#: .\dashboard\templates\dashboard\gps\maps_hub.html:117
+msgid "Rechercher un véhicule..."
+msgstr ""
+
+#: .\dashboard\templates\dashboard\gps\maps_hub.html:129
+msgid "En ligne"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\gps\maps_hub.html:133
+#: .\dashboard\templates\dashboard\home.html:197
+msgid "Alertes"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\gps\maps_hub.html:151
+msgid "Analyse IA"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\gps\maps_hub.html:152
+msgid "Sélectionnez un véhicule"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\gps\maps_hub.html:164
+msgid ""
+"\n"
+"            Cliquez sur un véhicule puis<br>sur <strong>Analyser</strong> "
+"pour lancer l'IA\n"
+"          "
+msgstr ""
+
+#: .\dashboard\templates\dashboard\gps\maps_hub.html:180
+msgid "Temps réel"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\gps\maps_hub.html:188
+#, python-format
+msgid ""
+"\n"
+"        %(count)s alerte\n"
+"      "
+msgid_plural ""
+"\n"
+"        %(count)s alertes\n"
+"      "
+msgstr[0] ""
+msgstr[1] ""
+
+#: .\dashboard\templates\dashboard\gps\maps_hub.html:207
+msgid "Carte indisponible — MapLibre non chargé"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\gps\maps_hub.html:237
+#: .\dashboard\templates\dashboard\gps\tracking.html:132
+msgid "Carte indisponible — tuiles non chargées"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\gps\maps_hub.html:277
+#: .\dashboard\templates\dashboard\reservations\detail.html:117
+msgid "Source"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\gps\maps_hub.html:279
+#: .\dashboard\templates\dashboard\gps\tracking.html:156
+#: .\dashboard\templates\dashboard\gps\tracking.html:184
+msgid "MAJ"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\gps\maps_hub.html:282
+msgid "Analyser IA"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\gps\maps_hub.html:283
+msgid "Voir trajet"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\gps\maps_hub.html:380
+msgid "Pas de contrat"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\gps\maps_hub.html:385
+msgid "Arrêt"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\gps\maps_hub.html:388
+msgid "Tel"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\gps\maps_hub.html:388
+msgid "GPS"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\gps\maps_hub.html:394
+msgid "Aucun véhicule trouvé"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\gps\maps_hub.html:422
+msgid "Analyse en cours..."
+msgstr ""
+
+#: .\dashboard\templates\dashboard\gps\maps_hub.html:428
+msgid "Erreur d\\'analyse"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\gps\maps_hub.html:435
+msgid "Élevé"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\gps\maps_hub.html:435
+msgid "Modéré"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\gps\maps_hub.html:435
+msgid "Faible"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\gps\maps_hub.html:442
+msgid "Aucune anomalie détectée"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\gps\maps_hub.html:456
+msgid "Risque"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\gps\maps_hub.html:466
+msgid "Distance"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\gps\maps_hub.html:470
+msgid "Vitesse max"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\gps\maps_hub.html:474
+#: .\dashboard\templates\dashboard\reservations\detail.html:109
+#: .\public_site\templates\public_site\reservation_status.html:86
+msgid "Durée"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\gps\maps_hub.html:478
+msgid "En mouvement"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\gps\maps_hub.html:485
+msgid "Observations"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\gps\maps_hub.html:493
+msgid "Voir le trajet des 24h"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\gps\maps_hub.html:496
+#: .\dashboard\templates\dashboard\gps\vehicle_config.html:13
+msgid "Configuration GPS"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\gps\tracking.html:21
+msgid "Suivi GPS en temps réel"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\gps\tracking.html:22
+msgid "Suivez vos véhicules sur la carte"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\gps\tracking.html:28
+#, python-format
+msgid ""
+"\n"
+"          %(count)s alerte\n"
+"        "
+msgid_plural ""
+"\n"
+"          %(count)s alertes\n"
+"        "
+msgstr[0] ""
+msgstr[1] ""
+
+#: .\dashboard\templates\dashboard\gps\tracking.html:45
+msgid "Véhicules suivis"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\gps\tracking.html:49
+#: .\dashboard\templates\dashboard\gps\zones.html:40
+msgid "Zones définies"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\gps\tracking.html:53
+msgid "Alertes actives"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\gps\tracking.html:57
+msgid "Actualisation"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\gps\tracking.html:58
+#: .\dashboard\templates\dashboard\gps\tracking.html:197
+#: .\dashboard\templates\dashboard\growth\themes.html:67
+#: .\dashboard\templates\dashboard\growth\themes.html:77
+msgid "Auto"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\gps\tracking.html:69
+msgid "Véhicules GPS actifs"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\gps\tracking.html:76
+msgid "IMEI / IP"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\gps\tracking.html:77
+msgid "Position"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\gps\tracking.html:79
+msgid "Dernière MAJ"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\gps\tracking.html:92
+#: .\dashboard\templates\dashboard\gps\vehicle_config.html:92
+#: .\dashboard\templates\dashboard\gps\vehicle_config.html:183
+#: .\dashboard\templates\dashboard\gps\vehicle_config.html:200
+#, python-format
+msgid "il y a %(since)s"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\gps\tracking.html:95
+msgid "Centrer"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\gps\tracking.html:96
+msgid "Config"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\gps\tracking.html:105
+msgid ""
+"Aucun véhicule avec GPS activé. Configurez le GPS depuis la fiche véhicule."
+msgstr ""
+
+#: .\dashboard\templates\dashboard\gps\tracking.html:118
+msgid "Carte indisponible — ressource Leaflet non chargée"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\gps\tracking.html:143
+#: .\dashboard\templates\dashboard\gps\zones.html:90
+msgid "Zone interdite"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\gps\tracking.html:143
+#: .\dashboard\templates\dashboard\gps\zones.html:90
+msgid "Zone autorisée"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\gps\vehicle_config.html:26
+#: .\dashboard\templates\dashboard\gps\vehicle_config.html:119
+msgid "Ex: 860012345678901"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\gps\vehicle_config.html:28
+msgid "Numéro IMEI à 15 chiffres du fabricant du tracker GPS"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\gps\vehicle_config.html:33
+msgid "Adresse IP du tracker"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\gps\vehicle_config.html:34
+msgid "Ex: 192.168.1.100"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\gps\vehicle_config.html:36
+msgid "Adresse IP si le tracker communique par réseau"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\gps\vehicle_config.html:42
+msgid "Source du signal GPS"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\gps\vehicle_config.html:44
+msgid "Boîtier GPS (tracker physique)"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\gps\vehicle_config.html:45
+msgid "Téléphone du client (site public)"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\gps\vehicle_config.html:48
+msgid "le tracker envoie la position automatiquement via l'API."
+msgstr ""
+
+#: .\dashboard\templates\dashboard\gps\vehicle_config.html:49
+msgid "Téléphone client"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\gps\vehicle_config.html:49
+msgid ""
+"le client partage sa position depuis le portail client (nécessite son "
+"accord)."
+msgstr ""
+
+#: .\dashboard\templates\dashboard\gps\vehicle_config.html:61
+msgid "Suivi GPS activé"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\gps\vehicle_config.html:79
+msgid "Boîtier"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\gps\vehicle_config.html:83
+#: .\dashboard\templates\dashboard\gps\vehicle_config.html:110
+msgid "Provider"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\gps\vehicle_config.html:87
+#: .\dashboard\templates\dashboard\gps\vehicle_config.html:118
+msgid "IMEI"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\gps\vehicle_config.html:91
+msgid "Dernier contact"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\gps\vehicle_config.html:95
+msgid "Token"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\gps\vehicle_config.html:105
+msgid "Nom du boîtier"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\gps\vehicle_config.html:106
+msgid "Tracker Gaboom #1"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\gps\vehicle_config.html:112
+msgid "Generic"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\gps\vehicle_config.html:113
+msgid "Brand X"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\gps\vehicle_config.html:123
+msgid "Créer le boîtier"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\gps\vehicle_config.html:128
+msgid "Instructions boîtier"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\gps\vehicle_config.html:129
+msgid "Webhook URL"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\gps\vehicle_config.html:131
+msgid "Headers"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\gps\vehicle_config.html:134
+#: .\superadmin\templates\superadmin\webhooks_log.html:112
+msgid "Payload JSON"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\gps\vehicle_config.html:140
+msgid "Simulation GPS"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\gps\vehicle_config.html:143
+msgid "Mode"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\gps\vehicle_config.html:145
+msgid "Normal"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\gps\vehicle_config.html:146
+msgid "Zone test"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\gps\vehicle_config.html:147
+msgid "Random walk"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\gps\vehicle_config.html:151
+msgid "Points"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\gps\vehicle_config.html:157
+msgid "Lancer simulation"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\gps\vehicle_config.html:167
+msgid "Dernière position connue"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\gps\vehicle_config.html:170
+#: .\dashboard\templates\dashboard\gps\zone_form.html:69
+msgid "Latitude"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\gps\vehicle_config.html:174
+#: .\dashboard\templates\dashboard\gps\zone_form.html:75
+msgid "Longitude"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\gps\vehicle_config.html:182
+msgid "Mise à jour"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\gps\vehicle_config.html:192
+msgid "Alertes récentes"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\gps\zone_form.html:22
+#, python-format
+msgid "Modifier la zone — %(name)s"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\gps\zone_form.html:24
+#: .\dashboard\templates\dashboard\gps\zones.html:28
+msgid "Nouvelle zone"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\gps\zone_form.html:34
+msgid "Nom de la zone"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\gps\zone_form.html:35
+msgid "Ex: Centre-ville interdit"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\gps\zone_form.html:42
+msgid "Type de zone"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\gps\zone_form.html:44
+msgid "Zone interdite (alerte si le véhicule y entre)"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\gps\zone_form.html:45
+msgid "Zone autorisée (alerte si le véhicule en sort)"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\gps\zone_form.html:51
+msgid "Couleur"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\gps\zone_form.html:62
+msgid "Centre de la zone (cliquez sur la carte)"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\gps\zone_form.html:81
+msgid "Rayon (km)"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\gps\zone_form.html:91
+msgid "Zone active"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\gps\zone_form.html:96
+msgid "Alertes activées pour cette zone"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\gps\zone_form.html:102
+msgid "Créer la zone"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\gps\zones.html:18
+msgid "Zones géographiques"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\gps\zones.html:19
+msgid "Définissez des zones interdites ou autorisées pour vos véhicules"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\gps\zones.html:50
+#: .\dashboard\templates\dashboard\gps\zones.html:90
+msgid "Rayon"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\gps\zones.html:51
+msgid "inactive"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\gps\zones.html:52
+msgid "alertes désactivées"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\gps\zones.html:58
+msgid "Supprimer cette zone ?"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\gps\zones.html:67
+msgid ""
+"Aucune zone définie. Créez une zone pour activer les alertes de "
+"géolocalisation."
+msgstr ""
+
+#: .\dashboard\templates\dashboard\growth\banner_form.html:4
+msgid "Modifier bannière"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\growth\banner_form.html:4
+#: .\dashboard\templates\dashboard\growth\banners.html:10
+msgid "Nouvelle bannière"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\growth\banner_form.html:19
+#: .\dashboard\templates\dashboard\growth\promo_form.html:24
+#: .\dashboard\templates\dashboard\maintenance\history.html:57
+#: .\superadmin\templates\superadmin\webhooks_log.html:17
+#: .\superadmin\templates\superadmin\webhooks_log.html:43
+msgid "Type"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\growth\banner_form.html:27
+msgid "Animation"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\growth\banner_form.html:36
+#: .\dashboard\templates\dashboard\growth\campaign_form.html:61
+#: .\dashboard\templates\dashboard\site_public_settings.html:389
+msgid "Titre"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\growth\banner_form.html:37
+#: .\dashboard\templates\dashboard\growth\campaign_form.html:62
+msgid "Offre spéciale été"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\growth\banner_form.html:41
+msgid "Sous-titre"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\growth\banner_form.html:47
+msgid "Texte du bouton"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\growth\banner_form.html:48
+#: .\public_site\templates\public_site\book.html:4
+#: .\public_site\templates\public_site\vehicle_detail.html:35
+msgid "Réserver"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\growth\banner_form.html:52
+msgid "Lien du bouton"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\growth\banner_form.html:53
+msgid "/catalog/"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\growth\banner_form.html:58
+msgid "Image"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\growth\banner_form.html:67
+#: .\dashboard\templates\dashboard\growth\banners.html:37
+msgid "Priorité"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\growth\banner_form.html:84
+msgid "Appareil cible"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\growth\banner_form.html:100
+msgid "Créer la bannière"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\growth\banners.html:5
+msgid "Gérez les bannières de votre site public"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\growth\banners.html:28
+msgid "Sans titre"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\growth\banners.html:44
+msgid "Supprimer cette bannière ?"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\growth\banners.html:55
+msgid "Aucune bannière"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\growth\banners.html:56
+msgid "Créez des bannières pour votre site public."
+msgstr ""
+
+#: .\dashboard\templates\dashboard\growth\banners.html:57
+msgid "Créer une bannière"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\growth\campaign_form.html:4
+msgid "Modifier campagne"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\growth\campaign_form.html:4
+#: .\dashboard\templates\dashboard\growth\campaigns.html:10
+#: .\dashboard\templates\dashboard\marketing\campaign_list.html:10
+msgid "Nouvelle campagne"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\growth\campaign_form.html:57
+#: .\dashboard\templates\dashboard\marketing\campaign_form.html:77
+#: .\public_site\templates\public_site\vehicle_detail.html:43
+msgid "Informations"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\growth\campaign_form.html:66
+#: .\dashboard\templates\dashboard\marketing\campaign_form.html:94
+msgid "Cible"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\growth\campaign_form.html:74
+msgid "Planifier"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\growth\campaign_form.html:85
+msgid "Assistant IA"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\growth\campaign_form.html:86
+msgid "Mode offline — templates intelligents"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\growth\campaign_form.html:92
+#: .\dashboard\templates\dashboard\marketing\campaign_form.html:86
+#: .\dashboard\templates\dashboard\marketing\campaign_list.html:109
+msgid "Objectif"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\growth\campaign_form.html:98
+msgid "Style"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\growth\campaign_form.html:104
+#: .\dashboard\templates\dashboard\growth\campaign_form.html:350
+#: .\dashboard\templates\dashboard\marketing\automations.html:139
+msgid "Canal"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\growth\campaign_form.html:111
+#, python-format
+msgid "ex: 10%% de réduction"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\growth\campaign_form.html:114
+msgid "opt."
+msgstr ""
+
+#: .\dashboard\templates\dashboard\growth\campaign_form.html:116
+#: .\dashboard\templates\dashboard\marketing\automations.html:155
+msgid "Aucun"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\growth\campaign_form.html:121
+msgid "Lien CTA"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\growth\campaign_form.html:122
+#: .\dashboard\templates\dashboard\marketing\campaign_form.html:110
+msgid "https://..."
+msgstr ""
+
+#: .\dashboard\templates\dashboard\growth\campaign_form.html:128
+msgid "Variables"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\growth\campaign_form.html:138
+msgid "Générer"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\growth\campaign_form.html:142
+msgid "Améliorer"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\growth\campaign_form.html:146
+msgid "Raccourcir"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\growth\campaign_form.html:150
+msgid "Plus persuasif"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\growth\campaign_form.html:154
+msgid "Ton Luxe"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\growth\campaign_form.html:157
+msgid "Emojis"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\growth\campaign_form.html:167
+msgid "Contenu du message"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\growth\campaign_form.html:169
+#, python-brace-format
+msgid "Bonjour {nom},&#10;&#10;Profitez de notre offre..."
+msgstr ""
+
+#: .\dashboard\templates\dashboard\growth\campaign_form.html:177
+msgid "Canaux d'envoi"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\growth\campaign_form.html:200
+msgid "Format WhatsApp"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\growth\campaign_form.html:202
+msgid "Standard"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\growth\campaign_form.html:203
+msgid "Avec lien CTA"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\growth\campaign_form.html:207
+msgid "Cible WhatsApp"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\growth\campaign_form.html:209
+msgid "Clients avec WhatsApp"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\growth\campaign_form.html:210
+msgid "Tous avec téléphone"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\growth\campaign_form.html:216
+msgid ""
+"Les messages WhatsApp seront ajoutés en file d'envoi. Vous pourrez les "
+"envoyer manuellement via wa.me ou connecter un provider plus tard."
+msgstr ""
+
+#: .\dashboard\templates\dashboard\growth\campaign_form.html:226
+msgid "Automatisation"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\growth\campaign_form.html:228
+#: .\dashboard\templates\dashboard\marketing\automations.html:170
+#: .\dashboard\templates\dashboard\team\list.html:102
+msgid "Activer"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\growth\campaign_form.html:238
+msgid "Ponctuelle"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\growth\campaign_form.html:242
+msgid "Séquence (drip)"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\growth\campaign_form.html:248
+#: .\dashboard\templates\dashboard\marketing\automations.html:131
+msgid "Déclencheur"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\growth\campaign_form.html:258
+msgid "Conditions d'arrêt"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\growth\campaign_form.html:262
+msgid "Stop si réservation créée"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\growth\campaign_form.html:266
+msgid "Stop si contrat signé"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\growth\campaign_form.html:270
+msgid "Stop si réponse client"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\growth\campaign_form.html:277
+msgid "Étapes de la séquence"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\growth\campaign_form.html:281
+msgid "Ajouter une étape"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\growth\campaign_form.html:290
+msgid "Enregistrer les modifications"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\growth\campaign_form.html:290
+msgid "Créer la campagne"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\growth\campaign_form.html:302
+msgid "Aperçu Email"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\growth\campaign_form.html:305
+#: .\dashboard\templates\dashboard\growth\campaign_form.html:347
+msgid "Le contenu apparaîtra ici..."
+msgstr ""
+
+#: .\dashboard\templates\dashboard\growth\campaign_form.html:313
+msgid "Aperçu WhatsApp"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\growth\campaign_form.html:317
+#: .\dashboard\templates\dashboard\growth\campaign_form.html:348
+msgid "Message WhatsApp..."
+msgstr ""
+
+#: .\dashboard\templates\dashboard\growth\campaign_form.html:326
+msgid "Variables disponibles"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\growth\campaign_form.html:333
+msgid "Cliquez pour insérer dans le contenu"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\growth\campaign_form.html:349
+msgid "Jour"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\growth\campaign_form.html:351
+msgid "Heure"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\growth\campaign_form.html:352
+#: .\dashboard\templates\dashboard\site_public_settings.html:398
+msgid "Contenu"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\growth\campaign_form.html:353
+msgid "Contenu de l\\"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\growth\campaigns.html:5
+msgid "Campagnes email marketing"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\growth\campaigns.html:23
+msgid "Envoyée"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\growth\campaigns.html:25
+msgid "Planifiée"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\growth\campaigns.html:31
+msgid "Cible :"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\growth\campaigns.html:32
+msgid "Envoyée le"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\growth\campaigns.html:33
+msgid "Planifiée le"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\growth\campaigns.html:37
+#, python-format
+msgid "%(count)s email envoyé"
+msgid_plural "%(count)s emails envoyés"
+msgstr[0] ""
+msgstr[1] ""
+
+#: .\dashboard\templates\dashboard\growth\campaigns.html:43
+msgid "Envoyer cette campagne maintenant ?"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\growth\campaigns.html:45
+#: .\dashboard\templates\dashboard\marketing\campaign_list.html:155
+#: .\dashboard\templates\dashboard\marketing\wa_outbox.html:111
+msgid "Envoyer"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\growth\campaigns.html:49
+msgid "Supprimer cette campagne ?"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\growth\campaigns.html:60
+msgid "Aucune campagne"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\growth\campaigns.html:61
+msgid "Créez votre première campagne email pour engager vos clients."
+msgstr ""
+
+#: .\dashboard\templates\dashboard\growth\campaigns.html:62
+#: .\dashboard\templates\dashboard\marketing\campaign_list.html:177
+msgid "Créer une campagne"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\growth\marketing.html:5
+msgid "KPIs et insights pour votre agence"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\growth\marketing.html:19
+msgid "Conversion"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\growth\marketing.html:22
+#, python-format
+msgid "%(confirmed)s/%(total)s réservations (30j)"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\growth\marketing.html:30
+msgid "Revenu 30j"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\growth\marketing.html:33
+msgid "Prix moyen :"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\growth\marketing.html:41
+msgid "Négo réussies"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\growth\marketing.html:44
+msgid "Taux de négo :"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\growth\marketing.html:52
+msgid "Clients fidèles"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\growth\marketing.html:55
+#: .\dashboard\templates\dashboard\home.html:139
+msgid "Total :"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\growth\marketing.html:55
+msgid "réservations"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\growth\marketing.html:62
+msgid "Véhicule star"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\growth\marketing.html:65
+#, python-format
+msgid "%(count)s réservation"
+msgid_plural "%(count)s réservations"
+msgstr[0] ""
+msgstr[1] ""
+
+#: .\dashboard\templates\dashboard\growth\marketing.html:67
+msgid "Pas assez de données"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\growth\marketing.html:71
+msgid "Jour le plus actif"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\growth\marketing.html:75
+msgid "Réservations confirmées"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\growth\marketing.html:77
+msgid "sur"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\growth\marketing.html:77
+msgid "totales"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\growth\marketing.html:86
+msgid "Suggestions intelligentes"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\growth\promo_form.html:4
+#, python-format
+msgid "Modifier %(code)s"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\growth\promo_form.html:4
+msgid "Nouveau code promo"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\growth\promo_form.html:18
+msgid "Code"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\growth\promo_form.html:19
+msgid "SUMMER25"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\growth\promo_form.html:26
+#, python-format
+msgid "Pourcentage (%%)"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\growth\promo_form.html:27
+msgid "Montant fixe"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\growth\promo_form.html:31
+msgid "Valeur"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\growth\promo_form.html:38
+msgid "(optionnel)"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\growth\promo_form.html:43
+msgid "Utilisations max"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\growth\promo_form.html:43
+msgid "(0 = illimité)"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\growth\promo_form.html:56
+msgid "Créer le code promo"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\growth\promos.html:5
+msgid "Gérez vos codes promo"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\growth\promos.html:10
+msgid "Nouveau code"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\growth\promos.html:29
+msgid "fixe"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\growth\promos.html:31
+msgid "utilisations"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\growth\promos.html:36
+msgid "Supprimer ce code promo ?"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\growth\promos.html:47
+msgid "Aucun code promo"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\growth\promos.html:48
+msgid "Créez votre premier code promo pour attirer plus de clients."
+msgstr ""
+
+#: .\dashboard\templates\dashboard\growth\promos.html:49
+msgid "Créer un code"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\growth\themes.html:4
+msgid "Thèmes"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\growth\themes.html:5
+msgid "Personnalisez l'apparence de votre dashboard"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\growth\themes.html:31
+msgid "Bouton"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\growth\themes.html:35
+msgid "Card"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\growth\themes.html:45
+msgid "Fond sombre, contraste élevé"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\growth\themes.html:46
+msgid "Fond clair, lisibilité maximale, ombres douces"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\growth\themes.html:47
+msgid "Violet clair, accents jaunes, contraste AA"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\growth\themes.html:58
+msgid "Personnalisation avancée"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\growth\themes.html:63
+msgid "Couleur primaire"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\growth\themes.html:73
+msgid "Couleur secondaire"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\growth\themes.html:83
+msgid "Border radius (px)"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\growth\themes.html:92
+msgid "Animations"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\growth\themes.html:97
+msgid "Effet glow"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\growth\themes.html:104
+msgid "Palette clair violet/jaune"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\growth\themes.html:106
+msgid "Violet principal : #6B46C1 — boutons primaires, liens actifs, focus"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\growth\themes.html:107
+msgid "Blanc : #FFFFFF — fonds principaux et surfaces"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\growth\themes.html:108
+msgid ""
+"Jaune accent : #FCD34D — badges d’alerte, messages d’erreur, états attention"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\growth\themes.html:109
+msgid "Texte : #1A1A1A (normal), #3F3F3F (secondaire), #5C5C5C (tertiaire)"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\growth\themes.html:110
+msgid "Contraste minimum : 4.5:1 pour texte normal, 3:1 pour texte large"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\growth\themes.html:113
+msgid ""
+"Variables CSS : --g-accent, --g-accent-soft, --g-gold, --g-yellow, --g-text, "
+"--g-text-muted, --g-text-dim"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\growth\themes.html:114
+msgid ""
+"Usages : fond = --g-bg, cartes = --g-card-bg, bordures = --g-surface-border"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\growth\themes.html:115
+msgid "Hover : --g-surface-hover, accentuation via opacité modérée"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\growth\themes.html:121
+msgid "Enregistrer le thème"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\home.html:6
+msgid "Vue d'ensemble de votre agence"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\home.html:97
+#: .\dashboard\templates\dashboard\home.html:108
+msgid "ce mois"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\home.html:107
+msgid "Contrats actifs"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\home.html:137
+msgid "Revenus encaissés"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\home.html:142
+msgid "7j"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\home.html:143
+msgid "30j"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\home.html:144
+msgid "90j"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\home.html:159
+msgid "Répartition contrats"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\home.html:184
+#: .\dashboard\templates\dashboard\vehicles\hub.html:207
+msgid "Loué"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\home.html:186
+#: .\dashboard\templates\dashboard\maintenance\history.html:40
+#: .\dashboard\templates\dashboard\maintenance\list.html:97
+#: .\dashboard\templates\dashboard\maintenance\list.html:156
+#: .\dashboard\templates\dashboard\maintenance\list.html:204
+#: .\dashboard\templates\dashboard\vehicles\hub.html:138
+msgid "Bloqué"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\home.html:225
+msgid "Tout est en ordre"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\home.html:239
+msgid "Activité récente"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\home.html:252
+#, python-format
+msgid "il y a %(time)s"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\home.html:260
+msgid "Aucune activité"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\home.html:261
+msgid "Commencez par ajouter un véhicule ou un client."
+msgstr ""
+
+#: .\dashboard\templates\dashboard\maintenance\history.html:4
+#: .\dashboard\templates\dashboard\maintenance\list.html:168
+#: .\dashboard\templates\dashboard\maintenance\list.html:227
+#: .\dashboard\templates\dashboard\subscription.html:292
+#: .\public_site\templates\public_site\reservation_status.html:225
+msgid "Historique"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\maintenance\history.html:5
+msgid "Historique d'entretien"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\maintenance\history.html:20
+#: .\dashboard\templates\dashboard\maintenance\list.html:114
+msgid "KM actuel"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\maintenance\history.html:24
+msgid "Dernier entretien"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\maintenance\history.html:28
+#: .\dashboard\templates\dashboard\maintenance\list.html:115
+msgid "Prochain entretien"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\maintenance\history.html:34
+#: .\dashboard\templates\dashboard\maintenance\list.html:49
+#: .\dashboard\templates\dashboard\maintenance\list.html:94
+#: .\dashboard\templates\dashboard\maintenance\list.html:150
+#: .\dashboard\templates\dashboard\maintenance\list.html:198
+msgid "À jour"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\maintenance\history.html:36
+#: .\dashboard\templates\dashboard\maintenance\list.html:59
+#: .\dashboard\templates\dashboard\maintenance\list.html:95
+#: .\dashboard\templates\dashboard\maintenance\list.html:152
+#: .\dashboard\templates\dashboard\maintenance\list.html:200
+msgid "Bientôt"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\maintenance\history.html:38
+#: .\dashboard\templates\dashboard\maintenance\list.html:69
+#: .\dashboard\templates\dashboard\maintenance\list.html:96
+#: .\dashboard\templates\dashboard\maintenance\list.html:154
+#: .\dashboard\templates\dashboard\maintenance\list.html:202
+#: .\dashboard\templates\dashboard\vehicles\hub.html:140
+msgid "Urgent"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\maintenance\history.html:48
+msgid "Interventions"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\maintenance\history.html:58
+#: .\dashboard\templates\dashboard\vehicles\hub.html:96
+msgid "KM"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\maintenance\history.html:59
+msgid "Coût"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\maintenance\history.html:80
+msgid "Aucun historique"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\maintenance\history.html:81
+msgid "Aucune intervention enregistrée pour ce véhicule."
+msgstr ""
+
+#: .\dashboard\templates\dashboard\maintenance\list.html:6
+msgid "Suivi intelligent de l'entretien de votre flotte"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\maintenance\list.html:33
+msgid "Paramètres"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\maintenance\list.html:79
+msgid "Bloqués"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\maintenance\list.html:90
+msgid "Rechercher véhicule…"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\maintenance\list.html:93
+msgid "Tous les statuts"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\maintenance\list.html:100
+msgid "Tri : Urgence"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\maintenance\list.html:101
+msgid "Tri : KM actuel"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\maintenance\list.html:102
+msgid "Tri : Dernier entretien"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\maintenance\list.html:116
+msgid "Km restants"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\maintenance\list.html:117
+msgid "Progression"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\maintenance\list.html:162
+msgid "Enregistrer entretien"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\maintenance\list.html:165
+#: .\dashboard\templates\dashboard\maintenance\list.html:226
+msgid "Modifier km"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\maintenance\list.html:179
+#: .\dashboard\templates\dashboard\maintenance\list.html:233
+#: .\dashboard\templates\dashboard\vehicles\hub.html:227
+#: .\dashboard\templates\dashboard\vehicles\list.html:79
+msgid "Aucun véhicule"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\maintenance\list.html:180
+#: .\dashboard\templates\dashboard\maintenance\list.html:234
+msgid "Ajoutez des véhicules pour suivre leur maintenance."
+msgstr ""
+
+#: .\dashboard\templates\dashboard\maintenance\list.html:208
+msgid "KM :"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\maintenance\list.html:209
+msgid "Prochain :"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\maintenance\list.html:210
+msgid "Dernier :"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\maintenance\list.html:211
+msgid "Restant :"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\maintenance\list.html:225
+msgid "Entretien"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\maintenance\list.html:245
+msgid "Enregistrer un entretien"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\maintenance\list.html:274
+msgid "Modifier le kilométrage"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\maintenance\list.html:287
+#: .\dashboard\templates\dashboard\site_public_settings.html:454
+msgid "Mettre à jour"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\marketing\analytics.html:3
+msgid "Analytics — Marketing Engine"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\marketing\analytics.html:4
+msgid "Analytics Marketing"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\marketing\analytics.html:5
+msgid "Performances 7j / 30j — campagnes, templates, conversions"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\marketing\analytics.html:57
+#: .\dashboard\templates\dashboard\marketing\analytics.html:58
+#, python-format
+msgid "%(period)s jours"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\marketing\analytics.html:65
+msgid "Campagnes actives"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\marketing\analytics.html:69
+#: .\dashboard\templates\dashboard\marketing\campaign_list.html:112
+msgid "Envois"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\marketing\analytics.html:78
+#: .\dashboard\templates\dashboard\marketing\campaign_list.html:56
+#: .\dashboard\templates\dashboard\marketing\campaign_list.html:113
+msgid "Clics"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\marketing\analytics.html:87
+#: .\dashboard\templates\dashboard\marketing\campaign_list.html:60
+msgid "Conversions"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\marketing\analytics.html:91
+#: .\dashboard\templates\dashboard\marketing\campaign_list.html:64
+msgid "Taux de clic"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\marketing\analytics.html:95
+msgid "Taux de conversion"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\marketing\analytics.html:105
+msgid "Envois par jour"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\marketing\analytics.html:125
+msgid "Clics par jour"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\marketing\analytics.html:148
+msgid "Top campagnes"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\marketing\analytics.html:155
+#, python-format
+msgid "%(clics)s clics"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\marketing\analytics.html:158
+#: .\dashboard\templates\dashboard\marketing\analytics.html:177
+msgid "Aucune donnée"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\marketing\analytics.html:167
+msgid "Top templates"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\marketing\analytics.html:187
+msgid "Entonnoir de conversion"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\marketing\automations.html:3
+msgid "Automatisations — Marketing Engine"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\marketing\automations.html:5
+msgid "Règles automatiques — déclenchez des actions marketing intelligentes"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\marketing\automations.html:10
+msgid "Nouvelle règle"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\marketing\automations.html:68
+#, python-format
+msgid "%(delay)sh délai"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\marketing\automations.html:74
+msgid "Dry-run"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\marketing\automations.html:78
+msgid "déclenchements"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\marketing\automations.html:79
+msgid "envois"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\marketing\automations.html:80
+#, python-format
+msgid "Créée le %(date)s"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\marketing\automations.html:94
+msgid "Supprimer cette règle ?"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\marketing\automations.html:107
+msgid "Aucune automatisation configurée"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\marketing\automations.html:108
+msgid "Créez des règles pour automatiser vos envois marketing"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\marketing\automations.html:119
+msgid "Nouvelle règle d'automatisation"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\marketing\automations.html:126
+msgid "Nom de la règle"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\marketing\automations.html:127
+msgid "Ex: Bienvenue nouveau client"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\marketing\automations.html:149
+msgid "Délai (heures)"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\marketing\automations.html:153
+#: .\dashboard\templates\dashboard\site_public_settings.html:404
+msgid "Template"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\marketing\automations.html:163
+msgid "Message personnalisé (optionnel)"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\marketing\automations.html:164
+msgid "Laissez vide pour utiliser le template sélectionné"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\marketing\automations.html:175
+msgid "Dry-run (test)"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\marketing\automations.html:179
+msgid "Créer la règle"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\marketing\campaign_form.html:3
+msgid "Nouvelle"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\marketing\campaign_form.html:3
+msgid "campagne"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\marketing\campaign_form.html:4
+msgid "Modifier la campagne"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\marketing\campaign_form.html:4
+msgid "Nouvelle campagne IA"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\marketing\campaign_form.html:5
+msgid "Assistant IA embarqué — génération, scoring et optimisation locale"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\marketing\campaign_form.html:81
+msgid "Nom de la campagne"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\marketing\campaign_form.html:82
+msgid "Ex: Promo été 2026"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\marketing\campaign_form.html:96
+msgid "Tous les clients"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\marketing\campaign_form.html:97
+msgid "Clients actifs"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\marketing\campaign_form.html:98
+msgid "Inactifs 30 jours"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\marketing\campaign_form.html:99
+msgid "Tag personnalisé"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\marketing\campaign_form.html:105
+msgid "Planifier l'envoi"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\marketing\campaign_form.html:109
+msgid "Lien de réservation"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\marketing\campaign_form.html:161
+#, python-format
+msgid "Ex: -20%% cette semaine"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\marketing\campaign_form.html:211
+msgid "Objet de l\\"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\marketing\campaign_form.html:214
+msgid "Style variante A"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\marketing\campaign_form.html:221
+msgid "Contenu variante A"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\marketing\campaign_form.html:222
+msgid "Rédigez ou générez votre message marketing..."
+msgstr ""
+
+#: .\dashboard\templates\dashboard\marketing\campaign_form.html:227
+msgid "Objet variante B"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\marketing\campaign_form.html:230
+msgid "Style variante B"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\marketing\campaign_form.html:237
+msgid "Contenu variante B"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\marketing\campaign_form.html:238
+msgid "Variante B — testez un message différent"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\marketing\campaign_list.html:3
+msgid "Campagnes IA — Marketing Engine"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\marketing\campaign_list.html:5
+msgid "Marketing Engine 2.0 — Créez, testez et optimisez vos campagnes"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\marketing\campaign_list.html:52
+msgid "Envois total"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\marketing\campaign_list.html:73
+msgid "Clés API marketing"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\marketing\campaign_list.html:75
+#: .\dashboard\templates\dashboard\marketing\campaign_list.html:76
+msgid "configurée"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\marketing\campaign_list.html:75
+#: .\dashboard\templates\dashboard\marketing\campaign_list.html:76
+msgid "manquante"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\marketing\campaign_list.html:83
+msgid "Email expéditeur"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\marketing\campaign_list.html:87
+msgid "Clé API Email"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\marketing\campaign_list.html:91
+msgid "WhatsApp Phone ID"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\marketing\campaign_list.html:95
+msgid "Clé API WhatsApp"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\marketing\campaign_list.html:108
+#: .\dashboard\templates\dashboard\marketing\wa_outbox.html:80
+msgid "Campagne"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\marketing\campaign_list.html:110
+msgid "Canaux"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\marketing\campaign_list.html:114
+msgid "Conv."
+msgstr ""
+
+#: .\dashboard\templates\dashboard\marketing\campaign_list.html:115
+msgid "A/B"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\marketing\campaign_list.html:153
+msgid "Envoyer cette campagne ?"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\marketing\campaign_list.html:158
+msgid "Supprimer ?"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\marketing\campaign_list.html:173
+msgid "Aucune campagne pour le moment"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\marketing\campaign_list.html:174
+msgid "Créez votre première campagne avec l'assistant IA"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\marketing\wa_outbox.html:3
+msgid "WhatsApp Outbox — Marketing Engine"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\marketing\wa_outbox.html:4
+msgid "WhatsApp Outbox"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\marketing\wa_outbox.html:5
+msgid "File d'attente des messages WhatsApp — envoi via API"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\marketing\wa_outbox.html:47
+msgid "Total messages"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\marketing\wa_outbox.html:55
+#: .\dashboard\templates\dashboard\marketing\wa_outbox.html:67
+msgid "Envoyés"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\marketing\wa_outbox.html:59
+#: .\dashboard\templates\dashboard\marketing\wa_outbox.html:68
+msgid "Échoués"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\marketing\wa_outbox.html:77
+msgid "Destinataire"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\marketing\wa_outbox.html:79
+#: .\public_site\templates\public_site\book.html:22
+#: .\public_site\templates\public_site\reservation_status.html:97
+#: .\public_site\templates\public_site\reserve_form.html:142
+msgid "Message"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\marketing\wa_outbox.html:102
+msgid "Envoyé"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\marketing\wa_outbox.html:109
+msgid "Ouvrir WhatsApp"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\marketing\wa_outbox.html:115
+msgid "Marquer envoyé"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\marketing\wa_outbox.html:129
+msgid "Aucun message WhatsApp en file d'attente"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\marketing\wa_outbox.html:130
+msgid ""
+"Les messages apparaîtront ici lorsque vous enverrez une campagne WhatsApp"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\payments\list.html:6
+msgid "Historique et suivi des encaissements"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\payments\list.html:223
+msgid "Réf"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\reservations\detail.html:4
+#: .\dashboard\templates\dashboard\reservations\detail.html:97
+msgid "Réservation"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\reservations\detail.html:29
+msgid "En attente de votre décision"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\reservations\detail.html:32
+msgid "Réservation confirmée — en attente du client"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\reservations\detail.html:35
+msgid "Créer le contrat"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\reservations\detail.html:39
+msgid "Sous contrat — cette réservation est devenue un contrat"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\reservations\detail.html:43
+msgid "Voir le contrat"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\reservations\detail.html:48
+#: .\public_site\templates\public_site\reservation_status.html:26
+#: .\public_site\templates\public_site\reservation_status.html:270
+#: .\public_site\templates\public_site\reservation_status.html:357
+msgid "Réservation refusée"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\reservations\detail.html:113
+#: .\public_site\templates\public_site\reservation_status.html:90
+msgid "Estimation"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\reservations\detail.html:153
+msgid "Offre client"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\reservations\list.html:5
+msgid "Demandes de réservation depuis le site public"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\reservations\list.html:19
+#: .\dashboard\templates\dashboard\reservations\list.html:46
+#: .\dashboard\templates\dashboard\reservations\list.html:114
+#: .\dashboard\templates\dashboard\reservations\list.html:157
+msgid "Sous contrat"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\reservations\list.html:23
+#: .\dashboard\templates\dashboard\reservations\list.html:47
+msgid "Refusées"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\reservations\list.html:37
+msgid "Nom, email, téléphone…"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\reservations\list.html:62
+msgid "Plus récentes"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\reservations\list.html:63
+msgid "Plus anciennes"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\reservations\list.html:78
+msgid "Dates"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\reservations\list.html:110
+#: .\dashboard\templates\dashboard\reservations\list.html:155
+msgid "Confirmée"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\reservations\list.html:118
+#: .\dashboard\templates\dashboard\reservations\list.html:159
+msgid "Refusée"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\reservations\list.html:121
+#: .\public_site\templates\public_site\reservation_status.html:28
+msgid "Expirée"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\reservations\list.html:135
+msgid "Aucune réservation trouvée."
+msgstr ""
+
+#: .\dashboard\templates\dashboard\reservations\list.html:166
+msgid "Aucune réservation."
+msgstr ""
+
+#: .\dashboard\templates\dashboard\site_public_settings.html:5
+msgid "Website Builder"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\site_public_settings.html:6
+msgid "Personnalisez votre vitrine en ligne"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\site_public_settings.html:12
+msgid "Publié"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\site_public_settings.html:19
+#: .\dashboard\templates\dashboard\site_public_settings.html:21
+msgid "Voir le site"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\site_public_settings.html:23
+#: .\dashboard\templates\dashboard\site_public_settings.html:25
+#: .\dashboard\templates\dashboard\site_public_settings.html:456
+msgid "Prévisualiser"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\site_public_settings.html:35
+msgid "Publier"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\site_public_settings.html:77
+msgid "Outils"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\site_public_settings.html:82
+msgid "Branding"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\site_public_settings.html:86
+#: .\dashboard\templates\dashboard\site_public_settings.html:209
+msgid "Thème"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\site_public_settings.html:90
+msgid "Sections"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\site_public_settings.html:94
+#: .\dashboard\templates\dashboard\site_public_settings.html:294
+msgid "SEO"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\site_public_settings.html:98
+msgid "Pages"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\site_public_settings.html:103
+msgid "URL du site"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\site_public_settings.html:105
+msgid "Copié !"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\site_public_settings.html:105
+msgid "Copier le lien"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\site_public_settings.html:121
+msgid "Branding & Contenu"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\site_public_settings.html:179
+msgid "Accessible aux visiteurs"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\site_public_settings.html:189
+msgid "Mode maintenance"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\site_public_settings.html:190
+msgid "Page temporaire"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\site_public_settings.html:237
+msgid "Couleurs personnalisées"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\site_public_settings.html:240
+msgid "Primaire"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\site_public_settings.html:245
+msgid "Secondaire"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\site_public_settings.html:267
+msgid "Sections de la page"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\site_public_settings.html:313
+msgid "Score SEO"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\site_public_settings.html:363
+msgid "Pages publiques"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\site_public_settings.html:364
+msgid "Contenu et navigation du site public"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\site_public_settings.html:371
+msgid "Fermer la fenêtre"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\site_public_settings.html:393
+#: .\marketing\templates\marketing\signup.html:78
+msgid "Slug (URL)"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\site_public_settings.html:395
+msgid "Auto-généré depuis le titre si vide."
+msgstr ""
+
+#: .\dashboard\templates\dashboard\site_public_settings.html:400
+msgid "Markdown supporté. Pour la FAQ, utilisez"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\site_public_settings.html:400
+msgid "Question"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\site_public_settings.html:400
+msgid "pour chaque question."
+msgstr ""
+
+#: .\dashboard\templates\dashboard\site_public_settings.html:406
+msgid "Par défaut"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\site_public_settings.html:407
+msgid "À propos"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\site_public_settings.html:410
+msgid "Mentions légales"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\site_public_settings.html:411
+msgid "Promo / Landing"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\site_public_settings.html:415
+msgid "Ordre nav"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\site_public_settings.html:422
+#: .\dashboard\templates\dashboard\site_public_settings.html:484
+msgid "Publiée"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\site_public_settings.html:426
+msgid "Afficher dans la navigation"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\site_public_settings.html:430
+msgid "CTA & SEO (optionnel)"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\site_public_settings.html:433
+msgid "Bouton CTA (label)"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\site_public_settings.html:443
+msgid "Titre SEO"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\site_public_settings.html:447
+msgid "Description SEO"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\site_public_settings.html:454
+msgid "Créer la page"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\site_public_settings.html:467
+msgid "Rechercher..."
+msgstr ""
+
+#: .\dashboard\templates\dashboard\site_public_settings.html:470
+msgid "Publiées"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\site_public_settings.html:471
+msgid "Brouillons"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\site_public_settings.html:472
+msgid "Dans la nav"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\site_public_settings.html:513
+msgid "Aucune page trouvée."
+msgstr ""
+
+#: .\dashboard\templates\dashboard\site_public_settings.html:515
+msgid "Créer votre première page"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\subscription.html:5
+msgid "Gérez votre abonnement Gaboom DriveOS"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\subscription.html:10
+msgid "Instructions PDF"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\subscription.html:24
+#: .\marketing\templates\marketing\landing.html:347
+#: .\marketing\templates\marketing\landing.html:367
+#: .\marketing\templates\marketing\landing.html:386
+msgid "Essai gratuit"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\subscription.html:39
+msgid "Temps restant"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\subscription.html:51
+msgid "Prochaine étape"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\subscription.html:53
+msgid "Payer avant le"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\subscription.html:55
+msgid "Renouveler avant le"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\subscription.html:57
+msgid "Accès bloqué — envoyez une preuve de paiement"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\subscription.html:63
+msgid "Support paiement"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\subscription.html:73
+msgid "Validation sous 24h max"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\subscription.html:83
+msgid "Accès suspendu"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\subscription.html:84
+msgid ""
+"Votre abonnement a expiré. Envoyez une preuve de paiement ci-dessous pour "
+"réactiver votre compte. Toutes les fonctionnalités sont bloquées sauf cette "
+"page."
+msgstr ""
+
+#: .\dashboard\templates\dashboard\subscription.html:92
+msgid "Plan actuel"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\subscription.html:96
+#: .\dashboard\templates\dashboard\subscription.html:114
+#: .\marketing\templates\marketing\signup.html:161
+msgid "Utilisateurs illimités"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\subscription.html:96
+#: .\dashboard\templates\dashboard\subscription.html:114
+msgid "utilisateurs"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\subscription.html:98
+#: .\dashboard\templates\dashboard\subscription.html:116
+#: .\marketing\templates\marketing\landing.html:362
+#: .\marketing\templates\marketing\signup.html:163
+msgid "Véhicules illimités"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\subscription.html:98
+#: .\dashboard\templates\dashboard\subscription.html:116
+msgid "véhicules"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\subscription.html:112
+#: .\marketing\templates\marketing\signup.html:159
+msgid "Agences illimitées"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\subscription.html:112
+#: .\marketing\templates\marketing\signup.html:159
+msgid "agence"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\subscription.html:122
+msgid "Changer de plan"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\subscription.html:123
+msgid "Essai gratuit 3 jours · Changement immédiat"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\subscription.html:130
+msgid "Mode de paiement actuel"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\subscription.html:139
+msgid "Paiement manuel"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\subscription.html:140
+msgid "Preuve de paiement + validation"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\subscription.html:158
+msgid "PayPal automatique"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\subscription.html:159
+msgid "Renouvellement auto chaque mois"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\subscription.html:164
+msgid "PayPal actif"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\subscription.html:167
+#: .\dashboard\templates\dashboard\subscription.html:333
+msgid "Annule"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\subscription.html:173
+msgid "S'abonner via PayPal"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\subscription.html:189
+msgid "Abonnement PayPal actif"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\subscription.html:190
+msgid "Renouvellement automatique — aucune preuve requise."
+msgstr ""
+
+#: .\dashboard\templates\dashboard\subscription.html:195
+msgid "Prochaine facturation:"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\subscription.html:198
+msgid "Compte:"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\subscription.html:201
+msgid "Dernier event:"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\subscription.html:204
+msgid "Gerer sur PayPal"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\subscription.html:218
+msgid "Paiement securise"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\subscription.html:221
+msgid ""
+"Telechargez les instructions de paiement dans votre langue. Elles "
+"contiennent les moyens de paiement acceptes, les references a utiliser et "
+"les etapes a suivre."
+msgstr ""
+
+#: .\dashboard\templates\dashboard\subscription.html:225
+msgid "Francais"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\subscription.html:228
+msgid "English"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\subscription.html:231
+msgid "Espanol"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\subscription.html:234
+msgid "Kreyol"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\subscription.html:240
+msgid "Paiement verifie manuellement par notre equipe"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\subscription.html:249
+msgid "Preuve de paiement"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\subscription.html:256
+msgid "Preuve en cours de verification"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\subscription.html:257
+msgid "Envoyee le"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\subscription.html:257
+msgid "Validation sous 24h max."
+msgstr ""
+
+#: .\dashboard\templates\dashboard\subscription.html:264
+msgid "Preuve rejetee"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\subscription.html:266
+msgid "Veuillez renvoyer une nouvelle preuve ci-dessous."
+msgstr ""
+
+#: .\dashboard\templates\dashboard\subscription.html:275
+msgid "Capture d'ecran ou photo du recu"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\subscription.html:280
+msgid "JPG, PNG ou WebP — max 5 Mo"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\subscription.html:284
+msgid "Envoyer la preuve"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\subscription.html:324
+msgid "Details PayPal"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\subscription.html:341
+#: .\superadmin\templates\superadmin\webhooks_log.html:44
+msgid "Subscription ID"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\subscription.html:345
+msgid "Dernier event"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\subscription.html:349
+msgid "Filet securite"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\subscription.html:353
+msgid ""
+"L'envoi de preuve n'est pas necessaire en mode PayPal. Le renouvellement est "
+"automatique."
+msgstr ""
+
+#: .\dashboard\templates\dashboard\team\confirm_delete.html:6
+msgid "Cette action est irréversible"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\team\confirm_delete.html:23
+msgid "Supprimer ce membre ?"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\team\confirm_delete.html:25
+msgid "Vous êtes sur le point de supprimer"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\team\confirm_delete.html:26
+msgid "Cette action est définitive et ne peut pas être annulée."
+msgstr ""
+
+#: .\dashboard\templates\dashboard\team\confirm_delete.html:35
+#: .\dashboard\templates\dashboard\vehicles\confirm_delete.html:28
+msgid "Confirmer la suppression"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\team\form.html:6
+msgid "Modifier les informations du membre"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\team\form.html:6
+msgid "Créer un nouveau membre de l'équipe"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\team\form.html:17
+#: .\dashboard\templates\dashboard\team\list.html:189
+msgid "Créer le membre"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\team\form.html:50
+msgid "Mot de passe temporaire"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\team\form.html:50
+msgid ""
+"Un mot de passe sera généré automatiquement et affiché une seule fois après "
+"la création. Communiquez-le de manière sécurisée au nouveau membre."
+msgstr ""
+
+#: .\dashboard\templates\dashboard\team\list.html:6
+msgid "Gérez les membres de votre agence"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\team\list.html:27
+msgid "Rechercher nom ou email…"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\team\list.html:31
+msgid "Tous rôles"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\team\list.html:39
+#: .\dashboard\templates\dashboard\team\list.html:87
+msgid "Désactivé"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\team\list.html:53
+msgid "Membre"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\team\list.html:102
+msgid "Désactiver"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\team\list.html:127
+msgid "Aucun membre trouvé."
+msgstr ""
+
+#: .\dashboard\templates\dashboard\team\list.html:181
+msgid "Un mot de passe temporaire sera généré et affiché une seule fois."
+msgstr ""
+
+#: .\dashboard\templates\dashboard\vehicles\confirm_delete.html:4
+msgid "Supprimer véhicule"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\vehicles\confirm_delete.html:5
+#: .\dashboard\templates\dashboard\vehicles\confirm_delete.html:18
+msgid "Supprimer ce véhicule ?"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\vehicles\confirm_delete.html:11
+#: .\dashboard\templates\dashboard\vehicles\form.html:11
+msgid "Retour à la liste"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\vehicles\confirm_delete.html:20
+msgid "Tu es sur le point de supprimer"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\vehicles\confirm_delete.html:21
+msgid "Cette action est irréversible."
+msgstr ""
+
+#: .\dashboard\templates\dashboard\vehicles\form.html:117
+msgid "IMEI à 15 chiffres du boîtier GPS"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\vehicles\form.html:123
+msgid "Adresse IP du tracker si applicable"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\vehicles\form.html:130
+msgid "Boîtier GPS physique ou téléphone du client"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\vehicles\form.html:141
+msgid "Ajouter le véhicule"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\vehicles\hub.html:6
+msgid "Gestion de votre flotte"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\vehicles\hub.html:38
+msgid "disponible"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\vehicles\hub.html:42
+msgid "maintenance"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\vehicles\hub.html:47
+msgid "masqué"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\vehicles\hub.html:50
+#: .\dashboard\templates\dashboard\vehicles\list.html:6
+#: .\marketing\templates\marketing\signup.html:163
+msgid "véhicule"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\vehicles\hub.html:64
+msgid "Rechercher…"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\vehicles\hub.html:73
+msgid "Visibilité : tous"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\vehicles\hub.html:74
+#: .\dashboard\templates\dashboard\vehicles\list.html:24
+msgid "Visible"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\vehicles\hub.html:75
+#: .\dashboard\templates\dashboard\vehicles\hub.html:118
+msgid "Masqué"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\vehicles\hub.html:79
+msgid "Tri : Prix"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\vehicles\hub.html:80
+msgid "Tri : KM"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\vehicles\hub.html:81
+msgid "Tri : Statut"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\vehicles\hub.html:94
+msgid "Immat"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\vehicles\hub.html:95
+msgid "Prix/j"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\vehicles\hub.html:98
+#: .\dashboard\templates\dashboard\vehicles\hub.html:153
+#: .\dashboard\templates\dashboard\vehicles\hub.html:212
+msgid "Négo"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\vehicles\hub.html:147
+msgid "Désactiver négociation"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\vehicles\hub.html:147
+msgid "Activer négociation"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\vehicles\hub.html:167
+msgid "Dupliquer"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\vehicles\hub.html:205
+msgid "Dispo"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\vehicles\hub.html:209
+msgid "Maint."
+msgstr ""
+
+#: .\dashboard\templates\dashboard\vehicles\hub.html:228
+msgid "Ajoutez votre premier véhicule via le formulaire ci-contre."
+msgstr ""
+
+#: .\dashboard\templates\dashboard\vehicles\hub.html:232
+#: .\dashboard\templates\dashboard\vehicles\list.html:10
+#: .\dashboard\templates\dashboard\vehicles\list.html:82
+msgid "Ajouter un véhicule"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\vehicles\hub.html:248
+#: .\dashboard\templates\dashboard\vehicles\hub.html:377
+msgid "Modifier le véhicule"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\vehicles\hub.html:248
+#: .\dashboard\templates\dashboard\vehicles\hub.html:377
+msgid "Nouveau véhicule"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\vehicles\hub.html:302
+msgid "Recommandation intelligente"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\vehicles\hub.html:306
+#: .\dashboard\templates\dashboard\vehicles\hub.html:423
+msgid "€/j"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\vehicles\hub.html:307
+msgid "Confiance :"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\vehicles\hub.html:310
+msgid "Appliquer"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\vehicles\hub.html:317
+#: .\dashboard\templates\dashboard\vehicles\hub.html:429
+msgid "Statut & visibilité"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\vehicles\hub.html:347
+#: .\dashboard\templates\dashboard\vehicles\hub.html:455
+msgid "Photo actuelle"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\vehicles\hub.html:423
+msgid "Recommandation :"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\vehicles\list.html:6
+msgid "enregistré"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\vehicles\list.html:22
+msgid "Prix/jour"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\vehicles\list.html:56
+msgid "Oui"
+msgstr ""
+
+#: .\dashboard\templates\dashboard\vehicles\list.html:80
+msgid "Commence par ajouter ton premier véhicule."
+msgstr ""
+
+#: .\dashboard\views.py:739 .\dashboard\views.py:767
+#, python-format
+msgid ""
+"Ce véhicule est déjà lié au contrat #%(pk)s (%(status)s). Clôturez ou "
+"annulez-le d'abord."
+msgstr ""
+
+#: .\dashboard\views.py:747
+msgid "Contrat mis à jour."
+msgstr ""
+
+#: .\dashboard\views.py:757
+msgid "Montant requis."
+msgstr ""
+
+#: .\dashboard\views.py:792
+msgid "Contrat et paiement enregistrés."
+msgstr ""
+
+#: .\marketing\forms.py:17
+msgid "Le nom de l'agence est requis."
+msgstr ""
+
+#: .\marketing\forms.py:22
+msgid "Identifiant URL de votre agence. Généré automatiquement si vide."
+msgstr ""
+
+#: .\marketing\forms.py:28
+msgid "Veuillez choisir un plan."
+msgstr ""
+
+#: .\marketing\forms.py:32
+msgid "L'email est requis."
+msgstr ""
+
+#: .\marketing\forms.py:32
+msgid "Email invalide."
+msgstr ""
+
+#: .\marketing\forms.py:36
+msgid "Le mot de passe est requis."
+msgstr ""
+
+#: .\marketing\forms.py:40
+msgid "Confirmez le mot de passe."
+msgstr ""
+
+#: .\marketing\forms.py:44
+msgid "Vous devez accepter les conditions d'utilisation."
+msgstr ""
+
+#: .\marketing\forms.py:53
+msgid "Le slug contient des caractères invalides."
+msgstr ""
+
+#: .\marketing\forms.py:55
+msgid "Ce lien est déjà utilisé, choisissez-en un autre."
+msgstr ""
+
+#: .\marketing\forms.py:61
+msgid "Un compte avec cet email existe déjà."
+msgstr ""
+
+#: .\marketing\forms.py:74
+msgid "Les mots de passe ne correspondent pas."
+msgstr ""
+
+#: .\marketing\forms.py:77
+msgid "Veuillez choisir un plan valide."
+msgstr ""
+
+#: .\marketing\templates\marketing\landing.html:4
+msgid "Gaboom DriveOS — Le système d'exploitation pour agences de location"
+msgstr ""
+
+#: .\marketing\templates\marketing\landing.html:26
+#: .\marketing\templates\marketing\landing.html:189
+#: .\marketing\templates\marketing\landing.html:468
+msgid "Fonctionnalités"
+msgstr ""
+
+#: .\marketing\templates\marketing\landing.html:27
+#: .\marketing\templates\marketing\landing.html:326
+#: .\marketing\templates\marketing\landing.html:469
+msgid "Tarifs"
+msgstr ""
+
+#: .\marketing\templates\marketing\landing.html:28
+#: .\marketing\templates\marketing\landing.html:470
+msgid "Démo"
+msgstr ""
+
+#: .\marketing\templates\marketing\landing.html:29
+#: .\marketing\templates\marketing\landing.html:477
+#: .\marketing\templates\marketing\signup.html:198
+#: .\public_site\templates\public_site\_base.html:99
+#: .\templates\registration\login.html:4 .\templates\registration\login.html:30
+msgid "Connexion"
+msgstr ""
+
+#: .\marketing\templates\marketing\landing.html:42
+#: .\marketing\templates\marketing\landing.html:71
+#: .\marketing\templates\marketing\signup.html:5
+#: .\marketing\templates\marketing\signup.html:49
+#: .\marketing\templates\marketing\signup.html:186
+msgid "Créer mon agence"
+msgstr ""
+
+#: .\marketing\templates\marketing\landing.html:56
+#: .\marketing\templates\marketing\signup.html:24
+msgid "Multi-agence natif"
+msgstr ""
+
+#: .\marketing\templates\marketing\landing.html:60
+msgid "Client retention intégré"
+msgstr ""
+
+#: .\marketing\templates\marketing\landing.html:66
+#: .\marketing\templates\marketing\landing.html:463
+msgid "Le système d'exploitation pour agences de location modernes."
+msgstr ""
+
+#: .\marketing\templates\marketing\landing.html:67
+msgid ""
+"Gérez votre flotte, automatisez vos contrats, encaissez en ligne et "
+"fidélisez vos clients — le tout depuis un seul dashboard."
+msgstr ""
+
+#: .\marketing\templates\marketing\landing.html:74
+msgid "Voir la démo"
+msgstr ""
+
+#: .\marketing\templates\marketing\landing.html:77
+msgid "Aucune carte bancaire requise. Activation immédiate."
+msgstr ""
+
+#: .\marketing\templates\marketing\landing.html:99
+msgid "Revenus"
+msgstr ""
+
+#: .\marketing\templates\marketing\landing.html:109
+msgid "Opérationnel"
+msgstr ""
+
+#: .\marketing\templates\marketing\landing.html:110
+msgid "Mis à jour il y a 2 min"
+msgstr ""
+
+#: .\marketing\templates\marketing\landing.html:122
+msgid "Problème"
+msgstr ""
+
+#: .\marketing\templates\marketing\landing.html:123
+msgid "Gestion papier, pertes, retards"
+msgstr ""
+
+#: .\marketing\templates\marketing\landing.html:125
+msgid "Tableurs dispersés, données incohérentes"
+msgstr ""
+
+#: .\marketing\templates\marketing\landing.html:126
+msgid "Véhicules mal suivis, inspections oubliées"
+msgstr ""
+
+#: .\marketing\templates\marketing\landing.html:127
+msgid "Aucune visibilité sur la rentabilité réelle"
+msgstr ""
+
+#: .\marketing\templates\marketing\landing.html:128
+msgid "Communication WhatsApp, zéro traçabilité"
+msgstr ""
+
+#: .\marketing\templates\marketing\landing.html:132
+msgid "Solution"
+msgstr ""
+
+#: .\marketing\templates\marketing\landing.html:133
+msgid "Tout centralisé, en temps réel"
+msgstr ""
+
+#: .\marketing\templates\marketing\landing.html:135
+msgid "Un cockpit unique pour toute la flotte"
+msgstr ""
+
+#: .\marketing\templates\marketing\landing.html:136
+msgid "Tracking, inspections, maintenance planifiée"
+msgstr ""
+
+#: .\marketing\templates\marketing\landing.html:137
+msgid "Analytics et KPIs orientés décision"
+msgstr ""
+
+#: .\marketing\templates\marketing\landing.html:138
+msgid "Équipe structurée, rôles, permissions"
+msgstr ""
+
+#: .\marketing\templates\marketing\landing.html:149
+msgid "Augmente tes revenus sans augmenter ta flotte"
+msgstr ""
+
+#: .\marketing\templates\marketing\landing.html:150
+msgid "Optimise chaque véhicule, chaque client, chaque euro."
+msgstr ""
+
+#: .\marketing\templates\marketing\landing.html:157
+msgid "Optimisation taux d'occupation"
+msgstr ""
+
+#: .\marketing\templates\marketing\landing.html:158
+msgid "Maximise le temps de location de chaque véhicule."
+msgstr ""
+
+#: .\marketing\templates\marketing\landing.html:164
+msgid "Recommandations intelligentes"
+msgstr ""
+
+#: .\marketing\templates\marketing\landing.html:165
+msgid "Suggestions basées sur l'historique et la saisonnalité."
+msgstr ""
+
+#: .\marketing\templates\marketing\landing.html:171
+msgid "Rappels de retour"
+msgstr ""
+
+#: .\marketing\templates\marketing\landing.html:172
+msgid "Notifications automatiques pour réduire les retards."
+msgstr ""
+
+#: .\marketing\templates\marketing\landing.html:178
+msgid "Relances clients inactifs"
+msgstr ""
+
+#: .\marketing\templates\marketing\landing.html:179
+msgid "Réactive les anciens clients avec des offres ciblées."
+msgstr ""
+
+#: .\marketing\templates\marketing\landing.html:190
+msgid "Tout ce qu'il faut pour scaler"
+msgstr ""
+
+#: .\marketing\templates\marketing\landing.html:191
+msgid "Chaque module est pensé pour fonctionner seul et s'intégrer au reste."
+msgstr ""
+
+#: .\marketing\templates\marketing\landing.html:200
+msgid "Contrats & réservations"
+msgstr ""
+
+#: .\marketing\templates\marketing\landing.html:201
+msgid ""
+"Crée, signe et archive tes contrats. Suivi du cycle complet de chaque "
+"location."
+msgstr ""
+
+#: .\marketing\templates\marketing\landing.html:208
+msgid "Inspection & photos"
+msgstr ""
+
+#: .\marketing\templates\marketing\landing.html:209
+msgid ""
+"Checklists visuelles, photos avant/après, historique complet de l'état "
+"véhicule."
+msgstr ""
+
+#: .\marketing\templates\marketing\landing.html:216
+msgid "Maintenance intelligente"
+msgstr ""
+
+#: .\marketing\templates\marketing\landing.html:217
+msgid ""
+"Planifie les entretiens, reçois des alertes, réduis les immobilisations."
+msgstr ""
+
+#: .\marketing\templates\marketing\landing.html:224
+msgid "GPS tracking & géofencing"
+msgstr ""
+
+#: .\marketing\templates\marketing\landing.html:225
+msgid ""
+"Localise ta flotte, définis des zones, reçois des alertes de sortie en temps "
+"réel."
+msgstr ""
+
+#: .\marketing\templates\marketing\landing.html:232
+msgid "Analytics rentabilité"
+msgstr ""
+
+#: .\marketing\templates\marketing\landing.html:233
+msgid ""
+"KPIs par véhicule, taux d'occupation, revenus. Décide avec de la data, pas "
+"au feeling."
+msgstr ""
+
+#: .\marketing\templates\marketing\landing.html:240
+msgid "Équipe & permissions"
+msgstr ""
+
+#: .\marketing\templates\marketing\landing.html:241
+msgid "Owner, Admin, Staff — chaque rôle a ses droits. Multi-agence natif."
+msgstr ""
+
+#: .\marketing\templates\marketing\landing.html:251
+msgid "Fidélisation"
+msgstr ""
+
+#: .\marketing\templates\marketing\landing.html:252
+msgid "Fidélise tes clients automatiquement"
+msgstr ""
+
+#: .\marketing\templates\marketing\landing.html:253
+msgid ""
+"Ne perds plus jamais un ancien client. Gaboom DriveOS t'aide à garder le "
+"contact et à maximiser la valeur de chaque location."
+msgstr ""
+
+#: .\marketing\templates\marketing\landing.html:260
+msgid "Historique client complet"
+msgstr ""
+
+#: .\marketing\templates\marketing\landing.html:261
+msgid "Fiche client avec historique des locations, préférences et notes."
+msgstr ""
+
+#: .\marketing\templates\marketing\landing.html:267
+msgid "Relances automatiques"
+msgstr ""
+
+#: .\marketing\templates\marketing\landing.html:268
+msgid "Relance automatique après restitution pour rebooker rapidement."
+msgstr ""
+
+#: .\marketing\templates\marketing\landing.html:274
+msgid "Notifications promotions"
+msgstr ""
+
+#: .\marketing\templates\marketing\landing.html:275
+msgid "Offres spéciales ciblées pour anciens clients et périodes creuses."
+msgstr ""
+
+#: .\marketing\templates\marketing\landing.html:281
+msgid "Base CRM intégrée"
+msgstr ""
+
+#: .\marketing\templates\marketing\landing.html:282
+msgid "Base de données centralisée de tous vos clients et interactions."
+msgstr ""
+
+#: .\marketing\templates\marketing\landing.html:292
+msgid "Sécurité"
+msgstr ""
+
+#: .\marketing\templates\marketing\landing.html:293
+msgid "Ta flotte est protégée"
+msgstr ""
+
+#: .\marketing\templates\marketing\landing.html:294
+msgid ""
+"Isolation stricte des données par agence. Architecture multi-tenant "
+"sécurisée. Logs d'audit prêts pour conformité."
+msgstr ""
+
+#: .\marketing\templates\marketing\landing.html:301
+msgid "Isolation par agence"
+msgstr ""
+
+#: .\marketing\templates\marketing\landing.html:302
+msgid ""
+"Chaque agence est un silo étanche. Aucun accès croisé possible entre les "
+"données."
+msgstr ""
+
+#: .\marketing\templates\marketing\landing.html:308
+msgid "Architecture multi-tenant"
+msgstr ""
+
+#: .\marketing\templates\marketing\landing.html:309
+msgid ""
+"Séparation stricte au niveau base de données, middleware et permissions."
+msgstr ""
+
+#: .\marketing\templates\marketing\landing.html:315
+msgid "Logs d'audit"
+msgstr ""
+
+#: .\marketing\templates\marketing\landing.html:316
+msgid "Traçabilité complète des actions. Prêt pour conformité et audits."
+msgstr ""
+
+#: .\marketing\templates\marketing\landing.html:327
+msgid "Simple, transparent, sans surprise"
+msgstr ""
+
+#: .\marketing\templates\marketing\landing.html:328
+msgid "Essai gratuit sur tous les plans. Aucune carte requise."
+msgstr ""
+
+#: .\marketing\templates\marketing\landing.html:334
+msgid "Starter"
+msgstr ""
+
+#: .\marketing\templates\marketing\landing.html:337
+#: .\marketing\templates\marketing\landing.html:356
+#: .\marketing\templates\marketing\landing.html:375
+msgid "/mois"
+msgstr ""
+
+#: .\marketing\templates\marketing\landing.html:339
+msgid "Pour démarrer avec une agence."
+msgstr ""
+
+#: .\marketing\templates\marketing\landing.html:341
+msgid "1 agence"
+msgstr ""
+
+#: .\marketing\templates\marketing\landing.html:342
+msgid "3 utilisateurs"
+msgstr ""
+
+#: .\marketing\templates\marketing\landing.html:343
+msgid "20 véhicules"
+msgstr ""
+
+#: .\marketing\templates\marketing\landing.html:344
+msgid "Support email"
+msgstr ""
+
+#: .\marketing\templates\marketing\landing.html:352
+msgid "Populaire"
+msgstr ""
+
+#: .\marketing\templates\marketing\landing.html:353
+msgid "Business"
+msgstr ""
+
+#: .\marketing\templates\marketing\landing.html:358
+msgid "Multi-agence, équipe complète."
+msgstr ""
+
+#: .\marketing\templates\marketing\landing.html:360
+msgid "Multi-agence"
+msgstr ""
+
+#: .\marketing\templates\marketing\landing.html:361
+msgid "15 utilisateurs"
+msgstr ""
+
+#: .\marketing\templates\marketing\landing.html:363
+msgid "GPS tracking"
+msgstr ""
+
+#: .\marketing\templates\marketing\landing.html:364
+msgid "Support prioritaire"
+msgstr ""
+
+#: .\marketing\templates\marketing\landing.html:372
+msgid "Entreprise"
+msgstr ""
+
+#: .\marketing\templates\marketing\landing.html:377
+msgid "Sur mesure, accompagnement dédié."
+msgstr ""
+
+#: .\marketing\templates\marketing\landing.html:379
+msgid "Tout Pro inclus"
+msgstr ""
+
+#: .\marketing\templates\marketing\landing.html:380
+msgid "Workflows custom"
+msgstr ""
+
+#: .\marketing\templates\marketing\landing.html:381
+msgid "Intégrations avancées"
+msgstr ""
+
+#: .\marketing\templates\marketing\landing.html:382
+msgid "Onboarding personnalisé"
+msgstr ""
+
+#: .\marketing\templates\marketing\landing.html:383
+msgid "SLA garanti"
+msgstr ""
+
+#: .\marketing\templates\marketing\landing.html:396
+msgid "Questions fréquentes"
+msgstr ""
+
+#: .\marketing\templates\marketing\landing.html:397
+msgid "Tout ce que tu dois savoir avant de commencer."
+msgstr ""
+
+#: .\marketing\templates\marketing\landing.html:402
+msgid "Est-ce vraiment multi-agence ?"
+msgstr ""
+
+#: .\marketing\templates\marketing\landing.html:405
+msgid ""
+"Oui. Chaque utilisateur est rattaché à une agence. Les données sont "
+"strictement séparées. Tu peux gérer plusieurs agences depuis un seul compte "
+"owner."
+msgstr ""
+
+#: .\marketing\templates\marketing\landing.html:409
+msgid "Puis-je essayer gratuitement ?"
+msgstr ""
+
+#: .\marketing\templates\marketing\landing.html:412
+msgid ""
+"Absolument. Tous les plans incluent un essai gratuit sans carte bancaire. Tu "
+"testes, tu décides."
+msgstr ""
+
+#: .\marketing\templates\marketing\landing.html:416
+msgid "Le paiement Stripe est-il inclus ?"
+msgstr ""
+
+#: .\marketing\templates\marketing\landing.html:419
+msgid ""
+"Oui. Stripe est intégré pour permettre à vos clients de payer leurs "
+"réservations en ligne directement sur votre site public. Vous connectez "
+"votre compte Stripe et recevez les paiements directement. Gaboom DriveOS ne "
+"prend pas le contrôle de vos fonds."
+msgstr ""
+
+#: .\marketing\templates\marketing\landing.html:423
+msgid "Mes clients peuvent-ils réserver en ligne ?"
+msgstr ""
+
+#: .\marketing\templates\marketing\landing.html:426
+msgid ""
+"Oui. Chaque agence dispose d'un site public avec catalogue et formulaire de "
+"réservation, activable en un clic."
+msgstr ""
+
+#: .\marketing\templates\marketing\landing.html:430
+msgid "Le GPS est-il intégré ?"
+msgstr ""
+
+#: .\marketing\templates\marketing\landing.html:433
+msgid ""
+"Le module GPS tracking avec géofencing est prévu dans le plan Pro. "
+"L'architecture supporte déjà les fournisseurs tiers."
+msgstr ""
+
+#: .\marketing\templates\marketing\landing.html:437
+msgid "Puis-je personnaliser le site de mon agence ?"
+msgstr ""
+
+#: .\marketing\templates\marketing\landing.html:440
+msgid ""
+"Oui. Couleurs, thème, activation/désactivation, mode maintenance — tout est "
+"configurable depuis le dashboard."
+msgstr ""
+
+#: .\marketing\templates\marketing\landing.html:448
+msgid "Prêt à piloter ta flotte ?"
+msgstr ""
+
+#: .\marketing\templates\marketing\landing.html:449
+msgid "Rejoins les agences qui passent au niveau supérieur."
+msgstr ""
+
+#: .\marketing\templates\marketing\landing.html:451
+msgid "Démarrer maintenant"
+msgstr ""
+
+#: .\marketing\templates\marketing\landing.html:453
+msgid "Gratuit · Sans engagement · En 30 secondes"
+msgstr ""
+
+#: .\marketing\templates\marketing\landing.html:466
+msgid "Produit"
+msgstr ""
+
+#: .\marketing\templates\marketing\landing.html:476
+#: .\templates\registration\login.html:52
+msgid "Créer une agence"
+msgstr ""
+
+#: .\marketing\templates\marketing\landing.html:481
+msgid "Légal"
+msgstr ""
+
+#: .\marketing\templates\marketing\landing.html:483
+msgid "CGU (bientôt)"
+msgstr ""
+
+#: .\marketing\templates\marketing\landing.html:484
+msgid "Confidentialité (bientôt)"
+msgstr ""
+
+#: .\marketing\templates\marketing\landing.html:489
+#: .\public_site\templates\public_site\_base.html:128
+msgid "Tous droits réservés."
+msgstr ""
+
+#: .\marketing\templates\marketing\landing.html:492
+#: .\marketing\templates\marketing\signup.html:38
+#: .\templates\registration\login.html:19
+msgid "Tous les systèmes opérationnels"
+msgstr ""
+
+#: .\marketing\templates\marketing\signup.html:5 .\templates\base.html:21
+msgid "Gaboom DriveOS"
+msgstr ""
+
+#: .\marketing\templates\marketing\signup.html:15
+msgid "Lance ton agence"
+msgstr ""
+
+#: .\marketing\templates\marketing\signup.html:15
+msgid "en 30 secondes."
+msgstr ""
+
+#: .\marketing\templates\marketing\signup.html:16
+msgid "Dashboard, site public, gestion d'équipe — tout est prêt."
+msgstr ""
+
+#: .\marketing\templates\marketing\signup.html:20
+msgid "Essai gratuit, sans carte bancaire"
+msgstr ""
+
+#: .\marketing\templates\marketing\signup.html:28
+msgid "Site public personnalisable"
+msgstr ""
+
+#: .\marketing\templates\marketing\signup.html:32
+msgid "12 thèmes premium inclus"
+msgstr ""
+
+#: .\marketing\templates\marketing\signup.html:50
+msgid "Crée ton espace et accède au dashboard en quelques secondes."
+msgstr ""
+
+#: .\marketing\templates\marketing\signup.html:71
+msgid "Nom de l'agence"
+msgstr ""
+
+#: .\marketing\templates\marketing\signup.html:72
+msgid "Mon Agence Premium"
+msgstr ""
+
+#: .\marketing\templates\marketing\signup.html:79
+msgid "mon-agence-premium"
+msgstr ""
+
+#: .\marketing\templates\marketing\signup.html:81
+msgid "Votre site :"
+msgstr ""
+
+#: .\marketing\templates\marketing\signup.html:91
+msgid "Paris"
+msgstr ""
+
+#: .\marketing\templates\marketing\signup.html:96
+msgid "+33 6 12 34 56 78"
+msgstr ""
+
+#: .\marketing\templates\marketing\signup.html:104
+msgid "Compte propriétaire"
+msgstr ""
+
+#: .\marketing\templates\marketing\signup.html:109
+msgid "vous@exemple.com"
+msgstr ""
+
+#: .\marketing\templates\marketing\signup.html:118
+msgid "8 caractères min."
+msgstr ""
+
+#: .\marketing\templates\marketing\signup.html:119
+#: .\marketing\templates\marketing\signup.html:130
+msgid "Afficher le mot de passe"
+msgstr ""
+
+#: .\marketing\templates\marketing\signup.html:127
+msgid "Confirmation"
+msgstr ""
+
+#: .\marketing\templates\marketing\signup.html:129
+msgid "Retapez le mot de passe"
+msgstr ""
+
+#: .\marketing\templates\marketing\signup.html:142
+msgid "Plan"
+msgstr ""
+
+#: .\marketing\templates\marketing\signup.html:161
+msgid "utilisateur"
+msgstr ""
+
+#: .\marketing\templates\marketing\signup.html:177
+msgid "J'accepte les"
+msgstr ""
+
+#: .\marketing\templates\marketing\signup.html:177
+msgid "Conditions d'utilisation"
+msgstr ""
+
+#: .\marketing\templates\marketing\signup.html:177
+msgid "et la"
+msgstr ""
+
+#: .\marketing\templates\marketing\signup.html:177
+msgid "Politique de confidentialité"
+msgstr ""
+
+#: .\marketing\templates\marketing\signup.html:185
+msgid "Création…"
+msgstr ""
+
+#: .\marketing\templates\marketing\signup.html:191
+msgid "Essai gratuit · Sans carte bancaire"
+msgstr ""
+
+#: .\public_site\templates\public_site\_base.html:76
+#: .\public_site\templates\public_site\catalog.html:4
+#: .\public_site\templates\public_site\catalog.html:9
+msgid "Catalogue"
+msgstr ""
+
+#: .\public_site\templates\public_site\_base.html:81
+#: .\public_site\templates\public_site\_base.html:83
+#: .\public_site\templates\public_site\agency_home.html:24
+#: .\public_site\templates\public_site\agency_home.html:26
+#: .\public_site\templates\public_site\agency_home.html:143
+#: .\public_site\templates\public_site\maintenance.html:40
+msgid "Appeler"
+msgstr ""
+
+#: .\public_site\templates\public_site\_base.html:96
+msgid "Mon espace"
+msgstr ""
+
+#: .\public_site\templates\public_site\_base.html:129
+msgid "Propulsé par"
+msgstr ""
+
+#: .\public_site\templates\public_site\agency_home.html:16
+msgid "Réservez un véhicule en quelques clics."
+msgstr ""
+
+#: .\public_site\templates\public_site\agency_home.html:36
+msgid "Véhicules disponibles"
+msgstr ""
+
+#: .\public_site\templates\public_site\agency_home.html:54
+#: .\public_site\templates\public_site\catalog.html:35
+#: .\public_site\templates\public_site\reservation_status.html:110
+#: .\public_site\templates\public_site\reservation_status.html:161
+#: .\public_site\templates\public_site\reserve_form.html:25
+#: .\public_site\templates\public_site\reserve_form.html:71
+#: .\public_site\templates\public_site\reserve_form.html:168
+msgid "/jour"
+msgstr ""
+
+#: .\public_site\templates\public_site\agency_home.html:64
+#: .\public_site\templates\public_site\catalog.html:43
+msgid "Aucun véhicule disponible"
+msgstr ""
+
+#: .\public_site\templates\public_site\agency_home.html:65
+#: .\public_site\templates\public_site\catalog.html:44
+msgid "Les véhicules seront affichés ici dès qu'ils seront publiés."
+msgstr ""
+
+#: .\public_site\templates\public_site\agency_home.html:74
+msgid "Pourquoi nous choisir"
+msgstr ""
+
+#: .\public_site\templates\public_site\agency_home.html:80
+msgid "Véhicules vérifiés"
+msgstr ""
+
+#: .\public_site\templates\public_site\agency_home.html:81
+msgid "Tous nos véhicules sont inspectés et entretenus régulièrement."
+msgstr ""
+
+#: .\public_site\templates\public_site\agency_home.html:87
+msgid "Réservation rapide"
+msgstr ""
+
+#: .\public_site\templates\public_site\agency_home.html:88
+msgid "Réservez en quelques minutes, sans paperasse inutile."
+msgstr ""
+
+#: .\public_site\templates\public_site\agency_home.html:94
+msgid "Prix transparents"
+msgstr ""
+
+#: .\public_site\templates\public_site\agency_home.html:95
+msgid "Aucun frais caché. Le prix affiché est le prix final."
+msgstr ""
+
+#: .\public_site\templates\public_site\agency_home.html:104
+msgid "Comment ça marche"
+msgstr ""
+
+#: .\public_site\templates\public_site\agency_home.html:109
+msgid "Choisissez"
+msgstr ""
+
+#: .\public_site\templates\public_site\agency_home.html:110
+msgid "Parcourez notre catalogue et sélectionnez le véhicule idéal."
+msgstr ""
+
+#: .\public_site\templates\public_site\agency_home.html:116
+msgid "Réservez"
+msgstr ""
+
+#: .\public_site\templates\public_site\agency_home.html:117
+msgid "Contactez-nous par téléphone ou WhatsApp pour confirmer."
+msgstr ""
+
+#: .\public_site\templates\public_site\agency_home.html:123
+msgid "Roulez"
+msgstr ""
+
+#: .\public_site\templates\public_site\agency_home.html:124
+msgid "Récupérez votre véhicule et profitez de la route !"
+msgstr ""
+
+#: .\public_site\templates\public_site\agency_home.html:136
+msgid "Besoin d'aide ?"
+msgstr ""
+
+#: .\public_site\templates\public_site\agency_home.html:137
+msgid "Contactez-nous, nous sommes disponibles pour vous."
+msgstr ""
+
+#: .\public_site\templates\public_site\book.html:9
+msgid "Réserver un véhicule"
+msgstr ""
+
+#: .\public_site\templates\public_site\book.html:10
+msgid "Remplis le formulaire et nous te recontactons rapidement."
+msgstr ""
+
+#: .\public_site\templates\public_site\book.html:14
+msgid "Ton email"
+msgstr ""
+
+#: .\public_site\templates\public_site\book.html:18
+msgid "Véhicule souhaité"
+msgstr ""
+
+#: .\public_site\templates\public_site\book.html:25
+#: .\public_site\templates\public_site\reserve_form.html:209
+msgid "Envoyer la demande"
+msgstr ""
+
+#: .\public_site\templates\public_site\book.html:28
+msgid "Formulaire de contact — l'intégration paiement arrive bientôt."
+msgstr ""
+
+#: .\public_site\templates\public_site\book.html:32
+#: .\public_site\templates\public_site\vehicle_detail.html:65
+msgid "Retour au catalogue"
+msgstr ""
+
+#: .\public_site\templates\public_site\catalog.html:10
+msgid "Tous les véhicules disponibles à la location."
+msgstr ""
+
+#: .\public_site\templates\public_site\catalog.html:31
+msgid "Négociable"
+msgstr ""
+
+#: .\public_site\templates\public_site\includes\banners.html:88
+msgid "Offre expirée"
+msgstr ""
+
+#: .\public_site\templates\public_site\includes\banners.html:90
+msgid "min restants"
+msgstr ""
+
+#: .\public_site\templates\public_site\maintenance.html:31
+#: .\public_site\templates\public_site\maintenance.html:47
+msgid "Maintenance en cours"
+msgstr ""
+
+#: .\public_site\templates\public_site\maintenance.html:33
+#, python-format
+msgid ""
+"Le site de <strong>%(agency.name)s</strong> est temporairement indisponible "
+"pour amélioration. Revenez bientôt !"
+msgstr ""
+
+#: .\public_site\templates\public_site\page.html:17
+#: .\public_site\templates\public_site\page_about.html:32
+#: .\public_site\templates\public_site\page_legal.html:8
+msgid "Dernière mise à jour"
+msgstr ""
+
+#: .\public_site\templates\public_site\page_contact.html:11
+msgid "Nous contacter"
+msgstr ""
+
+#: .\public_site\templates\public_site\page_default.html:17
+msgid "Dernière mise à jour :"
+msgstr ""
+
+#: .\public_site\templates\public_site\page_promo.html:32
+msgid "Prêt à commencer ?"
+msgstr ""
+
+#: .\public_site\templates\public_site\page_promo.html:33
+msgid "Profitez de cette offre dès maintenant."
+msgstr ""
+
+#: .\public_site\templates\public_site\reservation_status.html:17
+msgid "Contre-offre reçue — Répondez !"
+msgstr ""
+
+#: .\public_site\templates\public_site\reservation_status.html:20
+msgid "En attente de confirmation"
+msgstr ""
+
+#: .\public_site\templates\public_site\reservation_status.html:23
+#: .\public_site\templates\public_site\reservation_status.html:262
+msgid "Réservation confirmée"
+msgstr ""
+
+#: .\public_site\templates\public_site\reservation_status.html:31
+msgid "Suivi de votre demande"
+msgstr ""
+
+#: .\public_site\templates\public_site\reservation_status.html:32
+msgid "Référence :"
+msgstr ""
+
+#: .\public_site\templates\public_site\reservation_status.html:78
+#: .\public_site\templates\public_site\reserve_form.html:125
+msgid "Date de début"
+msgstr ""
+
+#: .\public_site\templates\public_site\reservation_status.html:82
+#: .\public_site\templates\public_site\reserve_form.html:132
+msgid "Date de fin"
+msgstr ""
+
+#: .\public_site\templates\public_site\reservation_status.html:105
+msgid "Négociation"
+msgstr ""
+
+#: .\public_site\templates\public_site\reservation_status.html:109
+msgid "Votre offre :"
+msgstr ""
+
+#: .\public_site\templates\public_site\reservation_status.html:119
+msgid "Contre-offre de l'agence"
+msgstr ""
+
+#: .\public_site\templates\public_site\reservation_status.html:123
+msgid "par jour"
+msgstr ""
+
+#: .\public_site\templates\public_site\reservation_status.html:126
+msgid "Total estimé :"
+msgstr ""
+
+#: .\public_site\templates\public_site\reservation_status.html:133
+msgid "Message de l'agence :"
+msgstr ""
+
+#: .\public_site\templates\public_site\reservation_status.html:149
+msgid ""
+"Êtes-vous sûr de vouloir refuser cette contre-offre ? La réservation sera "
+"annulée."
+msgstr ""
+
+#: .\public_site\templates\public_site\reservation_status.html:161
+msgid "Accord trouvé :"
+msgstr ""
+
+#: .\public_site\templates\public_site\reservation_status.html:167
+msgid "Négociation refusée"
+msgstr ""
+
+#: .\public_site\templates\public_site\reservation_status.html:173
+msgid "Offre envoyée — en attente de réponse de l'agence"
+msgstr ""
+
+#: .\public_site\templates\public_site\reservation_status.html:182
+msgid "Messages"
+msgstr ""
+
+#: .\public_site\templates\public_site\reservation_status.html:191
+msgid "Vous"
+msgstr ""
+
+#: .\public_site\templates\public_site\reservation_status.html:200
+msgid "Aucun message pour le moment. Envoyez un message à l'agence."
+msgstr ""
+
+#: .\public_site\templates\public_site\reservation_status.html:217
+msgid "Connectez-vous"
+msgstr ""
+
+#: .\public_site\templates\public_site\reservation_status.html:217
+msgid "pour envoyer un message à l'agence."
+msgstr ""
+
+#: .\public_site\templates\public_site\reservation_status.html:230
+msgid "Demande envoyée"
+msgstr ""
+
+#: .\public_site\templates\public_site\reservation_status.html:238
+#, python-format
+msgid "Offre de %(price)s/jour envoyée"
+msgstr ""
+
+#: .\public_site\templates\public_site\reservation_status.html:246
+#, python-format
+msgid "Contre-offre de l'agence : %(price)s/jour"
+msgstr ""
+
+#: .\public_site\templates\public_site\reservation_status.html:254
+#, python-format
+msgid "Contre-offre acceptée — accord à %(price)s/jour"
+msgstr ""
+
+#: .\public_site\templates\public_site\reservation_status.html:278
+msgid "En attente de votre réponse à la contre-offre…"
+msgstr ""
+
+#: .\public_site\templates\public_site\reservation_status.html:285
+msgid "En attente de réponse de l'agence…"
+msgstr ""
+
+#: .\public_site\templates\public_site\reservation_status.html:298
+#: .\public_site\templates\public_site\reserve_form.html:39
+msgid "Voir les véhicules disponibles"
+msgstr ""
+
+#: .\public_site\templates\public_site\reservation_status.html:304
+msgid "Contacter via WhatsApp"
+msgstr ""
+
+#: .\public_site\templates\public_site\reservation_status.html:309
+msgid "Conservez ce lien pour suivre votre demande."
+msgstr ""
+
+#: .\public_site\templates\public_site\reservation_status.html:355
+msgid "Réservation acceptée !"
+msgstr ""
+
+#: .\public_site\templates\public_site\reservation_status.html:364
+msgid "Nouvelle contre-offre de l\\'agence !"
+msgstr ""
+
+#: .\public_site\templates\public_site\reservation_status.html:371
+msgid "Nouveau message de l\\'agence !"
+msgstr ""
+
+#: .\public_site\templates\public_site\reserve_form.html:10
+msgid "Retour au véhicule"
+msgstr ""
+
+#: .\public_site\templates\public_site\reserve_form.html:35
+msgid "Ce véhicule n'est plus disponible"
+msgstr ""
+
+#: .\public_site\templates\public_site\reserve_form.html:36
+msgid ""
+"Ce véhicule est actuellement en location ou en maintenance. Veuillez choisir "
+"un autre véhicule."
+msgstr ""
+
+#: .\public_site\templates\public_site\reserve_form.html:52
+msgid "Ce véhicule n'est plus disponible pour ces dates"
+msgstr ""
+
+#: .\public_site\templates\public_site\reserve_form.html:53
+msgid ""
+"Une réservation confirmée existe déjà pour cette période. Choisissez "
+"d'autres dates ou un autre véhicule."
+msgstr ""
+
+#: .\public_site\templates\public_site\reserve_form.html:58
+msgid "Véhicules disponibles :"
+msgstr ""
+
+#: .\public_site\templates\public_site\reserve_form.html:85
+msgid "Demande de réservation"
+msgstr ""
+
+#: .\public_site\templates\public_site\reserve_form.html:86
+msgid "Remplissez le formulaire ci-dessous."
+msgstr ""
+
+#: .\public_site\templates\public_site\reserve_form.html:87
+msgid "Créez un compte pour négocier le prix."
+msgstr ""
+
+#: .\public_site\templates\public_site\reserve_form.html:93
+msgid "Connecté en tant que"
+msgstr ""
+
+#: .\public_site\templates\public_site\reserve_form.html:151
+msgid "Code promo"
+msgstr ""
+
+#: .\public_site\templates\public_site\reserve_form.html:165
+msgid "Proposez votre prix"
+msgstr ""
+
+#: .\public_site\templates\public_site\reserve_form.html:168
+msgid "Prix affiché :"
+msgstr ""
+
+#: .\public_site\templates\public_site\reserve_form.html:168
+msgid "Offre minimum :"
+msgstr ""
+
+#: .\public_site\templates\public_site\reserve_form.html:171
+msgid "Votre prix par jour"
+msgstr ""
+
+#: .\public_site\templates\public_site\reserve_form.html:178
+msgid ""
+"Les échanges de négociation se feront via la messagerie interne de votre "
+"espace client."
+msgstr ""
+
+#: .\public_site\templates\public_site\reserve_form.html:185
+msgid "Ce véhicule est négociable"
+msgstr ""
+
+#: .\public_site\templates\public_site\reserve_form.html:188
+msgid ""
+"Vous pouvez proposer votre prix pour ce véhicule ! Pour négocier, créez un "
+"compte gratuit ou connectez-vous. Les échanges se feront via la messagerie "
+"interne."
+msgstr ""
+
+#: .\public_site\templates\public_site\reserve_form.html:212
+msgid ""
+"Votre demande sera traitée par l'agence. Vous recevrez un lien de suivi."
+msgstr ""
+
+#: .\public_site\templates\public_site\vehicle_detail.html:24
+msgid "Tarif journalier"
+msgstr ""
+
+#: .\public_site\templates\public_site\vehicle_detail.html:29
+msgid "Prix négociable"
+msgstr ""
+
+#: .\public_site\templates\public_site\vehicle_detail.html:54
+msgid "Plaque"
+msgstr ""
+
+#: .\superadmin\templates\superadmin\_layout.html:128
+msgid "SuperAdmin"
+msgstr ""
+
+#: .\superadmin\templates\superadmin\webhooks_log.html:5
+msgid "Journal des evenements recus depuis PayPal"
+msgstr ""
+
+#: .\superadmin\templates\superadmin\webhooks_log.html:13
+msgid "Subscription ID, agence, event ID..."
+msgstr ""
+
+#: .\superadmin\templates\superadmin\webhooks_log.html:30
+msgid "Au"
+msgstr ""
+
+#: .\superadmin\templates\superadmin\webhooks_log.html:46
+msgid "Event ID"
+msgstr ""
+
+#: .\superadmin\templates\superadmin\webhooks_log.html:47
+msgid "Payload"
+msgstr ""
+
+#: .\superadmin\templates\superadmin\webhooks_log.html:73
+msgid "Aucun evenement PayPal enregistre."
+msgstr ""
+
+#: .\superadmin\templates\superadmin\webhooks_log.html:101
+msgid "Voir JSON"
+msgstr ""
+
+#: .\superadmin\templates\superadmin\webhooks_log.html:104
+msgid "Aucun evenement."
+msgstr ""
+
+#: .\templates\auth\verify_invalid.html:4
+msgid "Lien invalide"
+msgstr ""
+
+#: .\templates\auth\verify_invalid.html:16
+msgid "Lien invalide ou expiré"
+msgstr ""
+
+#: .\templates\auth\verify_invalid.html:18
+msgid ""
+"Ce lien de vérification n'est plus valide. Connecte-toi et demande un "
+"nouveau lien."
+msgstr ""
+
+#: .\templates\auth\verify_required.html:4
+#: .\templates\auth\verify_required.html:17
+msgid "Vérifie ton email"
+msgstr ""
+
+#: .\templates\auth\verify_required.html:19
+msgid "Nous avons envoyé un lien de vérification à"
+msgstr ""
+
+#: .\templates\auth\verify_required.html:22
+msgid "Vérifie aussi tes spams."
+msgstr ""
+
+#: .\templates\auth\verify_required.html:26
+msgid "Email renvoyé avec succès !"
+msgstr ""
+
+#: .\templates\auth\verify_required.html:32
+msgid "Patiente encore"
+msgstr ""
+
+#: .\templates\auth\verify_required.html:32
+msgid "avant de renvoyer."
+msgstr ""
+
+#: .\templates\auth\verify_required.html:39
+msgid "Renvoyer l'email"
+msgstr ""
+
+#: .\templates\auth\verify_required.html:46
+msgid "Se déconnecter"
+msgstr ""
+
+#: .\templates\auth\verify_required.html:49
+msgid "Support"
+msgstr ""
+
+#: .\templates\auth\verify_required.html:54
+msgid "En DEV, le lien apparaît dans la console du serveur."
+msgstr ""
+
+#: .\templates\auth\verify_success.html:4
+msgid "Email vérifié"
+msgstr ""
+
+#: .\templates\auth\verify_success.html:16
+msgid "Email vérifié !"
+msgstr ""
+
+#: .\templates\auth\verify_success.html:17
+msgid "Ton compte et ton agence sont maintenant actifs."
+msgstr ""
+
+#: .\templates\auth\verify_success.html:20
+msgid "Accéder au dashboard"
+msgstr ""
+
+#: .\templates\base.html:8
+msgid ""
+"Gaboom DriveOS — Le cockpit tout-en-un pour piloter une agence de location."
+msgstr ""
+
+#: .\templates\offline.html:26
+msgid "Vous etes hors ligne"
+msgstr ""
+
+#: .\templates\offline.html:27
+msgid ""
+"Verifiez votre connexion internet puis reessayez. Gaboom DriveOS sera de "
+"retour des que vous serez reconnecte."
+msgstr ""
+
+#: .\templates\offline.html:30
+msgid "Reessayer"
+msgstr ""
+
+#: .\templates\registration\login.html:14
+msgid "Pilote ta flotte"
+msgstr ""
+
+#: .\templates\registration\login.html:14
+msgid "depuis un seul cockpit."
+msgstr ""
+
+#: .\templates\registration\login.html:15
+msgid "Véhicules, contrats, équipe, analytics — tout centralisé."
+msgstr ""
+
+#: .\templates\registration\login.html:31
+msgid "Accède à ton dashboard."
+msgstr ""
+
+#: .\templates\registration\login.html:39
+msgid "Nom d'utilisateur"
+msgstr ""

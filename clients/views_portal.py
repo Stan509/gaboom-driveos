@@ -69,6 +69,7 @@ def client_signup(request: HttpRequest, slug: str) -> HttpResponse:
     ctx = _portal_ctx(request, slug, agency)
 
     if request.method == "POST":
+        username = request.POST.get("username", "").strip()
         full_name = request.POST.get("full_name", "").strip()[:255]
         email = request.POST.get("email", "").strip().lower()[:254]
         phone = request.POST.get("phone", "").strip()[:30]
@@ -76,6 +77,8 @@ def client_signup(request: HttpRequest, slug: str) -> HttpResponse:
         password2 = request.POST.get("password2", "")
 
         errors = {}
+        if not username:
+            errors["username"] = "Le nom d'utilisateur est requis."
         if not full_name:
             errors["full_name"] = "Le nom est requis."
         if not email:
@@ -85,15 +88,15 @@ def client_signup(request: HttpRequest, slug: str) -> HttpResponse:
         if password != password2:
             errors["password2"] = "Les mots de passe ne correspondent pas."
 
-        if not errors and ClientAccount.objects.filter(agency=agency, email=email).exists():
-            errors["email"] = "Un compte existe déjà avec cet email."
+        if not errors and ClientAccount.objects.filter(agency=agency, username__iexact=username).exists():
+            errors["username"] = "Ce nom d'utilisateur est déjà pris."
 
         if errors:
             ctx["errors"] = errors
             ctx["form_data"] = request.POST
             return render(request, "client_portal/signup.html", ctx)
 
-        account = ClientAccount(agency=agency, email=email, full_name=full_name, phone=phone)
+        account = ClientAccount(agency=agency, username=username, email=email, full_name=full_name, phone=phone)
         account.set_password(password)
         account.save()
 
@@ -122,10 +125,10 @@ def client_login(request: HttpRequest, slug: str) -> HttpResponse:
         return redirect("public_site:client_dashboard", slug=slug)
 
     if request.method == "POST":
-        email = request.POST.get("email", "").strip().lower()
+        username = request.POST.get("username", "").strip()
         password = request.POST.get("password", "")
 
-        account = ClientAccount.objects.filter(agency=agency, email=email, is_active=True).first()
+        account = ClientAccount.objects.filter(agency=agency, username__iexact=username, is_active=True).first()
         if account and account.check_password(password):
             request.session[SESSION_KEY] = account.pk
             request.session[SESSION_AGENCY] = slug
@@ -134,7 +137,7 @@ def client_login(request: HttpRequest, slug: str) -> HttpResponse:
                 return redirect(next_url)
             return redirect("public_site:client_dashboard", slug=slug)
 
-        ctx["error"] = "Email ou mot de passe incorrect."
+        ctx["error"] = "Nom d'utilisateur ou mot de passe incorrect."
         ctx["form_data"] = request.POST
 
     return render(request, "client_portal/login.html", ctx)

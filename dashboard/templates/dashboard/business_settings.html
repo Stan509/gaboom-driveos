@@ -107,8 +107,8 @@
           <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 18.75a60.07 60.07 0 0 1 15.797 2.101c.727.198 1.453-.342 1.453-1.096V18.75M3.75 4.5v.75A.75.75 0 0 1 3 6h-.75m0 0v-.375c0-.621.504-1.125 1.125-1.125H20.25M2.25 6v9m18-10.5v.75c0 .414.336.75.75.75h.75m-1.5-1.5h.375c.621 0 1.125.504 1.125 1.125v9.75c0 .621-.504 1.125-1.125 1.125h-.375m1.5-1.5H21a.75.75 0 0 0-.75.75v.75m0 0H3.75m0 0h-.375a1.125 1.125 0 0 1-1.125-1.125V15m1.5 1.5v-.75A.75.75 0 0 0 3 15h-.75M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Zm3 0h.008v.008H18V10.5Zm-12 0h.008v.008H6V10.5Z"/></svg>
         </div>
         <div>
-          <h3 class="font-semibold text-[13px] text-slate-800">Paiements & facturation</h3>
-          <p class="text-[11px] text-slate-400">Numérotation, moyens de paiement</p>
+          <h3 class="font-semibold text-[13px] text-slate-800">{% trans "Paiements & facturation" %}</h3>
+          <p class="text-[11px] text-slate-400">{% trans "Numérotation, moyens de paiement" %}</p>
         </div>
       </div>
       <div class="p-5 space-y-3.5 flex-1">
@@ -137,8 +137,8 @@
           <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M11.42 15.17 17.25 21A2.652 2.652 0 0 0 21 17.25l-5.877-5.877M11.42 15.17l2.496-3.03c.317-.384.74-.626 1.208-.766M11.42 15.17l-4.655 5.653a2.548 2.548 0 1 1-3.586-3.586l6.837-5.63m5.108-.233c.55-.164 1.163-.188 1.743-.14a4.5 4.5 0 0 0 4.486-6.336l-3.276 3.277a3.004 3.004 0 0 1-2.25-2.25l3.276-3.276a4.5 4.5 0 0 0-6.336 4.486c.049.58.025 1.194-.14 1.743"/></svg>
         </div>
         <div>
-          <h3 class="font-semibold text-[13px] text-slate-800">Maintenance & alertes</h3>
-          <p class="text-[11px] text-slate-400">Intervalles, alertes, désactivation</p>
+          <h3 class="font-semibold text-[13px] text-slate-800">{% trans "Maintenance & alertes" %}</h3>
+          <p class="text-[11px] text-slate-400">{% trans "Intervalles, alertes, désactivation" %}</p>
         </div>
       </div>
       <div class="p-5 space-y-3.5 flex-1">
@@ -167,8 +167,8 @@
           <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v12m-3-2.818.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/></svg>
         </div>
         <div>
-          <h3 class="font-semibold text-[13px] text-slate-800">Négociation prix</h3>
-          <p class="text-[11px] text-slate-400">Permettre aux clients de proposer un prix</p>
+          <h3 class="font-semibold text-[13px] text-slate-800">{% trans "Négociation prix" %}</h3>
+          <p class="text-[11px] text-slate-400">{% trans "Permettre aux clients de proposer un prix" %}</p>
         </div>
       </div>
       <div class="p-5 space-y-3.5 flex-1">
@@ -187,7 +187,7 @@
         </div>
         {% endif %}
         {% endfor %}
-        <p class="text-[11px] text-slate-400 mt-2">Si activé, les clients peuvent proposer un prix lors de la réservation. Vous pouvez accepter, refuser ou contre-proposer depuis le dashboard.</p>
+        <p class="text-[11px] text-slate-400 mt-2">{% trans "Si activé, les clients peuvent proposer un prix lors de la réservation. Vous pouvez accepter, refuser ou contre-proposer depuis le dashboard." %}</p>
       </div>
     </div>
 
@@ -198,8 +198,8 @@
           <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.042A8.967 8.967 0 0 0 6 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 0 1 6 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 0 1 6-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0 0 18 18a8.967 8.967 0 0 0-6 2.292m0-14.25v14.25"/></svg>
         </div>
         <div>
-          <h3 class="font-semibold text-[13px] text-slate-800">Clauses de contrat</h3>
-          <p class="text-[11px] text-slate-400">Texte par défaut pré-rempli dans chaque nouveau contrat</p>
+          <h3 class="font-semibold text-[13px] text-slate-800">{% trans "Clauses de contrat" %}</h3>
+          <p class="text-[11px] text-slate-400">{% trans "Texte par défaut pré-rempli dans chaque nouveau contrat" %}</p>
         </div>
       </div>
       <div class="p-5 space-y-3.5 flex-1">
@@ -210,7 +210,7 @@
           {% if bf.errors %}<p class="mt-0.5 text-[11px] text-red-500">{{ bf.errors.0 }}</p>{% endif %}
         </div>
         {% endfor %}
-        <p class="text-[11px] text-slate-400 mt-2">Ces textes seront automatiquement insérés dans chaque nouveau contrat. Vous pourrez les modifier au cas par cas lors de la rédaction du contrat.</p>
+        <p class="text-[11px] text-slate-400 mt-2">{% trans "Ces textes seront automatiquement insérés dans chaque nouveau contrat. Vous pourrez les modifier au cas par cas lors de la rédaction du contrat." %}</p>
       </div>
     </div>
 
@@ -222,8 +222,8 @@
           <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"/><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z"/></svg>
         </div>
         <div>
-          <h3 class="font-semibold text-[13px] text-slate-800">GPS & Géolocalisation</h3>
-          <p class="text-[11px] text-slate-400">Suivi GPS des véhicules, zones interdites et alertes</p>
+          <h3 class="font-semibold text-[13px] text-slate-800">{% trans "GPS & Géolocalisation" %}</h3>
+          <p class="text-[11px] text-slate-400">{% trans "Suivi GPS des véhicules, zones interdites et alertes" %}</p>
         </div>
       </div>
       <div class="p-5 space-y-3.5 flex-1">
@@ -234,7 +234,7 @@
           {% if bf.errors %}<p class="mt-0.5 text-[11px] text-red-500">{{ bf.errors.0 }}</p>{% endif %}
         </div>
         {% endfor %}
-        <p class="text-[11px] text-slate-400 mt-2">Activez le suivi GPS pour suivre vos véhicules en temps réel. La clause GPS sera automatiquement ajoutée aux contrats des véhicules équipés d'un tracker.</p>
+        <p class="text-[11px] text-slate-400 mt-2">{% trans "Activez le suivi GPS pour suivre vos véhicules en temps réel. La clause GPS sera automatiquement ajoutée aux contrats des véhicules équipés d'un tracker." %}</p>
       </div>
     </div>
   {% endif %}
@@ -245,19 +245,19 @@
   <div class="mt-6 rounded-2xl bg-gradient-to-br from-violet-50 to-white border border-violet-200 shadow-sm p-5">
     <div class="flex items-center gap-2 mb-3">
       <svg class="w-4 h-4 text-gaboomViolet" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 15.75V18m-7.5-6.75h.008v.008H8.25v-.008Zm0 2.25h.008v.008H8.25V13.5Zm0 2.25h.008v.008H8.25v-.008Zm0 2.25h.008v.008H8.25V18Zm2.498-6.75h.008v.008h-.008v-.008Zm0 2.25h.008v.008h-.008V13.5Zm0 2.25h.008v.008h-.008v-.008Zm0 2.25h.008v.008h-.008V18Zm2.504-6.75h.008v.008h-.008v-.008Zm0 2.25h.008v.008h-.008V13.5Zm0 2.25h.008v.008h-.008v-.008Zm0 2.25h.008v.008h-.008V18Zm2.498-6.75h.008v.008H15.75v-.008Zm0 2.25h.008v.008H15.75V13.5ZM15.75 18v-2.25m0 4.5c0 .621-.504 1.125-1.125 1.125H5.625a1.125 1.125 0 0 1-1.125-1.125v-8.25c0-.621.504-1.125 1.125-1.125h9c.621 0 1.125.504 1.125 1.125v8.25ZM17.25 8.25h1.5a1.125 1.125 0 0 1 1.125 1.125v1.5"/></svg>
-      <h3 class="text-sm font-semibold text-gaboomViolet">Simulateur de dépassement</h3>
+      <h3 class="text-sm font-semibold text-gaboomViolet">{% trans "Simulateur de dépassement" %}</h3>
     </div>
     <div class="flex flex-wrap items-end gap-4">
       <div>
-        <label class="block text-[11px] font-semibold text-slate-400 uppercase tracking-wider mb-1">Km supplémentaires</label>
+        <label class="block text-[11px] font-semibold text-slate-400 uppercase tracking-wider mb-1">{% trans "Km supplémentaires" %}</label>
         <input type="number" id="simKm" value="50" min="0" class="w-28 rounded-xl border border-violet-200 px-3 py-2 text-sm focus:border-violet-400 focus:ring-1 focus:ring-violet-400 outline-none" />
       </div>
       <div>
-        <label class="block text-[11px] font-semibold text-slate-400 uppercase tracking-wider mb-1">Jours de retard</label>
+        <label class="block text-[11px] font-semibold text-slate-400 uppercase tracking-wider mb-1">{% trans "Jours de retard" %}</label>
         <input type="number" id="simDays" value="1" min="0" class="w-28 rounded-xl border border-violet-200 px-3 py-2 text-sm focus:border-violet-400 focus:ring-1 focus:ring-violet-400 outline-none" />
       </div>
       <div id="simResult" class="flex-1 min-w-[200px] rounded-xl bg-white border border-violet-100 px-4 py-2.5 text-sm text-slate-700">
-        <span class="text-slate-400">Résultat :</span>
+        <span class="text-slate-400">{% trans "Résultat" %} :</span>
         <span id="simTotal" class="font-bold text-gaboomViolet ml-1">—</span>
       </div>
     </div>

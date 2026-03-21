@@ -72,8 +72,8 @@
       {% get_current_language as LANGUAGE_CODE %}
       {% get_available_languages as LANGUAGES %}
       {% get_language_info_list for LANGUAGES as languages %}
-      <nav class="flex items-center gap-3 text-sm">
-        <a href="{% url 'public_site:agency_catalog' slug=agency.slug %}" class="opacity-70 hover:opacity-100 transition font-medium">{% trans "Catalogue" %}</a>
+      <nav class="flex items-center justify-end gap-2 text-sm flex-wrap">
+        <a href="{% url 'public_site:agency_catalog' slug=agency.slug %}" class="opacity-70 hover:opacity-100 transition font-medium hidden sm:inline">{% trans "Catalogue" %}</a>
         {% for pg in nav_pages %}
           <a href="{% url 'public_site:page_detail' slug=agency.slug page_slug=pg.slug %}" class="opacity-70 hover:opacity-100 transition font-medium hidden sm:inline">{{ pg.title }}</a>
         {% endfor %}
@@ -83,7 +83,7 @@
           <a href="tel:{{ agency.public_phone }}" class="opacity-70 hover:opacity-100 transition font-medium hidden sm:inline">{% trans "Appeler" %}</a>
         {% endif %}
         <span class="opacity-20 hidden sm:inline">|</span>
-        <form action="{% url 'set_language' %}" method="post" class="flex items-center">
+        <form action="{% url 'set_language' %}" method="post" class="flex items-center shrink-0">
           {% csrf_token %}
           <input type="hidden" name="next" value="{{ request.get_full_path }}">
           <select name="language" onchange="this.form.submit()" class="rounded-lg border border-slate-200 px-2 py-1 text-[11px] bg-white/70">
@@ -96,8 +96,8 @@
           <a href="{% url 'public_site:client_dashboard' slug=agency.slug %}" class="ps-btn-outline text-xs !py-1.5 !px-3">{% trans "Mon espace" %}</a>
           <a href="{% url 'public_site:client_logout' slug=agency.slug %}" class="opacity-60 hover:opacity-100 transition text-xs font-medium">{% trans "Déconnexion" %}</a>
         {% else %}
-          <a href="{% url 'public_site:client_login' slug=agency.slug %}" class="opacity-70 hover:opacity-100 transition font-medium text-xs">{% trans "Connexion" %}</a>
-          <a href="{% url 'public_site:client_signup' slug=agency.slug %}" class="ps-btn text-xs !py-1.5 !px-3">{% trans "Créer un compte" %}</a>
+          <a href="{% url 'public_site:client_login' slug=agency.slug %}" class="opacity-70 hover:opacity-100 transition font-medium text-xs shrink-0">{% trans "Connexion" %}</a>
+          <a href="{% url 'public_site:client_signup' slug=agency.slug %}" class="ps-btn text-xs !py-1.5 !px-3 hidden sm:inline-flex">{% trans "Créer un compte" %}</a>
         {% endif %}
       </nav>
     </div>

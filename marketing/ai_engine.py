@@ -5,28 +5,29 @@ Zero external API calls — everything runs offline with heuristics.
 """
 import random
 import re
+from django.utils.translation import gettext_lazy as _
 
 # ═══════════════════════════ CONSTANTS ════════════════════════════════
 
 OBJECTIVES = [
-    ("promo", "Promotion"),
-    ("relance", "Relance"),
-    ("fidelisation", "Fidélisation"),
-    ("avis", "Avis client"),
-    ("lancement", "Lancement"),
+    ("promo", _("Promotion")),
+    ("relance", _("Relance")),
+    ("fidelisation", _("Fidélisation")),
+    ("avis", _("Avis client")),
+    ("lancement", _("Lancement")),
 ]
 
 STYLES = [
-    ("simple", "Simple"),
-    ("corporate", "Corporate"),
-    ("urgent", "Urgent"),
-    ("luxe", "Luxe"),
-    ("ultra_premium", "Ultra Premium"),
+    ("simple", _("Simple")),
+    ("corporate", _("Corporate")),
+    ("urgent", _("Urgent")),
+    ("luxe", _("Luxe")),
+    ("ultra_premium", _("Ultra Premium")),
 ]
 
 CHANNELS = [
-    ("email", "Email"),
-    ("whatsapp", "WhatsApp"),
+    ("email", _("Email")),
+    ("whatsapp", _("WhatsApp")),
 ]
 
 VARIABLES = ["{nom}", "{agence}", "{ville}", "{voiture}", "{prix}", "{lien}", "{offre}"]

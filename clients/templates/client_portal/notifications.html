@@ -3,7 +3,7 @@
 
 {% block portal_content %}
 <div class="space-y-6">
-  <h1 class="text-xl font-bold">Notifications</h1>
+  <h1 class="text-xl font-bold">{% trans "Notifications" %}</h1>
 
   {% if notifications %}
   <div class="space-y-3">
@@ -37,8 +37,8 @@
   {% else %}
   <div class="ps-card rounded-2xl border p-12 text-center" style="border-color: color-mix(in srgb, var(--text) 10%, transparent);">
     <div class="text-4xl mb-3">🔔</div>
-    <div class="font-semibold">Aucune notification</div>
-    <p class="text-sm opacity-50 mt-1">Vous serez notifié ici des mises à jour de vos réservations.</p>
+    <div class="font-semibold">{% trans "Aucune notification" %}</div>
+    <p class="text-sm opacity-50 mt-1">{% trans "Vous serez notifié ici des mises à jour de vos réservations." %}</p>
   </div>
   {% endif %}
 </div>

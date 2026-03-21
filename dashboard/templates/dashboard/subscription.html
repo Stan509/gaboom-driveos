@@ -5,355 +5,253 @@
 {% block page_subtitle %}{% trans "Gérez votre abonnement Gaboom DriveOS" %}{% endblock %}
 
 {% block page_actions %}
-<a href="{% static 'payments/instructions_fr.pdf' %}" target="_blank" class="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-gaboomViolet text-white text-sm font-semibold hover:opacity-90 transition">
-  <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3"/></svg>
-  {% trans "Instructions PDF" %}
-</a>
+ 
 {% endblock %}
 
 {% block content %}
 <!-- TEMP BUILD MARKER -->
 <div style="position:fixed;top:12px;right:12px;z-index:9999;background:#7c3aed;color:#fff;padding:4px 14px;border-radius:999px;font-size:12px;font-weight:700;box-shadow:0 2px 8px rgba(0,0,0,.25);pointer-events:none;">BUILD: ACCESS-v2</div>
-<!-- KPI Widgets -->
-<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-  <!-- Status -->
-  <div class="bg-white rounded-2xl border border-slate-200 p-5">
-    <div class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Statut</div>
-    {% if access.status == 'trial' %}
-      <span class="inline-flex items-center gap-1.5 rounded-full bg-blue-100 text-blue-800 px-3 py-1 text-sm font-bold">
-        <span class="w-2 h-2 rounded-full bg-blue-500 animate-pulse"></span>Essai gratuit
-      </span>
-    {% elif access.status == 'active' %}
-      <span class="inline-flex items-center gap-1.5 rounded-full bg-emerald-100 text-emerald-800 px-3 py-1 text-sm font-bold">
-        <span class="w-2 h-2 rounded-full bg-emerald-500"></span>Actif
-      </span>
-    {% elif access.status == 'suspended' %}
-      <span class="inline-flex items-center gap-1.5 rounded-full bg-red-100 text-red-800 px-3 py-1 text-sm font-bold">
-        <span class="w-2 h-2 rounded-full bg-red-500"></span>Suspendu
-      </span>
-    {% endif %}
-  </div>
 
-  <!-- Countdown -->
-  <div class="bg-white rounded-2xl border border-slate-200 p-5">
-    <div class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Temps restant</div>
-    {% if access.status == 'suspended' %}
-      <div class="text-2xl font-bold text-red-600">Suspendu</div>
-    {% else %}
-      <div id="countdown" class="text-2xl font-bold text-slate-900" data-deadline="{{ access.access_ends_at|date:'c' }}">
-        {{ access.countdown_label }}
-      </div>
-    {% endif %}
-  </div>
+<div class="grid grid-cols-1 lg:grid-cols-10 gap-4">
+  <div class="lg:col-span-7">
 
-  <!-- Next step -->
-  <div class="bg-white rounded-2xl border border-slate-200 p-5">
-    <div class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Prochaine étape</div>
-    {% if access.status == 'trial' %}
-      <p class="text-sm font-medium text-slate-700">Payer avant le <strong>{{ access.access_ends_at|date:"d/m/Y" }}</strong></p>
-    {% elif access.status == 'active' %}
-      <p class="text-sm font-medium text-slate-700">Renouveler avant le <strong>{{ access.access_ends_at|date:"d/m/Y" }}</strong></p>
-    {% elif access.status == 'suspended' %}
-      <p class="text-sm font-medium text-red-700">Accès bloqué — envoyez une preuve de paiement</p>
-    {% endif %}
-  </div>
-
-  <!-- Support -->
-  <div class="bg-white rounded-2xl border border-slate-200 p-5">
-    <div class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Support paiement</div>
-    <div class="space-y-1.5 text-sm">
-      <a href="https://wa.me/18295098412" target="_blank" class="flex items-center gap-2 text-emerald-600 hover:underline font-medium">
-        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/></svg>
-        WhatsApp
-      </a>
-      <a href="mailto:gaboom@programmeur.net" class="flex items-center gap-2 text-gaboomViolet hover:underline font-medium">
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 0 1-2.25 2.25h-15a2.25 2.25 0 0 1-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25m19.5 0v.243a2.25 2.25 0 0 1-1.07 1.916l-7.5 4.615a2.25 2.25 0 0 1-2.36 0L3.32 8.91a2.25 2.25 0 0 1-1.07-1.916V6.75"/></svg>
-        Email
-      </a>
-      <p class="text-xs text-slate-400 mt-1">Validation sous 24h max</p>
-    </div>
-  </div>
-</div>
-
-<!-- Suspended banner -->
-{% if access.status == 'suspended' %}
-<div class="rounded-2xl border-2 border-red-300 bg-red-50 p-5 mb-8 flex items-start gap-4">
-  <svg class="w-7 h-7 text-red-500 shrink-0 mt-0.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z"/></svg>
-  <div>
-    <h3 class="font-bold text-red-800 text-lg">Accès suspendu</h3>
-    <p class="text-sm text-red-700 mt-1">Votre abonnement a expiré. Envoyez une preuve de paiement ci-dessous pour réactiver votre compte. Toutes les fonctionnalités sont bloquées sauf cette page.</p>
-  </div>
-</div>
-{% endif %}
-
-<div class="bg-white rounded-2xl border border-slate-200 p-5 mb-8">
-  <div class="flex items-center justify-between gap-3 mb-3">
-    <div>
-      <div class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Plan actuel</div>
-      <div class="text-sm font-bold text-slate-800">{{ access.plan_name }} · ${{ access.plan_price }}</div>
-    </div>
-    <div class="text-xs text-slate-500">
-      {% if access.max_users == 0 %}Utilisateurs illimités{% else %}{{ access.max_users }} utilisateurs{% endif %}
-      ·
-      {% if access.max_vehicles == 0 %}Véhicules illimités{% else %}{{ access.max_vehicles }} véhicules{% endif %}
-    </div>
-  </div>
-  <form method="post" class="grid gap-3">
-    {% csrf_token %}
-    {% for plan in plan_cards %}
-    <label class="flex items-start gap-3 rounded-2xl border border-slate-200 p-4 hover:border-gaboomViolet transition cursor-pointer {% if access.plan_code == plan.code %}bg-violet-50 border-gaboomViolet{% endif %}">
-      <input type="radio" name="plan_code" value="{{ plan.code }}" class="mt-1.5 h-4 w-4 text-gaboomViolet focus:ring-violet-200" {% if access.plan_code == plan.code %}checked{% endif %} />
-      <div class="flex-1">
-        <div class="flex items-center justify-between gap-2">
-          <div class="text-sm font-semibold text-slate-800">{{ plan.name }}</div>
-          <div class="text-sm font-bold text-gaboomViolet">${{ plan.price }}</div>
-        </div>
-        <div class="mt-1 text-xs text-slate-500">
-          {% if plan.max_agencies == 0 %}Agences illimitées{% else %}{{ plan.max_agencies }} agence{{ plan.max_agencies|pluralize }}{% endif %}
-          ·
-          {% if plan.max_users == 0 %}Utilisateurs illimités{% else %}{{ plan.max_users }} utilisateurs{% endif %}
-          ·
-          {% if plan.max_vehicles == 0 %}Véhicules illimités{% else %}{{ plan.max_vehicles }} véhicules{% endif %}
-        </div>
-      </div>
-    </label>
-    {% endfor %}
-    <div class="flex items-center gap-2">
-      <button type="submit" class="rounded-full bg-gaboomViolet text-white px-5 py-2 text-sm font-semibold hover:opacity-90 transition">Changer de plan</button>
-      <span class="text-xs text-slate-400">Essai gratuit 3 jours · Changement immédiat</span>
-    </div>
-  </form>
-</div>
-
-<!-- ═══ Billing mode selector ═══ -->
-<div class="bg-white rounded-2xl border border-slate-200 p-5 mb-8">
-  <div class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3">Mode de paiement actuel</div>
-  <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-    <!-- Manual card -->
-    <div class="rounded-xl border-2 p-4 transition {% if billing_mode == 'manual' %}border-gaboomViolet bg-violet-50{% else %}border-slate-200{% endif %}">
-      <div class="flex items-center gap-3 mb-2">
-        <div class="h-10 w-10 rounded-xl {% if billing_mode == 'manual' %}bg-gaboomViolet text-white{% else %}bg-slate-100 text-slate-400{% endif %} flex items-center justify-center">
-          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 8.25h19.5M2.25 9h19.5m-16.5 5.25h6m-6 2.25h3m-3.75 3h15a2.25 2.25 0 0 0 2.25-2.25V6.75A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25v10.5A2.25 2.25 0 0 0 4.5 19.5Z"/></svg>
-        </div>
+    <div class="bg-white rounded-xl border border-slate-200 shadow-sm p-4">
+      <div class="flex items-center justify-between gap-3 mb-3">
         <div>
-          <div class="text-sm font-bold text-slate-800">Paiement manuel</div>
-          <div class="text-[11px] text-slate-500">Preuve de paiement + validation</div>
+          <div class="text-xs font-semibold text-slate-400 uppercase tracking-wider">{% trans "Plan" %}</div>
+          <div class="text-sm font-bold text-slate-800">{% trans "Choisissez votre plan" %}</div>
         </div>
-      </div>
-      {% if billing_mode == 'manual' %}
-      <span class="inline-flex items-center gap-1 rounded-full bg-gaboomViolet text-white px-2.5 py-0.5 text-[11px] font-bold">
-        <span class="w-1.5 h-1.5 rounded-full bg-white"></span>Actif
-      </span>
-      {% endif %}
-    </div>
-
-    <!-- PayPal card -->
-    {% if paypal_enabled or billing_mode == 'paypal' %}
-    <div class="rounded-xl border-2 p-4 transition {% if billing_mode == 'paypal' %}border-blue-500 bg-blue-50{% else %}border-slate-200{% endif %}">
-      <div class="flex items-center gap-3 mb-2">
-        <div class="h-10 w-10 rounded-xl {% if billing_mode == 'paypal' %}bg-blue-500 text-white{% else %}bg-slate-100 text-slate-400{% endif %} flex items-center justify-center">
-          <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M7.076 21.337H2.47a.641.641 0 0 1-.633-.74L4.944 3.72a.77.77 0 0 1 .757-.644h6.568c2.175 0 3.706.563 4.553 1.674.393.515.635 1.082.725 1.692.095.636.047 1.39-.143 2.306l-.005.025v.463l.36.204c.305.168.548.365.734.592.312.38.514.854.6 1.41.088.574.059 1.24-.084 1.979-.165.852-.432 1.593-.793 2.2a4.453 4.453 0 0 1-1.256 1.418c-.49.357-1.07.62-1.724.78-.635.155-1.36.233-2.153.233h-.512a1.54 1.54 0 0 0-1.52 1.3l-.039.21-.654 4.14-.03.152a.77.77 0 0 1-.757.643H7.076Z"/></svg>
-        </div>
-        <div>
-          <div class="text-sm font-bold text-slate-800">PayPal automatique</div>
-          <div class="text-[11px] text-slate-500">Renouvellement auto chaque mois</div>
-        </div>
-      </div>
-      {% if billing_mode == 'paypal' and paypal_status == 'active' %}
-      <span class="inline-flex items-center gap-1 rounded-full bg-blue-500 text-white px-2.5 py-0.5 text-[11px] font-bold">
-        <span class="w-1.5 h-1.5 rounded-full bg-white animate-pulse"></span>PayPal actif
-      </span>
-      {% elif billing_mode == 'paypal' and paypal_status == 'cancelled' %}
-      <span class="inline-flex items-center gap-1 rounded-full bg-red-100 text-red-700 px-2.5 py-0.5 text-[11px] font-bold">Annule</span>
-      {% elif billing_mode == 'paypal' and paypal_status == 'suspended' %}
-      <span class="inline-flex items-center gap-1 rounded-full bg-amber-100 text-amber-700 px-2.5 py-0.5 text-[11px] font-bold">Suspendu</span>
-      {% elif billing_mode != 'paypal' %}
-      <form method="post" action="{% url 'dashboard:start_paypal' %}">{% csrf_token %}
-        <button type="submit" class="mt-1 px-4 py-1.5 rounded-lg bg-blue-500 text-white text-xs font-semibold hover:bg-blue-600 transition">
-          S'abonner via PayPal
-        </button>
-      </form>
-      {% endif %}
-    </div>
-    {% endif %}
-  </div>
-</div>
-
-{% if billing_mode == 'paypal' and paypal_status == 'active' %}
-<!-- ═══ PayPal active info ═══ -->
-<div class="rounded-2xl border-2 border-blue-200 bg-blue-50 p-5 mb-8 flex items-start gap-4">
-  <div class="h-10 w-10 rounded-xl bg-blue-500 text-white flex items-center justify-center shrink-0">
-    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M7.076 21.337H2.47a.641.641 0 0 1-.633-.74L4.944 3.72a.77.77 0 0 1 .757-.644h6.568c2.175 0 3.706.563 4.553 1.674.393.515.635 1.082.725 1.692.095.636.047 1.39-.143 2.306l-.005.025v.463l.36.204c.305.168.548.365.734.592.312.38.514.854.6 1.41.088.574.059 1.24-.084 1.979-.165.852-.432 1.593-.793 2.2a4.453 4.453 0 0 1-1.256 1.418c-.49.357-1.07.62-1.724.78-.635.155-1.36.233-2.153.233h-.512a1.54 1.54 0 0 0-1.52 1.3l-.039.21-.654 4.14-.03.152a.77.77 0 0 1-.757.643H7.076Z"/></svg>
-  </div>
-  <div class="flex-1">
-    <h3 class="font-bold text-blue-800 text-sm">Abonnement PayPal actif</h3>
-    <p class="text-xs text-blue-700 mt-1">Renouvellement automatique — aucune preuve requise.</p>
-    {% if paypal_subscription_id %}
-    <p class="text-[11px] text-blue-600 mt-1">ID: {{ paypal_subscription_id }}</p>
-    {% endif %}
-    {% if pp_sub and pp_sub.next_billing_time %}
-    <p class="text-[11px] text-blue-600 mt-1">Prochaine facturation: {{ pp_sub.next_billing_time|date:"d/m/Y" }}</p>
-    {% endif %}
-    {% if pp_sub and pp_sub.payer_email %}
-    <p class="text-[11px] text-blue-500 mt-0.5">Compte: {{ pp_sub.payer_email }}</p>
-    {% endif %}
-    {% if paypal_last_event_at %}
-    <p class="text-[11px] text-blue-500 mt-0.5">Dernier event: {{ paypal_last_event_at|date:"d/m/Y H:i" }}</p>
-    {% endif %}
-    <a href="https://www.paypal.com/myaccount/autopay/" target="_blank" class="inline-flex items-center gap-1 mt-2 text-xs font-semibold text-blue-600 hover:underline">
-      Gerer sur PayPal
-      <svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 0 0 3 8.25v10.5A2.25 2.25 0 0 0 5.25 21h10.5A2.25 2.25 0 0 0 18 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25"/></svg>
-    </a>
-  </div>
-</div>
-{% endif %}
-
-<div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-
-  {% if billing_mode == 'manual' %}
-  <!-- Payment instructions (manual only) -->
-  <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden">
-    <div class="px-5 py-3 border-b border-slate-100 flex items-center gap-2">
-      <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 8.25h19.5M2.25 9h19.5m-16.5 5.25h6m-6 2.25h3m-3.75 3h15a2.25 2.25 0 0 0 2.25-2.25V6.75A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25v10.5A2.25 2.25 0 0 0 4.5 19.5Z"/></svg>
-      <h3 class="text-sm font-semibold text-slate-700">Paiement securise</h3>
-    </div>
-    <div class="p-5">
-      <p class="text-sm text-slate-600 mb-4">Telechargez les instructions de paiement dans votre langue. Elles contiennent les moyens de paiement acceptes, les references a utiliser et les etapes a suivre.</p>
-
-      <div class="grid grid-cols-2 gap-3 mb-5">
-        <a href="{% static 'payments/instructions_fr.pdf' %}" target="_blank" class="flex items-center gap-2 rounded-xl border border-slate-200 px-4 py-3 text-sm font-semibold text-slate-700 hover:border-gaboomViolet hover:text-gaboomViolet transition">
-          <span class="text-lg">🇫🇷</span> Francais
-        </a>
-        <a href="{% static 'payments/instructions_en.pdf' %}" target="_blank" class="flex items-center gap-2 rounded-xl border border-slate-200 px-4 py-3 text-sm font-semibold text-slate-700 hover:border-gaboomViolet hover:text-gaboomViolet transition">
-          <span class="text-lg">🇬🇧</span> English
-        </a>
-        <a href="{% static 'payments/instructions_es.pdf' %}" target="_blank" class="flex items-center gap-2 rounded-xl border border-slate-200 px-4 py-3 text-sm font-semibold text-slate-700 hover:border-gaboomViolet hover:text-gaboomViolet transition">
-          <span class="text-lg">🇪🇸</span> Espanol
-        </a>
-        <a href="{% static 'payments/instructions_ht.pdf' %}" target="_blank" class="flex items-center gap-2 rounded-xl border border-slate-200 px-4 py-3 text-sm font-semibold text-slate-700 hover:border-gaboomViolet hover:text-gaboomViolet transition">
-          <span class="text-lg">🇭🇹</span> Kreyol
-        </a>
+        <div id="copyToast" class="hidden text-[11px] font-semibold text-emerald-700 bg-emerald-50 border border-emerald-200 px-2.5 py-1 rounded-full">{% trans "Copié" %} ✅</div>
       </div>
 
-      <div class="flex items-center gap-3 text-xs text-slate-400">
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75m-3-7.036A11.959 11.959 0 0 1 3.598 6 11.99 11.99 0 0 0 3 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285Z"/></svg>
-        Paiement verifie manuellement par notre equipe
-      </div>
-    </div>
-  </div>
-
-  <!-- Proof upload (manual only) -->
-  <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden">
-    <div class="px-5 py-3 border-b border-slate-100 flex items-center gap-2">
-      <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5m-13.5-9L12 3m0 0 4.5 4.5M12 3v13.5"/></svg>
-      <h3 class="text-sm font-semibold text-slate-700">Preuve de paiement</h3>
-    </div>
-    <div class="p-5">
-      {% if latest_proof and latest_proof.status == 'pending' %}
-      <div class="rounded-xl bg-amber-50 border border-amber-200 p-4 mb-4 flex items-start gap-3">
-        <svg class="w-5 h-5 text-amber-500 shrink-0 mt-0.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/></svg>
-        <div>
-          <p class="text-sm font-semibold text-amber-800">Preuve en cours de verification</p>
-          <p class="text-xs text-amber-700 mt-0.5">Envoyee le {{ latest_proof.uploaded_at|date:"d/m/Y H:i" }}. Validation sous 24h max.</p>
-        </div>
-      </div>
-      {% elif latest_proof and latest_proof.status == 'rejected' %}
-      <div class="rounded-xl bg-red-50 border border-red-200 p-4 mb-4 flex items-start gap-3">
-        <svg class="w-5 h-5 text-red-500 shrink-0 mt-0.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m9-.75a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 3.75h.008v.008H12v-.008Z"/></svg>
-        <div>
-          <p class="text-sm font-semibold text-red-800">Preuve rejetee</p>
-          <p class="text-xs text-red-700 mt-0.5">{{ latest_proof.review_note|default:"Preuve non conforme." }}</p>
-          <p class="text-xs text-red-600 mt-1">Veuillez renvoyer une nouvelle preuve ci-dessous.</p>
-        </div>
-      </div>
-      {% endif %}
-
-      {% if not latest_proof or latest_proof.status != 'pending' %}
-      <form method="post" enctype="multipart/form-data" class="space-y-4">
+      <form method="post" id="planForm" class="space-y-4">
         {% csrf_token %}
-        <div>
-          <label class="block text-sm font-medium text-slate-700 mb-1.5">Capture d'ecran ou photo du recu</label>
-          <div class="relative">
-            <input type="file" name="proof_image" accept="image/jpeg,image/png,image/webp" required
-              class="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm file:mr-4 file:py-1 file:px-3 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-gaboomViolet/10 file:text-gaboomViolet hover:file:bg-gaboomViolet/20 transition" />
-          </div>
-          <p class="text-xs text-slate-400 mt-1">JPG, PNG ou WebP — max 5 Mo</p>
-        </div>
-        <button type="submit" class="w-full py-2.5 rounded-xl bg-gaboomViolet text-white font-semibold text-sm hover:opacity-90 transition flex items-center justify-center gap-2">
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 12 3.269 3.125A59.769 59.769 0 0 1 21.485 12 59.768 59.768 0 0 1 3.27 20.875L5.999 12Zm0 0h7.5"/></svg>
-          Envoyer la preuve
-        </button>
-      </form>
-      {% endif %}
 
-      <!-- Proof history -->
-      {% if proofs %}
-      <div class="mt-6 border-t border-slate-100 pt-4">
-        <h4 class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3">Historique</h4>
-        <div class="space-y-3">
-          {% for p in proofs %}
-          <div class="flex items-start gap-3 text-sm">
-            <div class="w-2.5 h-2.5 rounded-full mt-1.5 shrink-0
-              {% if p.status == 'approved' %}bg-emerald-500
-              {% elif p.status == 'rejected' %}bg-red-500
-              {% else %}bg-amber-400{% endif %}"></div>
-            <div class="min-w-0 flex-1">
-              <div class="flex items-center gap-2">
-                <span class="font-medium text-slate-700">{{ p.get_status_display }}</span>
-                <span class="text-xs text-slate-400">{{ p.uploaded_at|date:"d/m/Y H:i" }}</span>
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+          {% for plan in plan_cards %}
+          <label class="rounded-xl border p-3 cursor-pointer transition hover:border-gaboomViolet hover:shadow-sm {% if access.plan_code == plan.code %}border-gaboomViolet bg-violet-50{% else %}border-slate-200 bg-white{% endif %}">
+            <input type="radio" name="plan_code" value="{{ plan.code }}" class="sr-only plan-radio" data-price="{{ plan.price }}" data-name="{{ plan.name }}" {% if access.plan_code == plan.code %}checked{% endif %} />
+            <div class="flex items-start justify-between gap-2">
+              <div>
+                <div class="text-sm font-bold text-slate-800">{{ plan.name }}</div>
+                <div class="text-[11px] text-slate-500 mt-0.5">{% trans "Mensuel" %}</div>
               </div>
-              {% if p.review_note %}
-              <p class="text-xs text-slate-500 mt-0.5">{{ p.review_note }}</p>
-              {% endif %}
+              <div class="text-sm font-extrabold text-gaboomViolet">${{ plan.price }}</div>
             </div>
-            <a href="{{ p.image.url }}" target="_blank" class="text-xs text-gaboomViolet hover:underline shrink-0">{% trans "Voir" %}</a>
-          </div>
+          </label>
           {% endfor %}
         </div>
+
+        <div class="flex flex-col sm:flex-row sm:items-center gap-2">
+          <button type="submit" class="rounded-lg bg-gaboomViolet text-white px-4 py-2 text-sm font-semibold hover:opacity-90 transition">{% trans "Changer de plan" %}</button>
+          <span class="text-xs text-slate-400">{% trans "Essai gratuit 3 jours · Changement immédiat" %}</span>
+        </div>
+      </form>
+
+      <div class="border-t border-slate-100 my-4"></div>
+
+      <div class="space-y-4">
+        <div class="flex items-center justify-between gap-3">
+          <div>
+            <div class="text-xs font-semibold text-slate-400 uppercase tracking-wider">{% trans "Paiement" %}</div>
+            <div class="text-sm font-bold text-slate-800">{% trans "Choisissez votre mode de paiement" %}</div>
+          </div>
+          <div class="text-right">
+            <div class="text-xs text-slate-500">{% trans "Total à payer" %}</div>
+            <div class="text-lg font-extrabold text-slate-900">$<span id="payTotal">{{ access.plan_price }}</span></div>
+            <div class="text-[11px] text-slate-400">{% trans "Frais inclus" %}</div>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
+          <label class="rounded-lg border border-slate-200 p-2.5 hover:border-gaboomViolet transition cursor-pointer flex items-center justify-between">
+            <span class="flex items-center gap-2 text-sm font-semibold text-slate-800">
+              <input type="radio" name="pay_method" value="crypto" class="h-4 w-4 text-gaboomViolet focus:ring-violet-200 method-radio" checked />
+              {% trans "Crypto" %}
+            </span>
+            <span class="text-[10px] font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-full">{% trans "Recommandé" %}</span>
+          </label>
+          <label class="rounded-lg border border-slate-200 p-2.5 hover:border-gaboomViolet transition cursor-pointer flex items-center gap-2 text-sm font-semibold text-slate-800">
+            <input type="radio" name="pay_method" value="zelle" class="h-4 w-4 text-gaboomViolet focus:ring-violet-200 method-radio" />
+            {% trans "Zelle" %}
+          </label>
+          <label class="rounded-lg border border-slate-200 p-2.5 hover:border-gaboomViolet transition cursor-pointer flex items-center gap-2 text-sm font-semibold text-slate-800">
+            <input type="radio" name="pay_method" value="bank" class="h-4 w-4 text-gaboomViolet focus:ring-violet-200 method-radio" />
+            {% trans "Bank" %}
+          </label>
+        </div>
+
+        <div class="rounded-xl border border-slate-200 bg-white dark:bg-slate-900 dark:border-slate-700 p-3">
+          <div id="instCrypto" class="space-y-3">
+            <div class="flex items-start justify-between gap-3">
+              <div class="min-w-0">
+                <div class="text-sm font-bold text-slate-800 dark:text-slate-200">{% trans "Wallet" %} <span class="text-xs font-semibold text-emerald-700 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-full ml-1">{% trans "USDT BEP20" %}</span></div>
+                <div class="mt-1 font-mono text-xs text-slate-700 dark:text-slate-300 break-all" id="walletAddress">0xc2e792672e1b10c6c673c5d9f7e7eb84abc22263</div>
+              </div>
+              <button type="button" class="shrink-0 px-3 py-2 rounded-lg bg-white border border-slate-200 text-slate-700 text-xs font-semibold hover:bg-slate-50 transition" onclick="copyText('0xc2e792672e1b10c6c673c5d9f7e7eb84abc22263')">{% trans "Copier" %}</button>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 items-center">
+              <div class="sm:col-span-2">
+                <label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1">{% trans "TXID" %}</label>
+                <input type="text" class="w-full rounded-lg border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 px-3 py-2 text-sm focus:border-violet-400 focus:ring-1 focus:ring-violet-400 outline-none" placeholder="{% trans 'Collez votre TXID ici' %}" />
+              </div>
+              <div class="flex sm:justify-end">
+                <img id="cryptoQr" alt="QR" class="w-20 h-20 rounded-lg border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700" />
+              </div>
+            </div>
+          </div>
+
+          <div id="instZelle" class="hidden space-y-2">
+            <div class="flex items-start justify-between gap-3">
+              <div>
+                <div class="text-sm font-bold text-slate-800 dark:text-slate-200">{% trans "Zelle" %}</div>
+                <div class="text-xs text-slate-500 dark:text-slate-400 mt-1">{% trans "Telephone" %}</div>
+                <div class="mt-1 font-mono text-xs text-slate-700 dark:text-slate-300" id="zellePhone">8455874927</div>
+                <div class="text-xs text-slate-500 dark:text-slate-400 mt-2">{% trans "Envoyez exactement le montant via Zelle" %}</div>
+              </div>
+              <button type="button" class="shrink-0 px-3 py-2 rounded-lg bg-white border border-slate-200 text-slate-700 text-xs font-semibold hover:bg-slate-50 transition" onclick="copyText('8455874927')">{% trans "Copier" %}</button>
+            </div>
+          </div>
+
+          <div id="instBank" class="hidden space-y-2">
+            <div class="flex items-start justify-between gap-3">
+              <div class="min-w-0">
+                <div class="text-sm font-bold text-slate-800 dark:text-slate-200">{% trans "Bank Transfer" %}</div>
+                <div class="text-xs text-slate-500 dark:text-slate-400 mt-2">Chase</div>
+                <div class="mt-1 text-xs text-slate-700 dark:text-slate-300"><span class="text-slate-500 dark:text-slate-400">{% trans "Account" %}:</span> <span class="font-mono">707282631</span></div>
+                <div class="mt-1 text-xs text-slate-700 dark:text-slate-300"><span class="text-slate-500 dark:text-slate-400">{% trans "Routing" %}:</span> <span class="font-mono">021000021</span></div>
+              </div>
+              <div class="shrink-0 flex flex-col gap-2">
+                <button type="button" class="px-3 py-2 rounded-lg bg-white border border-slate-200 text-slate-700 text-xs font-semibold hover:bg-slate-50 transition" onclick="copyText('707282631')">{% trans "Copier" %} {% trans "Account" %}</button>
+                <button type="button" class="px-3 py-2 rounded-lg bg-white border border-slate-200 text-slate-700 text-xs font-semibold hover:bg-slate-50 transition" onclick="copyText('021000021')">{% trans "Copier" %} {% trans "Routing" %}</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="flex flex-col sm:flex-row gap-2">
+          <button type="button" class="flex-1 rounded-lg bg-slate-900 text-white px-4 py-2.5 text-sm font-semibold hover:bg-slate-800 transition" onclick="document.getElementById('proofBlock').scrollIntoView({behavior: 'smooth', block: 'start'});">{% trans "J'AI PAYÉ" %}</button>
+        </div>
+
+        <div id="proofBlock" class="rounded-xl border border-slate-200 p-3">
+          <div class="text-sm font-bold text-slate-800">{% trans "Confirmer mon paiement" %}</div>
+          <div class="text-xs text-slate-500 mt-0.5">{% trans "Ajoutez une capture (optionnel) pour accélérer la validation." %}</div>
+
+          <div class="mt-3">
+            {% if latest_proof and latest_proof.status == 'pending' %}
+              <div class="rounded-lg bg-amber-50 border border-amber-200 p-3 mb-3">
+                <div class="text-sm font-semibold text-amber-800">{% trans "Paiement en attente de validation" %}</div>
+                <div class="text-xs text-amber-700 mt-0.5">{% trans "Envoyee le" %} {{ latest_proof.uploaded_at|date:"d/m/Y H:i" }}. {% trans "Validation sous 24h max." %}</div>
+              </div>
+            {% elif latest_proof and latest_proof.status == 'rejected' %}
+              <div class="rounded-lg bg-red-50 border border-red-200 p-3 mb-3">
+                <div class="text-sm font-semibold text-red-800">{% trans "Preuve rejetee" %}</div>
+                <div class="text-xs text-red-700 mt-0.5">{{ latest_proof.review_note|default:"Preuve non conforme." }}</div>
+                <div class="text-xs text-red-600 mt-1">{% trans "Veuillez renvoyer une nouvelle preuve ci-dessous." %}</div>
+              </div>
+            {% endif %}
+
+            {% if not latest_proof or latest_proof.status != 'pending' %}
+            <form method="post" enctype="multipart/form-data" class="space-y-3">
+              {% csrf_token %}
+              <div>
+                <div id="dropZone" class="rounded-lg border-2 border-dashed border-slate-200 dark:border-slate-600 bg-slate-50 dark:bg-slate-800 px-4 py-4 hover:border-violet-300 transition">
+                  <div class="flex items-center justify-between gap-3">
+                    <div>
+                      <div class="text-sm font-semibold text-slate-700 dark:text-slate-300">{% trans "Glissez-déposez votre preuve" %}</div>
+                      <div class="text-xs text-slate-400 dark:text-slate-500 mt-0.5">{% trans "JPG, PNG ou WebP — max 5 Mo" %}</div>
+                    </div>
+                    <label class="shrink-0 rounded-lg bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 px-3 py-2 text-xs font-semibold text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-600 transition cursor-pointer">
+                      {% trans "Choisir un fichier" %}
+                      <input id="proofInput" type="file" name="proof_image" accept="image/jpeg,image/png,image/webp" required class="hidden" />
+                    </label>
+                  </div>
+                  <div id="fileName" class="text-xs text-slate-500 dark:text-slate-400 mt-2 hidden"></div>
+                </div>
+              </div>
+              <button type="submit" class="w-full py-2.5 rounded-lg bg-gaboomViolet text-white font-semibold text-sm hover:opacity-90 transition">{% trans "Confirmer mon paiement" %}</button>
+            </form>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    {% if billing_mode == 'paypal' %}
+    <div class="mt-4">
+      <div class="bg-white rounded-xl border border-slate-200 overflow-hidden">
+        <div class="px-4 py-3 border-b border-slate-100 flex items-center gap-2">
+          <svg class="w-4 h-4 text-blue-500" fill="currentColor" viewBox="0 0 24 24"><path d="M7.076 21.337H2.47a.641.641 0 0 1-.633-.74L4.944 3.72a.77.77 0 0 1 .757-.644h6.568c2.175 0 3.706.563 4.553 1.674.393.515.635 1.082.725 1.692.095.636.047 1.39-.143 2.306l-.005.025v.463l.36.204c.305.168.548.365.734.592.312.38.514.854.6 1.41.088.574.059 1.24-.084 1.979-.165.852-.432 1.593-.793 2.2a4.453 4.453 0 0 1-1.256 1.418c-.49.357-1.07.62-1.724.78-.635.155-1.36.233-2.153.233h-.512a1.54 1.54 0 0 0-1.52 1.3l-.039.21-.654 4.14-.03.152a.77.77 0 0 1-.757.643H7.076Z"/></svg>
+          <h3 class="text-sm font-semibold text-slate-700">{% trans "Details PayPal" %}</h3>
+        </div>
+        <div class="p-4">
+          <div class="text-xs text-slate-500">{% trans "Mode PayPal actif sur ce compte." %}</div>
+        </div>
+      </div>
+    </div>
+    {% endif %}
+
+  </div>
+
+  <div class="lg:col-span-3">
+    <div class="lg:sticky lg:top-4 space-y-4">
+
+      <div class="bg-white rounded-xl border border-slate-200 shadow-sm p-4">
+        <div class="flex items-start justify-between gap-3">
+          <div>
+            <div class="text-xs font-semibold text-slate-400 uppercase tracking-wider">{% trans "Statut" %}</div>
+            {% if access.status == 'trial' %}
+              <div class="mt-1 inline-flex items-center gap-1.5 rounded-full bg-blue-100 text-blue-800 px-3 py-1 text-sm font-bold"><span class="w-2 h-2 rounded-full bg-blue-500 animate-pulse"></span>{% trans "Essai gratuit" %}</div>
+            {% elif access.status == 'active' %}
+              <div class="mt-1 inline-flex items-center gap-1.5 rounded-full bg-emerald-100 text-emerald-800 px-3 py-1 text-sm font-bold"><span class="w-2 h-2 rounded-full bg-emerald-500"></span>{% trans "Actif" %}</div>
+            {% elif access.status == 'suspended' %}
+              <div class="mt-1 inline-flex items-center gap-1.5 rounded-full bg-red-100 text-red-800 px-3 py-1 text-sm font-bold"><span class="w-2 h-2 rounded-full bg-red-500"></span>{% trans "Suspendu" %}</div>
+            {% endif %}
+          </div>
+          <div class="text-right">
+            <div class="text-xs font-semibold text-slate-400 uppercase tracking-wider">{% trans "Temps restant" %}</div>
+            {% if access.status == 'suspended' %}
+              <div class="text-lg font-extrabold text-red-600">{% trans "Suspendu" %}</div>
+            {% else %}
+              <div id="countdown" class="text-lg font-extrabold text-slate-900" data-deadline="{{ access.access_ends_at|date:'c' }}">{{ access.countdown_label }}</div>
+            {% endif %}
+          </div>
+        </div>
+        <div class="mt-3 rounded-lg bg-slate-50 border border-slate-200 p-3">
+          <div class="text-xs font-semibold text-slate-400 uppercase tracking-wider">{% trans "Plan actuel" %}</div>
+          <div class="text-sm font-bold text-slate-800 mt-0.5">{{ access.plan_name }} · ${{ access.plan_price }}</div>
+          <div class="text-xs text-slate-500 mt-1">
+            {% if access.max_users == 0 %}{% trans "Utilisateurs illimités" %}{% else %}{{ access.max_users }} {% trans "utilisateurs" %}{% endif %}
+            ·
+            {% if access.max_vehicles == 0 %}{% trans "Véhicules illimités" %}{% else %}{{ access.max_vehicles }} {% trans "véhicules" %}{% endif %}
+          </div>
+        </div>
+      </div>
+
+      {% if access.status == 'suspended' %}
+      <div class="rounded-xl border border-red-300 bg-red-50 p-4">
+        <div class="font-bold text-red-800">{% trans "Accès suspendu" %}</div>
+        <div class="text-sm text-red-700 mt-1">{% trans "Votre abonnement a expiré. Envoyez une preuve de paiement pour réactiver." %}</div>
       </div>
       {% endif %}
-    </div>
-  </div>
-  {% endif %}
 
-  {% if billing_mode == 'paypal' %}
-  <!-- PayPal mode: no proof upload needed -->
-  <div class="lg:col-span-2 bg-white rounded-2xl border border-slate-200 overflow-hidden">
-    <div class="px-5 py-3 border-b border-slate-100 flex items-center gap-2">
-      <svg class="w-4 h-4 text-blue-500" fill="currentColor" viewBox="0 0 24 24"><path d="M7.076 21.337H2.47a.641.641 0 0 1-.633-.74L4.944 3.72a.77.77 0 0 1 .757-.644h6.568c2.175 0 3.706.563 4.553 1.674.393.515.635 1.082.725 1.692.095.636.047 1.39-.143 2.306l-.005.025v.463l.36.204c.305.168.548.365.734.592.312.38.514.854.6 1.41.088.574.059 1.24-.084 1.979-.165.852-.432 1.593-.793 2.2a4.453 4.453 0 0 1-1.256 1.418c-.49.357-1.07.62-1.724.78-.635.155-1.36.233-2.153.233h-.512a1.54 1.54 0 0 0-1.52 1.3l-.039.21-.654 4.14-.03.152a.77.77 0 0 1-.757.643H7.076Z"/></svg>
-      <h3 class="text-sm font-semibold text-slate-700">Details PayPal</h3>
-    </div>
-    <div class="p-5">
-      <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 text-sm">
-        <div>
-          <div class="text-[11px] text-slate-400 uppercase tracking-wider mb-1">Statut</div>
-          {% if paypal_status == 'active' %}
-          <span class="inline-flex items-center gap-1 rounded-full bg-emerald-100 text-emerald-800 px-2 py-0.5 text-xs font-bold"><span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>Actif</span>
-          {% elif paypal_status == 'cancelled' %}
-          <span class="rounded-full bg-red-100 text-red-800 px-2 py-0.5 text-xs font-bold">Annule</span>
-          {% elif paypal_status == 'suspended' %}
-          <span class="rounded-full bg-amber-100 text-amber-800 px-2 py-0.5 text-xs font-bold">Suspendu</span>
-          {% else %}
-          <span class="rounded-full bg-slate-100 text-slate-600 px-2 py-0.5 text-xs font-bold">{{ paypal_status }}</span>
-          {% endif %}
-        </div>
-        <div>
-          <div class="text-[11px] text-slate-400 uppercase tracking-wider mb-1">Subscription ID</div>
-          <div class="text-slate-700 font-mono text-xs">{{ paypal_subscription_id|default:"—" }}</div>
-        </div>
-        <div>
-          <div class="text-[11px] text-slate-400 uppercase tracking-wider mb-1">Dernier event</div>
-          <div class="text-slate-700">{{ paypal_last_event_at|date:"d/m/Y H:i"|default:"—" }}</div>
-        </div>
-        <div>
-          <div class="text-[11px] text-slate-400 uppercase tracking-wider mb-1">Filet securite</div>
-          <div class="text-slate-700">{{ access.access_ends_at|date:"d/m/Y" }}</div>
+      <div class="bg-white rounded-xl border border-slate-200 shadow-sm p-4">
+        <div class="text-xs font-semibold text-slate-400 uppercase tracking-wider">{% trans "Support paiement" %}</div>
+        <div class="mt-2 grid grid-cols-1 gap-2">
+          <a href="https://wa.me/18295098412" target="_blank" class="inline-flex items-center justify-center gap-2 rounded-lg bg-emerald-600 text-white px-4 py-2 text-sm font-semibold hover:bg-emerald-700 transition">
+            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/></svg>
+            {% trans "WhatsApp" %}
+          </a>
+          <a href="mailto:gaboom@programmeur.net" class="inline-flex items-center justify-center gap-2 rounded-lg bg-slate-900 text-white px-4 py-2 text-sm font-semibold hover:bg-slate-800 transition">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 0 1-2.25 2.25h-15a2.25 2.25 0 0 1-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25m19.5 0v.243a2.25 2.25 0 0 1-1.07 1.916l-7.5 4.615a2.25 2.25 0 0 1-2.36 0L3.32 8.91a2.25 2.25 0 0 1-1.07-1.916V6.75"/></svg>
+            {% trans "Email" %}
+          </a>
+          <div class="text-xs text-slate-400">{% trans "Validation sous 24h max" %}</div>
         </div>
       </div>
-      <p class="text-xs text-slate-400 mt-4">L'envoi de preuve n'est pas necessaire en mode PayPal. Le renouvellement est automatique.</p>
+
     </div>
   </div>
-  {% endif %}
 </div>
 
 <!-- Countdown script -->
@@ -366,7 +264,7 @@
   function update() {
     const now = Date.now();
     const diff = deadline - now;
-    if (diff <= 0) { el.textContent = 'Expiré'; return; }
+    if (diff <= 0) { el.textContent = '{% trans "Expiré" %}'; return; }
     const d = Math.floor(diff / 86400000);
     const h = Math.floor((diff % 86400000) / 3600000);
     const m = Math.floor((diff % 3600000) / 60000);
@@ -377,6 +275,141 @@
   update();
   setInterval(update, 60000);
 })();
+
+function copyText(text){
+  if (!text) return;
+  const toast = document.getElementById('copyToast');
+  function showToast(){
+    if (!toast) return;
+    toast.classList.remove('hidden');
+    clearTimeout(window.__copyToastTimer);
+    window.__copyToastTimer = setTimeout(function(){toast.classList.add('hidden');}, 1200);
+  }
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(text).then(showToast).catch(function(){
+      try{
+        const ta = document.createElement('textarea');
+        ta.value = text;
+        ta.setAttribute('readonly','');
+        ta.style.position = 'fixed';
+        ta.style.top = '-9999px';
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand('copy');
+        document.body.removeChild(ta);
+        showToast();
+      }catch(e){}
+    });
+  } else {
+    try{
+      const ta = document.createElement('textarea');
+      ta.value = text;
+      ta.setAttribute('readonly','');
+      ta.style.position = 'fixed';
+      ta.style.top = '-9999px';
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand('copy');
+      document.body.removeChild(ta);
+      showToast();
+    }catch(e){}
+  }
+}
 </script>
 {% endif %}
+
+<script>
+// Dynamic payment method + total
+(function(){
+  const methodRadios = document.querySelectorAll('.method-radio');
+  const payTotal = document.getElementById('payTotal');
+  const instCrypto = document.getElementById('instCrypto');
+  const instZelle = document.getElementById('instZelle');
+  const instBank = document.getElementById('instBank');
+  const planRadios = document.querySelectorAll('.plan-radio');
+  const cryptoQr = document.getElementById('cryptoQr');
+
+  // Base price from current plan
+  let basePrice = parseFloat('{{ access.plan_price }}');
+
+  // Update total based on method
+  function updateTotal(){
+    const method = document.querySelector('.method-radio:checked')?.value || 'crypto';
+    let total = basePrice;
+    if (method === 'zelle') total = basePrice * 1.01;
+    if (method === 'bank') total = basePrice * 1.015;
+    if (payTotal) payTotal.textContent = total.toFixed(2);
+  }
+
+  // Show/hide instructions
+  function showInstructions(){
+    const method = document.querySelector('.method-radio:checked')?.value || 'crypto';
+    if (instCrypto) instCrypto.classList.toggle('hidden', method !== 'crypto');
+    if (instZelle) instZelle.classList.toggle('hidden', method !== 'zelle');
+    if (instBank) instBank.classList.toggle('hidden', method !== 'bank');
+    updateTotal();
+  }
+
+  // Update base price on plan change
+  function updateBasePrice(){
+    const checked = document.querySelector('.plan-radio:checked');
+    if (checked && checked.dataset.price) {
+      basePrice = parseFloat(checked.dataset.price);
+      updateTotal();
+    }
+  }
+
+  // QR code (placeholder - will be replaced with real QR)
+  function setQrPlaceholder(){
+    if (cryptoQr) {
+      // Placeholder QR - will be replaced with real QR code
+      cryptoQr.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iODAiIGhlaWdodD0iODAiIHZpZXdCb3g9IjAgMCA4MCA4MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjgwIiBoZWlnaHQ9IjgwIiBmaWxsPSIjRjNGNEY2Ii8+CjxwYXRoIGQ9Ik0xMCAxMEgxMFYxMEgxMFYxMFpNMjAgMTBIMTBWMTBIMTBWMTBaTTEwIDIwSDEwVjEwSDEwVjIwWk0zMCAxMEgyMFYxMEgyMFYxMFpNNDAgMTBIMzBWMTBIMzBWMTBaTTEwIDMwSDEwVjIwSDEwVjMwWk0yMCAzMEgxMFYyMEgxMFYzMFpNNTAgMTBINDBWMTBINFYxMFpNNjAgMTBINTBWMTBINFYxMFpNNzAgMTBINjBWMTBINlYxMFpNMTAgNDBIMTBWMzBIMTBWNDBaTTIwIDQwSDEwVjQwSDEwVjQwWk0zMCA0MEgyMFY0MEgyMFY0MFpNNDAgNDBIMzBWNDBIMzBWNDBaTTUwIDQwSDQwVjQwSDQwVjQwWk02MCA0MEg1MFY0MEg1MFY0MFpNNzAgNDAgNjBWNDAgNjA0MFpNMTAgNTBIMTBWNTBIMTBWNTBaTTIwIDUwSDEwVjUwSDEwVjUwWk0zMCA1MEgyMFY1MEgyMFY1MFpNNDAgNTBIMzBWNTBIMzBWNTBaTTUwIDUwSDQwVjUwSDQwVjUwWk02MCA1MEg1MFY1MEg1MFY1MFpNNzAgNTAgNjBWNTAgNjA1MFpNMTAgNjBIMTBWNjBIMTBWNjBaTTIwIDYwSDEwVjYwSDEwVjYwWk0zMCA2MEgyMVY2MEgyMVY2MFpNNDAgNjBIMzBWNjBIMzBWNjBaTTUwIDYwSDQwVjYwSDQwVjYwWk02MCA2MEg1MFY2MEg1MFY2MFpNNzAgNjAgNjBWNjAgNjA2MFpNMTAgNzBIMTBWNzBIMTBWNzBaTTIwIDcwSDEwVjcwSDEwVjcwWk0zMCA3MEgyMVY3MEgyMVY3MFpNNDAgNzBIMzBWNzBIMzBWNzBaTTUwIDcwSDQwVjcwSDQwVjcwWk02MCA3MEg1MFY3MEg1MFY3MFpNNzAgNzAgNjBWNzAgNjA3MFoiIGZpbGw9IiMxMjEyMTIiLz4KPC9zdmc+';
+    }
+  }
+
+  methodRadios.forEach(r => r.addEventListener('change', showInstructions));
+  planRadios.forEach(r => r.addEventListener('change', updateBasePrice));
+  setQrPlaceholder();
+  showInstructions();
+})();
+
+// Drag & drop for proof upload
+(function(){
+  const dropZone = document.getElementById('dropZone');
+  const fileInput = document.getElementById('proofInput');
+  const fileName = document.getElementById('fileName');
+  if (!dropZone || !fileInput) return;
+
+  ['dragenter','dragover','dragleave','drop'].forEach(e => {
+    dropZone.addEventListener(e, function(ev){
+      ev.preventDefault();
+      ev.stopPropagation();
+    });
+  });
+
+  ['dragenter','dragover'].forEach(e => {
+    dropZone.addEventListener(e, () => dropZone.classList.add('border-violet-400','bg-violet-50'));
+  });
+
+  ['dragleave','drop'].forEach(e => {
+    dropZone.addEventListener(e, () => dropZone.classList.remove('border-violet-400','bg-violet-50'));
+  });
+
+  dropZone.addEventListener('drop', function(ev){
+    const files = ev.dataTransfer.files;
+    if (files && files[0]) {
+      fileInput.files = files;
+      if (fileName) fileName.textContent = files[0].name;
+      fileName?.classList.remove('hidden');
+    }
+  });
+
+  fileInput.addEventListener('change', function(){
+    if (this.files && this.files[0]) {
+      if (fileName) fileName.textContent = this.files[0].name;
+      fileName?.classList.remove('hidden');
+    }
+  });
+})();
+</script>
 {% endblock %}
