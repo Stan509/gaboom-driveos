@@ -12,7 +12,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # Load .env file from project root
 load_dotenv(BASE_DIR / ".env")
 
-DEBUG = os.environ.get("DJANGO_DEBUG", "1") == "1"
+DEBUG = os.environ.get("DJANGO_DEBUG", "0") == "1"
 
 if DEBUG:
     SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY", "dev-insecure-change-me")
@@ -30,6 +30,7 @@ if DEBUG:
     ]
 else:
     ALLOWED_HOSTS = [
+        "64.23.215.202",
         "gaboomdriveos.com",
         "www.gaboomdriveos.com",
     ]
