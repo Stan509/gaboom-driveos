@@ -27,6 +27,7 @@ urlpatterns = [
     path("contracts/", views.contract_hub, name="contract_hub"),
     path("contracts/new/", views.contract_create, name="contract_create"),
     path("contracts/<int:pk>/", views.contract_detail, name="contract_detail"),
+    path("contracts/<int:pk>/sign-client/", views.contract_sign_client, name="contract_sign_client"),
     path("contracts/<int:pk>/close/", views.contract_close, name="contract_close"),
     path("contracts/<int:pk>/cancel/", views.contract_cancel, name="contract_cancel"),
     path("contracts/<int:pk>/send-to-sign/", views.contract_send_to_sign, name="contract_send_to_sign"),

@@ -324,6 +324,38 @@
           <p class="text-xs text-slate-400">{% trans "Le client n'a pas encore signé ce contrat." %}</p>
         </div>
       </div>
+
+      {% if can_edit %}
+      <form method="post" action="{% url 'dashboard:contract_sign_client' contract.pk %}" class="mt-4" id="adminSignForm">
+        {% csrf_token %}
+        <input type="hidden" name="signature" id="adminSignatureData" />
+
+        <div class="mb-3">
+          <label class="flex items-center gap-2">
+            <input type="checkbox" id="adminAcceptTerms" class="rounded border-slate-300 text-violet-600 focus:ring-violet-500" />
+            <span class="text-sm text-slate-600">{% trans "Le client a lu et accepte les clauses du contrat" %}</span>
+          </label>
+        </div>
+
+        <div class="mb-3">
+          <p class="text-xs font-medium text-slate-500 mb-2">{% trans "Signature du client (sur téléphone ou tablette)" %}</p>
+          <div class="relative">
+            <canvas id="adminSigCanvas" width="500" height="160"
+              class="w-full rounded-xl border-2 border-dashed border-slate-300 cursor-crosshair bg-white"
+              style="touch-action: none; max-height: 160px;"></canvas>
+            <button type="button" id="adminClearSig"
+              class="absolute top-2 right-2 text-xs px-2 py-1 rounded-lg bg-slate-100 text-slate-500 hover:bg-slate-200 transition">
+              {% trans "Effacer" %}
+            </button>
+          </div>
+        </div>
+
+        <button type="submit" id="adminSignBtn" disabled
+          class="w-full rounded-xl bg-gaboomViolet text-white px-4 py-2.5 text-sm font-medium hover:opacity-95 transition disabled:opacity-40 disabled:cursor-not-allowed">
+          {% trans "Enregistrer la signature du client" %}
+        </button>
+      </form>
+      {% endif %}
       {% endif %}
     </div>
 
@@ -714,5 +746,93 @@ function switchGpsMode(mode) {
     pi.classList.remove('hidden');
   }
 }
+
+// Admin client signature (dashboard)
+(function(){
+  const canvas = document.getElementById('adminSigCanvas');
+  const clearBtn = document.getElementById('adminClearSig');
+  const signBtn = document.getElementById('adminSignBtn');
+  const acceptBox = document.getElementById('adminAcceptTerms');
+  const sigInput = document.getElementById('adminSignatureData');
+  const form = document.getElementById('adminSignForm');
+
+  if (!canvas || !clearBtn || !signBtn || !acceptBox || !sigInput || !form) return;
+
+  const ctx = canvas.getContext('2d');
+  let drawing = false;
+  let hasDrawn = false;
+
+  function resizeCanvasForHiDpi(){
+    const ratio = window.devicePixelRatio || 1;
+    const rect = canvas.getBoundingClientRect();
+    canvas.width = Math.max(1, Math.floor(rect.width * ratio));
+    canvas.height = Math.max(1, Math.floor(rect.height * ratio));
+    ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
+    ctx.lineWidth = 2;
+    ctx.lineCap = 'round';
+    ctx.lineJoin = 'round';
+    ctx.strokeStyle = '#1e293b';
+  }
+
+  resizeCanvasForHiDpi();
+  window.addEventListener('resize', resizeCanvasForHiDpi);
+
+  function getPos(e) {
+    const r = canvas.getBoundingClientRect();
+    const t = e.touches ? e.touches[0] : e;
+    return { x: t.clientX - r.left, y: t.clientY - r.top };
+  }
+
+  function updateBtn(){
+    signBtn.disabled = !(acceptBox.checked && hasDrawn);
+  }
+
+  function startDraw(e) {
+    e.preventDefault();
+    drawing = true;
+    const p = getPos(e);
+    ctx.beginPath();
+    ctx.moveTo(p.x, p.y);
+  }
+
+  function draw(e) {
+    if (!drawing) return;
+    e.preventDefault();
+    const p = getPos(e);
+    ctx.lineTo(p.x, p.y);
+    ctx.stroke();
+    hasDrawn = true;
+    updateBtn();
+  }
+
+  function endDraw(e) {
+    if (drawing) {
+      e.preventDefault();
+      drawing = false;
+    }
+  }
+
+  canvas.addEventListener('mousedown', startDraw);
+  canvas.addEventListener('mousemove', draw);
+  canvas.addEventListener('mouseup', endDraw);
+  canvas.addEventListener('mouseleave', endDraw);
+  canvas.addEventListener('touchstart', startDraw, { passive: false });
+  canvas.addEventListener('touchmove', draw, { passive: false });
+  canvas.addEventListener('touchend', endDraw, { passive: false });
+
+  clearBtn.addEventListener('click', function() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    hasDrawn = false;
+    updateBtn();
+  });
+
+  acceptBox.addEventListener('change', updateBtn);
+
+  form.addEventListener('submit', function() {
+    sigInput.value = canvas.toDataURL('image/png');
+  });
+
+  updateBtn();
+})();
 </script>
 {% endblock %}

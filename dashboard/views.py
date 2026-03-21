@@ -1,8 +1,10 @@
 import json
 from datetime import date, timedelta
+import base64
 from decimal import Decimal
 
 from django.contrib import messages
+from django.core.files.base import ContentFile
 from django.db import transaction
 from django.db.models import Count, Q, Sum
 from django.db.models.functions import TruncDate
@@ -872,6 +874,43 @@ def contract_detail(request: HttpRequest, pk: int) -> HttpResponse:
         "pickup_photos": pickup_photos, "return_photos": return_photos,
         "inspection": inspection,
     })
+
+
+@require_perm("contracts.edit")
+def contract_sign_client(request: HttpRequest, pk: int) -> HttpResponse:
+    """Admin-side: capture the client's signature from the dashboard (canvas → base64 image)."""
+    if request.method != "POST":
+        return redirect("dashboard:contract_detail", pk=pk)
+
+    agency = _agency(request)
+    contract = get_object_or_404(Contract.objects.for_agency(agency), pk=pk)
+
+    sig_data = request.POST.get("signature", "")
+    if not sig_data or "base64," not in sig_data:
+        messages.error(request, "Veuillez dessiner la signature du client.")
+        return redirect("dashboard:contract_detail", pk=pk)
+
+    fmt, imgstr = sig_data.split(";base64,")
+    ext = fmt.split("/")[-1]
+    if ext not in ("png", "jpeg", "webp"):
+        ext = "png"
+
+    file_name = f"sig_contract_{contract.pk}_admin.{ext}"
+    sig_file = ContentFile(base64.b64decode(imgstr), name=file_name)
+
+    contract.client_signature = sig_file
+    contract.client_signed_at = timezone.now()
+    x_forwarded = request.META.get("HTTP_X_FORWARDED_FOR")
+    if x_forwarded:
+        contract.client_signed_ip = x_forwarded.split(",")[0].strip()
+    else:
+        contract.client_signed_ip = request.META.get("REMOTE_ADDR")
+    contract.save(update_fields=[
+        "client_signature", "client_signed_at", "client_signed_ip",
+    ])
+
+    messages.success(request, "Signature client enregistrée.")
+    return redirect("dashboard:contract_detail", pk=pk)
 
 
 @require_perm("contracts.edit")
