@@ -28,6 +28,7 @@ urlpatterns = [
     path("contracts/new/", views.contract_create, name="contract_create"),
     path("contracts/<int:pk>/", views.contract_detail, name="contract_detail"),
     path("contracts/<int:pk>/sign-client/", views.contract_sign_client, name="contract_sign_client"),
+    path("contracts/<int:pk>/print/", views.contract_print, name="contract_print"),
     path("contracts/<int:pk>/close/", views.contract_close, name="contract_close"),
     path("contracts/<int:pk>/cancel/", views.contract_cancel, name="contract_cancel"),
     path("contracts/<int:pk>/send-to-sign/", views.contract_send_to_sign, name="contract_send_to_sign"),
@@ -40,6 +41,7 @@ urlpatterns = [
     # Payments
     path("payments/", views.payment_list, name="payment_list"),
     path("payments/export/", views.payment_export, name="payment_export"),
+    path("payments/<int:pk>/receipt/", views.payment_receipt, name="payment_receipt"),
     path("contracts/<int:contract_pk>/pay/", views.payment_create, name="payment_create"),
     # Maintenance
     path("maintenance/", views.maintenance_list, name="maintenance_list"),

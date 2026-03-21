@@ -1,0 +1,77 @@
+{% load i18n humanize %}
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>{% trans "Reçu" %} — {% trans "Paiement" %} #{{ payment.pk }}</title>
+  <style>
+    @page { size: 80mm 200mm; margin: 6mm; }
+    html, body { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; color:#0f172a; }
+    .no-print { display:block; }
+    @media print { .no-print { display:none !important; } }
+
+    .topbar { display:flex; gap:12px; align-items:center; justify-content:space-between; margin-bottom:10px; }
+    .btn { display:inline-block; padding:8px 12px; border-radius:10px; border:1px solid #cbd5e1; background:#fff; color:#334155; text-decoration:none; font-size:12px; }
+    .btn-primary { background:#6d28d9; border-color:#6d28d9; color:#fff; }
+
+    .ticket { max-width: 360px; margin: 0 auto; }
+    .center { text-align:center; }
+    .muted { color:#475569; font-size:12px; }
+    .line { border-top: 1px dashed #94a3b8; margin: 10px 0; }
+    .row { display:flex; justify-content:space-between; gap:10px; font-size:12px; }
+    .row strong { font-weight:700; }
+    .big { font-size:18px; font-weight:800; }
+    .small { font-size:11px; }
+  </style>
+</head>
+<body>
+  <div class="topbar no-print">
+    <a class="btn" href="{% url 'dashboard:payment_list' %}">{% trans "Retour" %}</a>
+    <button class="btn btn-primary" onclick="window.print()">{% trans "Imprimer / PDF" %}</button>
+  </div>
+
+  <div class="ticket">
+    <div class="center">
+      <div class="big">{{ agency.legal_name|default:agency.name }}</div>
+      {% if agency.address_line1 or agency.city %}
+        <div class="muted">{% if agency.address_line1 %}{{ agency.address_line1 }}{% endif %}{% if agency.city %} — {{ agency.city }}{% endif %}</div>
+      {% endif %}
+      {% if agency.phone %}<div class="muted">{% trans "Tél" %}: {{ agency.phone }}</div>{% endif %}
+      {% if agency.contact_email %}<div class="muted">{{ agency.contact_email }}</div>{% endif %}
+    </div>
+
+    <div class="line"></div>
+
+    <div class="center">
+      <div><strong>{% trans "REÇU" %}</strong></div>
+      <div class="small">{% trans "Paiement" %} #{{ payment.pk }} — {{ payment.created_at|date:"d/m/Y H:i" }}</div>
+    </div>
+
+    <div class="line"></div>
+
+    <div class="row"><span>{% trans "Montant" %}</span><strong>{{ payment.amount|intcomma }} {{ payment.currency }}</strong></div>
+    <div class="row"><span>{% trans "Méthode" %}</span><strong>{{ payment.get_method_display }}</strong></div>
+    <div class="row"><span>{% trans "Statut" %}</span><strong>{{ payment.get_status_display }}</strong></div>
+    {% if payment.reference %}
+      <div class="row"><span>{% trans "Référence" %}</span><strong>{{ payment.reference }}</strong></div>
+    {% endif %}
+
+    <div class="line"></div>
+
+    <div class="row"><span>{% trans "Client" %}</span><strong>{{ payment.contract.client.full_name }}</strong></div>
+    <div class="row"><span>{% trans "Véhicule" %}</span><strong>{{ payment.contract.vehicle }}</strong></div>
+    <div class="row"><span>{% trans "Contrat" %}</span><strong>#{{ payment.contract.pk }}</strong></div>
+    <div class="row"><span>{% trans "Période" %}</span><strong>{{ payment.contract.start_date|date:"d/m/Y" }} → {{ payment.contract.end_date|date:"d/m/Y" }}</strong></div>
+
+    <div class="line"></div>
+
+    {% if agency.invoice_footer %}
+      <div class="center muted small">{{ agency.invoice_footer|linebreaksbr }}</div>
+      <div class="line"></div>
+    {% endif %}
+
+    <div class="center small muted">{% trans "Merci et à bientôt" %}</div>
+  </div>
+</body>
+</html>

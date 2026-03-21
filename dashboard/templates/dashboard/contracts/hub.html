@@ -230,7 +230,10 @@
               <div class="text-[10px] text-slate-400">{{ p.contract.start_date|date:"d/m" }} → {{ p.contract.end_date|date:"d/m" }}</div>
             </td>
             <td class="px-4 py-3 text-right" onclick="event.stopPropagation()">
-              <button onclick="openPayDetail({{ p.pk }})" class="rounded-lg p-1.5 hover:bg-slate-100 text-slate-400 hover:text-slate-600 transition" title="Détails">
+              <a href="{% url 'dashboard:payment_receipt' p.pk %}" target="_blank" class="inline-flex rounded-lg p-1.5 hover:bg-slate-100 text-slate-400 hover:text-slate-600 transition" title="{% trans 'Reçu' %}">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 9V2.25A.75.75 0 0 1 6.75 1.5h10.5a.75.75 0 0 1 .75.75V9m-12 0h12m-12 0a3 3 0 0 0-3 3v6.75A.75.75 0 0 0 3.75 19.5H6m12-10.5a3 3 0 0 1 3 3v6.75a.75.75 0 0 1-.75.75H18m0 0v3.75a.75.75 0 0 1-.75.75h-10.5A.75.75 0 0 1 6 23.25V19.5m12 0H6"/></svg>
+              </a>
+              <button onclick="openPayDetail({{ p.pk }})" class="rounded-lg p-1.5 hover:bg-slate-100 text-slate-400 hover:text-slate-600 transition" title="{% trans "Détails" %}">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"/></svg>
               </button>
             </td>
@@ -266,7 +269,8 @@
           <span class="inline-flex items-center gap-1 rounded-full bg-purple-50 text-purple-700 px-2 py-0.5 text-[10px] font-semibold">{% trans "Virement" %}</span>
           {% endif %}
           {% if p.reference %}<span class="text-[10px] text-slate-400">{% trans "Réf:" %} {{ p.reference }}</span>{% endif %}
-          <button onclick="event.stopPropagation();openPayDetail({{ p.pk }})" class="ml-auto rounded-lg border border-slate-200 px-2.5 py-1 text-[10px] font-medium text-slate-600 hover:bg-slate-50 transition">{% trans "Détails" %}</button>
+          <a href="{% url 'dashboard:payment_receipt' p.pk %}" target="_blank" class="ml-auto rounded-lg border border-slate-200 px-2.5 py-1 text-[10px] font-medium text-slate-600 hover:bg-slate-50 transition" onclick="event.stopPropagation()">{% trans "Reçu" %}</a>
+          <button onclick="event.stopPropagation();openPayDetail({{ p.pk }})" class="rounded-lg border border-slate-200 px-2.5 py-1 text-[10px] font-medium text-slate-600 hover:bg-slate-50 transition">{% trans "Détails" %}</button>
           <a href="{% url 'dashboard:contract_detail' p.contract.pk %}" class="text-gaboomViolet text-[10px] font-medium hover:underline" onclick="event.stopPropagation()">{% trans "Contrat" %} #{{ p.contract.pk }}</a>
         </div>
       </div>

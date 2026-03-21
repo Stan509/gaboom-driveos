@@ -913,6 +913,18 @@ def contract_sign_client(request: HttpRequest, pk: int) -> HttpResponse:
     return redirect("dashboard:contract_detail", pk=pk)
 
 
+@require_perm("contracts.view")
+def contract_print(request: HttpRequest, pk: int) -> HttpResponse:
+    agency = _agency(request)
+    contract = get_object_or_404(
+        Contract.objects.for_agency(agency).select_related("client", "vehicle"), pk=pk
+    )
+    return render(request, "dashboard/contracts/print.html", {
+        "agency": agency,
+        "contract": contract,
+    })
+
+
 @require_perm("contracts.edit")
 def contract_close(request: HttpRequest, pk: int) -> HttpResponse:
     contract = get_object_or_404(Contract.objects.for_agency(_agency(request)), pk=pk)
@@ -1359,6 +1371,21 @@ def payment_export(request: HttpRequest) -> HttpResponse:
     # BOM for Excel UTF-8
     response.streaming_content = _prepend_bom(response.streaming_content)
     return response
+
+
+@require_perm("billing.view")
+def payment_receipt(request: HttpRequest, pk: int) -> HttpResponse:
+    agency = _agency(request)
+    payment = get_object_or_404(
+        Payment.objects.for_agency(agency).select_related(
+            "contract", "contract__client", "contract__vehicle"
+        ),
+        pk=pk,
+    )
+    return render(request, "dashboard/payments/receipt.html", {
+        "agency": agency,
+        "payment": payment,
+    })
 
 
 def _prepend_bom(content):
