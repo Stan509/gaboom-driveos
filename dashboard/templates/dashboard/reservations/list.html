@@ -6,12 +6,9 @@
 
 {% block extra_head %}
 <style>
-.reservation-desktop-list { display: block; }
-.reservation-mobile-list { display: none; }
-@media (max-width: 768px) {
-  .reservation-desktop-list { display: none; }
-  .reservation-mobile-list { display: block; }
-}
+  @keyframes cardIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+  @media(max-width:767px){.desktop-table{display:none}.mobile-cards{display:block}}
+  @media(min-width:768px){.mobile-cards{display:none}}
 </style>
 {% endblock %}
 
@@ -41,140 +38,128 @@
 </div>
 
 <!-- Filters -->
-<div class="bg-white rounded-2xl border border-slate-200 p-4 mb-6">
-  <form method="get" class="flex flex-wrap items-end gap-3">
-    <div class="flex-1 min-w-[180px]">
-      <label class="block text-xs font-medium text-slate-500 mb-1">{% trans "Recherche" %}</label>
-      <input type="text" name="q" value="{{ search }}" placeholder="{% trans "Nom, email, téléphone…" %}"
-        class="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm focus:border-violet-400 focus:ring-1 focus:ring-violet-400 outline-none" />
-    </div>
-    <div class="w-36">
-      <label class="block text-xs font-medium text-slate-500 mb-1">{% trans "Statut" %}</label>
-      <select name="status" class="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm focus:border-violet-400 outline-none">
+<div class="rounded-2xl bg-white border border-slate-200 shadow-sm mb-6">
+  <div class="px-5 py-3 border-b border-slate-100 flex flex-wrap items-center gap-3">
+    <form method="get" class="flex flex-wrap items-center gap-3 flex-1">
+      <div class="relative flex-1 min-w-[180px] max-w-xs">
+        <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"/></svg>
+        <input type="text" name="q" value="{{ search }}" placeholder="{% trans "Nom, email, téléphone…" %}" class="w-full pl-9 pr-3 py-2 rounded-xl border border-slate-200 text-sm focus:border-violet-400 focus:ring-1 focus:ring-violet-400 outline-none">
+      </div>
+      <select name="status" class="rounded-xl border border-slate-200 px-3 py-2 text-sm focus:border-violet-400 focus:ring-1 focus:ring-violet-400 outline-none">
         <option value="">{% trans "Tous" %}</option>
         <option value="pending" {% if status_filter == 'pending' %}selected{% endif %}>{% trans "En attente" %}</option>
         <option value="confirmed" {% if status_filter == 'confirmed' %}selected{% endif %}>{% trans "Confirmées" %}</option>
         <option value="contracted" {% if status_filter == 'contracted' %}selected{% endif %}>{% trans "Sous contrat" %}</option>
         <option value="rejected" {% if status_filter == 'rejected' %}selected{% endif %}>{% trans "Refusées" %}</option>
       </select>
-    </div>
-    <div class="w-44">
-      <label class="block text-xs font-medium text-slate-500 mb-1">{% trans "Véhicule" %}</label>
-      <select name="vehicle" class="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm focus:border-violet-400 outline-none">
+      <select name="vehicle" class="rounded-xl border border-slate-200 px-3 py-2 text-sm focus:border-violet-400 focus:ring-1 focus:ring-violet-400 outline-none">
         <option value="">{% trans "Tous" %}</option>
         {% for v in vehicles %}
         <option value="{{ v.pk }}" {% if vehicle_filter == v.pk|stringformat:"d" %}selected{% endif %}>{{ v.make }} {{ v.model }}</option>
         {% endfor %}
       </select>
-    </div>
-    <div class="w-36">
-      <label class="block text-xs font-medium text-slate-500 mb-1">{% trans "Tri" %}</label>
-      <select name="sort" class="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm focus:border-violet-400 outline-none">
+      <select name="sort" class="rounded-xl border border-slate-200 px-3 py-2 text-sm focus:border-violet-400 focus:ring-1 focus:ring-violet-400 outline-none">
         <option value="newest" {% if sort == 'newest' %}selected{% endif %}>{% trans "Plus récentes" %}</option>
         <option value="oldest" {% if sort == 'oldest' %}selected{% endif %}>{% trans "Plus anciennes" %}</option>
         <option value="start_date" {% if sort == 'start_date' %}selected{% endif %}>{% trans "Date début" %}</option>
       </select>
-    </div>
-    <button type="submit" class="px-4 py-2 rounded-xl bg-gaboomViolet text-white text-sm font-semibold hover:opacity-90 transition">{% trans "Filtrer" %}</button>
-  </form>
-</div>
+      <button type="submit" class="rounded-xl bg-gaboomViolet text-white px-4 py-2 text-sm font-medium hover:opacity-95 transition">{% trans "Filtrer" %}</button>
+    </form>
+  </div>
 
 <!-- Desktop table -->
-<div class="bg-white rounded-2xl border border-slate-200 overflow-hidden reservation-desktop-list">
+<div class="desktop-table overflow-x-auto">
   <table class="w-full text-sm">
     <thead>
-      <tr class="border-b border-slate-100 text-left text-xs font-semibold text-slate-400 uppercase tracking-wider">
+      <tr class="border-b border-slate-200 text-left text-[11px] font-semibold text-slate-400 uppercase tracking-wider">
         <th class="px-5 py-3">{% trans "Client" %}</th>
-        <th class="px-5 py-3">{% trans "Véhicule" %}</th>
-        <th class="px-5 py-3">{% trans "Dates" %}</th>
-        <th class="px-5 py-3">{% trans "Contact" %}</th>
-        <th class="px-5 py-3">{% trans "Statut" %}</th>
-        <th class="px-5 py-3 text-right">{% trans "Actions" %}</th>
+        <th class="px-3 py-3">{% trans "Véhicule" %}</th>
+        <th class="px-3 py-3">{% trans "Dates" %}</th>
+        <th class="px-3 py-3">{% trans "Contact" %}</th>
+        <th class="px-3 py-3">{% trans "Statut" %}</th>
+        <th class="px-3 py-3 text-right">{% trans "Actions" %}</th>
       </tr>
     </thead>
-    <tbody class="divide-y divide-slate-50">
+    <tbody class="divide-y divide-slate-100">
       {% for r in reservations %}
-      <tr class="hover:bg-slate-50/50 transition">
+      <tr class="hover:bg-slate-50/60 transition">
         <td class="px-5 py-3">
           <div class="font-medium text-slate-800">{{ r.full_name }}</div>
           <div class="text-xs text-slate-400">{{ r.created_at|date:"d/m/Y H:i" }}</div>
         </td>
-        <td class="px-5 py-3">
+        <td class="px-3 py-3">
           <div class="font-medium">{{ r.vehicle.make }} {{ r.vehicle.model }}</div>
           <div class="text-xs text-slate-400">{{ r.vehicle.plate_number }}</div>
         </td>
-        <td class="px-5 py-3">
+        <td class="px-3 py-3">
           <div>{{ r.start_date|date:"d/m" }} → {{ r.end_date|date:"d/m/Y" }}</div>
           <div class="text-xs text-slate-400">{{ r.duration_days }} {% trans "jour" %}{{ r.duration_days|pluralize }}</div>
         </td>
-        <td class="px-5 py-3">
+        <td class="px-3 py-3">
           <div class="text-xs">{{ r.phone|default:"—" }}</div>
           <div class="text-xs text-slate-400">{{ r.email|default:"" }}</div>
         </td>
-        <td class="px-5 py-3">
+        <td class="px-3 py-3">
           {% if r.status == 'pending' %}
-            <span class="inline-flex items-center gap-1.5 rounded-full bg-amber-100 text-amber-800 px-2.5 py-0.5 text-xs font-semibold">
-              <span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span>{% trans "En attente" %}
-            </span>
+            <span class="inline-flex items-center gap-1 rounded-full bg-amber-100 text-amber-700 px-2.5 py-0.5 text-[11px] font-semibold"><span class="h-1.5 w-1.5 rounded-full bg-amber-500"></span>{% trans "En attente" %}</span>
           {% elif r.status == 'confirmed' %}
-            <span class="inline-flex items-center gap-1.5 rounded-full bg-emerald-100 text-emerald-800 px-2.5 py-0.5 text-xs font-semibold">
-              <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>{% trans "Confirmée" %}
-            </span>
+            <span class="inline-flex items-center gap-1 rounded-full bg-emerald-100 text-emerald-700 px-2.5 py-0.5 text-[11px] font-semibold"><span class="h-1.5 w-1.5 rounded-full bg-emerald-500"></span>{% trans "Confirmée" %}</span>
           {% elif r.status == 'contracted' %}
-            <span class="inline-flex items-center gap-1.5 rounded-full bg-violet-100 text-violet-800 px-2.5 py-0.5 text-xs font-semibold">
-              <span class="w-1.5 h-1.5 rounded-full bg-violet-500"></span>{% trans "Sous contrat" %}
-            </span>
+            <span class="inline-flex items-center gap-1 rounded-full bg-violet-100 text-violet-700 px-2.5 py-0.5 text-[11px] font-semibold"><span class="h-1.5 w-1.5 rounded-full bg-violet-500"></span>{% trans "Sous contrat" %}</span>
           {% elif r.status == 'rejected' %}
-            <span class="inline-flex items-center gap-1.5 rounded-full bg-red-100 text-red-800 px-2.5 py-0.5 text-xs font-semibold">
-              <span class="w-1.5 h-1.5 rounded-full bg-red-500"></span>{% trans "Refusée" %}
-            </span>
+            <span class="inline-flex items-center gap-1 rounded-full bg-red-100 text-red-700 px-2.5 py-0.5 text-[11px] font-semibold"><span class="h-1.5 w-1.5 rounded-full bg-red-500"></span>{% trans "Refusée" %}</span>
           {% else %}
-            <span class="inline-flex items-center gap-1.5 rounded-full bg-slate-100 text-slate-600 px-2.5 py-0.5 text-xs font-semibold">{% trans "Expirée" %}</span>
+            <span class="inline-flex items-center gap-1 rounded-full bg-slate-100 text-slate-500 px-2.5 py-0.5 text-[11px] font-semibold"><span class="h-1.5 w-1.5 rounded-full bg-slate-400"></span>{% trans "Expirée" %}</span>
           {% endif %}
         </td>
-        <td class="px-5 py-3 text-right">
-          <a href="{% url 'dashboard:reservation_detail' pk=r.pk %}" class="inline-flex items-center gap-1 text-gaboomViolet hover:underline text-xs font-semibold">
-            {% trans "Détails" %}
-            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5"/></svg>
-          </a>
+        <td class="px-3 py-3 text-right">
+          <div class="flex items-center justify-end gap-1">
+            <a href="{% url 'dashboard:reservation_detail' pk=r.pk %}" class="rounded-lg border border-slate-200 px-3 py-1.5 text-[11px] font-medium text-slate-600 hover:bg-slate-50 transition">{% trans "Voir" %}</a>
+          </div>
         </td>
       </tr>
       {% empty %}
       <tr>
-        <td colspan="6" class="px-5 py-12 text-center text-slate-400">
-          <svg class="w-10 h-10 mx-auto mb-2 text-slate-200" fill="none" stroke="currentColor" stroke-width="1" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5"/></svg>
-          {% trans "Aucune réservation trouvée." %}
+        <td colspan="6" class="px-5 py-16 text-center">
+          <svg class="w-10 h-10 mx-auto text-slate-300 mb-3" fill="none" stroke="currentColor" stroke-width="1" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5"/></svg>
+          <h3 class="font-semibold text-slate-900">{% trans "Aucune réservation trouvée" %}</h3>
+          <p class="mt-1 text-sm text-slate-500">{% trans "Aucune réservation ne correspond aux critères sélectionnés" %}</p>
         </td>
       </tr>
       {% endfor %}
     </tbody>
   </table>
 </div>
+</div>
 
 <!-- Mobile cards -->
-<div class="reservation-mobile-list space-y-3">
+<div class="mobile-cards p-3 space-y-3">
   {% for r in reservations %}
-  <a href="{% url 'dashboard:reservation_detail' pk=r.pk %}" class="block bg-white rounded-2xl border border-slate-200 p-4 hover:shadow-md transition">
+  <a href="{% url 'dashboard:reservation_detail' pk=r.pk %}" class="block rounded-xl border bg-white p-4 hover:shadow-sm transition" style="animation:cardIn .25s ease-out both;animation-delay:{{ forloop.counter0 }}00ms">
     <div class="flex items-start justify-between gap-3 mb-2">
       <div>
-        <div class="font-semibold text-slate-800">{{ r.full_name }}</div>
+        <div class="font-semibold text-sm text-slate-800">{{ r.full_name }}</div>
         <div class="text-xs text-slate-400">{{ r.created_at|date:"d/m/Y H:i" }}</div>
       </div>
       {% if r.status == 'pending' %}
-        <span class="shrink-0 inline-flex items-center gap-1 rounded-full bg-amber-100 text-amber-800 px-2 py-0.5 text-xs font-semibold">{% trans "En attente" %}</span>
+        <span class="shrink-0 inline-flex items-center gap-1 rounded-full bg-amber-100 text-amber-700 px-2 py-0.5 text-[10px] font-semibold">{% trans "En attente" %}</span>
       {% elif r.status == 'confirmed' %}
-        <span class="shrink-0 inline-flex items-center gap-1 rounded-full bg-emerald-100 text-emerald-800 px-2 py-0.5 text-xs font-semibold">{% trans "Confirmée" %}</span>
+        <span class="shrink-0 inline-flex items-center gap-1 rounded-full bg-emerald-100 text-emerald-700 px-2 py-0.5 text-[10px] font-semibold">{% trans "Confirmée" %}</span>
       {% elif r.status == 'contracted' %}
-        <span class="shrink-0 inline-flex items-center gap-1 rounded-full bg-violet-100 text-violet-800 px-2 py-0.5 text-xs font-semibold">{% trans "Sous contrat" %}</span>
+        <span class="shrink-0 inline-flex items-center gap-1 rounded-full bg-violet-100 text-violet-700 px-2 py-0.5 text-[10px] font-semibold">{% trans "Sous contrat" %}</span>
       {% elif r.status == 'rejected' %}
-        <span class="shrink-0 inline-flex items-center gap-1 rounded-full bg-red-100 text-red-800 px-2 py-0.5 text-xs font-semibold">{% trans "Refusée" %}</span>
+        <span class="shrink-0 inline-flex items-center gap-1 rounded-full bg-red-100 text-red-700 px-2 py-0.5 text-[10px] font-semibold">{% trans "Refusée" %}</span>
       {% endif %}
     </div>
     <div class="text-sm text-slate-600">{{ r.vehicle.make }} {{ r.vehicle.model }} · {{ r.start_date|date:"d/m" }} → {{ r.end_date|date:"d/m" }} · {{ r.duration_days }}j</div>
     <div class="text-xs text-slate-400 mt-1">{{ r.phone|default:r.email|default:"—" }}</div>
   </a>
   {% empty %}
-  <div class="text-center text-slate-400 py-12">{% trans "Aucune réservation." %}</div>
+  <div class="text-center py-12">
+    <svg class="w-10 h-10 mx-auto text-slate-300 mb-3" fill="none" stroke="currentColor" stroke-width="1" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5"/></svg>
+    <h3 class="font-semibold text-slate-900">{% trans "Aucune réservation trouvée" %}</h3>
+    <p class="mt-1 text-sm text-slate-500">{% trans "Aucune réservation ne correspond aux critères sélectionnés" %}</p>
+  </div>
   {% endfor %}
 </div>
 {% endblock %}
