@@ -499,7 +499,7 @@
         <div class="flex items-center gap-2 mt-2">
           <a href="{% url 'dashboard:contract_detail' c.pk %}" class="rounded-lg border border-slate-200 px-3 py-1 text-[11px] font-medium text-slate-600 hover:bg-slate-50 transition">Voir</a>
           {% if can_edit %}
-          <a href="?edit={{ c.pk }}&q={{ q }}&status={{ status_filter }}&pay={{ pay_filter }}&sort={{ sort_by }}" onclick="openDrawer()" class="rounded-lg bg-gaboomViolet text-white px-3 py-1 text-[11px] font-medium hover:opacity-95 transition">Modifier</a>
+          <a href="?edit={{ c.pk }}&q={{ q }}&status={{ status_filter }}&pay={{ pay_filter }}&sort={{ sort_by }}" class="rounded-lg bg-gaboomViolet text-white px-3 py-1 text-[11px] font-medium hover:opacity-95 transition">Modifier</a>
           {% endif %}
         </div>
       </div>
@@ -537,7 +537,7 @@
 <!-- ═══════ RIGHT: FORM PANEL ═══════ -->
 {% if can_edit %}
 <!-- Desktop panel -->
-<div class="hidden lg:block lg:col-span-4 {% if tab == 'payments' %}hidden{% endif %}">
+<div class="hidden lg:block lg:col-span-4 {% if tab == 'payments' %}hidden{% endif %} {% if editing %}block{% endif %}" id="desktopFormPanel">
   <div class="card-in rounded-2xl bg-white border border-slate-200 shadow-sm lg:sticky lg:top-24" style="animation-delay:100ms">
     <!-- Form header -->
     <div class="px-5 py-4 border-b border-slate-100 flex items-center justify-between">
