@@ -97,7 +97,7 @@
       </div>
     </div>
     <div class="text-right shrink-0">
-      <div class="text-2xl font-bold text-slate-800">{{ contract.montant_ttc }} {{ contract.currency|default:"€"|translate_if_static }}</div>
+      <div class="text-2xl font-bold text-slate-800">{{ contract.montant_ttc }} {{ contract.currency|default:"€" }}</div>
       <div class="text-xs text-slate-400">{% blocktrans count days=contract.nb_days %}{{ days }} jour{% plural %}{{ days }} jours{% endblocktrans %} × {{ contract.price_per_day }}</div>
     </div>
   </div>
@@ -116,16 +116,16 @@
         <div><dt class="text-slate-400 text-xs uppercase tracking-wider">{% trans "Client" %}</dt><dd class="font-medium mt-0.5"><a href="{% url 'dashboard:client_detail' contract.client.pk %}" class="text-gaboomViolet hover:underline">{{ contract.client.full_name }}</a></dd></div>
         <div><dt class="text-slate-400 text-xs uppercase tracking-wider">{% trans "Véhicule" %}</dt><dd class="font-medium mt-0.5">{{ contract.vehicle }}</dd></div>
         <div><dt class="text-slate-400 text-xs uppercase tracking-wider">{% trans "Période" %}</dt><dd class="font-medium mt-0.5">{{ contract.start_date|date:"d/m/Y" }} → {{ contract.end_date|date:"d/m/Y" }} <span class="text-slate-400">({{ contract.nb_days }}j)</span></dd></div>
-        <div><dt class="text-slate-400 text-xs uppercase tracking-wider">{% trans "Prix / jour" %}</dt><dd class="font-medium mt-0.5">{{ contract.price_per_day }} {{ contract.currency|default:"€"|translate_if_static }}</dd></div>
-        <div><dt class="text-slate-400 text-xs uppercase tracking-wider">{% trans "Caution" %}</dt><dd class="font-medium mt-0.5">{{ contract.deposit }} {{ contract.currency|default:"€"|translate_if_static }}</dd></div>
+        <div><dt class="text-slate-400 text-xs uppercase tracking-wider">{% trans "Prix / jour" %}</dt><dd class="font-medium mt-0.5">{{ contract.price_per_day }} {{ contract.currency|default:"€" }}</dd></div>
+        <div><dt class="text-slate-400 text-xs uppercase tracking-wider">{% trans "Caution" %}</dt><dd class="font-medium mt-0.5">{{ contract.deposit }} {{ contract.currency|default:"€" }}</dd></div>
         <div><dt class="text-slate-400 text-xs uppercase tracking-wider">{% trans "Km départ" %}</dt><dd class="font-medium mt-0.5">{{ contract.km_depart }} km</dd></div>
         {% if contract.km_retour is not None %}
         <div><dt class="text-slate-400 text-xs uppercase tracking-wider">{% trans "Km retour" %}</dt><dd class="font-medium mt-0.5">{{ contract.km_retour }} km</dd></div>
         {% endif %}
         <div><dt class="text-slate-400 text-xs uppercase tracking-wider">{% trans "Km inclus" %}</dt><dd class="font-medium mt-0.5">{{ contract.km_included }} km</dd></div>
-        <div><dt class="text-slate-400 text-xs uppercase tracking-wider">{% trans "Prix km sup." %}</dt><dd class="font-medium mt-0.5">{{ contract.km_price }} {{ contract.currency|default:"€"|translate_if_static }}</dd></div>
-        <div><dt class="text-slate-400 text-xs uppercase tracking-wider">{% trans "Frais carburant" %}</dt><dd class="font-medium mt-0.5">{{ contract.fuel_fee }} {{ contract.currency|default:"€"|translate_if_static }}</dd></div>
-        <div><dt class="text-slate-400 text-xs uppercase tracking-wider">{% trans "Frais retard / jour" %}</dt><dd class="font-medium mt-0.5">{{ contract.late_fee }} {{ contract.currency|default:"€"|translate_if_static }}</dd></div>
+        <div><dt class="text-slate-400 text-xs uppercase tracking-wider">{% trans "Prix km sup." %}</dt><dd class="font-medium mt-0.5">{{ contract.km_price }} {{ contract.currency|default:"€" }}</dd></div>
+        <div><dt class="text-slate-400 text-xs uppercase tracking-wider">{% trans "Frais carburant" %}</dt><dd class="font-medium mt-0.5">{{ contract.fuel_fee }} {{ contract.currency|default:"€" }}</dd></div>
+        <div><dt class="text-slate-400 text-xs uppercase tracking-wider">{% trans "Frais retard / jour" %}</dt><dd class="font-medium mt-0.5">{{ contract.late_fee }} {{ contract.currency|default:"€" }}</dd></div>
         {% if contract.pickup_datetime %}
         <div><dt class="text-slate-400 text-xs uppercase tracking-wider">{% trans "Remise véhicule" %}</dt><dd class="font-medium mt-0.5">{{ contract.pickup_datetime|date:"d/m/Y H:i" }}</dd></div>
         {% endif %}
