@@ -225,6 +225,25 @@
           <p class="mt-0.5 text-[10px] text-slate-400">{% trans "Affiché en bas des factures et devis" %}</p>
           {% if agency_form.invoice_footer.errors %}<p class="mt-0.5 text-xs text-red-600">{{ agency_form.invoice_footer.errors.0 }}</p>{% endif %}
         </div>
+        <div>
+          <label class="block text-[13px] font-medium text-slate-700 mb-1.5">{% trans "Signature agence" %}</label>
+          <div class="flex items-center gap-3">
+            {% if agency.agency_signature %}
+              <img src="{{ agency.agency_signature.url }}" alt="Signature" class="h-14 w-14 rounded-xl object-cover border border-slate-200 shadow-sm" />
+            {% else %}
+              <div class="h-14 w-14 rounded-xl bg-slate-100 border-2 border-dashed border-slate-300 flex items-center justify-center shrink-0">
+                <svg class="w-5 h-5 text-slate-300" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.042A8.967 8.967 0 0 0 6 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 0 1 6 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 0 1 6-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0 0 18 18c-2.305 0-4.408.867-6 2.292m0-14.25v14.25"/></svg>
+              </div>
+            {% endif %}
+            <div class="flex-1 min-w-0">
+              {% if not is_readonly %}
+              {{ agency_form.agency_signature }}
+              <p class="mt-0.5 text-[10px] text-slate-400">{% trans "PNG, JPG ou WebP — max 5 Mo" %}</p>
+              {% endif %}
+              {% if agency_form.agency_signature.errors %}<p class="mt-0.5 text-xs text-red-600">{{ agency_form.agency_signature.errors.0 }}</p>{% endif %}
+            </div>
+          </div>
+        </div>
       </div>
     </div>
 

@@ -52,6 +52,7 @@ class Agency(models.Model):
     website_url = models.URLField(max_length=500, blank=True, default="")
     tax_id = models.CharField(max_length=50, blank=True, default="")
     invoice_footer = models.TextField(blank=True, default="")
+    agency_signature = models.ImageField(upload_to="agencies/signatures/", null=True, blank=True)
 
     public_headline = models.CharField(max_length=120, blank=True, default="")
     public_tagline = models.CharField(max_length=255, blank=True, default="")
