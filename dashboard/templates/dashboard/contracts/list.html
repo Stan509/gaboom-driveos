@@ -73,8 +73,8 @@
           </td>
           <td class="py-3 text-right font-medium">{{ c.montant_ttc }}{{ c.currency }}</td>
           <td class="py-3 pl-4 text-right" onclick="event.stopPropagation()">
-            <a href="/contracts/{{ c.pk }}/pdf/" target="_blank" class="inline-flex rounded-lg border border-slate-200 px-2.5 py-1 text-xs font-medium text-slate-600 hover:bg-slate-50 transition">
-              {% trans "Voir contrat PDF" %}
+            <a href="{% url 'contracts:contract_pdf' c.pk %}" target="_blank" class="inline-flex items-center px-2 py-1 text-xs font-medium bg-red-600 text-white rounded hover:bg-red-700 transition">
+              PDF
             </a>
           </td>
         </tr>
