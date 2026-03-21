@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     "public_site",
     "clients",
     "billing",
+    "contracts",
     "marketing",
     "superadmin",
 ]

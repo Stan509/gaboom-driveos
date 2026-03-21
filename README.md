@@ -2,6 +2,32 @@
 
 Gaboom DriveOS est une architecture Django prête pour une **plateforme SaaS multi-agence** de gestion de locations automobiles. Elle sépare clairement les équipes internes (Owner/Admin/Staff) des clients finaux, encapsule les sites publics par slug et prépare l’intégration Stripe côté agence.
 
+## Déploiement
+
+### Variables d'environnement
+
+| Nom | Description |
+| --- | --- |
+| `DJANGO_SECRET_KEY` | Clé secrète Django. |
+| `DATABASE_URL` | URL de la base de données. |
+
+### PDF (WeasyPrint)
+
+La génération PDF côté serveur utilise **WeasyPrint**.
+
+Sur un serveur Debian/Ubuntu, installez les dépendances système (exemple) :
+
+```bash
+sudo apt-get update
+sudo apt-get install -y \
+  libcairo2 \
+  libpango-1.0-0 \
+  libpangocairo-1.0-0 \
+  libgdk-pixbuf-2.0-0 \
+  libffi8 \
+  shared-mime-info
+```
+
 ## Setup
 
 ```bash
@@ -14,7 +40,6 @@ Copie les variables d’environnement suivantes :
 
 | Nom | Description |
 | --- | --- |
-| `DJANGO_SECRET_KEY` | Clé secrète Django. |
 | `DJANGO_DEBUG` | `1` (dev) ou `0` (prod). |
 | `DJANGO_ALLOWED_HOSTS` | Liste séparée par des virgules. |
 | `POSTGRES_*` | Définitions Postgres (si `POSTGRES_HOST` renseigné). |

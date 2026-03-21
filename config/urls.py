@@ -59,6 +59,7 @@ urlpatterns = [
     path("test-notif-admin/", test_notif_admin, name="test_notif_admin"),
     path("webhooks/paypal/", paypal_webhook, name="paypal_webhook"),
     path("billing/", include("billing.urls")),
+    path("contracts/", include("contracts.urls")),
     path("dashboard/", include("dashboard.urls")),
     path("saas/", include("superadmin.urls")),
     path("a/", include("public_site.urls")),

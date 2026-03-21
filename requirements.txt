@@ -8,5 +8,6 @@ markdown>=3.5
 bleach>=6.0
 whitenoise>=6.0
 dj-database-url>=2.0
+weasyprint>=61.0
 
 gunicorn==22.0.0

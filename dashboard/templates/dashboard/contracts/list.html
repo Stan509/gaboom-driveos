@@ -43,11 +43,12 @@
           <th class="pb-3 pr-4">{% trans "Statut" %}</th>
           <th class="pb-3 pr-4">{% trans "Paiement" %}</th>
           <th class="pb-3 text-right">{% trans "Montant" %}</th>
+          <th class="pb-3 pl-4 text-right">{% trans "PDF" %}</th>
         </tr>
       </thead>
       <tbody class="divide-y divide-slate-100">
         {% for c in contracts %}
-        <tr class="hover:bg-slate-50/60 transition cursor-pointer" onclick="window.location='{% url 'dashboard:contract_detail' c.pk %}'">
+        <tr class="hover:bg-slate-50/60 transition cursor-pointer" data-href="{% url 'dashboard:contract_detail' c.pk %}" onclick="window.location=this.dataset.href">
           <td class="py-3 pr-4 font-medium">{{ c.pk }}</td>
           <td class="py-3 pr-4">{{ c.client.full_name }}</td>
           <td class="py-3 pr-4 text-slate-600">{{ c.vehicle }}</td>
@@ -71,6 +72,11 @@
             {% endif %}
           </td>
           <td class="py-3 text-right font-medium">{{ c.montant_ttc }}{{ c.currency }}</td>
+          <td class="py-3 pl-4 text-right" onclick="event.stopPropagation()">
+            <a href="/contracts/{{ c.pk }}/pdf/" target="_blank" class="inline-flex rounded-lg border border-slate-200 px-2.5 py-1 text-xs font-medium text-slate-600 hover:bg-slate-50 transition">
+              {% trans "Voir contrat PDF" %}
+            </a>
+          </td>
         </tr>
         {% endfor %}
       </tbody>
