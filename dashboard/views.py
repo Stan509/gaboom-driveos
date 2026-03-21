@@ -811,7 +811,7 @@ def contract_hub(request: HttpRequest) -> HttpResponse:
                     c.save(update_fields=["amount_paid", "amount_due", "payment_status"])
                     messages.success(request, _("Contrat et paiement enregistrés."))
                     return redirect(
-                        f"/dashboard/contracts/?edit={c.pk}&{_contract_qs_keep(request)}"
+                        f"/dashboard/contracts/?{request.META.get('QUERY_STRING', '')}"
                     )
     else:
         form = ContractForm(instance=editing, agency=agency) if editing else ContractForm(agency=agency)
