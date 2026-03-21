@@ -168,7 +168,7 @@
 
   <div class="card-in rounded-2xl bg-white border border-slate-200 shadow-sm overflow-hidden">
     {% if payment_entries %}
-    <div class="hidden md:block overflow-x-auto">
+    <div class="hidden md:!block overflow-x-auto">
       <table class="w-full text-sm">
         <thead>
           <tr class="border-b border-slate-100 text-left text-[11px] font-semibold text-slate-400 uppercase tracking-wider">
@@ -243,7 +243,7 @@
       </table>
     </div>
 
-    <div class="md:hidden divide-y divide-slate-100">
+    <div class="md:!hidden divide-y divide-slate-100">
       {% for p in payment_entries %}
       <div class="px-4 py-3 hover:bg-slate-50/60 transition cursor-pointer" onclick="openPayDetail({{ p.pk }})">
         <div class="flex items-center justify-between mb-1.5">
