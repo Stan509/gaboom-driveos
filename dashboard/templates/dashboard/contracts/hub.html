@@ -419,7 +419,7 @@
             </td>
             <td class="px-4 py-3 text-right" onclick="event.stopPropagation()">
               <div class="flex items-center justify-end gap-1">
-                <a href="{% url 'dashboard:contract_detail' c.pk %}" class="rounded-lg p-1.5 hover:bg-slate-100 text-slate-400 hover:text-slate-600 transition" title="{% trans 'Voir' %}">
+                <a href="{% url 'dashboard:contract_detail' c.pk %}" class="rounded-lg p-1.5 hover:bg-violet-50 text-slate-400 hover:text-gaboomViolet transition" title="{% trans 'Voir' %}">
                   <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"/></svg>
                 </a>
                 {% if can_edit %}
