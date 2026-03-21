@@ -537,7 +537,7 @@
 <!-- ═══════ RIGHT: FORM PANEL ═══════ -->
 {% if can_edit %}
 <!-- Desktop panel -->
-<div class="hidden lg:block lg:col-span-4 {% if tab == 'payments' %}hidden{% endif %} {% if editing %}block{% endif %}" id="desktopFormPanel">
+<div class="hidden lg:block lg:col-span-4 {% if tab == 'payments' %}hidden{% endif %} {% if editing or request.GET.edit == 'new' %}block{% endif %}" id="desktopFormPanel">
   <div class="card-in rounded-2xl bg-white border border-slate-200 shadow-sm lg:sticky lg:top-24" style="animation-delay:100ms">
     <!-- Form header -->
     <div class="px-5 py-4 border-b border-slate-100 flex items-center justify-between">
