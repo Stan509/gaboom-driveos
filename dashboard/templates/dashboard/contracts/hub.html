@@ -24,7 +24,7 @@
 
 {% block page_actions %}
 {% if can_edit %}
-<a href="?edit=new&q={{ q }}&status={{ status_filter }}&pay={{ pay_filter }}&sort={{ sort_by }}" class="rounded-xl bg-gaboomViolet text-white px-4 py-2.5 text-sm font-medium hover:opacity-95 transition inline-flex items-center gap-1.5">
+<a href="{% url 'dashboard:contract_hub' %}" class="rounded-xl bg-gaboomViolet text-white px-4 py-2.5 text-sm font-medium hover:opacity-95 transition inline-flex items-center gap-1.5">
   <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/></svg>
   {% trans "Nouveau contrat" %}
 </a>
@@ -537,7 +537,7 @@
 <!-- ═══════ RIGHT: FORM PANEL ═══════ -->
 {% if can_edit %}
 <!-- Desktop panel -->
-<div class="hidden lg:block lg:col-span-4 {% if tab == 'payments' %}hidden{% endif %} {% if editing or request.GET.edit == 'new' %}block{% endif %}" id="desktopFormPanel">
+<div class="lg:col-span-4 {% if tab == 'payments' %}hidden{% endif %}" id="desktopFormPanel">
   <div class="card-in rounded-2xl bg-white border border-slate-200 shadow-sm lg:sticky lg:top-24" style="animation-delay:100ms">
     <!-- Form header -->
     <div class="px-5 py-4 border-b border-slate-100 flex items-center justify-between">
