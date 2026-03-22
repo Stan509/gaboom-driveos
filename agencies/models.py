@@ -68,6 +68,16 @@ class Agency(models.Model):
     late_fee_default = models.DecimalField(max_digits=8, decimal_places=2, default=50.00)
     vat_percent = models.DecimalField(max_digits=5, decimal_places=2, default=0.00)
     currency = models.CharField(max_length=5, default="EUR")
+    language = models.CharField(
+        max_length=5,
+        choices=[
+            ("fr", "Français"),
+            ("en", "English"),
+            ("es", "Español"),
+            ("ht", "Kreyòl"),
+        ],
+        default="fr"
+    )
     maintenance_interval_km = models.PositiveIntegerField(default=10000)
 
     created_at = models.DateTimeField(auto_now_add=True)

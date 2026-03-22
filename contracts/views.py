@@ -18,10 +18,6 @@ def _agency(request: HttpRequest):
 def contract_pdf_view(request: HttpRequest, pk: int) -> HttpResponse:
     agency = _agency(request)
     
-    # Gestion de la langue pour le PDF
-    lang = request.GET.get("lang") or request.LANGUAGE_CODE
-    translation.activate(lang)
-    
     contract = get_object_or_404(
         Contract.objects.for_agency(agency).select_related(
             "client",
@@ -30,6 +26,10 @@ def contract_pdf_view(request: HttpRequest, pk: int) -> HttpResponse:
         ),
         pk=pk,
     )
+
+    # Langue basée sur l'agence (robuste, pas de dépendance à ?lang)
+    lang = getattr(contract.agency, "language", "fr")
+    translation.activate(lang)
 
     pdf = generate_contract_pdf(contract=contract, agency=agency, request=request)
 

@@ -5,9 +5,9 @@ from .models import Agency, Vehicle
 
 @admin.register(Agency)
 class AgencyAdmin(admin.ModelAdmin):
-    list_display = ("name", "slug", "public_enabled", "maintenance_mode", "created_at")
+    list_display = ("name", "slug", "language", "public_enabled", "maintenance_mode", "created_at")
     search_fields = ("name", "slug")
-    list_filter = ("public_enabled", "maintenance_mode")
+    list_filter = ("language", "public_enabled", "maintenance_mode")
     prepopulated_fields = {"slug": ("name",)}
 
 
