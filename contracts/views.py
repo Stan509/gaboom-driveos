@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import get_object_or_404
+from django.utils import translation
 
 from core.permissions import require_perm
 from billing.models import Contract
@@ -16,6 +17,11 @@ def _agency(request: HttpRequest):
 @require_perm("contracts.view")
 def contract_pdf_view(request: HttpRequest, pk: int) -> HttpResponse:
     agency = _agency(request)
+    
+    # Gestion de la langue pour le PDF
+    lang = request.GET.get("lang") or request.LANGUAGE_CODE
+    translation.activate(lang)
+    
     contract = get_object_or_404(
         Contract.objects.for_agency(agency).select_related(
             "client",
