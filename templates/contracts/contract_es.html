@@ -123,8 +123,15 @@
   <div class="sign-grid">
     <div class="sign box">
       <div class="muted" style="font-weight:700; margin-bottom:8px;">Firma del cliente</div>
-      <div class="sign-line"></div>
+      {% if contract.client_signature %}
+        <img class="sign-img" src="{{ contract.client_signature.url }}" alt="Firma del cliente" />
+      {% else %}
+        <div class="sign-line"></div>
+      {% endif %}
       <div class="sign-label muted">Nombre: {{ client.full_name }}</div>
+      {% if contract.client_signed_at %}
+      <div class="sign-label muted">Firmado el: {{ contract.client_signed_at|date:"d/m/Y H:i" }}</div>
+      {% endif %}
     </div>
     <div class="sign box">
       <div class="muted" style="font-weight:700; margin-bottom:8px;">Firma de la agencia</div>
