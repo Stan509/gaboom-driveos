@@ -18,8 +18,18 @@ def generate_contract_pdf(*, contract, agency, request) -> GeneratedPdf:
     """
     from weasyprint import HTML
 
+    # Choix du template selon la langue de l'agence
+    lang = getattr(contract.agency, "language", "fr")
+    template_map = {
+        "es": "contracts/contract_es.html",
+        "en": "contracts/contract_en.html",
+        "ht": "contracts/contract_ht.html",
+        "fr": "contracts/contract_fr.html",
+    }
+    template_name = template_map.get(lang, "contracts/contract_fr.html")
+
     html = render_to_string(
-        "contracts/contract_pdf.html",
+        template_name,
         {
             "contract": contract,
             "agency": agency,

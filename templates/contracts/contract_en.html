@@ -1,0 +1,146 @@
+{% load i18n humanize %}
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>{% trans "Contrat" %} #{{ contract.pk }}</title>
+  <style>
+    @page { size: legal; margin: 0.75in; }
+    html, body { font-family: Arial, Helvetica, sans-serif; color: #111827; font-size: 12px; line-height: 1.35; }
+    .muted { color: #6b7280; }
+    .title { font-size: 18px; font-weight: 700; letter-spacing: 0.2px; margin: 0; }
+    .subtitle { margin-top: 4px; }
+    .hr { border-top: 2px solid #111827; margin: 14px 0; }
+
+    .header { display: flex; justify-content: space-between; gap: 18px; }
+    .agency { flex: 1; }
+    .agency-logo { width: 90px; height: 90px; object-fit: contain; border: 1px solid #e5e7eb; padding: 6px; }
+    .agency-name { font-weight: 700; font-size: 13px; margin-top: 6px; }
+
+    .box { border: 1px solid #e5e7eb; padding: 10px; border-radius: 6px; }
+    .grid2 { display: flex; gap: 12px; }
+    .col { flex: 1; }
+
+    table { width: 100%; border-collapse: collapse; }
+    th, td { border-bottom: 1px solid #e5e7eb; padding: 6px 0; vertical-align: top; }
+    th { text-align: left; font-size: 11px; text-transform: uppercase; color: #6b7280; letter-spacing: .06em; }
+
+    .section-title { font-weight: 700; font-size: 12px; margin: 14px 0 8px; text-transform: uppercase; letter-spacing: .06em; }
+    .para { margin: 0 0 8px; }
+
+    .sign-grid { display: flex; gap: 18px; margin-top: 20px; }
+    .sign { flex: 1; }
+    .sign-line { border-bottom: 1px solid #111827; height: 46px; }
+    .sign-img { height: 46px; object-fit: contain; display: block; }
+    .sign-label { margin-top: 6px; font-size: 11px; }
+
+    .footer { margin-top: 18px; font-size: 10px; color: #6b7280; }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <div class="agency">
+      {% if agency.logo %}
+        <img class="agency-logo" src="{{ agency.logo.url }}" alt="Logo" />
+      {% endif %}
+      <div class="agency-name">{{ agency.legal_name|default:agency.name }}</div>
+      <div class="muted">
+        {% if agency.address_line1 %}{{ agency.address_line1 }}{% endif %}
+        {% if agency.address_line2 %}<br />{{ agency.address_line2 }}{% endif %}
+        {% if agency.city or agency.country %}<br />{{ agency.city }}{% if agency.city and agency.country %}, {% endif %}{{ agency.country }}{% endif %}
+        {% if agency.phone %}<br />{% trans "Tél" %}: {{ agency.phone }}{% endif %}
+        {% if agency.contact_email %}<br />{{ agency.contact_email }}{% endif %}
+      </div>
+    </div>
+    <div style="min-width: 250px;" class="box">
+      <p class="title" style="margin:0;">Rental Agreement</p>
+      <p class="subtitle muted">Reference: #{{ contract.pk }}</p>
+      <div class="hr"></div>
+      <table>
+        <tr>
+          <th>Created on</th>
+          <td style="text-align:right;">{{ contract.created_at|date:"d/m/Y H:i" }}</td>
+        </tr>
+        <tr>
+          <th>Status</th>
+          <td style="text-align:right;">{{ contract.get_status_display }}</td>
+        </tr>
+      </table>
+    </div>
+  </div>
+
+  <div class="hr"></div>
+
+  <div class="grid2">
+    <div class="col box">
+      <div class="section-title">Client</div>
+      <p class="para"><strong>{{ client.full_name }}</strong></p>
+      <p class="para muted">
+        {% if client.phone %}Phone: {{ client.phone }}<br />{% endif %}
+        {% if client.email %}Email: {{ client.email }}{% endif %}
+      </p>
+    </div>
+    <div class="col box">
+      <div class="section-title">Vehicle</div>
+      <p class="para"><strong>{{ vehicle }}</strong></p>
+      <p class="para muted">
+        {% if vehicle.plate_number %}Plate: {{ vehicle.plate_number }}<br />{% endif %}
+        {% if vehicle.vin %}VIN: {{ vehicle.vin }}{% endif %}
+      </p>
+    </div>
+  </div>
+
+  <div class="section-title">Period & Price</div>
+  <div class="box">
+    <table>
+      <tr>
+        <th>Start</th>
+        <td>{{ contract.start_date|date:"d/m/Y" }}</td>
+        <th style="text-align:right;">End</th>
+        <td style="text-align:right;">{{ contract.end_date|date:"d/m/Y" }}</td>
+      </tr>
+      <tr>
+        <th>Price / day</th>
+        <td>{{ contract.price_per_day|intcomma }} {{ contract.currency }}</td>
+        <th style="text-align:right;">Deposit</th>
+        <td style="text-align:right;">{{ contract.deposit|intcomma }} {{ contract.currency }}</td>
+      </tr>
+      <tr>
+        <th>Total</th>
+        <td colspan="3" style="text-align:right;"><strong>{{ contract.montant_ttc|intcomma }} {{ contract.currency }}</strong></td>
+      </tr>
+    </table>
+  </div>
+
+  <div class="section-title">General Conditions</div>
+  <div class="box">
+    <p class="para">(To be completed)</p>
+    <p class="para muted">This document constitutes an agreement between the agency and the client. The rental, insurance, use, return and liability conditions apply in accordance with the agency's internal rules.</p>
+  </div>
+
+  <div class="section-title">Signatures</div>
+  <div class="sign-grid">
+    <div class="sign box">
+      <div class="muted" style="font-weight:700; margin-bottom:8px;">Client signature</div>
+      <div class="sign-line"></div>
+      <div class="sign-label muted">Name: {{ client.full_name }}</div>
+    </div>
+    <div class="sign box">
+      <div class="muted" style="font-weight:700; margin-bottom:8px;">Agency signature</div>
+      {% if agency.agency_signature %}
+        <img class="sign-img" src="{{ agency.agency_signature.url }}" alt="Agency signature" />
+      {% else %}
+        <div class="sign-line"></div>
+      {% endif %}
+      <div class="sign-label muted">Agency: {{ agency.name }}</div>
+    </div>
+  </div>
+
+  {% if agency.invoice_footer %}
+  <div class="footer">
+    {{ agency.invoice_footer|linebreaksbr }}
+  </div>
+  {% endif %}
+</body>
+</html>
