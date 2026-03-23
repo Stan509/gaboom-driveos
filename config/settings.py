@@ -87,6 +87,7 @@ TEMPLATES = [
                 "django.template.context_processors.i18n",
                 "core.context_processors.user_permissions",
                 "core.context_processors.dashboard_theme",
+                "dashboard.context_processors.global_dashboard_data",
             ],
         },
     },

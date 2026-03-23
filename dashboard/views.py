@@ -71,7 +71,6 @@ def home(request: HttpRequest) -> HttpResponse:
     vehicles_count = len(vehicles_list)
     clients_count = clients_qs.count()
     active_contracts_count = contracts_qs.filter(status="active").count()
-    unsigned_contracts_count = contracts_qs.exclude(status="signed").count()
     team_count = agency.users.count()
 
     # ── KPI deltas (this month) ─────────────────────────────────
@@ -191,7 +190,6 @@ def home(request: HttpRequest) -> HttpResponse:
         "vehicles_count": vehicles_count,
         "clients_count": clients_count,
         "active_contracts_count": active_contracts_count,
-        "unsigned_contracts_count": unsigned_contracts_count,
         "team_count": team_count,
         "clients_new": clients_new,
         "contracts_new": contracts_new,
@@ -682,7 +680,6 @@ def contract_hub(request: HttpRequest) -> HttpResponse:
 
     # ── KPIs ─────────────────────────────────────────────────────
     all_qs = Contract.objects.for_agency(agency)
-    unsigned_contracts_count = all_qs.exclude(status="signed").count()
     kpi = {
         "active": all_qs.filter(status="active").count(),
         "to_collect": all_qs.filter(amount_due__gt=0, status__in=("active", "closed")).count(),
@@ -827,7 +824,6 @@ def contract_hub(request: HttpRequest) -> HttpResponse:
         "form": form, "editing": editing,
         "q": q, "status_filter": status_f, "pay_filter": pay_f,
         "sort_by": sort_by, "kpi": kpi,
-        "unsigned_contracts_count": unsigned_contracts_count,
         "pay_form": pay_form,
         "page_num": page_num, "total_pages": total_pages,
         "has_prev": page_num > 1, "has_next": page_num < total_pages,
