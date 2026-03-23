@@ -8,8 +8,9 @@ from agencies.models import AgencyQuerySet
 
 class Contract(models.Model):
     STATUS_CHOICES = [
-        ("draft", "Brouillon"),
-        ("pending_signature", "En attente de signature"),
+        ("draft", "Draft"),
+        ("sent", "Sent"),
+        ("signed", "Signed"),
         ("active", "Actif"),
         ("pending_return", "Retour en cours"),
         ("closed", "Clôturé"),

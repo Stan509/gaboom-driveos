@@ -74,6 +74,10 @@
       <div class="flex items-center gap-2 mt-1 flex-wrap">
         {% if contract.status == "active" %}
         <span class="inline-flex items-center gap-1 rounded-full bg-emerald-100 text-emerald-700 px-2.5 py-0.5 text-[11px] font-semibold"><span class="h-1.5 w-1.5 rounded-full bg-emerald-500"></span>{% trans "Actif" %}</span>
+        {% elif contract.status == "sent" %}
+        <span class="inline-flex items-center gap-1 rounded-full bg-blue-100 text-blue-700 px-2.5 py-0.5 text-[11px] font-semibold"><span class="h-1.5 w-1.5 rounded-full bg-blue-500"></span>Sent</span>
+        {% elif contract.status == "signed" %}
+        <span class="inline-flex items-center gap-1 rounded-full bg-emerald-100 text-emerald-700 px-2.5 py-0.5 text-[11px] font-semibold"><span class="h-1.5 w-1.5 rounded-full bg-emerald-500"></span>Signed</span>
         {% elif contract.status == "pending_signature" %}
         <span class="inline-flex items-center gap-1 rounded-full bg-violet-100 text-violet-700 px-2.5 py-0.5 text-[11px] font-semibold"><span class="h-1.5 w-1.5 rounded-full bg-violet-500 animate-pulse"></span>{% trans "En attente de signature" %}</span>
         {% elif contract.status == "pending_return" %}
@@ -83,7 +87,7 @@
         {% elif contract.status == "cancelled" %}
         <span class="inline-flex items-center gap-1 rounded-full bg-red-100 text-red-600 px-2.5 py-0.5 text-[11px] font-semibold"><span class="h-1.5 w-1.5 rounded-full bg-red-400"></span>{% trans "Annulé" %}</span>
         {% else %}
-        <span class="inline-flex items-center gap-1 rounded-full bg-blue-100 text-blue-700 px-2.5 py-0.5 text-[11px] font-semibold"><span class="h-1.5 w-1.5 rounded-full bg-blue-500"></span>{% trans "Brouillon" %}</span>
+        <span class="inline-flex items-center gap-1 rounded-full bg-slate-100 text-slate-600 px-2.5 py-0.5 text-[11px] font-semibold"><span class="h-1.5 w-1.5 rounded-full bg-slate-400"></span>Draft</span>
         {% endif %}
         {% if contract.payment_status == "paid" %}
         <span class="inline-flex items-center gap-1 rounded-full bg-emerald-100 text-emerald-700 px-2.5 py-0.5 text-[11px] font-semibold">{% trans "Payé" %}</span>
@@ -569,6 +573,11 @@
       {% endif %}
 
       {% if can_edit and contract.status != "cancelled" %}
+      {% if contract.status != "signed" %}
+      <div class="rounded-xl border border-amber-200 bg-amber-50 p-4 mb-4">
+        <p class="text-sm font-medium text-amber-800">Veuillez signer le contrat avant d’ajouter un paiement.</p>
+      </div>
+      {% else %}
       <form method="post" action="{% url 'dashboard:payment_create' contract.pk %}" class="flex flex-wrap items-end gap-3 pt-3 border-t border-slate-200">
         {% csrf_token %}
         <div>
@@ -585,6 +594,7 @@
         </div>
         <button type="submit" class="rounded-xl bg-emerald-600 text-white px-4 py-2.5 text-sm font-medium hover:bg-emerald-700 transition">+ {% trans "Paiement" %}</button>
       </form>
+      {% endif %}
       {% endif %}
     </div>
   </div>

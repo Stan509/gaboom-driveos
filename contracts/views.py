@@ -6,6 +6,8 @@ from datetime import datetime
 from django.http import HttpRequest, HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404
 from django.utils import translation
+from django.core.mail import EmailMessage
+from django.template.loader import render_to_string
 
 from core.permissions import require_perm
 from billing.models import Contract
@@ -71,7 +73,48 @@ def contract_sign_view(request: HttpRequest, pk: int) -> JsonResponse:
         contract.client_signature.save(filename, content=image_data, save=True)
         contract.client_signed_at = datetime.now()
         contract.client_signed_ip = request.META.get("REMOTE_ADDR")
-        contract.save(update_fields=["client_signature", "client_signed_at", "client_signed_ip"])
+        contract.status = "signed"
+        contract.save(update_fields=["client_signature", "client_signed_at", "client_signed_ip", "status"])
+
+        # Generate PDF for email
+        pdf = generate_contract_pdf(contract=contract, agency=contract.agency, request=request)
+
+        # Send email to client
+        if contract.client.email:
+            client_subject = f"Contrat signé - {contract.agency.name}"
+            client_body = render_to_string("emails/contract_signed_client.html", {
+                "contract": contract,
+                "agency": contract.agency,
+                "client": contract.client,
+            }, request=request)
+            client_email = EmailMessage(
+                subject=client_subject,
+                body=client_body,
+                from_email=contract.agency.contact_email or None,
+                to=[contract.client.email],
+            )
+            client_email.attach(f"contrat_{contract.pk}.pdf", pdf.content, "application/pdf")
+            client_email.content_subtype = "html"
+            client_email.send()
+
+        # Send email to agency
+        if contract.agency.contact_email:
+            agency_subject = f"Nouveau contrat signé - {contract.client.full_name}"
+            agency_body = render_to_string("emails/contract_signed_agency.html", {
+                "contract": contract,
+                "agency": contract.agency,
+                "client": contract.client,
+            }, request=request)
+            agency_email = EmailMessage(
+                subject=agency_subject,
+                body=agency_body,
+                from_email=contract.agency.contact_email or None,
+                to=[contract.agency.contact_email],
+            )
+            agency_email.attach(f"contrat_{contract.pk}.pdf", pdf.content, "application/pdf")
+            agency_email.content_subtype = "html"
+            agency_email.send()
+
         return JsonResponse({"success": True, "filename": filename})
     except Exception as e:
         return JsonResponse({"error": str(e)}, status=500)

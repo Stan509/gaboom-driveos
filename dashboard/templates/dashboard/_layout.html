@@ -176,10 +176,11 @@
 
   /* ── Sidebar ────────────────────────────────────────────── */
   .sidebar{
-    position:fixed;top:0;left:0;bottom:0;width:260px;z-index:40;
+    position:fixed;top:64px;left:0;bottom:0;width:260px;z-index:40;
     background:var(--g-sidebar);border-right:1px solid var(--g-sidebar-border);
     transition:width .2s cubic-bezier(.4,0,.2,1);overflow:hidden;
     display:flex;flex-direction:column;
+    height:calc(100vh - 64px);
   }
   .sidebar.collapsed{width:68px}
   .sidebar.collapsed .sb-hide{display:none}
@@ -192,6 +193,10 @@
     background:#1a1a2e;color:#fff;font-size:12px;padding:4px 12px;border-radius:10px;
     white-space:nowrap;z-index:50;pointer-events:none;
     border:1px solid var(--g-surface-border);
+  }
+  .sidebar nav{
+    overflow-y: auto;
+    flex: 1;
   }
   .sidebar nav a,.sidebar nav button{position:relative}
 
@@ -278,7 +283,7 @@
 
   /* ── Mobile (<768) — off-canvas ────────────────────────── */
   @media(max-width:767px){
-    .sidebar{transform:translateX(-100%)}
+    .sidebar{transform:translateX(-100%);top:64px;height:calc(100vh - 64px)}
     .sidebar.mobile-open{transform:translateX(0)}
     .main-area,.main-area.shifted{margin-left:0}
     .mob-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:35;
@@ -292,14 +297,14 @@
 
   /* ── Tablet+Mobile shared ──────────────────────────────── */
   @media(max-width:1023px){
-    .sidebar{transform:translateX(-100%)}
+    .sidebar{transform:translateX(-100%);top:64px;height:calc(100vh - 64px)}
     .sidebar.mobile-open{transform:translateX(0)}
     .mob-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:35;
       backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px)}
     .mob-overlay.show{display:block}
   }
   @media(min-width:768px) and (max-width:1023px){
-    .sidebar{transform:none}
+    .sidebar{transform:none;top:64px;height:calc(100vh - 64px)}
   }
 
   /* ══════════════════════════════════════════════════════════
